@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.util.fastForEach
 import com.broken.telephone.features.draw.model.DrawingAction
 import com.broken.telephone.features.draw.model.PathData
@@ -30,6 +31,7 @@ fun DrawingCanvas(
         modifier = modifier
             .clipToBounds()
             .background(Color.White)
+            .onSizeChanged { onAction(DrawingAction.OnCanvasSizeChanged(it)) }
             .pointerInput(true) {
                 detectDragGestures(
                     onDragStart = {

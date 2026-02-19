@@ -1,6 +1,7 @@
 package com.broken.telephone.features.draw.model
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.IntSize
 import com.broken.telephone.features.dashboard.model.PostUi
 
 data class DrawState(
@@ -10,6 +11,7 @@ data class DrawState(
     val currentPath: PathData? = null,
     val paths: List<PathData> = emptyList(),
     val redoPaths: List<PathData> = emptyList(),
+    val canvasSize: IntSize? = null,
 ) {
     val canUndo: Boolean get() = paths.isNotEmpty()
     val canRedo: Boolean get() = redoPaths.isNotEmpty()

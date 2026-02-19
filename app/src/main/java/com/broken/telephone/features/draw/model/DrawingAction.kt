@@ -1,6 +1,7 @@
 package com.broken.telephone.features.draw.model
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.unit.IntSize
 
 sealed interface DrawingAction {
     data object OnNewPathStart: DrawingAction
@@ -10,4 +11,6 @@ sealed interface DrawingAction {
     data object OnUndoClick: DrawingAction
     data object OnRedoClick: DrawingAction
     data class OnBrushSizeChange(val brushSize: BrushSize): DrawingAction
+    data class OnCanvasSizeChanged(val size: IntSize): DrawingAction
+    data object OnPostClick: DrawingAction
 }

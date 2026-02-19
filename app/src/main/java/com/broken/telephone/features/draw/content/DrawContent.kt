@@ -54,7 +54,8 @@ fun DrawContent(
     ) {
         DrawTopBar(
             onBackClick = onBackClick,
-            isPostButtonEnabled = state.canUndo
+            isPostButtonEnabled = state.canUndo,
+            onPostClick = { onDrawAction(DrawingAction.OnPostClick) }
         )
 
         Spacer(modifier = Modifier.height(12.dp))

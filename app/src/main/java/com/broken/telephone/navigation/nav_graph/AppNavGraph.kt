@@ -146,7 +146,10 @@ fun AppNavGraph(
             val route = backStackEntry.toRoute<Routes.Draw>()
             DrawScreen(
                 postId = route.postId,
-                onBackClick = navController::safePopBackStack
+                onBackClick = navController::safePopBackStack,
+                onPostSubmitted = {
+                    navController.popBackStack(Routes.Dashboard, inclusive = false)
+                }
             )
         }
 

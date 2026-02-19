@@ -9,4 +9,6 @@ interface PostRepository {
 
     fun getPostById(id: String): Flow<Post?>
 
+    suspend fun updatePost(post: Post)
+
 }

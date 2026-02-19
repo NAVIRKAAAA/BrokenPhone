@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -35,11 +36,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import com.broken.telephone.R
 import com.broken.telephone.core.badge.BadgeElement
 import com.broken.telephone.domain.post.PostContent
 import com.broken.telephone.features.create_post.model.CreatePostState
 import com.broken.telephone.features.dashboard.model.PostUi
+import java.io.File
 
 @Composable
 fun PostElement(
@@ -131,12 +134,16 @@ fun PostElement(
                 }
 
                 is PostContent.Drawing -> {
-                    Box(
+                    val model = content.localPath?.let { File(it) } ?: content.imageUrl
+
+                    AsyncImage(
+                        model = model,
+                        contentDescription = null,
+                        contentScale = ContentScale.Fit,
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(12.dp))
                             .height(200.dp)
-                            .background(Color.LightGray)
                     )
                 }
             }

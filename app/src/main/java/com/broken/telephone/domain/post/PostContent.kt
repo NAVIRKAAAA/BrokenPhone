@@ -6,7 +6,7 @@ sealed class PostContent {
     ) : PostContent()
     
     data class Drawing(
-        val imageUrl: String,          // URL малюнка в Storage
+        val imageUrl: String? = null,  // URL малюнка в Storage (null поки не завантажено)
         val localPath: String? = null  // Локальний path якщо ще не uploaded
     ) : PostContent()
 }
