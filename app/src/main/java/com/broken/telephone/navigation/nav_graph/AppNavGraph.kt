@@ -18,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.broken.telephone.features.create_post.CreatePostScreen
 import com.broken.telephone.features.dashboard.DashboardScreen
+import com.broken.telephone.features.describe_drawing.DescribeDrawingScreen
 import com.broken.telephone.features.draw.DrawScreen
 import com.broken.telephone.features.post_details.PostDetailsScreen
 import com.broken.telephone.features.post_details.PostDetailsViewModel
@@ -125,6 +126,9 @@ fun AppNavGraph(
                 onBackClick = navController::safePopBackStack,
                 onDrawContinue = { postId ->
                     navController.navigateSingle(Routes.Draw(postId = postId))
+                },
+                onDescribeDrawingContinue = { postId ->
+                    navController.navigateSingle(Routes.DescribeDrawing(postId = postId))
                 }
             )
         }
@@ -145,6 +149,30 @@ fun AppNavGraph(
         ) { backStackEntry ->
             val route = backStackEntry.toRoute<Routes.Draw>()
             DrawScreen(
+                postId = route.postId,
+                onBackClick = navController::safePopBackStack,
+                onPostSubmitted = {
+                    navController.popBackStack(Routes.Dashboard, inclusive = false)
+                }
+            )
+        }
+
+        composable<Routes.DescribeDrawing>(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeOut(animationSpec = tween(200))
+            }
+        ) { backStackEntry ->
+            val route = backStackEntry.toRoute<Routes.DescribeDrawing>()
+            DescribeDrawingScreen(
                 postId = route.postId,
                 onBackClick = navController::safePopBackStack,
                 onPostSubmitted = {

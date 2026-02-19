@@ -1,4 +1,4 @@
-package com.broken.telephone.features.draw.content
+package com.broken.telephone.core.top_bar
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,7 +24,8 @@ import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
 
 @Composable
-fun DrawTopBar(
+fun PostTopBar(
+    title: String,
     isPostButtonEnabled: Boolean = true,
     onBackClick: () -> Unit = {},
     onPostClick: () -> Unit = {},
@@ -46,7 +47,7 @@ fun DrawTopBar(
         }
 
         Text(
-            text = "Draw",
+            text = title,
             textAlign = TextAlign.Center,
             fontFamily = FontFamily(Font(R.font.inter_medium)),
             fontSize = 16.sp,
@@ -72,10 +73,10 @@ fun DrawTopBar(
 
 @Preview
 @Composable
-fun DrawTopBarPreview() {
+fun PostTopBarPreview() {
     BrokenTelephoneTheme {
         Box {
-            DrawTopBar()
+            PostTopBar(title = "Draw")
         }
     }
 }

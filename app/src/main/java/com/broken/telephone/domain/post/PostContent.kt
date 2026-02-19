@@ -1,12 +1,16 @@
 package com.broken.telephone.domain.post
 
 sealed class PostContent {
+    abstract val timeLimit: Int
+
     data class Text(
-        val text: String
+        val text: String,
+        override val timeLimit: Int,
     ) : PostContent()
-    
+
     data class Drawing(
-        val imageUrl: String? = null,  // URL малюнка в Storage (null поки не завантажено)
-        val localPath: String? = null  // Локальний path якщо ще не uploaded
+        override val timeLimit: Int,
+        val imageUrl: String? = null,
+        val localPath: String? = null,
     ) : PostContent()
 }

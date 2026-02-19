@@ -131,10 +131,7 @@ fun PostDetailsElement(
 
             BadgeElement(
                 iconResId = R.drawable.ic_clock,
-                text = when (post.content) {
-                    is PostContent.Text -> "${post.textTimeLimit}s"
-                    is PostContent.Drawing -> "${post.drawingTimeLimit}s"
-                },
+                text = "${post.content.timeLimit}s",
                 onClick = {},
                 enabled = false
             )

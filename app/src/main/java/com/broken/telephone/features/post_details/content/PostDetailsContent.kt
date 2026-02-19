@@ -28,6 +28,7 @@ import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.data.repository.MockPostRepository
 import com.broken.telephone.domain.post.PostContent
+import com.broken.telephone.domain.post.PostStatus
 import com.broken.telephone.features.create_post.content.CreatePostTopBar
 import com.broken.telephone.features.dashboard.content.PostElement
 import com.broken.telephone.features.dashboard.model.toUi
@@ -42,7 +43,6 @@ fun PostDetailsContent(
 ) {
 
     val post = state.postUi
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -57,7 +57,16 @@ fun PostDetailsContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        if(post != null) {
+        if (post != null) {
+            val description = if (post.status == PostStatus.AVAILABLE) {
+                when (post.content) {
+                    is PostContent.Text -> "Draw this in ${post.content.timeLimit} seconds"
+                    is PostContent.Drawing -> "Describe in ${post.content.timeLimit} seconds"
+                }
+            } else {
+                "Someone is working on this right now"
+            }
+
             PostDetailsElement(
                 post = post,
                 modifier = Modifier.padding(horizontal = 16.dp)
@@ -75,7 +84,7 @@ fun PostDetailsContent(
                     contentColor = Color.White,
                     containerColor = MaterialTheme.colorScheme.primary
                 ),
-                enabled = true,
+                enabled = post.status == PostStatus.AVAILABLE,
                 shape = RoundedCornerShape(16.dp),
                 contentPadding = PaddingValues()
             ) {
@@ -90,10 +99,6 @@ fun PostDetailsContent(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            val description = when (post.content) {
-                is PostContent.Text -> "Draw this in ${post.drawingTimeLimit} seconds"
-                is PostContent.Drawing -> "Describe in ${post.textTimeLimit} seconds"
-            }
 
             Text(
                 text = description,
@@ -114,7 +119,7 @@ fun PostDetailsContentPreview() {
     BrokenTelephoneTheme() {
         PostDetailsContent(
             state = PostDetailsState(
-                MockPostRepository.mockList.first().toUi()
+                MockPostRepository.mockList.first().toUi().copy(status = PostStatus.COMPLETED)
             ),
             onContinueClick = {}
         )

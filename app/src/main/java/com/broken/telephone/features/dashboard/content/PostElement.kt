@@ -40,6 +40,7 @@ import coil3.compose.AsyncImage
 import com.broken.telephone.R
 import com.broken.telephone.core.badge.BadgeElement
 import com.broken.telephone.domain.post.PostContent
+import com.broken.telephone.domain.post.PostStatus
 import com.broken.telephone.features.create_post.model.CreatePostState
 import com.broken.telephone.features.dashboard.model.PostUi
 import java.io.File
@@ -163,10 +164,7 @@ fun PostElement(
 
                 BadgeElement(
                     iconResId = R.drawable.ic_clock,
-                    text = when (post.content) {
-                        is PostContent.Text -> "${post.textTimeLimit}s"
-                        is PostContent.Drawing -> "${post.drawingTimeLimit}s"
-                    },
+                    text = "${post.content.timeLimit}s",
                     onClick = {},
                     enabled = false
                 )
@@ -184,12 +182,11 @@ fun PostElementPreview() {
             id = "1",
             authorName = "Alex".repeat(55),
             avatarUrl = null,
-            content = PostContent.Text("Once upon a time there was a broken telephone..."),
+            content = PostContent.Text("Once upon a time there was a broken telephone...", timeLimit = 30),
             createdAt = System.currentTimeMillis() - 300000,
             generation = 1,
             maxGenerations = 10,
-            textTimeLimit = 30,
-            drawingTimeLimit = 60,
+            status = PostStatus.AVAILABLE
         ),
     )
 }

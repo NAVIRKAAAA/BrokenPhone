@@ -29,13 +29,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.broken.telephone.R
 import com.broken.telephone.core.badge.BadgeElement
+import com.broken.telephone.core.top_bar.PostTopBar
 import com.broken.telephone.data.repository.MockPostRepository
 import com.broken.telephone.domain.post.PostContent
 import com.broken.telephone.features.dashboard.model.toUi
 import com.broken.telephone.features.draw.model.DrawState
 import com.broken.telephone.features.draw.model.DrawingAction
-import com.broken.telephone.features.post_details.content.PostDetailsTopBar
-import com.broken.telephone.features.post_details.model.PostDetailsState
 
 @Composable
 fun DrawContent(
@@ -52,7 +51,8 @@ fun DrawContent(
             .background(Color.White)
             .statusBarsPadding(),
     ) {
-        DrawTopBar(
+        PostTopBar(
+            title = "Draw",
             onBackClick = onBackClick,
             isPostButtonEnabled = state.canUndo,
             onPostClick = { onDrawAction(DrawingAction.OnPostClick) }
@@ -111,9 +111,7 @@ fun DrawContent(
 
                 BadgeElement(
                     iconResId = R.drawable.ic_clock,
-                    text = when (post.content) {
-                        else -> "${post.textTimeLimit}s"
-                    },
+                    text = "${post.content.timeLimit}s",
                     onClick = {},
                     enabled = false
                 )

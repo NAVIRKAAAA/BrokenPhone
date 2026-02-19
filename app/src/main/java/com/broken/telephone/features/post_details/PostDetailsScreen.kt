@@ -11,6 +11,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun PostDetailsScreen(
     onDrawContinue: (postId: String) -> Unit,
+    onDescribeDrawingContinue: (postId: String) -> Unit,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
     viewModel: PostDetailsViewModel = koinViewModel(),
@@ -24,7 +25,7 @@ fun PostDetailsScreen(
             val post = state.postUi ?: return@PostDetailsContent
             when (post.content) {
                 is PostContent.Text -> onDrawContinue(post.id)
-                is PostContent.Drawing -> Unit
+                is PostContent.Drawing -> onDescribeDrawingContinue(post.id)
             }
         },
         modifier = modifier

@@ -1,6 +1,7 @@
 package com.broken.telephone.features.dashboard.model
 
 import com.broken.telephone.domain.post.PostContent
+import com.broken.telephone.domain.post.PostStatus
 
 data class PostUi(
     val id: String,
@@ -10,6 +11,5 @@ data class PostUi(
     val createdAt: Long,
     val generation: Int,
     val maxGenerations: Int,
-    val textTimeLimit: Int,
-    val drawingTimeLimit: Int,
+    val status: PostStatus,
 )

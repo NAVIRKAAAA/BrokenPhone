@@ -1,15 +1,18 @@
 package com.broken.telephone.features.dashboard.model
 
 import com.broken.telephone.domain.post.Post
+import com.broken.telephone.domain.post.PostContent
 
 fun Post.toUi() = PostUi(
     id = id,
     authorName = authorName,
     avatarUrl = avatarUrl,
-    content = currentEntry.content,
+    content = when (val c = currentEntry.content) {
+        is PostContent.Text -> c.copy(timeLimit = textTimeLimit)
+        is PostContent.Drawing -> c.copy(timeLimit = drawingTimeLimit)
+    },
     createdAt = createdAt,
     generation = generation,
     maxGenerations = maxGenerations,
-    textTimeLimit = textTimeLimit,
-    drawingTimeLimit = drawingTimeLimit,
+    status = currentEntry.status
 )
