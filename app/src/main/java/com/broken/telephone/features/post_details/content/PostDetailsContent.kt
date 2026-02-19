@@ -36,6 +36,7 @@ import com.broken.telephone.features.post_details.model.PostDetailsState
 @Composable
 fun PostDetailsContent(
     state: PostDetailsState,
+    onContinueClick: () -> Unit,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
 ) {
@@ -65,7 +66,7 @@ fun PostDetailsContent(
             Spacer(modifier = Modifier.height(12.dp))
 
             Button(
-                onClick = {},
+                onClick = onContinueClick,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
@@ -114,7 +115,8 @@ fun PostDetailsContentPreview() {
         PostDetailsContent(
             state = PostDetailsState(
                 MockPostRepository.mockList.first().toUi()
-            )
+            ),
+            onContinueClick = {}
         )
     }
 }

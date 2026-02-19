@@ -70,7 +70,7 @@ fun DashboardContent(
 
                             Spacer(modifier = Modifier.height(16.dp))
 
-                            HorizontalDivider(color = Color.LightGray)
+                            HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
                         }
                     }
                 }
