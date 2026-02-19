@@ -12,4 +12,7 @@ sealed class Routes {
 
     @Serializable
     data object CreatePost : Routes()
+
+    @Serializable
+    data class PostDetails(val postId: String) : Routes()
 }

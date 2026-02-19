@@ -9,6 +9,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun DashboardScreen(
+    onPostClick: (postId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DashboardViewModel = koinViewModel(),
 ) {
@@ -17,6 +18,7 @@ fun DashboardScreen(
 
     DashboardContent(
         state = state,
+        onPostClick = onPostClick,
         modifier = modifier
     )
 }

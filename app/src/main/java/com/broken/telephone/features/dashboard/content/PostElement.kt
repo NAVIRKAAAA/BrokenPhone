@@ -57,7 +57,8 @@ fun PostElement(
     }
 
     Row(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
     ) {
 
         Box(
@@ -182,6 +183,6 @@ fun PostElementPreview() {
             maxGenerations = 10,
             textTimeLimit = 30,
             drawingTimeLimit = 60,
-        )
+        ),
     )
 }

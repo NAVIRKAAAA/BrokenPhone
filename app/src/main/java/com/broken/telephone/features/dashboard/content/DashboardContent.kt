@@ -1,6 +1,7 @@
 package com.broken.telephone.features.dashboard.content
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,6 +26,7 @@ import com.broken.telephone.features.dashboard.model.toUi
 @Composable
 fun DashboardContent(
     state: DashboardState,
+    onPostClick: (postId: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -40,7 +42,6 @@ fun DashboardContent(
             modifier = Modifier
                 .fillMaxSize(),
             contentPadding = PaddingValues(vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
             itemsIndexed(
@@ -49,16 +50,28 @@ fun DashboardContent(
             ) { index, postUi ->
 
                 Column {
-                    PostElement(
-                        post = postUi,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
+                    Column(
+                        modifier = Modifier
+                            .clickable(onClick = {
+                                onPostClick(postUi.id)
+                            })
+                    ) {
+                        if(index != 0) {
+                            Spacer(modifier = Modifier.height(16.dp))
 
-                    if(index != state.posts.lastIndex) {
+                        }
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        PostElement(
+                            post = postUi,
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
 
-                        HorizontalDivider(color = Color.LightGray)
+                        if(index != state.posts.lastIndex) {
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            HorizontalDivider(color = Color.LightGray)
+                        }
                     }
                 }
 
@@ -80,6 +93,7 @@ fun DashboardContentPreview() {
     DashboardContent(
         state = DashboardState(
             posts = MockPostRepository.mockList.map { it.toUi() }
-        )
+        ),
+        onPostClick = {}
     )
 }

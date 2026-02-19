@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.flowOf
 
 class MockPostRepository : PostRepository {
 
-    override fun getPosts(): Flow<List<Post>> = flowOf(
-        mockList
-    )
+    override fun getPosts(): Flow<List<Post>> = flowOf(mockList)
+
+    override fun getPostById(id: String): Flow<Post?> = flowOf(mockList.find { it.id == id })
 
     companion object {
         val mockList = listOf(

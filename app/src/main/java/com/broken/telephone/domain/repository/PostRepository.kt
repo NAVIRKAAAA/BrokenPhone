@@ -7,4 +7,6 @@ interface PostRepository {
 
     fun getPosts(): Flow<List<Post>>
 
+    fun getPostById(id: String): Flow<Post?>
+
 }
