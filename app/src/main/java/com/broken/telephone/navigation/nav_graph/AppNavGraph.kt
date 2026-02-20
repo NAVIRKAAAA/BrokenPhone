@@ -24,6 +24,7 @@ import com.broken.telephone.features.describe_drawing.DescribeDrawingScreen
 import com.broken.telephone.features.draw.DrawScreen
 import com.broken.telephone.features.post_details.PostDetailsScreen
 import com.broken.telephone.features.post_details.PostDetailsViewModel
+import com.broken.telephone.features.sign_in.SignInScreen
 import com.broken.telephone.features.sign_up.SignUpScreen
 import com.broken.telephone.features.welcome.WelcomeScreen
 import com.broken.telephone.navigation.routes.Routes
@@ -45,7 +46,8 @@ fun AppNavGraph(
         composable<Routes.Welcome>(
             enterTransition = { EnterTransition.None },
             exitTransition = {
-                if (targetState.destination.route?.contains("SignUp") == true) {
+                val route = targetState.destination.route
+                if (route?.contains("SignUp") == true || route?.contains("SignIn") == true) {
                     slideOutHorizontally(
                         targetOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -55,7 +57,8 @@ fun AppNavGraph(
                 }
             },
             popEnterTransition = {
-                if (initialState.destination.route?.contains("SignUp") == true) {
+                val route = initialState.destination.route
+                if (route?.contains("SignUp") == true || route?.contains("SignIn") == true) {
                     slideInHorizontally(
                         initialOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -69,6 +72,9 @@ fun AppNavGraph(
             WelcomeScreen(
                 onGetStarted = {
                     navController.navigateSingle(Routes.SignUp)
+                },
+                onSignIn = {
+                    navController.navigateSingle(Routes.SignIn)
                 },
                 onContinueAsGuest = {
                     navController.navigateSingle(Routes.Dashboard) {
@@ -232,12 +238,79 @@ fun AppNavGraph(
             )
         }
 
+        composable<Routes.SignIn>(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+            exitTransition = {
+                if (targetState.destination.route?.contains("SignUp") == true) {
+                    slideOutHorizontally(
+                        targetOffsetX = { -it / 3 },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                } else {
+                    ExitTransition.None
+                }
+            },
+            popEnterTransition = {
+                if (initialState.destination.route?.contains("SignUp") == true) {
+                    slideInHorizontally(
+                        initialOffsetX = { -it / 3 },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                } else {
+                    EnterTransition.None
+                }
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeOut(animationSpec = tween(200))
+            }
+        ) {
+            SignInScreen(
+                onBackClick = navController::safePopBackStack,
+                onSignedIn = {
+                    navController.navigateSingle(Routes.Dashboard) {
+                        popUpTo(Routes.Welcome) { inclusive = true }
+                    }
+                },
+                onSignUpClick = {
+                    navController.navigateSingle(Routes.SignUp)
+                },
+            )
+        }
+
         composable<Routes.SignUp>(
             enterTransition = {
                 slideInHorizontally(
                     initialOffsetX = { it },
                     animationSpec = tween(250)
                 ) + fadeIn(animationSpec = tween(200))
+            },
+            exitTransition = {
+                if (targetState.destination.route?.contains("SignIn") == true) {
+                    slideOutHorizontally(
+                        targetOffsetX = { -it / 3 },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                } else {
+                    ExitTransition.None
+                }
+            },
+            popEnterTransition = {
+                if (initialState.destination.route?.contains("SignIn") == true) {
+                    slideInHorizontally(
+                        initialOffsetX = { -it / 3 },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                } else {
+                    EnterTransition.None
+                }
             },
             popExitTransition = {
                 slideOutHorizontally(
@@ -252,6 +325,9 @@ fun AppNavGraph(
                     navController.navigateSingle(Routes.Dashboard) {
                         popUpTo(Routes.Welcome) { inclusive = true }
                     }
+                },
+                onSignInClick = {
+                    navController.navigateSingle(Routes.SignIn)
                 },
             )
         }

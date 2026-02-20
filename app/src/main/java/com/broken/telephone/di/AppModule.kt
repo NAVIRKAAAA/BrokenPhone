@@ -19,6 +19,8 @@ import com.broken.telephone.features.draw.use_case.SubmitDrawingUseCase
 import com.broken.telephone.features.draw.utils.DrawingBitmapSaver
 import com.broken.telephone.features.post_details.PostDetailsViewModel
 import com.broken.telephone.features.post_details.use_case.GetPostByIdUseCase
+import com.broken.telephone.features.sign_in.SignInViewModel
+import com.broken.telephone.features.sign_in.use_case.SignInUseCase
 import com.broken.telephone.features.sign_up.SignUpValidator
 import com.broken.telephone.features.sign_up.SignUpViewModel
 import com.broken.telephone.features.sign_up.use_case.SignUpUseCase
@@ -42,6 +44,7 @@ val appModule = module {
     factoryOf(::GetChainByPostIdUseCase)
     factoryOf(::SignUpValidator)
     factoryOf(::SignUpUseCase)
+    factoryOf(::SignInUseCase)
 
     viewModelOf(::CreatePostViewModel)
     viewModelOf(::DashboardViewModel)
@@ -50,6 +53,7 @@ val appModule = module {
     viewModelOf(::DescribeDrawingViewModel)
     viewModelOf(::ChainDetailsViewModel)
     viewModelOf(::SignUpViewModel)
+    viewModelOf(::SignInViewModel)
 
     single { AppNavBottomBarViewModel() }
 }

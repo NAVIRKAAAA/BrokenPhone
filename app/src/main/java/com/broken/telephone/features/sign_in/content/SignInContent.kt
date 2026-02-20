@@ -1,4 +1,4 @@
-package com.broken.telephone.features.sign_up.content
+package com.broken.telephone.features.sign_in.content
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -43,39 +43,38 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
-import com.broken.telephone.features.sign_up.model.SignUpState
+import com.broken.telephone.features.sign_in.model.SignInState
+import com.broken.telephone.features.sign_up.content.SignUpTextField
 
 @Composable
-fun SignUpContent(
-    state: SignUpState,
+fun SignInContent(
+    state: SignInState,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
     onEmailChanged: (String) -> Unit = {},
     onPasswordChanged: (String) -> Unit = {},
-    onConfirmPasswordChanged: (String) -> Unit = {},
     onTogglePasswordVisibility: () -> Unit = {},
-    onToggleConfirmPasswordVisibility: () -> Unit = {},
-    onSignUpClick: () -> Unit = {},
     onSignInClick: () -> Unit = {},
+    onSignUpClick: () -> Unit = {},
 ) {
+    val passwordFocus = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+
     Column(
         modifier = modifier
             .fillMaxSize()
+            .statusBarsPadding()
             .background(MaterialTheme.colorScheme.background)
-            .statusBarsPadding(),
+            .navigationBarsPadding(),
     ) {
-        SignUpTopBar(onBackClick = onBackClick)
+        SignInTopBar(onBackClick = onBackClick)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        val passwordFocus = remember { FocusRequester() }
-        val confirmPasswordFocus = remember { FocusRequester() }
-        val focusManager = LocalFocusManager.current
-
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .padding(horizontal = 16.dp)
-                .navigationBarsPadding()
                 .verticalScroll(rememberScrollState())
                 .imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -84,44 +83,29 @@ fun SignUpContent(
                 text = state.email,
                 onTextChange = onEmailChanged,
                 label = "Email",
-                error = state.emailError,
+                error = if (state.credentialsError != null) "" else null,
                 imeAction = ImeAction.Next,
                 onImeAction = { passwordFocus.requestFocus() },
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            SignUpTextField(
-                text = state.password,
-                onTextChange = onPasswordChanged,
-                label = "Password",
-                error = state.passwordError,
-                hint = "At least 8 characters",
-                isPasswordVisible = state.isPasswordVisible,
-                onPasswordVisibilityToggle = onTogglePasswordVisibility,
-                imeAction = ImeAction.Next,
-                onImeAction = { confirmPasswordFocus.requestFocus() },
-                modifier = Modifier.focusRequester(passwordFocus),
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             SignUpTextField(
-                text = state.confirmPassword,
-                onTextChange = onConfirmPasswordChanged,
-                label = "Confirm Password",
-                error = state.confirmPasswordError,
-                isPasswordVisible = state.isConfirmPasswordVisible,
-                onPasswordVisibilityToggle = onToggleConfirmPasswordVisibility,
+                text = state.password,
+                onTextChange = onPasswordChanged,
+                label = "Password",
+                error = state.credentialsError,
+                isPasswordVisible = state.isPasswordVisible,
+                onPasswordVisibilityToggle = onTogglePasswordVisibility,
                 imeAction = ImeAction.Done,
                 onImeAction = { focusManager.clearFocus() },
-                modifier = Modifier.focusRequester(confirmPasswordFocus),
+                modifier = Modifier.focusRequester(passwordFocus),
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = onSignUpClick,
+                onClick = onSignInClick,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
@@ -129,7 +113,7 @@ fun SignUpContent(
                     contentColor = Color.White,
                     containerColor = MaterialTheme.colorScheme.primary
                 ),
-                enabled = state.isSignUpEnabled,
+                enabled = state.isSignInEnabled,
                 shape = RoundedCornerShape(14.dp),
                 contentPadding = PaddingValues()
             ) {
@@ -141,7 +125,7 @@ fun SignUpContent(
                     )
                 } else {
                     Text(
-                        text = "Sign Up",
+                        text = "Sign In",
                         textAlign = TextAlign.Center,
                         fontFamily = FontFamily(Font(R.font.inter_medium)),
                         fontSize = 16.sp,
@@ -152,54 +136,29 @@ fun SignUpContent(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             val primaryColor = MaterialTheme.colorScheme.primary
-            val termsText = buildAnnotatedString {
-                append("By signing up, you agree to our ")
-                withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.Underline)) {
-                    append("Terms")
-                }
-                append(" & ")
-                withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.Underline)) {
-                    append("Privacy Policy")
-                }
-            }
-
-            Text(
-                text = termsText,
-                textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(R.font.inter_regular)),
-                fontSize = 12.sp,
-                lineHeight = 16.sp,
-                modifier = Modifier.padding(horizontal = 16.dp),
-                color = Color(0xFF999999)
-            )
-
-            Spacer(modifier = Modifier.height(26.dp))
-
-            val signInText = buildAnnotatedString {
-                append("Already have an account? ")
+            val signUpText = buildAnnotatedString {
+                append("Don't have an account? ")
                 withLink(
                     LinkAnnotation.Clickable(
-                        tag = "SIGN_IN",
-                        linkInteractionListener = { onSignInClick() },
+                        tag = "SIGN_UP",
+                        linkInteractionListener = { onSignUpClick() },
                     )
                 ) {
                     withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.None)) {
-                        append("Sign In")
+                        append("Sign Up")
                     }
                 }
             }
 
             Text(
-                text = signInText,
+                text = signUpText,
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily(Font(R.font.inter_regular)),
                 fontSize = 14.sp,
                 lineHeight = 21.sp,
-                modifier = Modifier.padding(horizontal = 16.dp),
                 color = Color.Black,
+                modifier = Modifier.padding(horizontal = 16.dp),
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -209,12 +168,10 @@ fun SignUpContent(
 
 @Preview
 @Composable
-fun SignUpContentPreview() {
+fun SignInContentPreview() {
     BrokenTelephoneTheme(darkTheme = false) {
-        SignUpContent(
-            state = SignUpState(
-                isLoading = true
-            ),
+        SignInContent(
+            state = SignInState(),
             onBackClick = {},
         )
     }

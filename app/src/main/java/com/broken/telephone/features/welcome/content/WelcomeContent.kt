@@ -37,6 +37,7 @@ import com.broken.telephone.core.theme.BrokenTelephoneTheme
 fun WelcomeContent(
     onContinueAsGuest: () -> Unit,
     onGetStarted: () -> Unit = {},
+    onSignIn: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
 
@@ -75,7 +76,7 @@ fun WelcomeContent(
         Spacer(modifier = Modifier.height(12.dp))
 
         Button(
-            onClick = {},
+            onClick = onSignIn,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)

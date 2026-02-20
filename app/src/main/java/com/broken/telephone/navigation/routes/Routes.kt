@@ -27,4 +27,7 @@ sealed class Routes {
 
     @Serializable
     data object SignUp : Routes()
+
+    @Serializable
+    data object SignIn : Routes()
 }
