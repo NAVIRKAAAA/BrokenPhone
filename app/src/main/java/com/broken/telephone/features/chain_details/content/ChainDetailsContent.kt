@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
@@ -53,7 +52,7 @@ fun ChainDetailsContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding(),
     ) {
         ChainDetailsTopBar(
@@ -89,15 +88,35 @@ fun ChainDetailsContent(
                     if (index != state.chains.lastIndex) {
 
                         Spacer(modifier = Modifier.height(24.dp))
-
-                        Icon(
-                            painter = painterResource(R.drawable.ic_arrow_down),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 52.dp)
-                        )
+                                .padding(start = 52.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+
+                            Icon(
+                                painter = painterResource(R.drawable.ic_arrow_down),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier
+
+                            )
+
+
+//                            Spacer(modifier = Modifier.width(4.dp))
+//
+//                            Text(
+//                                text = (index + 1).toString(),
+//                                textAlign = TextAlign.Center,
+//                                fontFamily = FontFamily(Font(R.font.inter_medium)),
+//                                fontSize = 16.sp,
+//                                lineHeight = 24.sp,
+//                                color = MaterialTheme.colorScheme.primary,
+//                            )
+                        }
+
                     }
                 }
 
@@ -146,7 +165,11 @@ fun ChainDetailsContent(
                     color = Color(0xFF999999),
                 )
 
-                Spacer(modifier = Modifier.height(32.dp).navigationBarsPadding())
+                Spacer(
+                    modifier = Modifier
+                        .height(32.dp)
+                        .navigationBarsPadding()
+                )
             }
 
         }

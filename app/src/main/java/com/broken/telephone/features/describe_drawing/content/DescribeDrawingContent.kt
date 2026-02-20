@@ -11,10 +11,9 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -52,7 +51,6 @@ import com.broken.telephone.domain.post.PostContent
 import com.broken.telephone.features.create_post.model.CreatePostState
 import com.broken.telephone.features.dashboard.model.toUi
 import com.broken.telephone.features.describe_drawing.model.DescribeDrawingState
-import com.broken.telephone.features.draw.model.DrawingAction
 import java.io.File
 
 @Composable
@@ -70,13 +68,13 @@ fun DescribeDrawingContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding(),
     ) {
         PostTopBar(
             title = "Describe",
             onBackClick = onBackClick,
-            isPostButtonEnabled = state.text.isNotBlank() && !state.isTextOverLimit,
+            isPostButtonEnabled = state.text.isNotBlank() && !state.isTextOverLimit && !state.isTimerExpired,
             onPostClick = onPostClick
         )
 
@@ -173,7 +171,7 @@ fun DescribeDrawingContent(
 
                     BadgeElement(
                         iconResId = R.drawable.ic_clock,
-                        text = "${post.content.timeLimit}s",
+                        text = state.formattedTime,
                     )
 
                     if (state.text.isNotBlank()) {

@@ -1,11 +1,14 @@
 package com.broken.telephone.features.describe_drawing
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.broken.telephone.core.dialog.TimesUpDialog
 import com.broken.telephone.features.describe_drawing.content.DescribeDrawingContent
+import com.broken.telephone.features.describe_drawing.dialog.DiscardDescriptionConfirmDialog
 import com.broken.telephone.features.describe_drawing.model.DescribeDrawingSideEffect
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -20,19 +23,38 @@ fun DescribeDrawingScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    BackHandler {
+        viewModel.onBackClick()
+    }
+
     LaunchedEffect(Unit) {
         viewModel.sideEffects.collect { effect ->
             when (effect) {
                 DescribeDrawingSideEffect.PostCreated -> onPostSubmitted()
+                DescribeDrawingSideEffect.NavigateBack -> onBackClick()
             }
         }
     }
 
     DescribeDrawingContent(
         state = state,
-        onBackClick = onBackClick,
+        onBackClick = viewModel::onBackClick,
         onTextChanged = viewModel::onTextChanged,
         onPostClick = viewModel::onPostClick,
         modifier = modifier
     )
+
+    if (state.showDiscardDialog) {
+        DiscardDescriptionConfirmDialog(
+            onDismiss = viewModel::onDiscardDismiss,
+            onConfirm = viewModel::onDiscardConfirm,
+        )
+    }
+
+    if (state.showTimesUpDialog) {
+        TimesUpDialog(
+            message = "Your writing time has ended. You can try again in 10 minutes.",
+            onGotItClick = viewModel::onTimesUpGotIt,
+        )
+    }
 }

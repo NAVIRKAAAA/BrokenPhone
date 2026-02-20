@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.createBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.broken.telephone.core.timer.CountdownTimer
 import com.broken.telephone.features.draw.model.DrawSideEffect
 import com.broken.telephone.features.draw.model.DrawState
 import com.broken.telephone.features.draw.model.DrawingAction
@@ -14,6 +15,7 @@ import com.broken.telephone.features.draw.model.PathData
 import com.broken.telephone.features.draw.use_case.SubmitDrawingUseCase
 import com.broken.telephone.features.draw.utils.DrawingBitmapSaver
 import com.broken.telephone.features.post_details.use_case.GetPostByIdUseCase
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,6 +31,7 @@ class DrawViewModel(
     private val getPostByIdUseCase: GetPostByIdUseCase,
     private val drawingBitmapSaver: DrawingBitmapSaver,
     private val submitDrawingUseCase: SubmitDrawingUseCase,
+    private val countdownTimer: CountdownTimer,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(DrawState())
@@ -37,23 +40,53 @@ class DrawViewModel(
     private val _sideEffects = Channel<DrawSideEffect>(Channel.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
 
+    private var timerJob: Job? = null
+
     init {
         getPostByIdUseCase(postId)
-            .onEach { postUi -> _state.update { it.copy(postUi = postUi) } }
+            .onEach { postUi ->
+                _state.update { it.copy(postUi = postUi) }
+                if (postUi != null && timerJob == null) {
+                    startTimer(postUi.content.timeLimit)
+                }
+            }
             .launchIn(viewModelScope)
+    }
+
+    private fun startTimer(timeLimit: Int) {
+        timerJob = countdownTimer.start(timeLimit)
+            .onEach { remaining ->
+                _state.update { it.copy(remainingSeconds = remaining) }
+                if (remaining == 0) {
+                    _state.update { it.copy(isTimerExpired = true, showTimesUpDialog = true) }
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        timerJob?.cancel()
     }
 
     fun onDrawAction(action: DrawingAction) {
         when (action) {
-            DrawingAction.OnClearCanvasClick -> onClearCanvasClick()
-            is DrawingAction.OnDraw -> onDraw(action.offset)
-            DrawingAction.OnNewPathStart -> onNewPathStart()
-            DrawingAction.OnPathEnd -> onPathEnd()
+            DrawingAction.OnClearCanvasClick -> if (!state.value.isTimerExpired) onClearCanvasClick()
+            is DrawingAction.OnDraw -> if (!state.value.isTimerExpired) onDraw(action.offset)
+            DrawingAction.OnNewPathStart -> if (!state.value.isTimerExpired) onNewPathStart()
+            DrawingAction.OnPathEnd -> if (!state.value.isTimerExpired) onPathEnd()
             DrawingAction.OnUndoClick -> onUndo()
             DrawingAction.OnRedoClick -> onRedo()
             is DrawingAction.OnBrushSizeChange -> _state.update { it.copy(selectedBrushSize = action.brushSize) }
             is DrawingAction.OnCanvasSizeChanged -> _state.update { it.copy(canvasSize = action.size) }
             DrawingAction.OnPostClick -> onPostClick()
+            DrawingAction.OnBackClick -> onBackClick()
+            DrawingAction.OnDiscardConfirm -> onDiscardConfirm()
+            DrawingAction.OnDiscardDismiss -> _state.update { it.copy(showDiscardDialog = false) }
+            DrawingAction.OnTimesUpGotIt -> {
+                _state.update { it.copy(showTimesUpDialog = false) }
+                viewModelScope.launch { _sideEffects.send(DrawSideEffect.NavigateBack) }
+            }
         }
     }
 
@@ -119,6 +152,19 @@ class DrawViewModel(
                 redoPaths = it.redoPaths.dropLast(1)
             )
         }
+    }
+
+    private fun onBackClick() {
+        if (state.value.hasChanges) {
+            _state.update { it.copy(showDiscardDialog = true) }
+        } else {
+            viewModelScope.launch { _sideEffects.send(DrawSideEffect.NavigateBack) }
+        }
+    }
+
+    private fun onDiscardConfirm() {
+        _state.update { it.copy(showDiscardDialog = false) }
+        viewModelScope.launch { _sideEffects.send(DrawSideEffect.NavigateBack) }
     }
 
     private fun onPostClick() {

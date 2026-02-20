@@ -2,10 +2,12 @@ package com.broken.telephone.features.describe_drawing
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.broken.telephone.core.timer.CountdownTimer
 import com.broken.telephone.features.describe_drawing.model.DescribeDrawingSideEffect
 import com.broken.telephone.features.describe_drawing.model.DescribeDrawingState
 import com.broken.telephone.features.describe_drawing.use_case.SubmitDescriptionUseCase
 import com.broken.telephone.features.post_details.use_case.GetPostByIdUseCase
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,6 +21,7 @@ class DescribeDrawingViewModel(
     private val postId: String,
     private val getPostByIdUseCase: GetPostByIdUseCase,
     private val submitDescriptionUseCase: SubmitDescriptionUseCase,
+    private val countdownTimer: CountdownTimer,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(DescribeDrawingState())
@@ -27,17 +30,63 @@ class DescribeDrawingViewModel(
     private val _sideEffects = Channel<DescribeDrawingSideEffect>(Channel.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
 
+    private var timerJob: Job? = null
+
     init {
         getPostByIdUseCase(postId)
-            .onEach { postUi -> _state.update { it.copy(postUi = postUi) } }
+            .onEach { postUi ->
+                _state.update { it.copy(postUi = postUi) }
+                if (postUi != null && timerJob == null) {
+                    startTimer(postUi.content.timeLimit)
+                }
+            }
             .launchIn(viewModelScope)
+    }
+
+    private fun startTimer(timeLimit: Int) {
+        timerJob = countdownTimer.start(timeLimit)
+            .onEach { remaining ->
+                _state.update { it.copy(remainingSeconds = remaining) }
+                if (remaining == 0) {
+                    _state.update { it.copy(isTimerExpired = true, showTimesUpDialog = true) }
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        timerJob?.cancel()
     }
 
     fun onTextChanged(text: String) {
         _state.update { it.copy(text = text) }
     }
 
+    fun onBackClick() {
+        if (state.value.hasChanges) {
+            _state.update { it.copy(showDiscardDialog = true) }
+        } else {
+            viewModelScope.launch { _sideEffects.send(DescribeDrawingSideEffect.NavigateBack) }
+        }
+    }
+
+    fun onDiscardConfirm() {
+        _state.update { it.copy(showDiscardDialog = false) }
+        viewModelScope.launch { _sideEffects.send(DescribeDrawingSideEffect.NavigateBack) }
+    }
+
+    fun onDiscardDismiss() {
+        _state.update { it.copy(showDiscardDialog = false) }
+    }
+
+    fun onTimesUpGotIt() {
+        _state.update { it.copy(showTimesUpDialog = false) }
+        viewModelScope.launch { _sideEffects.send(DescribeDrawingSideEffect.NavigateBack) }
+    }
+
     fun onPostClick() {
+        if (state.value.isTimerExpired) return
         val text = state.value.text.trim()
         if (text.isBlank()) return
         viewModelScope.launch {

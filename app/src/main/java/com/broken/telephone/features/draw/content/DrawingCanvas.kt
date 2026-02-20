@@ -25,29 +25,24 @@ fun DrawingCanvas(
     paths: List<PathData>,
     currentPath: PathData?,
     onAction: (DrawingAction) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
     Canvas(
         modifier = modifier
             .clipToBounds()
             .background(Color.White)
             .onSizeChanged { onAction(DrawingAction.OnCanvasSizeChanged(it)) }
-            .pointerInput(true) {
-                detectDragGestures(
-                    onDragStart = {
-                        onAction(DrawingAction.OnNewPathStart)
-                    },
-                    onDragEnd = {
-                        onAction(DrawingAction.OnPathEnd)
-                    },
-                    onDrag = { change, _ ->
-                        onAction(DrawingAction.OnDraw(change.position))
-                    },
-                    onDragCancel = {
-                        onAction(DrawingAction.OnPathEnd)
-                    },
-                )
-            }
+            .then(
+                if (enabled) Modifier.pointerInput(Unit) {
+                    detectDragGestures(
+                        onDragStart = { onAction(DrawingAction.OnNewPathStart) },
+                        onDragEnd = { onAction(DrawingAction.OnPathEnd) },
+                        onDrag = { change, _ -> onAction(DrawingAction.OnDraw(change.position)) },
+                        onDragCancel = { onAction(DrawingAction.OnPathEnd) },
+                    )
+                } else Modifier
+            )
     ) {
         paths.fastForEach { pathData ->
             drawPath(
