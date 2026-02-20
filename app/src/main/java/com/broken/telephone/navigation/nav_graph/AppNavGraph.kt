@@ -22,8 +22,10 @@ import com.broken.telephone.features.create_post.CreatePostScreen
 import com.broken.telephone.features.dashboard.DashboardScreen
 import com.broken.telephone.features.describe_drawing.DescribeDrawingScreen
 import com.broken.telephone.features.draw.DrawScreen
+import com.broken.telephone.features.edit_profile.EditProfileScreen
 import com.broken.telephone.features.post_details.PostDetailsScreen
 import com.broken.telephone.features.post_details.PostDetailsViewModel
+import com.broken.telephone.features.profile.ProfileScreen
 import com.broken.telephone.features.sign_in.SignInScreen
 import com.broken.telephone.features.sign_up.SignUpScreen
 import com.broken.telephone.features.welcome.WelcomeScreen
@@ -329,6 +331,61 @@ fun AppNavGraph(
                 onSignInClick = {
                     navController.navigateSingle(Routes.SignIn)
                 },
+            )
+        }
+
+        composable<Routes.Profile>(
+            enterTransition = { EnterTransition.None },
+            exitTransition = {
+                val route = targetState.destination.route
+                if (route?.contains("PostDetails") == true || route?.contains("EditProfile") == true) {
+                    slideOutHorizontally(
+                        targetOffsetX = { -it / 3 },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                } else {
+                    ExitTransition.None
+                }
+            },
+            popEnterTransition = {
+                val route = initialState.destination.route
+                if (route?.contains("PostDetails") == true || route?.contains("EditProfile") == true) {
+                    slideInHorizontally(
+                        initialOffsetX = { -it / 3 },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                } else {
+                    EnterTransition.None
+                }
+            },
+            popExitTransition = { ExitTransition.None }
+        ) {
+            ProfileScreen(
+                onPostClick = { postId ->
+                    navController.navigateSingle(Routes.PostDetails(postId = postId))
+                },
+                onEditClick = {
+                    navController.navigateSingle(Routes.EditProfile)
+                },
+            )
+        }
+
+        composable<Routes.EditProfile>(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeOut(animationSpec = tween(200))
+            }
+        ) {
+            EditProfileScreen(
+                onBackClick = navController::safePopBackStack,
             )
         }
 

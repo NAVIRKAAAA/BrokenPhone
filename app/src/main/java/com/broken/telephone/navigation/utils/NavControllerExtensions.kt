@@ -19,3 +19,13 @@ fun NavController.safePopBackStack() {
         popBackStack()
     }
 }
+
+fun NavController.navigateSaved(route: Routes) {
+    this.navigate(route) {
+        popUpTo(Routes.Dashboard) {
+            saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
+    }
+}

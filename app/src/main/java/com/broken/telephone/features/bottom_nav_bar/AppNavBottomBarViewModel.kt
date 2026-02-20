@@ -1,16 +1,10 @@
 package com.broken.telephone.features.bottom_nav_bar
 
 import android.util.Log
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.derivedStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.toRoute
 import com.broken.telephone.features.bottom_nav_bar.model.BottomNavBar
 import com.broken.telephone.features.bottom_nav_bar.model.BottomNavBarEvent
 import com.broken.telephone.features.bottom_nav_bar.model.BottomNavBarState
@@ -37,7 +31,16 @@ class AppNavBottomBarViewModel(
     }
 
     fun shouldShowBottomBar(entry: NavBackStackEntry): Boolean {
-        return entry.destination.hasRoute<Routes.Dashboard>()
+        return entry.destination.hasRoute<Routes.Dashboard>() ||
+                entry.destination.hasRoute<Routes.Profile>()
+    }
+
+    fun updateSelectedItem(entry: NavBackStackEntry) {
+        val item = when {
+            entry.destination.hasRoute<Routes.Profile>() -> BottomNavBar.PROFILE
+            else -> BottomNavBar.DASHBOARD
+        }
+        _state.update { it.copy(selectedItem = item) }
     }
 
     fun onScrollDirectionChange(isScrollingUp: Boolean) {

@@ -30,4 +30,10 @@ sealed class Routes {
 
     @Serializable
     data object SignIn : Routes()
+
+    @Serializable
+    data object Profile : Routes()
+
+    @Serializable
+    data object EditProfile : Routes()
 }

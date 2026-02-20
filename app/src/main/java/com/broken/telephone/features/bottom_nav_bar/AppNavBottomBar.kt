@@ -11,10 +11,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -43,14 +41,14 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.broken.telephone.R
-import com.broken.telephone.features.bottom_nav_bar.model.BottomNavBar
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.core.utils.coloredShadow
+import com.broken.telephone.features.bottom_nav_bar.model.BottomNavBar
 import com.broken.telephone.features.bottom_nav_bar.model.BottomNavBarEvent
 import com.broken.telephone.navigation.routes.Routes
+import com.broken.telephone.navigation.utils.navigateSaved
 import com.broken.telephone.navigation.utils.navigateSingle
 import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun AppNavBottomBar(
@@ -67,7 +65,10 @@ fun AppNavBottomBar(
     LaunchedEffect(navBackStackEntry) {
         navBackStackEntry?.let { entry ->
             isVisible = viewModel.shouldShowBottomBar(entry)
-            if (isVisible) viewModel.resetScrollVisibility()
+            if (isVisible) {
+                viewModel.resetScrollVisibility()
+                viewModel.updateSelectedItem(entry)
+            }
         }
     }
 
@@ -79,11 +80,11 @@ fun AppNavBottomBar(
                 }
 
                 BottomNavBarEvent.NavigateToDashboard -> {
-                    return@collect
+                    navController.navigateSaved(Routes.Dashboard)
                 }
 
                 BottomNavBarEvent.NavigateToProfile -> {
-                    return@collect
+                    navController.navigateSaved(Routes.Profile)
                 }
             }
         }
