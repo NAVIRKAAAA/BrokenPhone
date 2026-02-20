@@ -11,4 +11,6 @@ interface PostRepository {
 
     suspend fun updatePost(post: Post)
 
+    suspend fun createPost(post: Post)
+
 }

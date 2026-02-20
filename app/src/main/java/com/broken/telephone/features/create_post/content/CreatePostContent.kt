@@ -41,6 +41,7 @@ fun CreatePostContent(
         PrePostElement(
             name = "Alex",
             text = state.text,
+            avatarUrl = state.avatarUrl,
             onTextChanged = onTextChanged,
             onBadgeClick = onBadgeClick,
             isTextOverLimit = state.isTextOverLimit,

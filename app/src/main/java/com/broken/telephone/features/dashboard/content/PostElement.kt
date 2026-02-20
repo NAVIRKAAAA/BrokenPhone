@@ -5,12 +5,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -65,7 +67,10 @@ fun PostElement(
             .fillMaxWidth()
     ) {
 
-        Box(
+        AsyncImage(
+            model = post.avatarUrl,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
@@ -151,7 +156,38 @@ fun PostElement(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            FlowRow(
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                itemVerticalAlignment = Alignment.CenterVertically
+            ) {
+
+                if(post.generation == post.maxGenerations) {
+                    Row(
+                        modifier = Modifier,
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+
+                        Icon(
+                            painter = painterResource(R.drawable.ic_complete),
+                            contentDescription = null,
+                            tint = Color(0xFF22C55E),
+                            modifier = Modifier.size(20.dp)
+                        )
+
+                        Text(
+                            text = "Complete",
+                            textAlign = TextAlign.Center,
+                            fontFamily = FontFamily(Font(R.font.inter_medium)),
+                            fontSize = 14.sp,
+                            lineHeight = 20.sp,
+                            color = Color(0xFF22C55E)
+                        )
+
+                    }
+
+                }
 
                 BadgeElement(
                     iconResId = R.drawable.ic_mutations,
@@ -159,8 +195,6 @@ fun PostElement(
                     onClick = {},
                     enabled = false
                 )
-
-                Spacer(modifier = Modifier.width(8.dp))
 
                 BadgeElement(
                     iconResId = R.drawable.ic_clock,
@@ -184,7 +218,7 @@ fun PostElementPreview() {
             avatarUrl = null,
             content = PostContent.Text("Once upon a time there was a broken telephone...", timeLimit = 30),
             createdAt = System.currentTimeMillis() - 300000,
-            generation = 1,
+            generation = 10,
             maxGenerations = 10,
             status = PostStatus.AVAILABLE
         ),

@@ -200,7 +200,8 @@ fun AppNavGraph(
             }
         ) {
             CreatePostScreen(
-                onBackClick = navController::safePopBackStack
+                onBackClick = navController::safePopBackStack,
+                onPostCreated = navController::safePopBackStack
             )
         }
     }

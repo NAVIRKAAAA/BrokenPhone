@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +39,7 @@ fun StartNewChainDialog(
     maxGenerations: Int,
     textTimeLimit: Int,
     drawingTimeLimit: Int,
+    isLoading: Boolean,
     onDismiss: () -> Unit,
     onCancel: () -> Unit,
     onStartChain: () -> Unit,
@@ -146,17 +149,25 @@ fun StartNewChainDialog(
                         contentColor = Color.White,
                         containerColor = MaterialTheme.colorScheme.primary
                     ),
-                    enabled = true,
+                    enabled = !isLoading,
                     shape = RoundedCornerShape(14.dp),
                     contentPadding = PaddingValues()
                 ) {
-                    Text(
-                        text = "Start Chain",
-                        textAlign = TextAlign.Center,
-                        fontFamily = FontFamily(Font(R.font.inter_medium)),
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp
-                    )
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            color = Color.White,
+                            strokeWidth = 2.dp,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    } else {
+                        Text(
+                            text = "Start Chain",
+                            textAlign = TextAlign.Center,
+                            fontFamily = FontFamily(Font(R.font.inter_medium)),
+                            fontSize = 16.sp,
+                            lineHeight = 24.sp
+                        )
+                    }
                 }
             }
         }
@@ -173,6 +184,7 @@ fun StartNewChainDialogPreview() {
             maxGenerations = 10,
             textTimeLimit = 30,
             drawingTimeLimit = 60,
+            isLoading = true,
             onDismiss = {},
             onCancel = {},
             onStartChain = {},

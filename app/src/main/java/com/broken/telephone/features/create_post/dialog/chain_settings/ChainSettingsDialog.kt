@@ -38,8 +38,9 @@ import androidx.compose.ui.window.DialogProperties
 import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
 
-private const val CHAIN_LENGTH_MIN = 5
+private const val CHAIN_LENGTH_MIN = 6
 private const val CHAIN_LENGTH_MAX = 20
+private const val CHAIN_LENGTH_STEP = 2
 private const val TEXT_TIME_MIN = 15
 private const val TEXT_TIME_MAX = 60
 private const val TEXT_TIME_STEP = 5
@@ -111,8 +112,8 @@ fun ChainSettingsDialog(
                 title = "Chain length",
                 value = chainLength.toString(),
                 range = "$CHAIN_LENGTH_MIN-$CHAIN_LENGTH_MAX",
-                onMinusClick = { chainLength-- },
-                onPlusClick = { chainLength++ },
+                onMinusClick = { chainLength -= CHAIN_LENGTH_STEP },
+                onPlusClick = { chainLength += CHAIN_LENGTH_STEP },
                 isMinusEnabled = chainLength > CHAIN_LENGTH_MIN,
                 isPlusEnabled = chainLength < CHAIN_LENGTH_MAX,
             )

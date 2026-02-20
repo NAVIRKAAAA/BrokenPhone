@@ -22,13 +22,17 @@ class MockPostRepository : PostRepository {
         _posts.update { list -> list.map { if (it.id == post.id) post else it } }
     }
 
+    override suspend fun createPost(post: Post) {
+        _posts.update { list -> list + post }
+    }
+
     companion object {
         val mockList = listOf(
             Post(
                 id = "1",
                 authorId = "user_1",
                 authorName = "Alice",
-                avatarUrl = null,
+                avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
                 createdAt = System.currentTimeMillis(),
                 generation = 0,
                 maxGenerations = 10,
@@ -37,7 +41,7 @@ class MockPostRepository : PostRepository {
                 currentEntry = PostChainEntry(
                     authorId = "user_1",
                     authorName = "Alice",
-                    avatarUrl = null,
+                    avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
                     content = PostContent.Text("Once upon a time there was a broken telephone...", timeLimit = 30),
                     createdAt = System.currentTimeMillis(),
                     status = PostStatus.AVAILABLE,
@@ -48,16 +52,16 @@ class MockPostRepository : PostRepository {
                 id = "2",
                 authorId = "user_2",
                 authorName = "Bob",
-                avatarUrl = null,
+                avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_2.png",
                 createdAt = System.currentTimeMillis() - 60_000,
-                generation = 1,
+                generation = 10,
                 maxGenerations = 10,
                 textTimeLimit = 30,
                 drawingTimeLimit = 60,
                 currentEntry = PostChainEntry(
                     authorId = "user_2",
                     authorName = "Bob",
-                    avatarUrl = null,
+                    avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_2.png",
                     content = PostContent.Text("The message got twisted somewhere along the way.", timeLimit = 30),
                     createdAt = System.currentTimeMillis() - 60_000,
                     status = PostStatus.AVAILABLE,
@@ -68,7 +72,7 @@ class MockPostRepository : PostRepository {
                 id = "3",
                 authorId = "user_3",
                 authorName = "Charlie",
-                avatarUrl = null,
+                avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_3.png",
                 createdAt = System.currentTimeMillis() - 120_000,
                 generation = 2,
                 maxGenerations = 10,
@@ -77,7 +81,7 @@ class MockPostRepository : PostRepository {
                 currentEntry = PostChainEntry(
                     authorId = "user_3",
                     authorName = "Charlie",
-                    avatarUrl = null,
+                    avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_3.png",
                     content = PostContent.Drawing(timeLimit = 60, imageUrl = "https://example.com/drawing1.png"),
                     createdAt = System.currentTimeMillis() - 120_000,
                     status = PostStatus.AVAILABLE,
@@ -88,7 +92,7 @@ class MockPostRepository : PostRepository {
                 id = "4",
                 authorId = "user_4",
                 authorName = "Diana",
-                avatarUrl = null,
+                avatarUrl = "",
                 createdAt = System.currentTimeMillis() - 180_000,
                 generation = 3,
                 maxGenerations = 10,
@@ -97,7 +101,7 @@ class MockPostRepository : PostRepository {
                 currentEntry = PostChainEntry(
                     authorId = "user_4",
                     authorName = "Diana",
-                    avatarUrl = null,
+                    avatarUrl = "",
                     content = PostContent.Text("Nobody remembered what the original message was.", timeLimit = 45),
                     createdAt = System.currentTimeMillis() - 180_000,
                     status = PostStatus.IN_PROGRESS,
@@ -108,7 +112,7 @@ class MockPostRepository : PostRepository {
                 id = "5",
                 authorId = "user_6",
                 authorName = "Eve",
-                avatarUrl = null,
+                avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_5.png",
                 createdAt = System.currentTimeMillis() - 300_000,
                 generation = 0,
                 maxGenerations = 5,
@@ -117,7 +121,7 @@ class MockPostRepository : PostRepository {
                 currentEntry = PostChainEntry(
                     authorId = "user_6",
                     authorName = "Eve",
-                    avatarUrl = null,
+                    avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_5.png",
                     content = PostContent.Text("Something about a cat? Or was it a hat?", timeLimit = 15),
                     createdAt = System.currentTimeMillis() - 300_000,
                     status = PostStatus.AVAILABLE,
@@ -128,7 +132,7 @@ class MockPostRepository : PostRepository {
                 id = "6",
                 authorId = "user_7",
                 authorName = "Frank",
-                avatarUrl = null,
+                avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_6.png",
                 createdAt = System.currentTimeMillis() - 600_000,
                 generation = 4,
                 maxGenerations = 5,
@@ -137,7 +141,7 @@ class MockPostRepository : PostRepository {
                 currentEntry = PostChainEntry(
                     authorId = "user_7",
                     authorName = "Frank",
-                    avatarUrl = null,
+                    avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_6.png",
                     content = PostContent.Drawing(timeLimit = 30, imageUrl = "https://example.com/drawing2.png"),
                     createdAt = System.currentTimeMillis() - 600_000,
                     status = PostStatus.COMPLETED,

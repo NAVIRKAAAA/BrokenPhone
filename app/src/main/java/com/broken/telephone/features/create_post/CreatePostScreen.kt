@@ -1,11 +1,12 @@
 package com.broken.telephone.features.create_post
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.broken.telephone.features.create_post.dialog.chain_settings.ChainSettingsDialog
 import com.broken.telephone.features.create_post.content.CreatePostContent
+import com.broken.telephone.features.create_post.dialog.chain_settings.ChainSettingsDialog
 import com.broken.telephone.features.create_post.dialog.start_new_chain.StartNewChainDialog
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -13,10 +14,19 @@ import org.koin.compose.viewmodel.koinViewModel
 fun CreatePostScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
+    onPostCreated: () -> Unit = {},
     viewModel: CreatePostViewModel = koinViewModel(),
 ) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.sideEffect.collect { effect ->
+            when (effect) {
+                is CreatePostSideEffect.PostCreated -> onPostCreated()
+            }
+        }
+    }
 
     CreatePostContent(
         state = state,
@@ -32,9 +42,10 @@ fun CreatePostScreen(
             maxGenerations = state.maxGenerations,
             textTimeLimit = state.textTimeLimit,
             drawingTimeLimit = state.drawingTimeLimit,
+            isLoading = state.isLoading,
             onDismiss = viewModel::onDismissStartNewChain,
             onCancel = viewModel::onDismissStartNewChain,
-            onStartChain = viewModel::onDismissStartNewChain,
+            onStartChain = viewModel::onStartChain,
         )
     }
 
