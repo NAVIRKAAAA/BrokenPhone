@@ -36,6 +36,7 @@ import com.broken.telephone.core.theme.BrokenTelephoneTheme
 @Composable
 fun WelcomeContent(
     onContinueAsGuest: () -> Unit,
+    onGetStarted: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
 
@@ -49,7 +50,7 @@ fun WelcomeContent(
     ) {
 
         Button(
-            onClick = {},
+            onClick = onGetStarted,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
@@ -128,7 +129,7 @@ fun WelcomeContent(
         Text(
             text = termsText,
             textAlign = TextAlign.Center,
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
+            fontFamily = FontFamily(Font(R.font.inter_regular)),
             fontSize = 12.sp,
             lineHeight = 16.sp,
             modifier = Modifier.padding(horizontal = 16.dp),

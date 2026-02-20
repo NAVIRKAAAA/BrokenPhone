@@ -7,11 +7,13 @@ import com.broken.telephone.features.welcome.content.WelcomeContent
 @Composable
 fun WelcomeScreen(
     onContinueAsGuest: () -> Unit,
+    onGetStarted: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
 
     WelcomeContent(
         onContinueAsGuest = onContinueAsGuest,
+        onGetStarted = onGetStarted,
         modifier = modifier
     )
 

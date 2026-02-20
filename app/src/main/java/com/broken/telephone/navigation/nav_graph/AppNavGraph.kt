@@ -24,6 +24,7 @@ import com.broken.telephone.features.describe_drawing.DescribeDrawingScreen
 import com.broken.telephone.features.draw.DrawScreen
 import com.broken.telephone.features.post_details.PostDetailsScreen
 import com.broken.telephone.features.post_details.PostDetailsViewModel
+import com.broken.telephone.features.sign_up.SignUpScreen
 import com.broken.telephone.features.welcome.WelcomeScreen
 import com.broken.telephone.navigation.routes.Routes
 import com.broken.telephone.navigation.utils.navigateSingle
@@ -43,11 +44,32 @@ fun AppNavGraph(
     ) {
         composable<Routes.Welcome>(
             enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None },
-            popEnterTransition = { EnterTransition.None },
+            exitTransition = {
+                if (targetState.destination.route?.contains("SignUp") == true) {
+                    slideOutHorizontally(
+                        targetOffsetX = { -it / 3 },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                } else {
+                    ExitTransition.None
+                }
+            },
+            popEnterTransition = {
+                if (initialState.destination.route?.contains("SignUp") == true) {
+                    slideInHorizontally(
+                        initialOffsetX = { -it / 3 },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                } else {
+                    EnterTransition.None
+                }
+            },
             popExitTransition = { ExitTransition.None }
         ) {
             WelcomeScreen(
+                onGetStarted = {
+                    navController.navigateSingle(Routes.SignUp)
+                },
                 onContinueAsGuest = {
                     navController.navigateSingle(Routes.Dashboard) {
                         popUpTo(Routes.Welcome) { inclusive = true }
@@ -207,6 +229,30 @@ fun AppNavGraph(
             ChainDetailsScreen(
                 viewModel = viewModel,
                 onBackClick = navController::safePopBackStack,
+            )
+        }
+
+        composable<Routes.SignUp>(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeOut(animationSpec = tween(200))
+            }
+        ) {
+            SignUpScreen(
+                onBackClick = navController::safePopBackStack,
+                onSignedUp = {
+                    navController.navigateSingle(Routes.Dashboard) {
+                        popUpTo(Routes.Welcome) { inclusive = true }
+                    }
+                },
             )
         }
 
