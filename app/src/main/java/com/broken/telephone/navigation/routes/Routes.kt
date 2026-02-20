@@ -21,4 +21,7 @@ sealed class Routes {
 
     @Serializable
     data class DescribeDrawing(val postId: String) : Routes()
+
+    @Serializable
+    data class ChainDetails(val postId: String) : Routes()
 }

@@ -1,23 +1,28 @@
 package com.broken.telephone.features.post_details.content
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -29,15 +34,15 @@ import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.data.repository.MockPostRepository
 import com.broken.telephone.domain.post.PostContent
 import com.broken.telephone.domain.post.PostStatus
-import com.broken.telephone.features.create_post.content.CreatePostTopBar
-import com.broken.telephone.features.dashboard.content.PostElement
 import com.broken.telephone.features.dashboard.model.toUi
+import com.broken.telephone.features.post_details.model.PostDetailsButtonType
 import com.broken.telephone.features.post_details.model.PostDetailsState
 
 @Composable
 fun PostDetailsContent(
     state: PostDetailsState,
     onContinueClick: () -> Unit,
+    onViewHistoryClick: () -> Unit,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
 ) {
@@ -58,13 +63,11 @@ fun PostDetailsContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         if (post != null) {
-            val description = if (post.status == PostStatus.AVAILABLE) {
-                when (post.content) {
-                    is PostContent.Text -> "Draw this in ${post.content.timeLimit} seconds"
-                    is PostContent.Drawing -> "Describe in ${post.content.timeLimit} seconds"
-                }
-            } else {
-                "Someone is working on this right now"
+            val buttonType = when {
+                post.isCompleted -> PostDetailsButtonType.COMPLETED
+                post.status != PostStatus.AVAILABLE -> PostDetailsButtonType.UNAVAILABLE
+                post.content is PostContent.Text -> PostDetailsButtonType.DRAW
+                else -> PostDetailsButtonType.DESCRIBE
             }
 
             PostDetailsElement(
@@ -74,34 +77,46 @@ fun PostDetailsContent(
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            val containerColor = if (buttonType == PostDetailsButtonType.COMPLETED) {
+                Color(0xFF22C55E)
+            } else {
+                MaterialTheme.colorScheme.primary
+            }
+
             Button(
-                onClick = onContinueClick,
+                onClick = if (buttonType == PostDetailsButtonType.COMPLETED) onViewHistoryClick else onContinueClick,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
                     .padding(horizontal = 16.dp),
                 colors = ButtonDefaults.buttonColors(
                     contentColor = Color.White,
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = containerColor,
+                    disabledContentColor = Color.White,
+                    disabledContainerColor = containerColor,
                 ),
-                enabled = post.status == PostStatus.AVAILABLE,
+                enabled = buttonType.isEnabled,
                 shape = RoundedCornerShape(16.dp),
-                contentPadding = PaddingValues()
+                contentPadding = PaddingValues(),
             ) {
-                Text(
-                    text = "Continue",
-                    textAlign = TextAlign.Center,
-                    fontFamily = FontFamily(Font(R.font.inter_medium)),
-                    fontSize = 16.sp,
-                    lineHeight = 24.sp
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Text(
+                        text = buttonType.buttonText,
+                        textAlign = TextAlign.Center,
+                        fontFamily = FontFamily(Font(R.font.inter_medium)),
+                        fontSize = 16.sp,
+                        lineHeight = 24.sp,
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
 
-
             Text(
-                text = description,
+                text = buttonType.description(post.content.timeLimit),
                 fontFamily = FontFamily(Font(R.font.inter_regular)),
                 fontSize = 12.sp,
                 lineHeight = 16.sp,
@@ -119,9 +134,14 @@ fun PostDetailsContentPreview() {
     BrokenTelephoneTheme() {
         PostDetailsContent(
             state = PostDetailsState(
-                MockPostRepository.mockList.first().toUi().copy(status = PostStatus.COMPLETED)
+                MockPostRepository.mockList.first().toUi().copy(
+                    status = PostStatus.COMPLETED,
+                    generation = 10,
+                    maxGenerations = 10
+                )
             ),
-            onContinueClick = {}
+            onContinueClick = {},
+            onViewHistoryClick = {}
         )
     }
 }

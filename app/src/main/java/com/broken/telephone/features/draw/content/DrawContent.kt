@@ -98,22 +98,17 @@ fun DrawContent(
             Row(
                 modifier = Modifier.padding(start = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
                 BadgeElement(
                     iconResId = R.drawable.ic_mutations,
                     text = "${post.generation}/${post.maxGenerations}",
-                    onClick = {},
-                    enabled = false
                 )
-
-                Spacer(modifier = Modifier.width(8.dp))
 
                 BadgeElement(
                     iconResId = R.drawable.ic_clock,
                     text = "${post.content.timeLimit}s",
-                    onClick = {},
-                    enabled = false
                 )
 
             }

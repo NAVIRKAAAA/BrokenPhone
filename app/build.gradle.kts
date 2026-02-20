@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.koin.compose.viewmodel)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+    implementation(libs.androidx.compose.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

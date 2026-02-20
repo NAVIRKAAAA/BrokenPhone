@@ -12,6 +12,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun PostDetailsScreen(
     onDrawContinue: (postId: String) -> Unit,
     onDescribeDrawingContinue: (postId: String) -> Unit,
+    onViewHistoryClick: (postId: String) -> Unit,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
     viewModel: PostDetailsViewModel = koinViewModel(),
@@ -27,6 +28,9 @@ fun PostDetailsScreen(
                 is PostContent.Text -> onDrawContinue(post.id)
                 is PostContent.Drawing -> onDescribeDrawingContinue(post.id)
             }
+        },
+        onViewHistoryClick = {
+            state.postUi?.let { onViewHistoryClick(it.id) }
         },
         modifier = modifier
     )

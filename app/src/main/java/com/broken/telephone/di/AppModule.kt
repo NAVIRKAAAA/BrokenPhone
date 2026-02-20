@@ -7,6 +7,8 @@ import com.broken.telephone.features.create_post.CreatePostViewModel
 import com.broken.telephone.features.dashboard.DashboardViewModel
 import com.broken.telephone.features.dashboard.use_case.GetPostsUseCase
 import com.broken.telephone.features.create_post.use_case.CreatePostUseCase
+import com.broken.telephone.features.chain_details.ChainDetailsViewModel
+import com.broken.telephone.features.chain_details.use_case.GetChainByPostIdUseCase
 import com.broken.telephone.features.describe_drawing.DescribeDrawingViewModel
 import com.broken.telephone.features.describe_drawing.use_case.SubmitDescriptionUseCase
 import com.broken.telephone.features.draw.DrawViewModel
@@ -30,11 +32,14 @@ val appModule = module {
     factoryOf(::CreatePostUseCase)
     factoryOf(::SubmitDrawingUseCase)
     factoryOf(::SubmitDescriptionUseCase)
+    factoryOf(::GetChainByPostIdUseCase)
 
     viewModelOf(::CreatePostViewModel)
     viewModelOf(::DashboardViewModel)
-    viewModelOf(::AppNavBottomBarViewModel)
     viewModelOf(::PostDetailsViewModel)
     viewModelOf(::DrawViewModel)
     viewModelOf(::DescribeDrawingViewModel)
+    viewModelOf(::ChainDetailsViewModel)
+
+    single { AppNavBottomBarViewModel() }
 }

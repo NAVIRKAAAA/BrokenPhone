@@ -16,6 +16,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.broken.telephone.features.chain_details.ChainDetailsScreen
+import com.broken.telephone.features.chain_details.ChainDetailsViewModel
 import com.broken.telephone.features.create_post.CreatePostScreen
 import com.broken.telephone.features.dashboard.DashboardScreen
 import com.broken.telephone.features.describe_drawing.DescribeDrawingScreen
@@ -93,7 +95,8 @@ fun AppNavGraph(
                 ) + fadeIn(animationSpec = tween(200))
             },
             exitTransition = {
-                if (targetState.destination.route?.contains("Draw") == true) {
+                val route = targetState.destination.route
+                if (route?.contains("Draw") == true || route?.contains("ChainDetails") == true) {
                     slideOutHorizontally(
                         targetOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -103,7 +106,8 @@ fun AppNavGraph(
                 }
             },
             popEnterTransition = {
-                if (initialState.destination.route?.contains("Draw") == true) {
+                val route = initialState.destination.route
+                if (route?.contains("Draw") == true || route?.contains("ChainDetails") == true) {
                     slideInHorizontally(
                         initialOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -129,7 +133,10 @@ fun AppNavGraph(
                 },
                 onDescribeDrawingContinue = { postId ->
                     navController.navigateSingle(Routes.DescribeDrawing(postId = postId))
-                }
+                },
+                onViewHistoryClick = { postId ->
+                    navController.navigateSingle(Routes.ChainDetails(postId = postId))
+                },
             )
         }
 
@@ -178,6 +185,28 @@ fun AppNavGraph(
                 onPostSubmitted = {
                     navController.popBackStack(Routes.Dashboard, inclusive = false)
                 }
+            )
+        }
+
+        composable<Routes.ChainDetails>(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeOut(animationSpec = tween(200))
+            }
+        ) { backStackEntry ->
+            val route = backStackEntry.toRoute<Routes.ChainDetails>()
+            val viewModel: ChainDetailsViewModel = koinViewModel { parametersOf(route.postId) }
+            ChainDetailsScreen(
+                viewModel = viewModel,
+                onBackClick = navController::safePopBackStack,
             )
         }
 

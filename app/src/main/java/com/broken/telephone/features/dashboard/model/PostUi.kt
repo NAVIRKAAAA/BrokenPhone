@@ -12,4 +12,6 @@ data class PostUi(
     val generation: Int,
     val maxGenerations: Int,
     val status: PostStatus,
-)
+) {
+    val isCompleted: Boolean get() = generation == maxGenerations
+}

@@ -1,6 +1,11 @@
 package com.broken.telephone.domain.post
 
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
+
+@OptIn(ExperimentalUuidApi::class)
 data class PostChainEntry(
+    val id: String = Uuid.random().toString(),
     val authorId: String,
     val authorName: String,
     val avatarUrl: String?,

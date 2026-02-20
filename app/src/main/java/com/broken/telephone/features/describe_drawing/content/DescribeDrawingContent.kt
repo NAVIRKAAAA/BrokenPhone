@@ -2,6 +2,7 @@ package com.broken.telephone.features.describe_drawing.content
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -161,26 +162,19 @@ fun DescribeDrawingContent(
 
                 Row(
                     modifier = Modifier.padding(start = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
 
                     BadgeElement(
                         iconResId = R.drawable.ic_mutations,
                         text = "0/${post.maxGenerations}",
-                        onClick = {},
-                        enabled = false
                     )
-
-                    Spacer(modifier = Modifier.width(8.dp))
 
                     BadgeElement(
                         iconResId = R.drawable.ic_clock,
                         text = "${post.content.timeLimit}s",
-                        onClick = {},
-                        enabled = false
                     )
-
-                    Spacer(modifier = Modifier.width(8.dp))
 
                     if (state.text.isNotBlank()) {
 
@@ -193,7 +187,6 @@ fun DescribeDrawingContent(
                             color = Color.LightGray.copy(alpha = 0.5f)
                         )
 
-                        Spacer(modifier = Modifier.width(8.dp))
 
                         Text(
                             text = "${state.text.length}/${CreatePostState.MAX_TEXT_LENGTH}",

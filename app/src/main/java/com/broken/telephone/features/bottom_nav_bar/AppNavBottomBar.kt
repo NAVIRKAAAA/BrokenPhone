@@ -49,13 +49,14 @@ import com.broken.telephone.core.utils.coloredShadow
 import com.broken.telephone.features.bottom_nav_bar.model.BottomNavBarEvent
 import com.broken.telephone.navigation.routes.Routes
 import com.broken.telephone.navigation.utils.navigateSingle
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun AppNavBottomBar(
     navController: NavController,
     modifier: Modifier = Modifier,
-    viewModel: AppNavBottomBarViewModel = koinViewModel()
+    viewModel: AppNavBottomBarViewModel = koinInject()
 ) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -66,6 +67,7 @@ fun AppNavBottomBar(
     LaunchedEffect(navBackStackEntry) {
         navBackStackEntry?.let { entry ->
             isVisible = viewModel.shouldShowBottomBar(entry)
+            if (isVisible) viewModel.resetScrollVisibility()
         }
     }
 
@@ -91,10 +93,10 @@ fun AppNavBottomBar(
         modifier = modifier,
     ) {
         AnimatedVisibility(
-            visible = isVisible,
+            visible = isVisible && state.isVisibleByScroll,
             enter = slideInVertically(
                 animationSpec = tween(durationMillis = 300),
-                initialOffsetY = { fullHeight -> fullHeight  }
+                initialOffsetY = { fullHeight -> fullHeight * 2 }
             ),
             exit = slideOutVertically(
                 animationSpec = tween(durationMillis = 300),

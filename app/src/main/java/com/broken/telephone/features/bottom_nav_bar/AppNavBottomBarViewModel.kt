@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AppNavBottomBarViewModel(
@@ -31,8 +32,20 @@ class AppNavBottomBarViewModel(
     private val _event = MutableSharedFlow<BottomNavBarEvent>()
     val event = _event.asSharedFlow()
 
+    init {
+        Log.d("LOG_TAG", "Init AppNavBottomBarViewModel")
+    }
+
     fun shouldShowBottomBar(entry: NavBackStackEntry): Boolean {
         return entry.destination.hasRoute<Routes.Dashboard>()
+    }
+
+    fun onScrollDirectionChange(isScrollingUp: Boolean) {
+        _state.update { it.copy(isVisibleByScroll = isScrollingUp) }
+    }
+
+    fun resetScrollVisibility() {
+        _state.update { it.copy(isVisibleByScroll = true) }
     }
 
     fun onItemClick(bottomNavBar: BottomNavBar) {

@@ -1,4 +1,4 @@
-package com.broken.telephone.features.dashboard.content
+package com.broken.telephone.features.chain_details.content
 
 import android.text.format.DateUtils
 import androidx.compose.foundation.background
@@ -6,13 +6,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -45,10 +43,11 @@ import com.broken.telephone.features.dashboard.model.PostUi
 import java.io.File
 
 @Composable
-fun PostElement(
+fun ChainDetailsElement(
     post: PostUi,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
+
 
     val relativeTime = remember(post.createdAt) {
         DateUtils.getRelativeTimeSpanString(
@@ -109,19 +108,6 @@ fun PostElement(
                     )
                 }
 
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Icon(
-                    painter = painterResource(R.drawable.ic_horizontal_menu),
-                    contentDescription = null,
-                    tint = Color.Gray,
-                    modifier = Modifier.clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = ripple(bounded = false),
-                        onClick = {}
-                    )
-                )
-
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -150,38 +136,15 @@ fun PostElement(
                     )
                 }
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            FlowRow(
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                itemVerticalAlignment = Alignment.CenterVertically
-            ) {
-
-                if(post.isCompleted) {
-                    StrongBadgeElement(type = StrongBadgeElementType.COMPLETE)
-                }
-
-                BadgeElement(
-                    iconResId = R.drawable.ic_mutations,
-                    text = "${post.generation}/${post.maxGenerations}",
-                )
-
-                BadgeElement(
-                    iconResId = R.drawable.ic_clock,
-                    text = "${post.content.timeLimit}s",
-                )
-
-            }
         }
     }
+
 }
 
 @Preview
 @Composable
-fun PostElementPreview() {
-    PostElement(
+fun ChainDetailsElementPreview() {
+    ChainDetailsElement(
         post = PostUi(
             id = "1",
             authorName = "Alex".repeat(55),

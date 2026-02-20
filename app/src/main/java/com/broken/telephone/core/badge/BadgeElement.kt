@@ -63,6 +63,39 @@ fun BadgeElement(
 
 }
 
+@Composable
+fun BadgeElement(
+    iconResId: Int,
+    text: String,
+    modifier: Modifier = Modifier,
+) {
+
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+
+        Icon(
+            painter = painterResource(iconResId),
+            contentDescription = null,
+            tint = Color.Gray,
+            modifier = Modifier.size(20.dp)
+        )
+
+        Text(
+            text = text,
+            textAlign = TextAlign.Center,
+            fontFamily = FontFamily(Font(R.font.inter_medium)),
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
+            color = Color.Gray
+        )
+
+    }
+
+}
+
 @Preview
 @Composable
 fun BadgeElementPreview() {

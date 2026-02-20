@@ -2,6 +2,7 @@ package com.broken.telephone.features.post_details.content
 
 import android.text.format.DateUtils
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import coil3.compose.AsyncImage
@@ -30,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.broken.telephone.R
 import com.broken.telephone.core.badge.BadgeElement
+import com.broken.telephone.core.badge.StrongBadgeElement
+import com.broken.telephone.core.badge.StrongBadgeElementType
 import com.broken.telephone.data.repository.MockPostRepository
 import com.broken.telephone.domain.post.PostContent
 import com.broken.telephone.features.dashboard.model.PostUi
@@ -121,22 +124,23 @@ fun PostDetailsElement(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+
+            if(post.isCompleted) {
+                StrongBadgeElement(type = StrongBadgeElementType.COMPLETE)
+            }
 
             BadgeElement(
                 iconResId = R.drawable.ic_mutations,
                 text = "${post.generation}/${post.maxGenerations}",
-                onClick = {},
-                enabled = false
             )
-
-            Spacer(modifier = Modifier.width(8.dp))
 
             BadgeElement(
                 iconResId = R.drawable.ic_clock,
                 text = "${post.content.timeLimit}s",
-                onClick = {},
-                enabled = false
             )
 
         }
