@@ -6,4 +6,5 @@ data class User(
     val email: String,
     val avatarUrl: String?,
     val createdAt: Long,
+    val updatedAt: Long,
 )

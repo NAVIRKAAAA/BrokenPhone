@@ -22,6 +22,7 @@ import com.broken.telephone.features.create_post.CreatePostScreen
 import com.broken.telephone.features.dashboard.DashboardScreen
 import com.broken.telephone.features.describe_drawing.DescribeDrawingScreen
 import com.broken.telephone.features.draw.DrawScreen
+import com.broken.telephone.features.edit_avatar.EditAvatarScreen
 import com.broken.telephone.features.edit_profile.EditProfileScreen
 import com.broken.telephone.features.edit_username.EditUsernameScreen
 import com.broken.telephone.features.post_details.PostDetailsScreen
@@ -379,7 +380,8 @@ fun AppNavGraph(
                 ) + fadeIn(animationSpec = tween(200))
             },
             exitTransition = {
-                if (targetState.destination.route?.contains("EditUsername") == true) {
+                val route = targetState.destination.route
+                if (route?.contains("EditUsername") == true || route?.contains("EditAvatar") == true) {
                     slideOutHorizontally(
                         targetOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -389,7 +391,8 @@ fun AppNavGraph(
                 }
             },
             popEnterTransition = {
-                if (initialState.destination.route?.contains("EditUsername") == true) {
+                val route = initialState.destination.route
+                if (route?.contains("EditUsername") == true || route?.contains("EditAvatar") == true) {
                     slideInHorizontally(
                         initialOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -407,7 +410,9 @@ fun AppNavGraph(
         ) {
             EditProfileScreen(
                 onBackClick = navController::safePopBackStack,
-                onEditPhotoClick = {},
+                onEditPhotoClick = {
+                    navController.navigateSingle(Routes.EditAvatar)
+                },
                 onEditUsernameClick = {
                     navController.navigateSingle(Routes.EditUsername)
                 },
@@ -429,6 +434,25 @@ fun AppNavGraph(
             }
         ) {
             EditUsernameScreen(
+                onBackClick = navController::safePopBackStack,
+            )
+        }
+
+        composable<Routes.EditAvatar>(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeOut(animationSpec = tween(200))
+            }
+        ) {
+            EditAvatarScreen(
                 onBackClick = navController::safePopBackStack,
             )
         }

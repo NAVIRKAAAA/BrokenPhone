@@ -39,4 +39,7 @@ sealed class Routes {
 
     @Serializable
     data object EditProfile : Routes()
+
+    @Serializable
+    data object EditAvatar : Routes()
 }

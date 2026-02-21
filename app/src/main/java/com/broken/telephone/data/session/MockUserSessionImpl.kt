@@ -22,6 +22,7 @@ class MockUserSessionImpl : UserSession {
                 email = "alex@example.com",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
                 createdAt = 1_700_000_000_000L,
+                updatedAt = 1_700_000_000_000L,
             )
         )
     )
@@ -31,7 +32,14 @@ class MockUserSessionImpl : UserSession {
     override suspend fun updateProfile(username: String) {
         val current = _authState.value
         if (current is AuthState.Auth) {
-            _authState.value = AuthState.Auth(current.user.copy(username = username))
+            _authState.value = AuthState.Auth(current.user.copy(username = username, updatedAt = System.currentTimeMillis()))
+        }
+    }
+
+    override suspend fun updateAvatar(avatarUrl: String) {
+        val current = _authState.value
+        if (current is AuthState.Auth) {
+            _authState.value = AuthState.Auth(current.user.copy(avatarUrl = avatarUrl, updatedAt = System.currentTimeMillis()))
         }
     }
 

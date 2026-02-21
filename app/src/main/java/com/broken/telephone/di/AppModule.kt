@@ -19,6 +19,8 @@ import com.broken.telephone.features.describe_drawing.use_case.SubmitDescription
 import com.broken.telephone.features.draw.DrawViewModel
 import com.broken.telephone.features.draw.use_case.SubmitDrawingUseCase
 import com.broken.telephone.features.draw.utils.DrawingBitmapSaver
+import com.broken.telephone.features.edit_avatar.EditAvatarViewModel
+import com.broken.telephone.features.edit_avatar.use_case.UpdateAvatarUseCase
 import com.broken.telephone.features.edit_profile.EditProfileViewModel
 import com.broken.telephone.features.edit_username.EditUsernameViewModel
 import com.broken.telephone.features.edit_username.use_case.UpdateProfileUseCase
@@ -57,6 +59,7 @@ val appModule = module {
     factoryOf(::SignInUseCase)
     factoryOf(::GetCurrentUserUseCase)
     factoryOf(::UpdateProfileUseCase)
+    factoryOf(::UpdateAvatarUseCase)
     factoryOf(::GetMyPostsUseCase)
     factoryOf(::GetMyContributionsUseCase)
 
@@ -71,6 +74,7 @@ val appModule = module {
     viewModelOf(::ProfileViewModel)
     viewModelOf(::EditUsernameViewModel)
     viewModelOf(::EditProfileViewModel)
+    viewModelOf(::EditAvatarViewModel)
 
     single { AppNavBottomBarViewModel() }
 }
