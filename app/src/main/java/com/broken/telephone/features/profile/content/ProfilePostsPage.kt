@@ -61,7 +61,7 @@ fun ProfilePostsPage(
                 post = post,
                 onMoreClick = { onMoreClick(post.id) },
                 modifier = Modifier
-                    .clickable { onPostClick(post.id) }
+                    .clickable { onPostClick(post.parentId) }
                     .padding(horizontal = 16.dp, vertical = 16.dp),
             )
         }

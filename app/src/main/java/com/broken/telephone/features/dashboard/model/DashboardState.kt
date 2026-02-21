@@ -10,4 +10,6 @@ data class DashboardState(
     val isReportBottomSheetVisible: Boolean = false,
     val isBlockDialogVisible: Boolean = false,
     val isBlockLoading: Boolean = false,
-)
+) {
+    val isCurrentUserPost: Boolean get() = selectedPost?.authorId == user?.id
+}

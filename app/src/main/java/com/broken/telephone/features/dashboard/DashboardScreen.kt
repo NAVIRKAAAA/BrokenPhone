@@ -75,14 +75,21 @@ fun DashboardScreen(
     )
 
     if (state.isPostBottomSheetVisible) {
+        val actions = if (state.isCurrentUserPost) {
+            listOf(PostBottomSheetAction.COPY_LINK, PostBottomSheetAction.DELETE)
+        } else {
+            PostBottomSheetAction.entries.filter { it != PostBottomSheetAction.DELETE }
+        }
         PostBottomSheet(
             onDismissRequest = viewModel::onPostBottomSheetDismiss,
-            actions = PostBottomSheetAction.entries,
+            actions = actions,
             onActionClick = { action ->
                 when (action) {
                     PostBottomSheetAction.NOT_INTERESTED -> viewModel.onNotInterestedClick()
+                    PostBottomSheetAction.COPY_LINK -> {}
                     PostBottomSheetAction.BLOCK -> viewModel.onBlockClick()
                     PostBottomSheetAction.REPORT -> viewModel.onReportClick()
+                    PostBottomSheetAction.DELETE -> {}
                 }
             },
         )

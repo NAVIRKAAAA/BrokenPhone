@@ -46,42 +46,7 @@ class MockUserSessionImpl : UserSession {
     override fun getMyPosts(): Flow<List<Post>> = flowOf(
         listOf(
             mockPost(
-                id = "my-1",
-                authorId = "mock-user-id",
-                authorName = "Alex",
-                avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
-                content = PostContent.Text("My first broken telephone story!", timeLimit = 30),
-                generation = 0,
-                maxGenerations = 10,
-                status = PostStatus.AVAILABLE,
-            ),
-            mockPost(
-                id = "my-2",
-                authorId = "mock-user-id",
-                authorName = "Alex",
-                avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
-                content = PostContent.Drawing(timeLimit = 60, imageUrl = ""),
-                generation = 3,
-                maxGenerations = 5,
-                status = PostStatus.IN_PROGRESS,
-            ),
-            mockPost(
-                id = "my-3",
-                authorId = "mock-user-id",
-                authorName = "Alex",
-                avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
-                content = PostContent.Text("The final chapter of the telephone saga.", timeLimit = 45),
-                generation = 5,
-                maxGenerations = 5,
-                status = PostStatus.COMPLETED,
-            ),
-        )
-    )
-
-    override fun getMyContributions(): Flow<List<Post>> = flowOf(
-        listOf(
-            mockPost(
-                id = "contrib-1",
+                id = "1",
                 authorId = "user_2",
                 authorName = "Bob",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_2.png",
@@ -91,7 +56,7 @@ class MockUserSessionImpl : UserSession {
                 status = PostStatus.AVAILABLE,
             ),
             mockPost(
-                id = "contrib-2",
+                id = "2",
                 authorId = "user_3",
                 authorName = "Charlie",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_3.png",
@@ -101,13 +66,48 @@ class MockUserSessionImpl : UserSession {
                 status = PostStatus.IN_PROGRESS,
             ),
             mockPost(
-                id = "contrib-3",
+                id = "3",
                 authorId = "user_4",
                 authorName = "Diana",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_4.png",
                 content = PostContent.Text("Nobody knew where the sound was coming from.", timeLimit = 30),
                 generation = 6,
                 maxGenerations = 6,
+                status = PostStatus.COMPLETED,
+            )
+        )
+    )
+
+    override fun getMyContributions(): Flow<List<Post>> = flowOf(
+        listOf(
+            mockPost(
+                id = "4",
+                authorId = "mock-user-id",
+                authorName = "Alex",
+                avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
+                content = PostContent.Text("My first broken telephone story!", timeLimit = 30),
+                generation = 0,
+                maxGenerations = 10,
+                status = PostStatus.AVAILABLE,
+            ),
+            mockPost(
+                id = "5",
+                authorId = "mock-user-id",
+                authorName = "Alex",
+                avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
+                content = PostContent.Drawing(timeLimit = 60, imageUrl = ""),
+                generation = 3,
+                maxGenerations = 5,
+                status = PostStatus.IN_PROGRESS,
+            ),
+            mockPost(
+                id = "6",
+                authorId = "mock-user-id",
+                authorName = "Alex",
+                avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
+                content = PostContent.Text("The final chapter of the telephone saga.", timeLimit = 45),
+                generation = 5,
+                maxGenerations = 5,
                 status = PostStatus.COMPLETED,
             ),
         )

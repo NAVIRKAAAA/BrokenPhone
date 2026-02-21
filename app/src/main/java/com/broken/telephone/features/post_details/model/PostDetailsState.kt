@@ -4,6 +4,7 @@ import com.broken.telephone.features.dashboard.model.PostUi
 
 data class PostDetailsState(
     val postUi: PostUi? = null,
+    val isCurrentUserPost: Boolean = false,
     val isBottomSheetVisible: Boolean = false,
     val isReportBottomSheetVisible: Boolean = false,
     val isBlockDialogVisible: Boolean = false,

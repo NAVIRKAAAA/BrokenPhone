@@ -75,12 +75,12 @@ fun PostBottomSheetContent(
 
         actions.forEachIndexed { index, action ->
             val textColor = when (action) {
-                PostBottomSheetAction.NOT_INTERESTED -> Color.Black
-                PostBottomSheetAction.BLOCK, PostBottomSheetAction.REPORT -> errorColor
+                PostBottomSheetAction.NOT_INTERESTED, PostBottomSheetAction.COPY_LINK -> Color.Black
+                PostBottomSheetAction.BLOCK, PostBottomSheetAction.REPORT, PostBottomSheetAction.DELETE -> errorColor
             }
             val iconColor = when (action) {
-                PostBottomSheetAction.NOT_INTERESTED -> Color(0xFF666666)
-                PostBottomSheetAction.BLOCK, PostBottomSheetAction.REPORT -> errorColor
+                PostBottomSheetAction.NOT_INTERESTED, PostBottomSheetAction.COPY_LINK -> Color(0xFF666666)
+                PostBottomSheetAction.BLOCK, PostBottomSheetAction.REPORT, PostBottomSheetAction.DELETE -> errorColor
             }
 
             PostBottomSheetButton(

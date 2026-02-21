@@ -9,6 +9,7 @@ import com.broken.telephone.features.post_details.use_case.BlockUserUseCase
 import com.broken.telephone.features.post_details.use_case.GetPostByIdUseCase
 import com.broken.telephone.features.post_details.use_case.NotInterestedUseCase
 import com.broken.telephone.features.post_details.use_case.ReportPostUseCase
+import com.broken.telephone.features.profile.use_case.GetCurrentUserUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +25,7 @@ class PostDetailsViewModel(
     private val reportPostUseCase: ReportPostUseCase,
     private val blockUserUseCase: BlockUserUseCase,
     private val notInterestedUseCase: NotInterestedUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PostDetailsState())
@@ -32,9 +34,15 @@ class PostDetailsViewModel(
     private val _sideEffects = Channel<PostDetailsSideEffect>(Channel.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
 
+    private var currentUserId: String? = null
+
     init {
+        getCurrentUserUseCase()
+            .onEach { user -> currentUserId = user?.id }
+            .launchIn(viewModelScope)
+
         getPostByIdUseCase(postId)
-            .onEach { postUi -> _state.update { it.copy(postUi = postUi) } }
+            .onEach { postUi -> _state.update { it.copy(postUi = postUi, isCurrentUserPost = postUi?.authorId == currentUserId) } }
             .launchIn(viewModelScope)
     }
 
