@@ -1,5 +1,7 @@
 package com.broken.telephone.features.sign_up.content
 
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -38,31 +40,44 @@ fun SignUpTextField(
     label: String = "",
     error: String? = null,
     hint: String? = null,
+    maxLength: Int? = null,
     isPasswordVisible: Boolean = false,
     onPasswordVisibilityToggle: (() -> Unit)? = null,
     imeAction: ImeAction = ImeAction.Done,
     onImeAction: () -> Unit = {},
 ) {
     val supportingText: @Composable (() -> Unit)? = when {
-        error != null -> {
+        error != null || hint != null || maxLength != null -> {
             {
-                Text(
-                    text = error,
-                    fontFamily = FontFamily(Font(R.font.inter_regular)),
-                    fontSize = 12.sp,
-                    lineHeight = 18.sp,
-                )
-            }
-        }
-        hint != null -> {
-            {
-                Text(
-                    text = hint,
-                    fontFamily = FontFamily(Font(R.font.inter_regular)),
-                    fontSize = 12.sp,
-                    lineHeight = 18.sp,
-                    color = Color.Gray,
-                )
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    when {
+                        error != null -> Text(
+                            text = error,
+                            modifier = Modifier.weight(1f),
+                            fontFamily = FontFamily(Font(R.font.inter_regular)),
+                            fontSize = 12.sp,
+                            lineHeight = 18.sp,
+                        )
+                        hint != null -> Text(
+                            text = hint,
+                            modifier = Modifier.weight(1f),
+                            fontFamily = FontFamily(Font(R.font.inter_regular)),
+                            fontSize = 12.sp,
+                            lineHeight = 18.sp,
+                            color = Color.Gray,
+                        )
+                        else -> Spacer(modifier = Modifier.weight(1f))
+                    }
+                    if (maxLength != null) {
+                        Text(
+                            text = "${text.length}/$maxLength",
+                            fontFamily = FontFamily(Font(R.font.inter_regular)),
+                            fontSize = 12.sp,
+                            lineHeight = 18.sp,
+                            color = if (text.length > maxLength) MaterialTheme.colorScheme.error else Color.Gray,
+                        )
+                    }
+                }
             }
         }
         else -> null
@@ -144,11 +159,12 @@ fun SignUpTextFieldPasswordPreview() {
     var visible by remember { mutableStateOf(false) }
     BrokenTelephoneTheme {
         SignUpTextField(
-            text = "secret123",
+            text = "secret123".repeat(555),
             label = "Password",
             isPasswordVisible = visible,
             onPasswordVisibilityToggle = { visible = !visible },
-            error = "Lalala"
+            error = "Lalala",
+            maxLength = 140
         )
     }
 }

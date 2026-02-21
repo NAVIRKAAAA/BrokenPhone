@@ -7,48 +7,62 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.features.edit_profile.model.EditProfileState
-import com.broken.telephone.features.sign_up.content.SignUpTextField
+import com.broken.telephone.features.profile.model.UserUi
 
 @Composable
 fun EditProfileContent(
     state: EditProfileState,
     onBackClick: () -> Unit,
-    onSaveClick: () -> Unit,
-    onUsernameChange: (String) -> Unit,
+    onEditPhotoClick: () -> Unit,
+    onEditUsernameClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val focusManager = LocalFocusManager.current
-
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding(),
     ) {
-        EditProfileTopBar(
-            isSaveEnabled = state.isSaveEnabled,
-            onCloseClick = onBackClick,
-            onSaveClick = onSaveClick,
+        EditProfileTopBar(onBackClick = onBackClick)
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        AccountAvatarInfoItem(
+            name = "Avatar",
+            avatarUrl = state.user?.avatarUrl,
+            onClick = onEditPhotoClick,
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
 
-        SignUpTextField(
-            text = state.username,
-            onTextChange = onUsernameChange,
-            modifier = Modifier.padding(horizontal = 16.dp),
-            label = "Username",
-            hint = "This is how others will see you",
-            onImeAction = { focusManager.clearFocus() },
+        AccountTextInfoItem(
+            name = "Username",
+            value = state.user?.username.orEmpty(),
+            onClick = onEditUsernameClick,
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
+
+        HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
+
+        AccountTextInfoItem(
+            name = "Email",
+            value = state.user?.email.orEmpty(),
+            onClick = {},
+            enabled = false,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+
+        HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
     }
 }
 
@@ -57,10 +71,16 @@ fun EditProfileContent(
 fun EditProfileContentPreview() {
     BrokenTelephoneTheme {
         EditProfileContent(
-            state = EditProfileState(),
+            state = EditProfileState(
+                user = UserUi(
+                    username = "Alex",
+                    email = "alex@example.com",
+                    avatarUrl = null
+                )
+            ),
             onBackClick = {},
-            onSaveClick = {},
-            onUsernameChange = {},
+            onEditPhotoClick = {},
+            onEditUsernameClick = {},
         )
     }
 }

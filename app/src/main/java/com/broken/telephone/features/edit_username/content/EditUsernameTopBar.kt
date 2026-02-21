@@ -1,14 +1,15 @@
-package com.broken.telephone.features.edit_profile.content
+package com.broken.telephone.features.edit_username.content
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,8 +24,10 @@ import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
 
 @Composable
-fun EditProfileTopBar(
-    onBackClick: () -> Unit = {},
+fun EditUsernameTopBar(
+    isSaveEnabled: Boolean = true,
+    onCloseClick: () -> Unit = {},
+    onSaveClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -32,8 +35,9 @@ fun EditProfileTopBar(
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        IconButton(onClick = onBackClick) {
+        IconButton(onClick = onCloseClick) {
             Icon(
                 painter = painterResource(R.drawable.ic_back),
                 contentDescription = null,
@@ -41,8 +45,7 @@ fun EditProfileTopBar(
         }
 
         Text(
-            text = "Edit Profile",
-            modifier = Modifier.weight(1f),
+            text = "Edit Username",
             textAlign = TextAlign.Center,
             fontFamily = FontFamily(Font(R.font.inter_medium)),
             fontSize = 16.sp,
@@ -50,16 +53,27 @@ fun EditProfileTopBar(
             color = MaterialTheme.colorScheme.primary,
         )
 
-        Box(modifier = Modifier.size(48.dp))
+        TextButton(
+            onClick = onSaveClick,
+            enabled = isSaveEnabled,
+        ) {
+            Text(
+                text = "Save",
+                textAlign = TextAlign.Center,
+                fontFamily = FontFamily(Font(R.font.inter_medium)),
+                fontSize = 16.sp,
+                lineHeight = 24.sp,
+            )
+        }
     }
 }
 
 @Preview
 @Composable
-fun EditProfileTopBarPreview() {
+fun EditUsernameTopBarPreview() {
     BrokenTelephoneTheme {
         Box {
-            EditProfileTopBar()
+            EditUsernameTopBar()
         }
     }
 }

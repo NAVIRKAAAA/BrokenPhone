@@ -1,4 +1,4 @@
-package com.broken.telephone.features.edit_profile.use_case
+package com.broken.telephone.features.edit_username.use_case
 
 import com.broken.telephone.domain.user.UserSession
 
