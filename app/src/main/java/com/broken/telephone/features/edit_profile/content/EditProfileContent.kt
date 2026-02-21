@@ -1,6 +1,7 @@
 package com.broken.telephone.features.edit_profile.content
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,8 +40,7 @@ fun EditProfileContent(
         AccountAvatarInfoItem(
             name = "Avatar",
             avatarUrl = state.user?.avatarUrl,
-            onClick = onEditPhotoClick,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.clickable(onClick = onEditPhotoClick).padding(horizontal = 16.dp)
         )
 
         HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
@@ -48,8 +48,7 @@ fun EditProfileContent(
         AccountTextInfoItem(
             name = "Username",
             value = state.user?.username.orEmpty(),
-            onClick = onEditUsernameClick,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.clickable(onClick = onEditUsernameClick).padding(horizontal = 16.dp)
         )
 
         HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
@@ -57,7 +56,6 @@ fun EditProfileContent(
         AccountTextInfoItem(
             name = "Email",
             value = state.user?.email.orEmpty(),
-            onClick = {},
             enabled = false,
             modifier = Modifier.padding(horizontal = 16.dp)
         )

@@ -48,7 +48,7 @@ class DescribeDrawingViewModel(
             .onEach { remaining ->
                 _state.update { it.copy(remainingSeconds = remaining) }
                 if (remaining == 0) {
-                    _state.update { it.copy(isTimerExpired = true, showTimesUpDialog = true) }
+                    _state.update { it.copy(isTimerExpired = true, showTimesUpDialog = true, showDiscardDialog = false) }
                 }
             }
             .launchIn(viewModelScope)

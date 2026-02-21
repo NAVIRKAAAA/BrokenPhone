@@ -20,6 +20,7 @@ class SubmitDescriptionUseCase(
         val updatedPost = post.copy(
             generation = post.generation + 1,
             currentEntry = PostChainEntry(
+                parentId = postId,
                 authorId = user.id,
                 authorName = user.username,
                 avatarUrl = user.avatarUrl,

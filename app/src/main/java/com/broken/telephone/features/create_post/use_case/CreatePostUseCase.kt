@@ -17,8 +17,9 @@ class CreatePostUseCase(
         textTimeLimit: Int,
         drawingTimeLimit: Int,
     ) {
+        val postId = System.currentTimeMillis().toString()
         val post = Post(
-            id = System.currentTimeMillis().toString(),
+            id = postId,
             authorId = "current_user",
             authorName = "Me",
             avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_4.png",
@@ -28,6 +29,7 @@ class CreatePostUseCase(
             textTimeLimit = textTimeLimit,
             drawingTimeLimit = drawingTimeLimit,
             currentEntry = PostChainEntry(
+                parentId = postId,
                 authorId = "current_user",
                 authorName = "Me",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_4.png",

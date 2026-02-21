@@ -32,6 +32,7 @@ class MockPostRepository : PostRepository {
     companion object {
         val chainsMockList = listOf(
             PostChainEntry(
+                parentId = "mock-post",
                 authorId = "user_1",
                 authorName = "Alice",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
@@ -41,6 +42,7 @@ class MockPostRepository : PostRepository {
                 lockedBy = null,
             ),
             PostChainEntry(
+                parentId = "mock-post",
                 authorId = "user_2",
                 authorName = "Bob",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_2.png",
@@ -50,6 +52,7 @@ class MockPostRepository : PostRepository {
                 lockedBy = null,
             ),
             PostChainEntry(
+                parentId = "mock-post",
                 authorId = "user_3",
                 authorName = "Charlie",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_3.png",
@@ -59,6 +62,7 @@ class MockPostRepository : PostRepository {
                 lockedBy = null,
             ),
             PostChainEntry(
+                parentId = "mock-post",
                 authorId = "user_4",
                 authorName = "Diana",
                 avatarUrl = "",
@@ -68,6 +72,7 @@ class MockPostRepository : PostRepository {
                 lockedBy = null,
             ),
             PostChainEntry(
+                parentId = "mock-post",
                 authorId = "user_5",
                 authorName = "Ethan",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_5.png",
@@ -77,6 +82,7 @@ class MockPostRepository : PostRepository {
                 lockedBy = null,
             ),
             PostChainEntry(
+                parentId = "mock-post",
                 authorId = "user_6",
                 authorName = "Frank",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_6.png",
@@ -86,6 +92,7 @@ class MockPostRepository : PostRepository {
                 lockedBy = null,
             ),
             PostChainEntry(
+                parentId = "mock-post",
                 authorId = "user_7",
                 authorName = "Grace",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_7.png",
@@ -95,6 +102,7 @@ class MockPostRepository : PostRepository {
                 lockedBy = null,
             ),
             PostChainEntry(
+                parentId = "mock-post",
                 authorId = "user_8",
                 authorName = "Henry",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_8.png",
@@ -104,6 +112,7 @@ class MockPostRepository : PostRepository {
                 lockedBy = null,
             ),
             PostChainEntry(
+                parentId = "mock-post",
                 authorId = "user_9",
                 authorName = "Ivy",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_9.png",
@@ -113,6 +122,7 @@ class MockPostRepository : PostRepository {
                 lockedBy = null,
             ),
             PostChainEntry(
+                parentId = "mock-post",
                 authorId = "user_10",
                 authorName = "Jack",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_10.png",
@@ -135,6 +145,7 @@ class MockPostRepository : PostRepository {
                 textTimeLimit = 30,
                 drawingTimeLimit = 60,
                 currentEntry = PostChainEntry(
+                    parentId = "i1",
                     authorId = "user_1",
                     authorName = "Alice",
                     avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
@@ -155,6 +166,7 @@ class MockPostRepository : PostRepository {
                 textTimeLimit = 30,
                 drawingTimeLimit = 60,
                 currentEntry = PostChainEntry(
+                    parentId = "i2",
                     authorId = "user_2",
                     authorName = "Bob",
                     avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_2.png",
@@ -175,6 +187,7 @@ class MockPostRepository : PostRepository {
                 textTimeLimit = 45,
                 drawingTimeLimit = 90,
                 currentEntry = PostChainEntry(
+                    parentId = "i3",
                     authorId = "user_3",
                     authorName = "Charlie",
                     avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_3.png",
@@ -195,6 +208,7 @@ class MockPostRepository : PostRepository {
                 textTimeLimit = 30,
                 drawingTimeLimit = 60,
                 currentEntry = PostChainEntry(
+                    parentId = "i4",
                     authorId = "user_4",
                     authorName = "Diana",
                     avatarUrl = "",
@@ -215,6 +229,7 @@ class MockPostRepository : PostRepository {
                 textTimeLimit = 15,
                 drawingTimeLimit = 30,
                 currentEntry = PostChainEntry(
+                    parentId = "i5",
                     authorId = "user_5",
                     authorName = "Eve",
                     avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_5.png",
@@ -238,6 +253,7 @@ class MockPostRepository : PostRepository {
                 textTimeLimit = 30,
                 drawingTimeLimit = 60,
                 currentEntry = PostChainEntry(
+                    parentId = "1",
                     authorId = "user_1",
                     authorName = "Alice",
                     avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
@@ -258,6 +274,7 @@ class MockPostRepository : PostRepository {
                 textTimeLimit = 30,
                 drawingTimeLimit = 60,
                 currentEntry = PostChainEntry(
+                    parentId = "2",
                     authorId = "user_2",
                     authorName = "Bob",
                     avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_2.png",
@@ -278,6 +295,7 @@ class MockPostRepository : PostRepository {
                 textTimeLimit = 30,
                 drawingTimeLimit = 60,
                 currentEntry = PostChainEntry(
+                    parentId = "3",
                     authorId = "user_3",
                     authorName = "Charlie",
                     avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_3.png",
@@ -298,6 +316,7 @@ class MockPostRepository : PostRepository {
                 textTimeLimit = 45,
                 drawingTimeLimit = 90,
                 currentEntry = PostChainEntry(
+                    parentId = "4",
                     authorId = "user_4",
                     authorName = "Diana",
                     avatarUrl = "",
@@ -318,6 +337,7 @@ class MockPostRepository : PostRepository {
                 textTimeLimit = 15,
                 drawingTimeLimit = 30,
                 currentEntry = PostChainEntry(
+                    parentId = "5",
                     authorId = "user_6",
                     authorName = "Eve",
                     avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_5.png",
@@ -338,6 +358,7 @@ class MockPostRepository : PostRepository {
                 textTimeLimit = 15,
                 drawingTimeLimit = 30,
                 currentEntry = PostChainEntry(
+                    parentId = "6",
                     authorId = "user_7",
                     authorName = "Frank",
                     avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_6.png",

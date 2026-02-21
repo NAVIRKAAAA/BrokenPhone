@@ -5,6 +5,7 @@ import com.broken.telephone.domain.post.PostContent
 
 fun Post.toUi() = PostUi(
     id = id,
+    parentId = currentEntry.parentId,
     authorId = currentEntry.authorId,
     authorName = authorName,
     avatarUrl = avatarUrl,

@@ -187,6 +187,7 @@ fun PostElementPreview() {
     PostElement(
         post = PostUi(
             id = "1",
+            parentId = "",
             authorId = "user-1",
             authorName = "Alex".repeat(55),
             avatarUrl = null,

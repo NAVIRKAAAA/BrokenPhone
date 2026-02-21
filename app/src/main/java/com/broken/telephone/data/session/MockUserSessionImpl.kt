@@ -133,6 +133,7 @@ class MockUserSessionImpl : UserSession {
         textTimeLimit = 30,
         drawingTimeLimit = 60,
         currentEntry = PostChainEntry(
+            parentId = id,
             authorId = authorId,
             authorName = authorName,
             avatarUrl = avatarUrl,

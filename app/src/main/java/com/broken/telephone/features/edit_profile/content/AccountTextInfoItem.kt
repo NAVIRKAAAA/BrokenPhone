@@ -1,7 +1,6 @@
 package com.broken.telephone.features.edit_profile.content
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,7 +33,6 @@ import com.broken.telephone.R
 fun AccountTextInfoItem(
     name: String,
     value: String,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
@@ -44,8 +41,6 @@ fun AccountTextInfoItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
-            .clickable(enabled = enabled, onClick = onClick)
             .padding(vertical = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -99,14 +94,11 @@ fun AccountTextInfoItem(
 fun AccountAvatarInfoItem(
     name: String,
     avatarUrl: String?,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
-            .clickable(onClick = onClick)
             .padding(vertical = 10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -156,7 +148,6 @@ fun AccountTextInfoItemPreview() {
     AccountTextInfoItem(
         name = "Username",
         value = "Alex",
-        onClick = {},
         enabled = false
     )
 }
@@ -167,6 +158,5 @@ fun AccountAvatarInfoItemPreview() {
     AccountAvatarInfoItem(
         name = "Avatar",
         avatarUrl = null,
-        onClick = {}
     )
 }

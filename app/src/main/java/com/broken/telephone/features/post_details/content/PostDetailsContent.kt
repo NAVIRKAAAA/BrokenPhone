@@ -40,6 +40,7 @@ fun PostDetailsContent(
     state: PostDetailsState,
     onContinueClick: () -> Unit,
     onViewHistoryClick: () -> Unit,
+    onMoreClick: () -> Unit,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
 ) {
@@ -54,7 +55,7 @@ fun PostDetailsContent(
     ) {
         PostDetailsTopBar(
             onBackClick = onBackClick,
-            onMoreClick = {},
+            onMoreClick = onMoreClick,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -136,7 +137,8 @@ fun PostDetailsContentPreview() {
                 )
             ),
             onContinueClick = {},
-            onViewHistoryClick = {}
+            onViewHistoryClick = {},
+            onMoreClick = {}
         )
     }
 }
