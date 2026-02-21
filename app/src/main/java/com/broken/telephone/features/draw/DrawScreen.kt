@@ -6,9 +6,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.broken.telephone.core.dialog.ConfirmDialog
 import com.broken.telephone.core.dialog.TimesUpDialog
 import com.broken.telephone.features.draw.content.DrawContent
-import com.broken.telephone.features.draw.dialog.DiscardDrawingConfirmDialog
 import com.broken.telephone.features.draw.model.DrawSideEffect
 import com.broken.telephone.features.draw.model.DrawingAction
 import org.koin.compose.viewmodel.koinViewModel
@@ -45,7 +45,11 @@ fun DrawScreen(
     )
 
     if (state.showDiscardDialog) {
-        DiscardDrawingConfirmDialog(
+        ConfirmDialog(
+            title = "Discard drawing?",
+            body = "Your drawing will be lost if you go back.",
+            cancelText = "Keep drawing",
+            confirmText = "Discard",
             onDismiss = { viewModel.onDrawAction(DrawingAction.OnDiscardDismiss) },
             onConfirm = { viewModel.onDrawAction(DrawingAction.OnDiscardConfirm) },
         )

@@ -59,6 +59,7 @@ fun ProfilePostsPage(
 
             PostElement(
                 post = post,
+                isUsersPost = false,
                 onMoreClick = { onMoreClick(post.id) },
                 modifier = Modifier
                     .clickable { onPostClick(post.parentId) }

@@ -1,10 +1,12 @@
 package com.broken.telephone.features.create_post
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.broken.telephone.core.dialog.ConfirmDialog
 import com.broken.telephone.features.create_post.content.CreatePostContent
 import com.broken.telephone.features.create_post.dialog.chain_settings.ChainSettingsDialog
 import com.broken.telephone.features.create_post.dialog.start_new_chain.StartNewChainDialog
@@ -20,10 +22,15 @@ fun CreatePostScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    BackHandler {
+        viewModel.onBackClick()
+    }
+
     LaunchedEffect(Unit) {
         viewModel.sideEffect.collect { effect ->
             when (effect) {
                 is CreatePostSideEffect.PostCreated -> onPostCreated()
+                CreatePostSideEffect.NavigateBack -> onBackClick()
             }
         }
     }
@@ -33,9 +40,20 @@ fun CreatePostScreen(
         onTextChanged = viewModel::onTextChanged,
         onBadgeClick = viewModel::onShowChainSettings,
         onPostClick = viewModel::onShowStartNewChain,
-        onBackClick = onBackClick,
+        onBackClick = viewModel::onBackClick,
         modifier = modifier
     )
+
+    if (state.showDiscardDialog) {
+        ConfirmDialog(
+            title = "Discard post?",
+            body = "Your text will be lost if you go back.",
+            cancelText = "Keep writing",
+            confirmText = "Discard",
+            onDismiss = viewModel::onDiscardDismiss,
+            onConfirm = viewModel::onDiscardConfirm,
+        )
+    }
 
     if (state.showStartNewChain) {
         StartNewChainDialog(

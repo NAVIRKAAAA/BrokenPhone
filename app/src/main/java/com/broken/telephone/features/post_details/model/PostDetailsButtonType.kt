@@ -30,4 +30,10 @@ enum class PostDetailsButtonType(
         description = { _ -> "The game has been completed" },
     ),
 
+    OWN_POST(
+        buttonText = "Continue",
+        isEnabled = false,
+        description = { _ -> "You can't continue your own post" },
+    ),
+
 }

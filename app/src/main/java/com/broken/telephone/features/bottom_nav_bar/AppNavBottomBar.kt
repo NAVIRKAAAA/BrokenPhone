@@ -168,10 +168,19 @@ private fun AppNavBottomBarItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
+//        val (rotation, scale) = if(item == BottomNavBar.CREATE) {
+//            10f to 1.3f
+//        } else {
+//            0f to 1f
+//        }
+
         Icon(
             painter = painterResource(item.iconResId),
             contentDescription = item.title,
-            modifier = Modifier.size(iconSize),
+            modifier = Modifier
+                .size(iconSize),
+//                .rotate(rotation)
+//                .scale(scale),
             tint = color
         )
 

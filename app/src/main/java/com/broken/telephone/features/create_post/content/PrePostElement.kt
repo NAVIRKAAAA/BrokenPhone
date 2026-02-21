@@ -94,19 +94,6 @@ fun PrePostElement(
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
                 )
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                if (text.isNotBlank()) {
-                    Text(
-                        text = "${text.length}/${CreatePostState.MAX_TEXT_LENGTH}",
-                        textAlign = TextAlign.Center,
-                        fontFamily = FontFamily(Font(R.font.inter_medium)),
-                        fontSize = 14.sp,
-                        lineHeight = 20.sp,
-                        color = if (isTextOverLimit) MaterialTheme.colorScheme.error else Color.Gray
-                    )
-                }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -170,7 +157,31 @@ fun PrePostElement(
                     text = "${textTimeLimit}s / ${drawingTimeLimit}s",
                     onClick = onBadgeClick,
                 )
+                
 
+                if (text.isNotBlank()) {
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text(
+                        text = "|",
+                        textAlign = TextAlign.Center,
+                        fontFamily = FontFamily(Font(R.font.inter_medium)),
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp,
+                        color = Color.LightGray.copy(alpha = 0.5f)
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text(
+                        text = "${text.length}/${CreatePostState.MAX_TEXT_LENGTH}",
+                        textAlign = TextAlign.Center,
+                        fontFamily = FontFamily(Font(R.font.inter_medium)),
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp,
+                        color = if (isTextOverLimit) MaterialTheme.colorScheme.error else Color.Gray
+                    )
+                }
             }
         }
 
@@ -184,7 +195,7 @@ fun PrePostElement(
 fun PrePostElementPreview() {
     PrePostElement(
         name = "Alex",
-        text = "",
+        text = "Дфдфдф",
 //        text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed lectus massa, gravida quis efficitur ut, vehicula id nulla. Phasellus placerat odio id tortor efficitur lacinia. Quisque a semper ante. In hac habitasse platea dictumst. Proin ut euismod massa. Sed sodales nibh purus, in consequat quam feugiat vitae. Curabitur scelerisque massa ac consequat luctus. In tincidunt blandit felis. In sed nulla diam. Nullam a auctor felis, ut pretium lacus.",
         onTextChanged = {},
         onBadgeClick = {},

@@ -11,7 +11,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.broken.telephone.core.bottom_sheet.post_bottom_sheet.PostBottomSheet
 import com.broken.telephone.core.bottom_sheet.post_bottom_sheet.model.PostBottomSheetAction
 import com.broken.telephone.core.bottom_sheet.report_post_bottom_sheet.ReportPostBottomSheet
-import com.broken.telephone.core.dialog.BlockUserDialog
+import com.broken.telephone.core.dialog.ConfirmDialog
 import com.broken.telephone.features.bottom_nav_bar.AppNavBottomBarViewModel
 import com.broken.telephone.features.profile.content.ProfileContent
 import com.broken.telephone.features.profile.model.ProfileSideEffect
@@ -85,9 +85,13 @@ fun ProfileScreen(
     }
 
     if (state.isBlockDialogVisible) {
-        BlockUserDialog(
+        ConfirmDialog(
+            title = "Block user?",
+            body = "You won't see posts from this user anymore.",
+            cancelText = "Cancel",
+            confirmText = "Block",
             onDismiss = viewModel::onBlockDialogDismiss,
-            onBlockClick = viewModel::onBlockConfirm,
+            onConfirm = viewModel::onBlockConfirm,
             isLoading = state.isBlockLoading,
         )
     }

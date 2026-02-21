@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.broken.telephone.features.create_post.model.CreatePostState
@@ -24,6 +25,8 @@ fun CreatePostContent(
     onBackClick: () -> Unit
 ) {
 
+    val focusManager = LocalFocusManager.current
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -33,15 +36,18 @@ fun CreatePostContent(
         CreatePostTopBar(
             isPostButtonEnabled = state.text.isNotBlank() && !state.isTextOverLimit,
             onCloseClick = onBackClick,
-            onPostClick = onPostClick,
+            onPostClick = {
+                focusManager.clearFocus()
+                onPostClick()
+            },
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         PrePostElement(
-            name = "Alex",
+            name = state.user?.username.orEmpty(),
             text = state.text,
-            avatarUrl = state.avatarUrl,
+            avatarUrl = state.user?.avatarUrl,
             onTextChanged = onTextChanged,
             onBadgeClick = onBadgeClick,
             isTextOverLimit = state.isTextOverLimit,

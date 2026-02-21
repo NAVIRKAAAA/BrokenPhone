@@ -1,20 +1,20 @@
-package com.broken.telephone.features.describe_drawing.dialog
+package com.broken.telephone.core.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,21 +24,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.broken.telephone.R
-import com.broken.telephone.core.theme.BrokenTelephoneTheme
 
 @Composable
-fun DiscardDescriptionConfirmDialog(
+fun ConfirmDialog(
+    title: String,
+    body: String,
+    cancelText: String,
+    confirmText: String,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
 ) {
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -46,7 +48,6 @@ fun DiscardDescriptionConfirmDialog(
             dismissOnClickOutside = true,
         )
     ) {
-
         Column(
             modifier = modifier
                 .fillMaxWidth()
@@ -54,9 +55,8 @@ fun DiscardDescriptionConfirmDialog(
                 .background(MaterialTheme.colorScheme.background)
                 .padding(24.dp)
         ) {
-
             Text(
-                text = "Discard description?",
+                text = title,
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily(Font(R.font.inter_medium)),
                 fontSize = 18.sp,
@@ -66,7 +66,7 @@ fun DiscardDescriptionConfirmDialog(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "Your text will be lost if you go back.",
+                text = body,
                 fontFamily = FontFamily(Font(R.font.inter_regular)),
                 fontSize = 14.sp,
                 lineHeight = 21.sp,
@@ -93,7 +93,7 @@ fun DiscardDescriptionConfirmDialog(
                     contentPadding = PaddingValues()
                 ) {
                     Text(
-                        text = "Keep writing",
+                        text = cancelText,
                         textAlign = TextAlign.Center,
                         fontFamily = FontFamily(Font(R.font.inter_medium)),
                         fontSize = 16.sp,
@@ -103,6 +103,7 @@ fun DiscardDescriptionConfirmDialog(
 
                 Button(
                     onClick = onConfirm,
+                    enabled = !isLoading,
                     modifier = Modifier
                         .weight(1f)
                         .height(48.dp),
@@ -113,28 +114,23 @@ fun DiscardDescriptionConfirmDialog(
                     shape = RoundedCornerShape(14.dp),
                     contentPadding = PaddingValues()
                 ) {
-                    Text(
-                        text = "Discard",
-                        textAlign = TextAlign.Center,
-                        fontFamily = FontFamily(Font(R.font.inter_medium)),
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp
-                    )
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = Color.White,
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        Text(
+                            text = confirmText,
+                            textAlign = TextAlign.Center,
+                            fontFamily = FontFamily(Font(R.font.inter_medium)),
+                            fontSize = 16.sp,
+                            lineHeight = 24.sp
+                        )
+                    }
                 }
             }
-        }
-    }
-}
-
-@Preview
-@Composable
-fun DiscardDescriptionConfirmDialogPreview() {
-    BrokenTelephoneTheme(darkTheme = false) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            DiscardDescriptionConfirmDialog(
-                onDismiss = {},
-                onConfirm = {},
-            )
         }
     }
 }

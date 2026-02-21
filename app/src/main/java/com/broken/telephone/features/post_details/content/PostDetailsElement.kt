@@ -40,7 +40,8 @@ import java.io.File
 @Composable
 fun PostDetailsElement(
     post: PostUi,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isUsersPost: Boolean = false,
 ) {
 
     val relativeTime = remember(post.createdAt) {
@@ -130,6 +131,10 @@ fun PostDetailsElement(
 
             if(post.isCompleted) {
                 StrongBadgeElement(type = StrongBadgeElementType.COMPLETE)
+            }
+
+            if(isUsersPost) {
+                StrongBadgeElement(type = StrongBadgeElementType.YOU)
             }
 
             BadgeElement(

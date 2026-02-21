@@ -6,9 +6,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.broken.telephone.core.dialog.ConfirmDialog
 import com.broken.telephone.core.dialog.TimesUpDialog
 import com.broken.telephone.features.describe_drawing.content.DescribeDrawingContent
-import com.broken.telephone.features.describe_drawing.dialog.DiscardDescriptionConfirmDialog
 import com.broken.telephone.features.describe_drawing.model.DescribeDrawingSideEffect
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -45,7 +45,11 @@ fun DescribeDrawingScreen(
     )
 
     if (state.showDiscardDialog) {
-        DiscardDescriptionConfirmDialog(
+        ConfirmDialog(
+            title = "Discard description?",
+            body = "Your text will be lost if you go back.",
+            cancelText = "Keep writing",
+            confirmText = "Discard",
             onDismiss = viewModel::onDiscardDismiss,
             onConfirm = viewModel::onDiscardConfirm,
         )
