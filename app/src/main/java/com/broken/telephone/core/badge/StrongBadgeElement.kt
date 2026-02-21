@@ -26,6 +26,11 @@ enum class StrongBadgeElementType(
         iconResId = R.drawable.ic_complete,
         text = "Complete",
         color = Color(0xFF22C55E),
+    ),
+    YOU(
+        iconResId = R.drawable.ic_fire,
+        text = "You",
+        color = Color(0xFF9B5DE5),
     )
 }
 

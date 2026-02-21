@@ -6,13 +6,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -48,6 +46,7 @@ import java.io.File
 fun PostElement(
     post: PostUi,
     modifier: Modifier = Modifier,
+    isUsersPost: Boolean = false,
 ) {
 
     val relativeTime = remember(post.createdAt) {
@@ -163,6 +162,10 @@ fun PostElement(
                     StrongBadgeElement(type = StrongBadgeElementType.COMPLETE)
                 }
 
+                if(isUsersPost) {
+                    StrongBadgeElement(type = StrongBadgeElementType.YOU)
+                }
+
                 BadgeElement(
                     iconResId = R.drawable.ic_mutations,
                     text = "${post.generation}/${post.maxGenerations}",
@@ -184,13 +187,15 @@ fun PostElementPreview() {
     PostElement(
         post = PostUi(
             id = "1",
+            authorId = "user-1",
             authorName = "Alex".repeat(55),
             avatarUrl = null,
             content = PostContent.Text("Once upon a time there was a broken telephone...", timeLimit = 30),
             createdAt = System.currentTimeMillis() - 300000,
-            generation = 10,
+            generation = 7,
             maxGenerations = 10,
             status = PostStatus.AVAILABLE
         ),
+        isUsersPost = true
     )
 }

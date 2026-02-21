@@ -73,6 +73,7 @@ fun EditProfileContentPreview() {
         EditProfileContent(
             state = EditProfileState(
                 user = UserUi(
+                    id = "user-1",
                     username = "Alex",
                     email = "alex@example.com",
                     avatarUrl = null

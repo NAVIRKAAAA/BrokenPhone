@@ -133,6 +133,7 @@ fun ProfileContentPreview() {
         ProfileContent(
             state = ProfileState(
                 user = UserUi(
+                    id = "user-1",
                     username = "Alex",
                     avatarUrl = null,
                     email = ""

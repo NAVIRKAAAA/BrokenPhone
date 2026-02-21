@@ -5,6 +5,7 @@ import com.broken.telephone.domain.post.PostStatus
 
 data class PostUi(
     val id: String,
+    val authorId: String,
     val authorName: String,
     val avatarUrl: String?,
     val content: PostContent,

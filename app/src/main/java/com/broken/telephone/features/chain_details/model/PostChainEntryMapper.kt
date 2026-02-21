@@ -9,6 +9,7 @@ fun PostChainEntry.toUi(
     maxGenerations: Int,
 ) = PostUi(
     id = id,
+    authorId = authorId,
     authorName = authorName,
     avatarUrl = avatarUrl,
     content = content,

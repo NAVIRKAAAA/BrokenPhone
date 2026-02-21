@@ -21,9 +21,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.data.repository.MockPostRepository
 import com.broken.telephone.features.dashboard.model.DashboardState
 import com.broken.telephone.features.dashboard.model.toUi
+import com.broken.telephone.features.profile.model.UserUi
 
 @Composable
 fun DashboardContent(
@@ -67,6 +69,7 @@ fun DashboardContent(
 
                         PostElement(
                             post = postUi,
+                            isUsersPost = postUi.authorId == state.user?.id,
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
 
@@ -94,11 +97,19 @@ fun DashboardContent(
 @Preview
 @Composable
 fun DashboardContentPreview() {
-    DashboardContent(
-        state = DashboardState(
-            posts = MockPostRepository.mockList.map { it.toUi() }
-        ),
-        onPostClick = {},
-        listState = rememberLazyListState()
-    )
+    BrokenTelephoneTheme() {
+        DashboardContent(
+            state = DashboardState(
+                posts = MockPostRepository.mockList.map { it.toUi() },
+                user = UserUi(
+                    id = "user_1",
+                    username = "",
+                    email = "",
+                    avatarUrl = "",
+                )
+            ),
+            onPostClick = {},
+            listState = rememberLazyListState()
+        )
+    }
 }

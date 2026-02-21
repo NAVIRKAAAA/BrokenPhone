@@ -5,6 +5,7 @@ import com.broken.telephone.domain.post.PostContent
 
 fun Post.toUi() = PostUi(
     id = id,
+    authorId = currentEntry.authorId,
     authorName = authorName,
     avatarUrl = avatarUrl,
     content = when (val c = currentEntry.content) {
