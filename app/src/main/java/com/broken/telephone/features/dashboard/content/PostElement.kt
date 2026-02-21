@@ -47,6 +47,7 @@ fun PostElement(
     post: PostUi,
     modifier: Modifier = Modifier,
     isUsersPost: Boolean = false,
+    onMoreClick: () -> Unit = {},
 ) {
 
     val relativeTime = remember(post.createdAt) {
@@ -117,7 +118,7 @@ fun PostElement(
                     modifier = Modifier.clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = ripple(bounded = false),
-                        onClick = {}
+                        onClick = onMoreClick
                     )
                 )
 

@@ -5,4 +5,9 @@ import com.broken.telephone.features.profile.model.UserUi
 data class DashboardState(
     val posts: List<PostUi> = emptyList(),
     val user: UserUi? = null,
+    val selectedPost: PostUi? = null,
+    val isPostBottomSheetVisible: Boolean = false,
+    val isReportBottomSheetVisible: Boolean = false,
+    val isBlockDialogVisible: Boolean = false,
+    val isBlockLoading: Boolean = false,
 )

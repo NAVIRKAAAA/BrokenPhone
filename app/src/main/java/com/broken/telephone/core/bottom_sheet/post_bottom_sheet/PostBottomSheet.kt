@@ -17,8 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.broken.telephone.R
 import com.broken.telephone.core.bottom_sheet.post_bottom_sheet.content.PostBottomSheetButton
+import com.broken.telephone.core.bottom_sheet.post_bottom_sheet.model.PostBottomSheetAction
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import kotlinx.coroutines.launch
 
@@ -26,20 +26,19 @@ import kotlinx.coroutines.launch
 @Composable
 fun PostBottomSheet(
     onDismissRequest: () -> Unit,
+    actions: List<PostBottomSheetAction>,
     modifier: Modifier = Modifier,
     sheetState: SheetState = rememberModalBottomSheetState(),
-    onNotInterestedClick: () -> Unit = {},
-    onBlockClick: () -> Unit = {},
-    onReportClick: () -> Unit = {},
+    onActionClick: (PostBottomSheetAction) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
 
-    fun hideAndThen(action: () -> Unit) {
+    fun hideAndThen(action: PostBottomSheetAction) {
         scope.launch {
             sheetState.hide()
         }.invokeOnCompletion {
             onDismissRequest()
-            action()
+            onActionClick(action)
         }
     }
 
@@ -51,9 +50,8 @@ fun PostBottomSheet(
     ) {
 
         PostBottomSheetContent(
-            onNotInterestedClick = { hideAndThen(onNotInterestedClick) },
-            onBlockClick = { hideAndThen(onBlockClick) },
-            onReportClick = { hideAndThen(onReportClick) },
+            actions = actions,
+            onActionClick = { hideAndThen(it) },
         )
 
     }
@@ -62,51 +60,43 @@ fun PostBottomSheet(
 
 @Composable
 fun PostBottomSheetContent(
+    actions: List<PostBottomSheetAction>,
     modifier: Modifier = Modifier,
-    onNotInterestedClick: () -> Unit = {},
-    onBlockClick: () -> Unit = {},
-    onReportClick: () -> Unit = {},
+    onActionClick: (PostBottomSheetAction) -> Unit = {},
 ) {
+    val errorColor = MaterialTheme.colorScheme.error
 
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
             .padding(bottom = 8.dp)
             .navigationBarsPadding()
     ) {
 
-        PostBottomSheetButton(
-            text = "Not Interested",
-            iconResId = R.drawable.ic_not_interested,
-            modifier = Modifier
-                .clickable(onClick = onNotInterestedClick)
-                .padding(horizontal = 16.dp),
-            textColor = Color.Black,
-            iconColor = Color(0xFF666666)
-        )
+        actions.forEachIndexed { index, action ->
+            val textColor = when (action) {
+                PostBottomSheetAction.NOT_INTERESTED -> Color.Black
+                PostBottomSheetAction.BLOCK, PostBottomSheetAction.REPORT -> errorColor
+            }
+            val iconColor = when (action) {
+                PostBottomSheetAction.NOT_INTERESTED -> Color(0xFF666666)
+                PostBottomSheetAction.BLOCK, PostBottomSheetAction.REPORT -> errorColor
+            }
 
-        HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
+            PostBottomSheetButton(
+                text = action.label,
+                iconResId = action.iconResId,
+                modifier = Modifier
+                    .clickable { onActionClick(action) }
+                    .padding(horizontal = 16.dp),
+                textColor = textColor,
+                iconColor = iconColor,
+            )
 
-        PostBottomSheetButton(
-            text = "Block",
-            iconResId = R.drawable.ic_block,
-            modifier = Modifier
-                .clickable(onClick = onBlockClick)
-                .padding(horizontal = 16.dp),
-            textColor = MaterialTheme.colorScheme.error,
-            iconColor = MaterialTheme.colorScheme.error
-        )
-
-        HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
-
-        PostBottomSheetButton(
-            text = "Report",
-            iconResId = R.drawable.ic_report,
-            modifier = Modifier
-                .clickable(onClick = onReportClick)
-                .padding(horizontal = 16.dp),
-            textColor = MaterialTheme.colorScheme.error,
-            iconColor = MaterialTheme.colorScheme.error
-        )
+            if (index < actions.lastIndex) {
+                HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
+            }
+        }
 
     }
 
@@ -116,7 +106,10 @@ fun PostBottomSheetContent(
 @Preview
 @Composable
 fun PostBottomSheetContentPreview() {
-    BrokenTelephoneTheme() {
-        PostBottomSheet(onDismissRequest = {})
+    BrokenTelephoneTheme {
+        PostBottomSheet(
+            onDismissRequest = {},
+            actions = PostBottomSheetAction.entries,
+        )
     }
 }

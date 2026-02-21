@@ -38,6 +38,7 @@ fun ProfileContent(
     onTabSelect: (ProfileTab) -> Unit,
     onScrollDirectionChange: (Boolean) -> Unit,
     onPostClick: (postId: String) -> Unit,
+    onMoreClick: (postId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val pagerState = rememberPagerState(
@@ -115,11 +116,13 @@ fun ProfileContent(
                     posts = state.myPosts,
                     onScrollDirectionChange = onScrollDirectionChange,
                     onPostClick = onPostClick,
+                    onMoreClick = onMoreClick,
                 )
                 ProfileTab.CONTRIBUTIONS -> ProfilePostsPage(
                     posts = state.myContributions,
                     onScrollDirectionChange = onScrollDirectionChange,
                     onPostClick = onPostClick,
+                    onMoreClick = onMoreClick,
                 )
             }
         }
@@ -146,6 +149,7 @@ fun ProfileContentPreview() {
             onTabSelect = {},
             onScrollDirectionChange = {},
             onPostClick = {},
+            onMoreClick = {},
         )
     }
 }

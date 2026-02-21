@@ -1,0 +1,6 @@
+package com.broken.telephone.features.profile.model
+
+sealed interface ProfileSideEffect {
+    data object ShowReportSuccessToast : ProfileSideEffect
+    data object ShowNotInterestedToast : ProfileSideEffect
+}

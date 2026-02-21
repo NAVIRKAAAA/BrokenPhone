@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.broken.telephone.core.bottom_sheet.post_bottom_sheet.PostBottomSheet
+import com.broken.telephone.core.bottom_sheet.post_bottom_sheet.model.PostBottomSheetAction
 import com.broken.telephone.core.bottom_sheet.report_post_bottom_sheet.ReportPostBottomSheet
 import com.broken.telephone.core.dialog.BlockUserDialog
 import com.broken.telephone.domain.post.PostContent
@@ -59,9 +60,14 @@ fun PostDetailsScreen(
     if (state.isBottomSheetVisible) {
         PostBottomSheet(
             onDismissRequest = viewModel::onBottomSheetDismiss,
-            onNotInterestedClick = viewModel::onNotInterestedClick,
-            onReportClick = viewModel::onReportClick,
-            onBlockClick = viewModel::onBlockClick,
+            actions = PostBottomSheetAction.entries,
+            onActionClick = { action ->
+                when (action) {
+                    PostBottomSheetAction.NOT_INTERESTED -> viewModel.onNotInterestedClick()
+                    PostBottomSheetAction.BLOCK -> viewModel.onBlockClick()
+                    PostBottomSheetAction.REPORT -> viewModel.onReportClick()
+                }
+            },
         )
     }
 

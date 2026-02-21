@@ -5,10 +5,14 @@ import com.broken.telephone.domain.post.PostChainEntry
 import com.broken.telephone.domain.post.PostContent
 import com.broken.telephone.domain.post.PostStatus
 import com.broken.telephone.domain.repository.PostRepository
+import com.broken.telephone.domain.user.AuthState
+import com.broken.telephone.domain.user.UserSession
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 
 class CreatePostUseCase(
     private val repository: PostRepository,
+    private val userSession: UserSession,
 ) {
 
     suspend operator fun invoke(
@@ -17,12 +21,16 @@ class CreatePostUseCase(
         textTimeLimit: Int,
         drawingTimeLimit: Int,
     ) {
+        val authState = userSession.authState.first()
+        if (authState !is AuthState.Auth) return
+        val user = authState.user
+
         val postId = System.currentTimeMillis().toString()
         val post = Post(
             id = postId,
-            authorId = "current_user",
-            authorName = "Me",
-            avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_4.png",
+            authorId = user.id,
+            authorName = user.username,
+            avatarUrl = user.avatarUrl,
             createdAt = System.currentTimeMillis(),
             generation = 0,
             maxGenerations = maxGenerations,
@@ -30,9 +38,9 @@ class CreatePostUseCase(
             drawingTimeLimit = drawingTimeLimit,
             currentEntry = PostChainEntry(
                 parentId = postId,
-                authorId = "current_user",
-                authorName = "Me",
-                avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_4.png",
+                authorId = user.id,
+                authorName = user.username,
+                avatarUrl = user.avatarUrl,
                 content = PostContent.Text(text = text, timeLimit = textTimeLimit),
                 createdAt = System.currentTimeMillis(),
                 status = PostStatus.AVAILABLE,

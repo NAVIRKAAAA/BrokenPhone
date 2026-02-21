@@ -7,4 +7,9 @@ data class ProfileState(
     val user: UserUi? = null,
     val myPosts: List<PostUi> = emptyList(),
     val myContributions: List<PostUi> = emptyList(),
+    val selectedPost: PostUi? = null,
+    val isPostBottomSheetVisible: Boolean = false,
+    val isReportBottomSheetVisible: Boolean = false,
+    val isBlockDialogVisible: Boolean = false,
+    val isBlockLoading: Boolean = false,
 )

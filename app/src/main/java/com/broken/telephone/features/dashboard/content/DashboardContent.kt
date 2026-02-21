@@ -32,6 +32,7 @@ fun DashboardContent(
     state: DashboardState,
     listState: LazyListState,
     onPostClick: (postId: String) -> Unit,
+    onMoreClick: (postId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -70,6 +71,7 @@ fun DashboardContent(
                         PostElement(
                             post = postUi,
                             isUsersPost = postUi.authorId == state.user?.id,
+                            onMoreClick = { onMoreClick(postUi.id) },
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
 
@@ -109,6 +111,7 @@ fun DashboardContentPreview() {
                 )
             ),
             onPostClick = {},
+            onMoreClick = {},
             listState = rememberLazyListState()
         )
     }

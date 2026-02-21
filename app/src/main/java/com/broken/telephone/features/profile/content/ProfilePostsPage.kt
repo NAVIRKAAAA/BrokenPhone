@@ -23,6 +23,7 @@ fun ProfilePostsPage(
     posts: List<PostUi>,
     onScrollDirectionChange: (isScrollingUp: Boolean) -> Unit,
     onPostClick: (postId: String) -> Unit,
+    onMoreClick: (postId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val listState = rememberLazyListState()
@@ -58,6 +59,7 @@ fun ProfilePostsPage(
 
             PostElement(
                 post = post,
+                onMoreClick = { onMoreClick(post.id) },
                 modifier = Modifier
                     .clickable { onPostClick(post.id) }
                     .padding(horizontal = 16.dp, vertical = 16.dp),
