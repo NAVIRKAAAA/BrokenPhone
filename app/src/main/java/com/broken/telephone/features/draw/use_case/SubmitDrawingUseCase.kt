@@ -24,7 +24,7 @@ class SubmitDrawingUseCase(
                 authorId = user.id,
                 authorName = user.username,
                 avatarUrl = user.avatarUrl,
-                content = PostContent.Drawing(timeLimit = post.drawingTimeLimit, localPath = localPath),
+                content = PostContent.Drawing(localPath = localPath),
                 createdAt = System.currentTimeMillis(),
                 status = PostStatus.AVAILABLE,
                 lockedBy = null,

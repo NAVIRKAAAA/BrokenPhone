@@ -18,6 +18,8 @@ class GetChainByPostIdUseCase(
                     id = "${postId}_$index",
                     generation = index,
                     maxGenerations = maxGenerations,
+                    textTimeLimit = 0,
+                    drawingTimeLimit = 0,
                 )
             }
         }

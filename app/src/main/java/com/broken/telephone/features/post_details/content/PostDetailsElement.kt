@@ -3,9 +3,7 @@ package com.broken.telephone.features.post_details.content
 import android.text.format.DateUtils
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import coil3.compose.AsyncImage
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,9 +24,9 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import java.io.File
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import com.broken.telephone.R
 import com.broken.telephone.core.badge.BadgeElement
 import com.broken.telephone.core.badge.StrongBadgeElement
@@ -37,6 +35,7 @@ import com.broken.telephone.data.repository.MockPostRepository
 import com.broken.telephone.domain.post.PostContent
 import com.broken.telephone.features.dashboard.model.PostUi
 import com.broken.telephone.features.dashboard.model.toUi
+import java.io.File
 
 @Composable
 fun PostDetailsElement(
@@ -140,7 +139,7 @@ fun PostDetailsElement(
 
             BadgeElement(
                 iconResId = R.drawable.ic_clock,
-                text = "${post.content.timeLimit}s",
+                text = "${post.nextTimeLimit}s",
             )
 
         }

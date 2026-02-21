@@ -142,11 +142,12 @@ fun ChainDetailsElementPreview() {
             authorId = "user-1",
             authorName = "Alex".repeat(55),
             avatarUrl = null,
-            content = PostContent.Text("Once upon a time there was a broken telephone...", timeLimit = 30),
+            content = PostContent.Text("Once upon a time there was a broken telephone..."),
             createdAt = System.currentTimeMillis() - 300000,
             generation = 10,
             maxGenerations = 10,
-            status = PostStatus.AVAILABLE
+            status = PostStatus.AVAILABLE,
+            nextTimeLimit = 60,
         ),
     )
 }

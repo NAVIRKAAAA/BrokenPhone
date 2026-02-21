@@ -188,7 +188,9 @@ fun ChainDetailsContentPreview() {
                     entry.toUi(
                         id = Uuid.random().toString(),
                         generation = index,
-                        maxGenerations = MockPostRepository.chainsMockList.size
+                        maxGenerations = MockPostRepository.chainsMockList.size,
+                        textTimeLimit = 0,
+                        drawingTimeLimit = 0
                     )
                 }
             ),

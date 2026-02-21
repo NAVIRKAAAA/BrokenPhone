@@ -112,7 +112,7 @@ fun PostDetailsContent(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = buttonType.description(post.content.timeLimit),
+                text = buttonType.description(post.nextTimeLimit),
                 fontFamily = FontFamily(Font(R.font.inter_regular)),
                 fontSize = 12.sp,
                 lineHeight = 16.sp,

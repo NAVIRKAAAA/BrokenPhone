@@ -24,7 +24,7 @@ class SubmitDescriptionUseCase(
                 authorId = user.id,
                 authorName = user.username,
                 avatarUrl = user.avatarUrl,
-                content = PostContent.Text(text = text, timeLimit = post.textTimeLimit),
+                content = PostContent.Text(text = text),
                 createdAt = System.currentTimeMillis(),
                 status = PostStatus.AVAILABLE,
                 lockedBy = null,

@@ -3,7 +3,6 @@ package com.broken.telephone.features.dashboard.content
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -12,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -27,9 +27,9 @@ fun DashboardTopBar(
 ) {
 
     Row(
-        modifier = modifier.fillMaxWidth().height(56.dp).padding(horizontal = 16.dp),
+        modifier = modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
         Text(
@@ -41,6 +41,19 @@ fun DashboardTopBar(
             color = MaterialTheme.colorScheme.primary
 
         )
+
+        IconButton(
+            onClick = {},
+            enabled = false,
+            modifier = Modifier.alpha(0f)
+        ) {
+
+            Icon(
+                painter = painterResource(R.drawable.ic_more_vert),
+                contentDescription = null,
+            )
+
+        }
     }
 
 }

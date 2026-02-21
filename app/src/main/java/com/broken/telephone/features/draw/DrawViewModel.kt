@@ -47,7 +47,7 @@ class DrawViewModel(
             .onEach { postUi ->
                 _state.update { it.copy(postUi = postUi) }
                 if (postUi != null && timerJob == null) {
-                    startTimer(postUi.content.timeLimit)
+                    startTimer(postUi.nextTimeLimit)
                 }
             }
             .launchIn(viewModelScope)

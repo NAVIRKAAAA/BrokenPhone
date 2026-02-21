@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.broken.telephone.R
 import com.broken.telephone.core.badge.BadgeElement
+import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.core.top_bar.PostTopBar
 import com.broken.telephone.data.repository.MockPostRepository
 import com.broken.telephone.domain.post.PostContent
@@ -139,9 +140,11 @@ fun DrawContent(
 @Preview
 @Composable
 fun DrawContentPreview() {
-    DrawContent(
-        state = DrawState(
-            MockPostRepository.mockList[1].toUi()
-        ),
-    )
+    BrokenTelephoneTheme() {
+        DrawContent(
+            state = DrawState(
+                MockPostRepository.mockList[1].toUi()
+            ),
+        )
+    }
 }

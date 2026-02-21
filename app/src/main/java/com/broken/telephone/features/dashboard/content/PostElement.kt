@@ -174,7 +174,7 @@ fun PostElement(
 
                 BadgeElement(
                     iconResId = R.drawable.ic_clock,
-                    text = "${post.content.timeLimit}s",
+                    text = "${post.nextTimeLimit}s",
                 )
 
             }
@@ -192,11 +192,12 @@ fun PostElementPreview() {
             authorId = "user-1",
             authorName = "Alex".repeat(55),
             avatarUrl = null,
-            content = PostContent.Text("Once upon a time there was a broken telephone...", timeLimit = 30),
+            content = PostContent.Text("Once upon a time there was a broken telephone..."),
             createdAt = System.currentTimeMillis() - 300000,
             generation = 7,
             maxGenerations = 10,
-            status = PostStatus.AVAILABLE
+            status = PostStatus.AVAILABLE,
+            nextTimeLimit = 60,
         ),
         isUsersPost = true
     )
