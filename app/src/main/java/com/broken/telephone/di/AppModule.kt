@@ -2,6 +2,7 @@ package com.broken.telephone.di
 
 import com.broken.telephone.core.timer.CountdownTimer
 import com.broken.telephone.data.link.LinkProviderImpl
+import com.broken.telephone.data.repository.MockAppInfoRepositoryImpl
 import com.broken.telephone.data.repository.MockAuthRepository
 import com.broken.telephone.data.repository.MockBlockRepositoryImpl
 import com.broken.telephone.data.repository.MockNotInterestedRepositoryImpl
@@ -9,6 +10,7 @@ import com.broken.telephone.data.repository.MockPostRepository
 import com.broken.telephone.data.repository.MockReportRepositoryImpl
 import com.broken.telephone.data.session.MockUserSessionImpl
 import com.broken.telephone.domain.link.LinkProvider
+import com.broken.telephone.domain.repository.AppInfoRepository
 import com.broken.telephone.domain.repository.AuthRepository
 import com.broken.telephone.domain.repository.BlockRepository
 import com.broken.telephone.domain.repository.NotInterestedRepository
@@ -43,6 +45,9 @@ import com.broken.telephone.features.profile.ProfileViewModel
 import com.broken.telephone.features.profile.use_case.GetCurrentUserUseCase
 import com.broken.telephone.features.profile.use_case.GetMyContributionsUseCase
 import com.broken.telephone.features.profile.use_case.GetMyPostsUseCase
+import com.broken.telephone.features.settings.SettingsViewModel
+import com.broken.telephone.features.settings.use_case.GetVersionInfoUseCase
+import com.broken.telephone.features.settings.use_case.LogoutUseCase
 import com.broken.telephone.features.sign_in.SignInViewModel
 import com.broken.telephone.features.sign_in.use_case.SignInUseCase
 import com.broken.telephone.features.sign_up.SignUpValidator
@@ -55,6 +60,7 @@ import org.koin.dsl.module
 
 val appModule = module {
     single<LinkProvider> { LinkProviderImpl() }
+    single<AppInfoRepository> { MockAppInfoRepositoryImpl() }
     single<PostRepository> { MockPostRepository() }
     single<AuthRepository> { MockAuthRepository() }
     single<UserSession> { MockUserSessionImpl() }
@@ -97,6 +103,10 @@ val appModule = module {
     viewModelOf(::EditUsernameViewModel)
     viewModelOf(::EditProfileViewModel)
     viewModelOf(::EditAvatarViewModel)
+
+    factoryOf(::GetVersionInfoUseCase)
+    factoryOf(::LogoutUseCase)
+    viewModelOf(::SettingsViewModel)
 
     single { AppNavBottomBarViewModel() }
 }

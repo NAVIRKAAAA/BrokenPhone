@@ -9,11 +9,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.broken.telephone.features.create_post.model.CreatePostState
+import kotlinx.coroutines.delay
 
 @Composable
 fun CreatePostContent(
@@ -26,6 +30,12 @@ fun CreatePostContent(
 ) {
 
     val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        delay(150)
+        focusRequester.requestFocus()
+    }
 
     Column(
         modifier = modifier
@@ -54,6 +64,7 @@ fun CreatePostContent(
             maxGenerations = state.maxGenerations,
             textTimeLimit = state.textTimeLimit,
             drawingTimeLimit = state.drawingTimeLimit,
+            focusRequester = focusRequester,
             modifier = Modifier.padding(horizontal = 16.dp),
         )
     }

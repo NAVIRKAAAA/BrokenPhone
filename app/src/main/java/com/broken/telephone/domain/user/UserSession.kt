@@ -9,4 +9,5 @@ interface UserSession {
     fun getMyContributions(): Flow<List<Post>>
     suspend fun updateProfile(username: String)
     suspend fun updateAvatar(avatarUrl: String)
+    suspend fun logout()
 }

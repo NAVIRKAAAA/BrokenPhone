@@ -27,9 +27,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
@@ -51,6 +55,7 @@ import com.broken.telephone.domain.post.PostContent
 import com.broken.telephone.features.create_post.model.CreatePostState
 import com.broken.telephone.features.dashboard.model.toUi
 import com.broken.telephone.features.describe_drawing.model.DescribeDrawingState
+import kotlinx.coroutines.delay
 import java.io.File
 
 @Composable
@@ -64,6 +69,13 @@ fun DescribeDrawingContent(
 
     val post = state.postUi
     val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
+    val scrollState = rememberScrollState()
+
+    LaunchedEffect(Unit) {
+        delay(150)
+        focusRequester.requestFocus()
+    }
 
     Column(
         modifier = modifier
@@ -81,7 +93,7 @@ fun DescribeDrawingContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
                 .imePadding()
         ) {
 
@@ -126,7 +138,8 @@ fun DescribeDrawingContent(
                         onValueChange = onTextChanged,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
+                            .padding(horizontal = 16.dp)
+                            .focusRequester(focusRequester),
                         textStyle = TextStyle(
                             fontFamily = FontFamily(Font(R.font.inter_regular)),
                             fontSize = 15.sp,

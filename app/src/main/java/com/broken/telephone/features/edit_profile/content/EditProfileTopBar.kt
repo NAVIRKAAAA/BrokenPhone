@@ -24,6 +24,7 @@ import com.broken.telephone.core.theme.BrokenTelephoneTheme
 
 @Composable
 fun EditProfileTopBar(
+    title: String = "Edit Profile",
     onBackClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
@@ -41,7 +42,7 @@ fun EditProfileTopBar(
         }
 
         Text(
-            text = "Edit Profile",
+            text = title,
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
             fontFamily = FontFamily(Font(R.font.inter_medium)),

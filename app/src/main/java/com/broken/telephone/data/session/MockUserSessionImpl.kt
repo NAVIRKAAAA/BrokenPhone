@@ -7,6 +7,7 @@ import com.broken.telephone.domain.post.PostStatus
 import com.broken.telephone.domain.user.AuthState
 import com.broken.telephone.domain.user.User
 import com.broken.telephone.domain.user.UserSession
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -41,6 +42,11 @@ class MockUserSessionImpl : UserSession {
         if (current is AuthState.Auth) {
             _authState.value = AuthState.Auth(current.user.copy(avatarUrl = avatarUrl, updatedAt = System.currentTimeMillis()))
         }
+    }
+
+    override suspend fun logout() {
+        delay(1500)
+        _authState.value = AuthState.NotAuth
     }
 
     override fun getMyPosts(): Flow<List<Post>> = flowOf(

@@ -28,6 +28,7 @@ import com.broken.telephone.features.edit_username.EditUsernameScreen
 import com.broken.telephone.features.post_details.PostDetailsScreen
 import com.broken.telephone.features.post_details.PostDetailsViewModel
 import com.broken.telephone.features.profile.ProfileScreen
+import com.broken.telephone.features.settings.SettingsScreen
 import com.broken.telephone.features.sign_in.SignInScreen
 import com.broken.telephone.features.sign_up.SignUpScreen
 import com.broken.telephone.features.welcome.WelcomeScreen
@@ -340,7 +341,7 @@ fun AppNavGraph(
             enterTransition = { EnterTransition.None },
             exitTransition = {
                 val route = targetState.destination.route
-                if (route?.contains("PostDetails") == true || route?.contains("EditProfile") == true) {
+                if (route?.contains("PostDetails") == true || route?.contains("EditProfile") == true || route?.contains("Settings") == true) {
                     slideOutHorizontally(
                         targetOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -351,7 +352,7 @@ fun AppNavGraph(
             },
             popEnterTransition = {
                 val route = initialState.destination.route
-                if (route?.contains("PostDetails") == true || route?.contains("EditProfile") == true) {
+                if (route?.contains("PostDetails") == true || route?.contains("EditProfile") == true || route?.contains("Settings") == true) {
                     slideInHorizontally(
                         initialOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -368,6 +369,9 @@ fun AppNavGraph(
                 },
                 onEditClick = {
                     navController.navigateSingle(Routes.EditProfile)
+                },
+                onSettingsClick = {
+                    navController.navigateSingle(Routes.Settings)
                 },
             )
         }
@@ -454,6 +458,30 @@ fun AppNavGraph(
         ) {
             EditAvatarScreen(
                 onBackClick = navController::safePopBackStack,
+            )
+        }
+
+        composable<Routes.Settings>(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeOut(animationSpec = tween(200))
+            }
+        ) {
+            SettingsScreen(
+                onBackClick = navController::safePopBackStack,
+                onNavigateToWelcome = {
+                    navController.navigate(Routes.Welcome) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
             )
         }
 

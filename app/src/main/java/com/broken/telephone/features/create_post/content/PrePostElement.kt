@@ -24,6 +24,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
@@ -51,6 +53,7 @@ fun PrePostElement(
     onBadgeClick: () -> Unit,
     isTextOverLimit: Boolean,
     modifier: Modifier = Modifier,
+    focusRequester: FocusRequester? = null,
     avatarUrl: String? = null,
     maxGenerations: Int = 0,
     textTimeLimit: Int = 0,
@@ -107,7 +110,9 @@ fun PrePostElement(
                 BasicTextField(
                     value = text,
                     onValueChange = onTextChanged,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .then(focusRequester?.let { Modifier.focusRequester(it) } ?: Modifier),
                     textStyle = TextStyle(
                         fontFamily = FontFamily(Font(R.font.inter_regular)),
                         fontSize = 15.sp,
