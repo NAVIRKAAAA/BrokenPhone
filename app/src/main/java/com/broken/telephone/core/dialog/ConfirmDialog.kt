@@ -40,6 +40,7 @@ fun ConfirmDialog(
     onConfirm: () -> Unit,
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
+    confirmButtonColor: Color = MaterialTheme.colorScheme.error,
 ) {
     Dialog(
         onDismissRequest = onDismiss,
@@ -109,7 +110,7 @@ fun ConfirmDialog(
                         .height(48.dp),
                     colors = ButtonDefaults.buttonColors(
                         contentColor = Color.White,
-                        containerColor = MaterialTheme.colorScheme.error
+                        containerColor = confirmButtonColor
                     ),
                     shape = RoundedCornerShape(14.dp),
                     contentPadding = PaddingValues()

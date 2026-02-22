@@ -9,5 +9,9 @@ interface UserSession {
     fun getMyContributions(): Flow<List<Post>>
     suspend fun updateProfile(username: String)
     suspend fun updateAvatar(avatarUrl: String)
+    fun getBlockedUsers(): Flow<List<BlockedUser>>
+    suspend fun blockUser(blockedUserId: String)
+    suspend fun unblockUser(blockId: String)
     suspend fun logout()
+    suspend fun deleteAccount()
 }

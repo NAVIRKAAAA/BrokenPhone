@@ -45,4 +45,10 @@ sealed class Routes {
 
     @Serializable
     data object Settings : Routes()
+
+    @Serializable
+    data object AccountSettings : Routes()
+
+    @Serializable
+    data object BlockedUsers : Routes()
 }

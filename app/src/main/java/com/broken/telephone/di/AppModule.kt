@@ -4,19 +4,25 @@ import com.broken.telephone.core.timer.CountdownTimer
 import com.broken.telephone.data.link.LinkProviderImpl
 import com.broken.telephone.data.repository.MockAppInfoRepositoryImpl
 import com.broken.telephone.data.repository.MockAuthRepository
-import com.broken.telephone.data.repository.MockBlockRepositoryImpl
 import com.broken.telephone.data.repository.MockNotInterestedRepositoryImpl
 import com.broken.telephone.data.repository.MockPostRepository
 import com.broken.telephone.data.repository.MockReportRepositoryImpl
+import com.broken.telephone.data.repository.MockUsersRepositoryImpl
 import com.broken.telephone.data.session.MockUserSessionImpl
 import com.broken.telephone.domain.link.LinkProvider
 import com.broken.telephone.domain.repository.AppInfoRepository
 import com.broken.telephone.domain.repository.AuthRepository
-import com.broken.telephone.domain.repository.BlockRepository
 import com.broken.telephone.domain.repository.NotInterestedRepository
 import com.broken.telephone.domain.repository.PostRepository
 import com.broken.telephone.domain.repository.ReportRepository
+import com.broken.telephone.domain.repository.UsersRepository
 import com.broken.telephone.domain.user.UserSession
+import com.broken.telephone.features.account_settings.AccountSettingsViewModel
+import com.broken.telephone.features.account_settings.use_case.DeleteAccountUseCase
+import com.broken.telephone.features.account_settings.use_case.GetBlockedUsersCountUseCase
+import com.broken.telephone.features.blocked_users.BlockedUsersViewModel
+import com.broken.telephone.features.blocked_users.use_case.GetBlockedUsersUseCase
+import com.broken.telephone.features.blocked_users.use_case.UnblockUserUseCase
 import com.broken.telephone.features.bottom_nav_bar.AppNavBottomBarViewModel
 import com.broken.telephone.features.chain_details.ChainDetailsViewModel
 import com.broken.telephone.features.chain_details.use_case.GetChainByPostIdUseCase
@@ -65,8 +71,8 @@ val appModule = module {
     single<AuthRepository> { MockAuthRepository() }
     single<UserSession> { MockUserSessionImpl() }
     single<ReportRepository> { MockReportRepositoryImpl() }
-    single<BlockRepository> { MockBlockRepositoryImpl() }
     single<NotInterestedRepository> { MockNotInterestedRepositoryImpl() }
+    single<UsersRepository> { MockUsersRepositoryImpl() }
 
     single { DrawingBitmapSaver(androidContext()) }
     factoryOf(::CountdownTimer)
@@ -107,6 +113,12 @@ val appModule = module {
     factoryOf(::GetVersionInfoUseCase)
     factoryOf(::LogoutUseCase)
     viewModelOf(::SettingsViewModel)
+    factoryOf(::DeleteAccountUseCase)
+    factoryOf(::GetBlockedUsersCountUseCase)
+    factoryOf(::GetBlockedUsersUseCase)
+    factoryOf(::UnblockUserUseCase)
+    viewModelOf(::BlockedUsersViewModel)
+    viewModelOf(::AccountSettingsViewModel)
 
     single { AppNavBottomBarViewModel() }
 }

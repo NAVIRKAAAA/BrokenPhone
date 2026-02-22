@@ -18,9 +18,10 @@ import com.broken.telephone.R
 fun SettingsLogoutButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    text: String = "Log Out",
 ) {
     Text(
-        text = "Log Out",
+        text = text,
         fontFamily = FontFamily(Font(R.font.inter_medium)),
         fontSize = 15.sp,
         lineHeight = 22.sp,

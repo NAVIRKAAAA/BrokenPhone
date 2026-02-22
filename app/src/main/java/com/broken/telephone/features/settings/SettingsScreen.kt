@@ -13,6 +13,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun SettingsScreen(
     onNavigateToWelcome: () -> Unit,
+    onAccountSettingsClick: () -> Unit,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
     viewModel: SettingsViewModel = koinViewModel(),
@@ -31,6 +32,7 @@ fun SettingsScreen(
         state = state,
         onBackClick = onBackClick,
         onLogoutClick = viewModel::onLogoutClick,
+        onAccountSettingsClick = onAccountSettingsClick,
         modifier = modifier,
     )
 

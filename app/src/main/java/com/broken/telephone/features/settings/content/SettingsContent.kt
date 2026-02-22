@@ -30,6 +30,7 @@ fun SettingsContent(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
     onLogoutClick: () -> Unit = {},
+    onAccountSettingsClick: () -> Unit = {},
 ) {
 
     Column(
@@ -48,7 +49,7 @@ fun SettingsContent(
 
         SettingsItem(
             text = "Account Settings",
-            onClick = {},
+            onClick = onAccountSettingsClick,
             modifier = Modifier
         )
 
@@ -79,7 +80,7 @@ fun SettingsContent(
 
         Text(
             text = state.versionInfo,
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
+            fontFamily = FontFamily(Font(R.font.inter_regular)),
             fontSize = 12.sp,
             lineHeight = 18.sp,
             color = Color(0xFF999999),

@@ -16,6 +16,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.broken.telephone.features.account_settings.AccountSettingsScreen
+import com.broken.telephone.features.blocked_users.BlockedUsersScreen
 import com.broken.telephone.features.chain_details.ChainDetailsScreen
 import com.broken.telephone.features.chain_details.ChainDetailsViewModel
 import com.broken.telephone.features.create_post.CreatePostScreen
@@ -468,6 +470,26 @@ fun AppNavGraph(
                     animationSpec = tween(250)
                 ) + fadeIn(animationSpec = tween(200))
             },
+            exitTransition = {
+                if (targetState.destination.route?.contains("AccountSettings") == true) {
+                    slideOutHorizontally(
+                        targetOffsetX = { -it / 3 },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                } else {
+                    ExitTransition.None
+                }
+            },
+            popEnterTransition = {
+                if (initialState.destination.route?.contains("AccountSettings") == true) {
+                    slideInHorizontally(
+                        initialOffsetX = { -it / 3 },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                } else {
+                    EnterTransition.None
+                }
+            },
             popExitTransition = {
                 slideOutHorizontally(
                     targetOffsetX = { it },
@@ -482,6 +504,75 @@ fun AppNavGraph(
                         popUpTo(0) { inclusive = true }
                     }
                 },
+                onAccountSettingsClick = {
+                    navController.navigateSingle(Routes.AccountSettings)
+                },
+            )
+        }
+
+        composable<Routes.AccountSettings>(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+            exitTransition = {
+                if (targetState.destination.route?.contains("BlockedUsers") == true) {
+                    slideOutHorizontally(
+                        targetOffsetX = { -it / 3 },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                } else {
+                    ExitTransition.None
+                }
+            },
+            popEnterTransition = {
+                if (initialState.destination.route?.contains("BlockedUsers") == true) {
+                    slideInHorizontally(
+                        initialOffsetX = { -it / 3 },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                } else {
+                    EnterTransition.None
+                }
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeOut(animationSpec = tween(200))
+            }
+        ) {
+            AccountSettingsScreen(
+                onBackClick = navController::safePopBackStack,
+                onNavigateToWelcome = {
+                    navController.navigate(Routes.Welcome) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
+                onBlockedUsersClick = {
+                    navController.navigateSingle(Routes.BlockedUsers)
+                },
+            )
+        }
+
+        composable<Routes.BlockedUsers>(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeOut(animationSpec = tween(200))
+            }
+        ) {
+            BlockedUsersScreen(
+                onBackClick = navController::safePopBackStack,
             )
         }
 
