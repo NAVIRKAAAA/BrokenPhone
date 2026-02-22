@@ -15,7 +15,6 @@ import com.broken.telephone.core.bottom_sheet.post_bottom_sheet.PostBottomSheet
 import com.broken.telephone.core.bottom_sheet.post_bottom_sheet.model.PostBottomSheetAction
 import com.broken.telephone.core.bottom_sheet.report_post_bottom_sheet.ReportPostBottomSheet
 import com.broken.telephone.core.dialog.ConfirmDialog
-import com.broken.telephone.domain.post.PostContent
 import com.broken.telephone.features.post_details.content.PostDetailsContent
 import com.broken.telephone.features.post_details.model.PostDetailsSideEffect
 import org.koin.compose.viewmodel.koinViewModel
@@ -44,6 +43,8 @@ fun PostDetailsScreen(
                     Toast.makeText(context, "Link copied!", Toast.LENGTH_SHORT).show()
                 }
                 PostDetailsSideEffect.NavigateBack -> onBackClick()
+                is PostDetailsSideEffect.NavigateToDraw -> onDrawContinue(effect.postId)
+                is PostDetailsSideEffect.NavigateToDescribeDrawing -> onDescribeDrawingContinue(effect.postId)
             }
         }
     }
@@ -52,13 +53,7 @@ fun PostDetailsScreen(
         state = state,
         onBackClick = onBackClick,
         onMoreClick = viewModel::onMoreClick,
-        onContinueClick = {
-            val post = state.postUi ?: return@PostDetailsContent
-            when (post.content) {
-                is PostContent.Text -> onDrawContinue(post.id)
-                is PostContent.Drawing -> onDescribeDrawingContinue(post.id)
-            }
-        },
+        onContinueClick = viewModel::onContinueClick,
         onViewHistoryClick = {
             state.postUi?.let { onViewHistoryClick(it.id) }
         },

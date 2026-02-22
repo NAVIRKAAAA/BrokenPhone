@@ -17,6 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.broken.telephone.features.account_settings.AccountSettingsScreen
+import com.broken.telephone.features.app_preferences.AppPreferencesScreen
 import com.broken.telephone.features.blocked_users.BlockedUsersScreen
 import com.broken.telephone.features.chain_details.ChainDetailsScreen
 import com.broken.telephone.features.chain_details.ChainDetailsViewModel
@@ -27,6 +28,7 @@ import com.broken.telephone.features.draw.DrawScreen
 import com.broken.telephone.features.edit_avatar.EditAvatarScreen
 import com.broken.telephone.features.edit_profile.EditProfileScreen
 import com.broken.telephone.features.edit_username.EditUsernameScreen
+import com.broken.telephone.features.information_legal.InformationLegalScreen
 import com.broken.telephone.features.post_details.PostDetailsScreen
 import com.broken.telephone.features.post_details.PostDetailsViewModel
 import com.broken.telephone.features.profile.ProfileScreen
@@ -471,7 +473,8 @@ fun AppNavGraph(
                 ) + fadeIn(animationSpec = tween(200))
             },
             exitTransition = {
-                if (targetState.destination.route?.contains("AccountSettings") == true) {
+                val route = targetState.destination.route
+                if (route?.contains("AccountSettings") == true || route?.contains("InformationLegal") == true || route?.contains("AppPreferences") == true) {
                     slideOutHorizontally(
                         targetOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -481,7 +484,8 @@ fun AppNavGraph(
                 }
             },
             popEnterTransition = {
-                if (initialState.destination.route?.contains("AccountSettings") == true) {
+                val route = initialState.destination.route
+                if (route?.contains("AccountSettings") == true || route?.contains("InformationLegal") == true || route?.contains("AppPreferences") == true) {
                     slideInHorizontally(
                         initialOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -506,6 +510,12 @@ fun AppNavGraph(
                 },
                 onAccountSettingsClick = {
                     navController.navigateSingle(Routes.AccountSettings)
+                },
+                onAppPreferencesClick = {
+                    navController.navigateSingle(Routes.AppPreferences)
+                },
+                onInformationLegalClick = {
+                    navController.navigateSingle(Routes.InformationLegal)
                 },
             )
         }
@@ -572,6 +582,44 @@ fun AppNavGraph(
             }
         ) {
             BlockedUsersScreen(
+                onBackClick = navController::safePopBackStack,
+            )
+        }
+
+        composable<Routes.AppPreferences>(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeOut(animationSpec = tween(200))
+            }
+        ) {
+            AppPreferencesScreen(
+                onBackClick = navController::safePopBackStack,
+            )
+        }
+
+        composable<Routes.InformationLegal>(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeOut(animationSpec = tween(200))
+            }
+        ) {
+            InformationLegalScreen(
                 onBackClick = navController::safePopBackStack,
             )
         }

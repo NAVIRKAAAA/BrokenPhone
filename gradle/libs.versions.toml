@@ -11,6 +11,7 @@ composeBom = "2026.02.00"
 navigationCompose = "2.8.5"
 koin = "4.0.2"
 coil = "3.1.0"
+browser = "1.8.0"
 runtime = "1.10.3"
 
 [libraries]
@@ -35,6 +36,7 @@ koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmo
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
+androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "browser" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

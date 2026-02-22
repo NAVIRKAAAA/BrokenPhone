@@ -31,6 +31,8 @@ fun SettingsContent(
     onBackClick: () -> Unit = {},
     onLogoutClick: () -> Unit = {},
     onAccountSettingsClick: () -> Unit = {},
+    onAppPreferencesClick: () -> Unit = {},
+    onInformationLegalClick: () -> Unit = {},
 ) {
 
     Column(
@@ -58,7 +60,7 @@ fun SettingsContent(
 
         SettingsItem(
             text = "App Preferences",
-            onClick = {},
+            onClick = onAppPreferencesClick,
             modifier = Modifier
         )
 
@@ -66,7 +68,7 @@ fun SettingsContent(
 
         SettingsItem(
             text = "Information & Legal",
-            onClick = {},
+            onClick = onInformationLegalClick,
             modifier = Modifier
         )
 

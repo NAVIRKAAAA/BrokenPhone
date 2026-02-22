@@ -11,4 +11,5 @@ data class PostDetailsState(
     val isBlockLoading: Boolean = false,
     val isDeleteDialogVisible: Boolean = false,
     val isDeleteLoading: Boolean = false,
+    val isContinueLoading: Boolean = false,
 )

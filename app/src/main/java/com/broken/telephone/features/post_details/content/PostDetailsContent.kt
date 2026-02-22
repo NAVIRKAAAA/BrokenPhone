@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -93,21 +95,29 @@ fun PostDetailsContent(
                     contentColor = Color.White,
                     containerColor = containerColor,
                 ),
-                enabled = buttonType.isEnabled,
+                enabled = buttonType.isEnabled && !state.isContinueLoading,
                 shape = RoundedCornerShape(16.dp),
                 contentPadding = PaddingValues(),
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    Text(
-                        text = buttonType.buttonText,
-                        textAlign = TextAlign.Center,
-                        fontFamily = FontFamily(Font(R.font.inter_medium)),
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp,
+                if (state.isContinueLoading) {
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        strokeWidth = 2.dp,
+                        modifier = Modifier.size(24.dp),
                     )
+                } else {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Text(
+                            text = buttonType.buttonText,
+                            textAlign = TextAlign.Center,
+                            fontFamily = FontFamily(Font(R.font.inter_medium)),
+                            fontSize = 16.sp,
+                            lineHeight = 24.sp,
+                        )
+                    }
                 }
             }
 
@@ -136,7 +146,8 @@ fun PostDetailsContentPreview() {
                     status = PostStatus.COMPLETED,
                     generation = 10,
                     maxGenerations = 10
-                )
+                ),
+                isContinueLoading = true
             ),
             onContinueClick = {},
             onViewHistoryClick = {},

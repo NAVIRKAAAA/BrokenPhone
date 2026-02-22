@@ -3,12 +3,14 @@ package com.broken.telephone.features.post_details
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.broken.telephone.core.bottom_sheet.report_post_bottom_sheet.model.ReportPostType
+import com.broken.telephone.domain.post.PostContent
 import com.broken.telephone.features.post_details.model.PostDetailsSideEffect
 import com.broken.telephone.features.post_details.model.PostDetailsState
 import com.broken.telephone.features.post_details.use_case.BlockUserUseCase
 import com.broken.telephone.features.post_details.use_case.DeletePostUseCase
 import com.broken.telephone.features.post_details.use_case.GetPostByIdUseCase
 import com.broken.telephone.features.post_details.use_case.GetPostLinkByIdUseCase
+import com.broken.telephone.features.post_details.use_case.MockStartGameUseCase
 import com.broken.telephone.features.post_details.use_case.NotInterestedUseCase
 import com.broken.telephone.features.post_details.use_case.ReportPostUseCase
 import com.broken.telephone.features.profile.use_case.GetCurrentUserUseCase
@@ -30,6 +32,7 @@ class PostDetailsViewModel(
     private val blockUserUseCase: BlockUserUseCase,
     private val notInterestedUseCase: NotInterestedUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val mockStartGameUseCase: MockStartGameUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PostDetailsState())
@@ -109,6 +112,20 @@ class PostDetailsViewModel(
             blockUserUseCase(blockedUserId)
             _state.update { it.copy(isBlockLoading = false, isBlockDialogVisible = false) }
             _sideEffects.send(PostDetailsSideEffect.NavigateBack)
+        }
+    }
+
+    fun onContinueClick() {
+        val post = state.value.postUi ?: return
+        _state.update { it.copy(isContinueLoading = true) }
+        viewModelScope.launch {
+            mockStartGameUseCase(postId)
+            _state.update { it.copy(isContinueLoading = false) }
+            val effect = when (post.content) {
+                is PostContent.Text -> PostDetailsSideEffect.NavigateToDraw(postId)
+                is PostContent.Drawing -> PostDetailsSideEffect.NavigateToDescribeDrawing(postId)
+            }
+            _sideEffects.send(effect)
         }
     }
 
