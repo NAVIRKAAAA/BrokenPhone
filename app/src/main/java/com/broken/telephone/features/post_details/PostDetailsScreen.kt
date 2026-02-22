@@ -1,5 +1,8 @@
 package com.broken.telephone.features.post_details
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -35,6 +38,11 @@ fun PostDetailsScreen(
             when (effect) {
                 PostDetailsSideEffect.ShowReportSuccessToast ->
                     Toast.makeText(context, "Thank you for your report!", Toast.LENGTH_SHORT).show()
+                is PostDetailsSideEffect.ShowCopyLinkSuccessToast -> {
+                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    clipboard.setPrimaryClip(ClipData.newPlainText("post_link", effect.link))
+                    Toast.makeText(context, "Link copied!", Toast.LENGTH_SHORT).show()
+                }
                 PostDetailsSideEffect.NavigateBack -> onBackClick()
             }
         }
@@ -69,10 +77,10 @@ fun PostDetailsScreen(
             onActionClick = { action ->
                 when (action) {
                     PostBottomSheetAction.NOT_INTERESTED -> viewModel.onNotInterestedClick()
-                    PostBottomSheetAction.COPY_LINK -> {}
+                    PostBottomSheetAction.COPY_LINK -> viewModel.onCopyLinkClick()
                     PostBottomSheetAction.BLOCK -> viewModel.onBlockClick()
                     PostBottomSheetAction.REPORT -> viewModel.onReportClick()
-                    PostBottomSheetAction.DELETE -> {}
+                    PostBottomSheetAction.DELETE -> viewModel.onDeleteClick()
                 }
             },
         )
@@ -87,6 +95,18 @@ fun PostDetailsScreen(
             onDismiss = viewModel::onBlockDialogDismiss,
             onConfirm = viewModel::onBlockConfirm,
             isLoading = state.isBlockLoading,
+        )
+    }
+
+    if (state.isDeleteDialogVisible) {
+        ConfirmDialog(
+            title = "Delete post?",
+            body = "This action cannot be undone.",
+            cancelText = "Cancel",
+            confirmText = "Delete",
+            onDismiss = viewModel::onDeleteDialogDismiss,
+            onConfirm = viewModel::onDeleteConfirm,
+            isLoading = state.isDeleteLoading,
         )
     }
 

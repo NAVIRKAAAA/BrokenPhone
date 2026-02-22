@@ -1,12 +1,14 @@
 package com.broken.telephone.di
 
 import com.broken.telephone.core.timer.CountdownTimer
+import com.broken.telephone.data.link.LinkProviderImpl
 import com.broken.telephone.data.repository.MockAuthRepository
 import com.broken.telephone.data.repository.MockBlockRepositoryImpl
 import com.broken.telephone.data.repository.MockNotInterestedRepositoryImpl
 import com.broken.telephone.data.repository.MockPostRepository
 import com.broken.telephone.data.repository.MockReportRepositoryImpl
 import com.broken.telephone.data.session.MockUserSessionImpl
+import com.broken.telephone.domain.link.LinkProvider
 import com.broken.telephone.domain.repository.AuthRepository
 import com.broken.telephone.domain.repository.BlockRepository
 import com.broken.telephone.domain.repository.NotInterestedRepository
@@ -32,7 +34,9 @@ import com.broken.telephone.features.edit_username.EditUsernameViewModel
 import com.broken.telephone.features.edit_username.use_case.UpdateProfileUseCase
 import com.broken.telephone.features.post_details.PostDetailsViewModel
 import com.broken.telephone.features.post_details.use_case.BlockUserUseCase
+import com.broken.telephone.features.post_details.use_case.DeletePostUseCase
 import com.broken.telephone.features.post_details.use_case.GetPostByIdUseCase
+import com.broken.telephone.features.post_details.use_case.GetPostLinkByIdUseCase
 import com.broken.telephone.features.post_details.use_case.NotInterestedUseCase
 import com.broken.telephone.features.post_details.use_case.ReportPostUseCase
 import com.broken.telephone.features.profile.ProfileViewModel
@@ -50,6 +54,7 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val appModule = module {
+    single<LinkProvider> { LinkProviderImpl() }
     single<PostRepository> { MockPostRepository() }
     single<AuthRepository> { MockAuthRepository() }
     single<UserSession> { MockUserSessionImpl() }
@@ -62,6 +67,8 @@ val appModule = module {
 
     factoryOf(::GetPostsUseCase)
     factoryOf(::GetPostByIdUseCase)
+    factoryOf(::GetPostLinkByIdUseCase)
+    factoryOf(::DeletePostUseCase)
     factoryOf(::ReportPostUseCase)
     factoryOf(::BlockUserUseCase)
     factoryOf(::NotInterestedUseCase)

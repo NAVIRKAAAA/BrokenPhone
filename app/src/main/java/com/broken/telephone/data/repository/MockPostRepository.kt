@@ -5,6 +5,7 @@ import com.broken.telephone.domain.post.PostChainEntry
 import com.broken.telephone.domain.post.PostContent
 import com.broken.telephone.domain.post.PostStatus
 import com.broken.telephone.domain.repository.PostRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
@@ -27,6 +28,11 @@ class MockPostRepository : PostRepository {
 
     override suspend fun createPost(post: Post) {
         _posts.update { list -> list + post }
+    }
+
+    override suspend fun deletePost(postId: String) {
+        delay(1500)
+        _posts.update { list -> list.filter { it.id != postId } }
     }
 
     companion object {

@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.broken.telephone.core.bottom_sheet.report_post_bottom_sheet.model.ReportPostType
 import com.broken.telephone.features.dashboard.model.PostUi
 import com.broken.telephone.features.post_details.use_case.BlockUserUseCase
+import com.broken.telephone.features.post_details.use_case.DeletePostUseCase
+import com.broken.telephone.features.post_details.use_case.GetPostLinkByIdUseCase
 import com.broken.telephone.features.post_details.use_case.NotInterestedUseCase
 import com.broken.telephone.features.post_details.use_case.ReportPostUseCase
 import com.broken.telephone.features.profile.model.ProfileSideEffect
@@ -24,6 +26,8 @@ class ProfileViewModel(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getMyPostsUseCase: GetMyPostsUseCase,
     private val getMyContributionsUseCase: GetMyContributionsUseCase,
+    private val getPostLinkByIdUseCase: GetPostLinkByIdUseCase,
+    private val deletePostUseCase: DeletePostUseCase,
     private val blockUserUseCase: BlockUserUseCase,
     private val notInterestedUseCase: NotInterestedUseCase,
     private val reportPostUseCase: ReportPostUseCase,
@@ -57,6 +61,13 @@ class ProfileViewModel(
         _state.update { it.copy(selectedTab = tab) }
     }
 
+    fun onCopyLinkClick() {
+        val postId = state.value.selectedPost?.id ?: return
+        val link = getPostLinkByIdUseCase(postId)
+        _state.update { it.copy(isPostBottomSheetVisible = false) }
+        viewModelScope.launch { _sideEffects.send(ProfileSideEffect.ShowCopyLinkSuccessToast(link)) }
+    }
+
     fun onMoreClick(post: PostUi) {
         _state.update { it.copy(selectedPost = post, isPostBottomSheetVisible = true) }
     }
@@ -78,6 +89,23 @@ class ProfileViewModel(
 
     fun onBlockClick() {
         _state.update { it.copy(isPostBottomSheetVisible = false, isBlockDialogVisible = true) }
+    }
+
+    fun onDeleteClick() {
+        _state.update { it.copy(isPostBottomSheetVisible = false, isDeleteDialogVisible = true) }
+    }
+
+    fun onDeleteDialogDismiss() {
+        _state.update { it.copy(isDeleteDialogVisible = false) }
+    }
+
+    fun onDeleteConfirm() {
+        val postId = state.value.selectedPost?.id ?: return
+        _state.update { it.copy(isDeleteLoading = true) }
+        viewModelScope.launch {
+            deletePostUseCase(postId)
+            _state.update { it.copy(isDeleteLoading = false, isDeleteDialogVisible = false, selectedPost = null) }
+        }
     }
 
     fun onBlockDialogDismiss() {

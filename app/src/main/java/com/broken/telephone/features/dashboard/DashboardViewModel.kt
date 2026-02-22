@@ -8,6 +8,8 @@ import com.broken.telephone.features.dashboard.model.DashboardState
 import com.broken.telephone.features.dashboard.model.PostUi
 import com.broken.telephone.features.dashboard.use_case.GetPostsUseCase
 import com.broken.telephone.features.post_details.use_case.BlockUserUseCase
+import com.broken.telephone.features.post_details.use_case.DeletePostUseCase
+import com.broken.telephone.features.post_details.use_case.GetPostLinkByIdUseCase
 import com.broken.telephone.features.post_details.use_case.NotInterestedUseCase
 import com.broken.telephone.features.post_details.use_case.ReportPostUseCase
 import com.broken.telephone.features.profile.use_case.GetCurrentUserUseCase
@@ -23,6 +25,8 @@ import kotlinx.coroutines.launch
 class DashboardViewModel(
     private val getPostsUseCase: GetPostsUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val getPostLinkByIdUseCase: GetPostLinkByIdUseCase,
+    private val deletePostUseCase: DeletePostUseCase,
     private val blockUserUseCase: BlockUserUseCase,
     private val notInterestedUseCase: NotInterestedUseCase,
     private val reportPostUseCase: ReportPostUseCase,
@@ -42,6 +46,13 @@ class DashboardViewModel(
         getCurrentUserUseCase()
             .onEach { user -> _state.update { it.copy(user = user) } }
             .launchIn(viewModelScope)
+    }
+
+    fun onCopyLinkClick() {
+        val postId = state.value.selectedPost?.id ?: return
+        val link = getPostLinkByIdUseCase(postId)
+        _state.update { it.copy(isPostBottomSheetVisible = false) }
+        viewModelScope.launch { _sideEffects.send(DashboardSideEffect.ShowCopyLinkSuccessToast(link)) }
     }
 
     fun onMoreClick(post: PostUi) {
@@ -65,6 +76,23 @@ class DashboardViewModel(
 
     fun onBlockClick() {
         _state.update { it.copy(isPostBottomSheetVisible = false, isBlockDialogVisible = true) }
+    }
+
+    fun onDeleteClick() {
+        _state.update { it.copy(isPostBottomSheetVisible = false, isDeleteDialogVisible = true) }
+    }
+
+    fun onDeleteDialogDismiss() {
+        _state.update { it.copy(isDeleteDialogVisible = false) }
+    }
+
+    fun onDeleteConfirm() {
+        val postId = state.value.selectedPost?.id ?: return
+        _state.update { it.copy(isDeleteLoading = true) }
+        viewModelScope.launch {
+            deletePostUseCase(postId)
+            _state.update { it.copy(isDeleteLoading = false, isDeleteDialogVisible = false, selectedPost = null) }
+        }
     }
 
     fun onBlockDialogDismiss() {

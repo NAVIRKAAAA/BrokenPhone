@@ -16,4 +16,6 @@ interface PostRepository {
 
     suspend fun createPost(post: Post)
 
+    suspend fun deletePost(postId: String)
+
 }
