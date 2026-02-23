@@ -45,7 +45,7 @@ fun NotificationsContent(
 
         AccountTextInfoItem(
             name = "Notification Permission",
-            value = "On",
+            value = if (state.isNotificationPermissionGranted) "On" else "Off",
             modifier = Modifier
                 .clickable(onClick = onNotificationPermissionClick)
                 .padding(horizontal = 16.dp),

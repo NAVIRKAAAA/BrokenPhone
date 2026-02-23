@@ -3,13 +3,16 @@ package com.broken.telephone.features.notifications
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.broken.telephone.domain.settings.NotificationType
+import com.broken.telephone.features.notifications.model.NotificationsSideEffect
 import com.broken.telephone.features.notifications.model.NotificationsState
 import com.broken.telephone.features.notifications.use_case.GetNotificationsUseCase
 import com.broken.telephone.features.notifications.use_case.UpdateNotificationsUseCase
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -21,10 +24,38 @@ class NotificationsViewModel(
     private val _state = MutableStateFlow(NotificationsState())
     val state = _state.asStateFlow()
 
+    private val _sideEffects = Channel<NotificationsSideEffect>()
+    val sideEffects = _sideEffects.receiveAsFlow()
+
     init {
         getNotificationsUseCase()
             .onEach { notifications -> _state.update { it.copy(enabledNotifications = notifications) } }
             .launchIn(viewModelScope)
+    }
+
+    fun checkPermission(isGranted: Boolean) {
+        _state.update { it.copy(isNotificationPermissionGranted = isGranted) }
+    }
+
+    fun onNotificationPermissionClick(isGranted: Boolean, shouldShowRationale: Boolean) {
+        viewModelScope.launch {
+            when {
+                isGranted -> _sideEffects.send(NotificationsSideEffect.OpenNotificationSettings)
+                shouldShowRationale -> _state.update { it.copy(showRationaleDialog = true) }
+                else -> _sideEffects.send(NotificationsSideEffect.RequestPermission)
+            }
+        }
+    }
+
+    fun onRationaleConfirm() {
+        _state.update { it.copy(showRationaleDialog = false) }
+        viewModelScope.launch {
+            _sideEffects.send(NotificationsSideEffect.RequestPermission)
+        }
+    }
+
+    fun onRationaleDismiss() {
+        _state.update { it.copy(showRationaleDialog = false) }
     }
 
     fun onAllNotificationsToggle(enabled: Boolean) {

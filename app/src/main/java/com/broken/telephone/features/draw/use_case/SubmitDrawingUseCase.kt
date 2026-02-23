@@ -6,6 +6,7 @@ import com.broken.telephone.domain.post.PostStatus
 import com.broken.telephone.domain.repository.PostRepository
 import com.broken.telephone.domain.user.AuthState
 import com.broken.telephone.domain.user.UserSession
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 
 class SubmitDrawingUseCase(
@@ -17,6 +18,9 @@ class SubmitDrawingUseCase(
         val authState = userSession.authState.first()
         val user = (authState as? AuthState.Auth)?.user ?: return
         val post = repository.getPostById(postId).first() ?: return
+
+        delay(1500)
+
         val updatedPost = post.copy(
             generation = post.generation + 1,
             currentEntry = PostChainEntry(

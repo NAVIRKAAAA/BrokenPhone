@@ -1,6 +1,7 @@
 package com.broken.telephone.features.draw
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,6 +44,19 @@ fun DrawScreen(
         onBackClick = { viewModel.onDrawAction(DrawingAction.OnBackClick) },
         modifier = modifier
     )
+
+    if (state.showPostConfirmDialog || state.isPosting) {
+        ConfirmDialog(
+            title = "Post drawing?",
+            body = "Your drawing will be submitted and visible to others.",
+            cancelText = "Cancel",
+            confirmText = "Post",
+            onDismiss = { viewModel.onDrawAction(DrawingAction.OnPostDismiss) },
+            onConfirm = { viewModel.onDrawAction(DrawingAction.OnPostConfirm) },
+            confirmButtonColor = MaterialTheme.colorScheme.primary,
+            isLoading = state.isPosting,
+        )
+    }
 
     if (state.showDiscardDialog) {
         ConfirmDialog(

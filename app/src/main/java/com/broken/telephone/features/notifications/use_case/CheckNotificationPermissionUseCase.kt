@@ -1,0 +1,10 @@
+package com.broken.telephone.features.notifications.use_case
+
+import android.content.Context
+import androidx.core.app.NotificationManagerCompat
+
+class CheckNotificationPermissionUseCase(private val context: Context) {
+    operator fun invoke(): Boolean {
+        return NotificationManagerCompat.from(context).areNotificationsEnabled()
+    }
+}

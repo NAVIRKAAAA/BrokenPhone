@@ -1,6 +1,5 @@
 package com.broken.telephone.features.bottom_nav_bar
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavBackStackEntry
@@ -25,10 +24,6 @@ class AppNavBottomBarViewModel(
 
     private val _event = MutableSharedFlow<BottomNavBarEvent>()
     val event = _event.asSharedFlow()
-
-    init {
-        Log.d("LOG_TAG", "Init AppNavBottomBarViewModel")
-    }
 
     fun shouldShowBottomBar(entry: NavBackStackEntry): Boolean {
         return entry.destination.hasRoute<Routes.Dashboard>() ||

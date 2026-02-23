@@ -1,6 +1,7 @@
 package com.broken.telephone.features.describe_drawing
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,6 +44,19 @@ fun DescribeDrawingScreen(
         onPostClick = viewModel::onPostClick,
         modifier = modifier
     )
+
+    if (state.showPostConfirmDialog || state.isPosting) {
+        ConfirmDialog(
+            title = "Post description?",
+            body = "Your description will be submitted and visible to others.",
+            cancelText = "Cancel",
+            confirmText = "Post",
+            onDismiss = viewModel::onPostDismiss,
+            onConfirm = viewModel::onPostConfirm,
+            confirmButtonColor = MaterialTheme.colorScheme.primary,
+            isLoading = state.isPosting,
+        )
+    }
 
     if (state.showDiscardDialog) {
         ConfirmDialog(

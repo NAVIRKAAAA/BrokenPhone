@@ -27,7 +27,7 @@ class MockPostRepository : PostRepository {
     }
 
     override suspend fun createPost(post: Post) {
-        _posts.update { list -> list + post }
+        _posts.update { list -> listOf(post) + list }
     }
 
     override suspend fun deletePost(postId: String) {

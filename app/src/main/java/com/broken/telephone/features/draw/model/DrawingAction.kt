@@ -13,6 +13,8 @@ sealed interface DrawingAction {
     data class OnBrushSizeChange(val brushSize: BrushSize): DrawingAction
     data class OnCanvasSizeChanged(val size: IntSize): DrawingAction
     data object OnPostClick: DrawingAction
+    data object OnPostConfirm: DrawingAction
+    data object OnPostDismiss: DrawingAction
     data object OnBackClick: DrawingAction
     data object OnDiscardConfirm: DrawingAction
     data object OnDiscardDismiss: DrawingAction

@@ -13,6 +13,8 @@ data class DrawState(
     val redoPaths: List<PathData> = emptyList(),
     val canvasSize: IntSize? = null,
     val showDiscardDialog: Boolean = false,
+    val showPostConfirmDialog: Boolean = false,
+    val isPosting: Boolean = false,
     val remainingSeconds: Int = 0,
     val isTimerExpired: Boolean = false,
     val showTimesUpDialog: Boolean = false,

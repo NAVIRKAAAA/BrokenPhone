@@ -75,9 +75,9 @@ fun DashboardContent(
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
 
-                        if(index != state.posts.lastIndex) {
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                            Spacer(modifier = Modifier.height(16.dp))
+                        if(index != state.posts.lastIndex) {
 
                             HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
                         }
