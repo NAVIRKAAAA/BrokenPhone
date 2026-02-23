@@ -50,6 +50,11 @@ import com.broken.telephone.features.edit_username.use_case.UpdateProfileUseCase
 import com.broken.telephone.features.information_legal.InformationLegalViewModel
 import com.broken.telephone.features.information_legal.use_case.GetPrivacyPolicyLinkUseCase
 import com.broken.telephone.features.information_legal.use_case.GetTermsOfServiceLinkUseCase
+import com.broken.telephone.features.language.LanguageViewModel
+import com.broken.telephone.features.language.use_case.UpdateLanguageUseCase
+import com.broken.telephone.features.notifications.NotificationsViewModel
+import com.broken.telephone.features.notifications.use_case.GetNotificationsUseCase
+import com.broken.telephone.features.notifications.use_case.UpdateNotificationsUseCase
 import com.broken.telephone.features.post_details.PostDetailsViewModel
 import com.broken.telephone.features.post_details.use_case.BlockUserUseCase
 import com.broken.telephone.features.post_details.use_case.DeletePostUseCase
@@ -70,6 +75,8 @@ import com.broken.telephone.features.sign_in.use_case.SignInUseCase
 import com.broken.telephone.features.sign_up.SignUpValidator
 import com.broken.telephone.features.sign_up.SignUpViewModel
 import com.broken.telephone.features.sign_up.use_case.SignUpUseCase
+import com.broken.telephone.features.theme.ThemeViewModel
+import com.broken.telephone.features.theme.use_case.UpdateThemeUseCase
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModelOf
@@ -139,6 +146,13 @@ val appModule = module {
     factoryOf(::GetLanguageUseCase)
     factoryOf(::GetThemeUseCase)
     viewModelOf(::AppPreferencesViewModel)
+    factoryOf(::GetNotificationsUseCase)
+    factoryOf(::UpdateNotificationsUseCase)
+    viewModelOf(::NotificationsViewModel)
+    factoryOf(::UpdateLanguageUseCase)
+    viewModelOf(::LanguageViewModel)
+    factoryOf(::UpdateThemeUseCase)
+    viewModelOf(::ThemeViewModel)
 
     single { AppNavBottomBarViewModel() }
 }

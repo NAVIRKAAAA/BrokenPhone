@@ -57,4 +57,13 @@ sealed class Routes {
 
     @Serializable
     data object AppPreferences : Routes()
+
+    @Serializable
+    data object Notifications : Routes()
+
+    @Serializable
+    data object Language : Routes()
+
+    @Serializable
+    data object Theme : Routes()
 }

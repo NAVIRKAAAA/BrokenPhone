@@ -1,6 +1,7 @@
 package com.broken.telephone.domain.user
 
 import com.broken.telephone.domain.post.Post
+import com.broken.telephone.domain.settings.NotificationType
 import kotlinx.coroutines.flow.Flow
 
 interface UserSession {
@@ -12,6 +13,7 @@ interface UserSession {
     fun getBlockedUsers(): Flow<List<BlockedUser>>
     suspend fun blockUser(blockedUserId: String)
     suspend fun unblockUser(blockId: String)
+    suspend fun updateNotifications(enabledNotifications: List<NotificationType>)
     suspend fun logout()
     suspend fun deleteAccount()
 }

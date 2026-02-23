@@ -4,9 +4,22 @@ import com.broken.telephone.domain.repository.UserSettingsRepository
 import com.broken.telephone.domain.settings.AppTheme
 import com.broken.telephone.domain.settings.Language
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class MockUserSettingsRepositoryImpl : UserSettingsRepository {
-    override fun getLanguage(): Flow<Language> = flowOf(Language.ENGLISH)
-    override fun getTheme(): Flow<AppTheme> = flowOf(AppTheme.LIGHT)
+
+    private val _language = MutableStateFlow(Language.ENGLISH)
+    private val _theme = MutableStateFlow(AppTheme.LIGHT)
+
+    override fun getLanguage(): Flow<Language> = _language.asStateFlow()
+    override fun getTheme(): Flow<AppTheme> = _theme.asStateFlow()
+
+    override suspend fun updateLanguage(language: Language) {
+        _language.value = language
+    }
+
+    override suspend fun updateTheme(theme: AppTheme) {
+        _theme.value = theme
+    }
 }

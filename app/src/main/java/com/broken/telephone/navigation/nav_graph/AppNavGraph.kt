@@ -29,12 +29,15 @@ import com.broken.telephone.features.edit_avatar.EditAvatarScreen
 import com.broken.telephone.features.edit_profile.EditProfileScreen
 import com.broken.telephone.features.edit_username.EditUsernameScreen
 import com.broken.telephone.features.information_legal.InformationLegalScreen
+import com.broken.telephone.features.language.LanguageScreen
+import com.broken.telephone.features.notifications.NotificationsScreen
 import com.broken.telephone.features.post_details.PostDetailsScreen
 import com.broken.telephone.features.post_details.PostDetailsViewModel
 import com.broken.telephone.features.profile.ProfileScreen
 import com.broken.telephone.features.settings.SettingsScreen
 import com.broken.telephone.features.sign_in.SignInScreen
 import com.broken.telephone.features.sign_up.SignUpScreen
+import com.broken.telephone.features.theme.ThemeScreen
 import com.broken.telephone.features.welcome.WelcomeScreen
 import com.broken.telephone.navigation.routes.Routes
 import com.broken.telephone.navigation.utils.navigateSingle
@@ -593,6 +596,28 @@ fun AppNavGraph(
                     animationSpec = tween(250)
                 ) + fadeIn(animationSpec = tween(200))
             },
+            exitTransition = {
+                val route = targetState.destination.route
+                if (route?.contains("Notifications") == true || route?.contains("Language") == true || route?.contains("Theme") == true) {
+                    slideOutHorizontally(
+                        targetOffsetX = { -it / 3 },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                } else {
+                    ExitTransition.None
+                }
+            },
+            popEnterTransition = {
+                val route = initialState.destination.route
+                if (route?.contains("Notifications") == true || route?.contains("Language") == true || route?.contains("Theme") == true) {
+                    slideInHorizontally(
+                        initialOffsetX = { -it / 3 },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                } else {
+                    EnterTransition.None
+                }
+            },
             popExitTransition = {
                 slideOutHorizontally(
                     targetOffsetX = { it },
@@ -601,6 +626,72 @@ fun AppNavGraph(
             }
         ) {
             AppPreferencesScreen(
+                onBackClick = navController::safePopBackStack,
+                onNotificationsClick = {
+                    navController.navigateSingle(Routes.Notifications)
+                },
+                onLanguageClick = {
+                    navController.navigateSingle(Routes.Language)
+                },
+                onThemeClick = {
+                    navController.navigateSingle(Routes.Theme)
+                },
+            )
+        }
+
+        composable<Routes.Language>(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeOut(animationSpec = tween(200))
+            }
+        ) {
+            LanguageScreen(
+                onBackClick = navController::safePopBackStack,
+            )
+        }
+
+        composable<Routes.Notifications>(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeOut(animationSpec = tween(200))
+            }
+        ) {
+            NotificationsScreen(
+                onBackClick = navController::safePopBackStack,
+            )
+        }
+
+        composable<Routes.Theme>(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeOut(animationSpec = tween(200))
+            }
+        ) {
+            ThemeScreen(
                 onBackClick = navController::safePopBackStack,
             )
         }

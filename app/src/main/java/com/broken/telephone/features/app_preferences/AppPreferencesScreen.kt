@@ -10,6 +10,9 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun AppPreferencesScreen(
     onBackClick: () -> Unit = {},
+    onNotificationsClick: () -> Unit = {},
+    onLanguageClick: () -> Unit = {},
+    onThemeClick: () -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: AppPreferencesViewModel = koinViewModel(),
 ) {
@@ -18,6 +21,9 @@ fun AppPreferencesScreen(
     AppPreferencesContent(
         state = state,
         onBackClick = onBackClick,
+        onNotificationsClick = onNotificationsClick,
+        onLanguageClick = onLanguageClick,
+        onThemeClick = onThemeClick,
         modifier = modifier,
     )
 }

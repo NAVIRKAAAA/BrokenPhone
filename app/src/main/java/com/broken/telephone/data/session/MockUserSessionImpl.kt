@@ -4,6 +4,7 @@ import com.broken.telephone.domain.post.Post
 import com.broken.telephone.domain.post.PostChainEntry
 import com.broken.telephone.domain.post.PostContent
 import com.broken.telephone.domain.post.PostStatus
+import com.broken.telephone.domain.settings.NotificationType
 import com.broken.telephone.domain.user.AuthState
 import com.broken.telephone.domain.user.BlockedUser
 import com.broken.telephone.domain.user.User
@@ -69,6 +70,13 @@ class MockUserSessionImpl : UserSession {
     override suspend fun unblockUser(blockId: String) {
         delay(1500)
         _blockedUsers.update { list -> list.filter { it.id != blockId } }
+    }
+
+    override suspend fun updateNotifications(enabledNotifications: List<NotificationType>) {
+        val current = _authState.value
+        if (current is AuthState.Auth) {
+            _authState.value = AuthState.Auth(current.user.copy(enabledNotifications = enabledNotifications))
+        }
     }
 
     override suspend fun logout() {

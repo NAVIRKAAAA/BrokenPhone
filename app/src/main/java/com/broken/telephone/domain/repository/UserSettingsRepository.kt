@@ -7,4 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface UserSettingsRepository {
     fun getLanguage(): Flow<Language>
     fun getTheme(): Flow<AppTheme>
+    suspend fun updateLanguage(language: Language)
+    suspend fun updateTheme(theme: AppTheme)
 }
