@@ -1,3 +1,91 @@
 <resources>
     <string name="app_name">Broken Telephone: Draw &amp; Guess</string>
+
+    <!-- Chain Details -->
+    <string name="chain_details_title">Chain Details</string>
+    <string name="chain_details_complete">Chain Complete!</string>
+    <string name="chain_details_generations">%1$d/%2$d generations</string>
+
+    <!-- Describe Drawing -->
+    <string name="describe_drawing_title">Describe</string>
+    <string name="describe_drawing_placeholder">Describe what you see…</string>
+    <string name="describe_drawing_dialog_post_title">Post description?</string>
+    <string name="describe_drawing_dialog_post_body">Your description will be submitted and visible to others.</string>
+    <string name="describe_drawing_dialog_post_cancel">Cancel</string>
+    <string name="describe_drawing_dialog_post_confirm">Post</string>
+    <string name="describe_drawing_dialog_discard_title">Discard description?</string>
+    <string name="describe_drawing_dialog_discard_body">Your text will be lost if you go back.</string>
+    <string name="describe_drawing_dialog_discard_cancel">Keep writing</string>
+    <string name="describe_drawing_dialog_discard_confirm">Discard</string>
+    <string name="describe_drawing_times_up_message">Your writing time has ended. You can try again in 10 minutes.</string>
+
+    <!-- Draw -->
+    <string name="draw_title">Draw</string>
+    <string name="draw_dialog_post_title">Post drawing?</string>
+    <string name="draw_dialog_post_body">Your drawing will be submitted and visible to others.</string>
+    <string name="draw_dialog_post_cancel">Cancel</string>
+    <string name="draw_dialog_post_confirm">Post</string>
+    <string name="draw_dialog_discard_title">Discard drawing?</string>
+    <string name="draw_dialog_discard_body">Your drawing will be lost if you go back.</string>
+    <string name="draw_dialog_discard_cancel">Keep drawing</string>
+    <string name="draw_dialog_discard_confirm">Discard</string>
+    <string name="draw_times_up_message">Your drawing time has ended. You can try again in 10 minutes.</string>
+
+    <!-- Post Details -->
+    <string name="post_details_title">Post Details</string>
+    <string name="post_details_button_continue">Continue</string>
+    <string name="post_details_button_view">View</string>
+    <string name="post_details_description_draw">Draw this in %1$d seconds</string>
+    <string name="post_details_description_describe">Describe in %1$d seconds</string>
+    <string name="post_details_description_unavailable">Someone is working on this right now</string>
+    <string name="post_details_description_completed">The game has been completed</string>
+    <string name="post_details_description_own_post">You can\'t continue your own post</string>
+    <string name="post_details_toast_report_success">Thank you for your report!</string>
+    <string name="post_details_toast_link_copied">Link copied!</string>
+    <string name="post_details_dialog_block_title">Block user?</string>
+    <string name="post_details_dialog_block_body">You won\'t see posts from this user anymore.</string>
+    <string name="post_details_dialog_block_cancel">Cancel</string>
+    <string name="post_details_dialog_block_confirm">Block</string>
+    <string name="post_details_dialog_delete_title">Delete post?</string>
+    <string name="post_details_dialog_delete_body">This action cannot be undone.</string>
+    <string name="post_details_dialog_delete_cancel">Cancel</string>
+    <string name="post_details_dialog_delete_confirm">Delete</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_title">Dashboard</string>
+    <string name="dashboard_badge_complete">Complete</string>
+    <string name="dashboard_badge_you">You</string>
+
+    <!-- Sign In -->
+    <string name="sign_in_title">Sign In</string>
+    <string name="sign_in_email">Email</string>
+    <string name="sign_in_password">Password</string>
+    <string name="sign_in_button">Sign In</string>
+    <string name="sign_in_dont_have_account">Don\'t have an account?</string>
+    <string name="sign_in_sign_up_link">Sign Up</string>
+
+    <!-- Sign Up -->
+    <string name="sign_up_title">Sign Up</string>
+    <string name="sign_up_email">Email</string>
+    <string name="sign_up_password">Password</string>
+    <string name="sign_up_password_hint">At least 8 characters</string>
+    <string name="sign_up_confirm_password">Confirm Password</string>
+    <string name="sign_up_button">Sign Up</string>
+    <string name="sign_up_terms_prefix">By signing up, you agree to our</string>
+    <string name="sign_up_terms">Terms</string>
+    <string name="sign_up_terms_and"> &amp; </string>
+    <string name="sign_up_privacy_policy">Privacy Policy</string>
+    <string name="sign_up_already_have_account">Already have an account?</string>
+    <string name="sign_up_sign_in_link">Sign In</string>
+    <string name="sign_up_password_show">Show password</string>
+    <string name="sign_up_password_hide">Hide password</string>
+
+    <!-- Welcome -->
+    <string name="welcome_get_started">Get Started</string>
+    <string name="welcome_sign_in">Sign In</string>
+    <string name="welcome_continue_as_guest">Continue as Guest</string>
+    <string name="welcome_terms_prefix">By continuing, you agree to our</string>
+    <string name="welcome_terms">Terms</string>
+    <string name="welcome_terms_and">&amp;</string>
+    <string name="welcome_privacy_policy">Privacy Policy</string>
 </resources>

@@ -28,6 +28,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -83,7 +84,7 @@ fun SignUpContent(
             SignUpTextField(
                 text = state.email,
                 onTextChange = onEmailChanged,
-                label = "Email",
+                label = stringResource(R.string.sign_up_email),
                 error = state.emailError,
                 imeAction = ImeAction.Next,
                 onImeAction = { passwordFocus.requestFocus() },
@@ -94,9 +95,9 @@ fun SignUpContent(
             SignUpTextField(
                 text = state.password,
                 onTextChange = onPasswordChanged,
-                label = "Password",
+                label = stringResource(R.string.sign_up_password),
                 error = state.passwordError,
-                hint = "At least 8 characters",
+                hint = stringResource(R.string.sign_up_password_hint),
                 isPasswordVisible = state.isPasswordVisible,
                 onPasswordVisibilityToggle = onTogglePasswordVisibility,
                 imeAction = ImeAction.Next,
@@ -109,7 +110,7 @@ fun SignUpContent(
             SignUpTextField(
                 text = state.confirmPassword,
                 onTextChange = onConfirmPasswordChanged,
-                label = "Confirm Password",
+                label = stringResource(R.string.sign_up_confirm_password),
                 error = state.confirmPasswordError,
                 isPasswordVisible = state.isConfirmPasswordVisible,
                 onPasswordVisibilityToggle = onToggleConfirmPasswordVisibility,
@@ -141,7 +142,7 @@ fun SignUpContent(
                     )
                 } else {
                     Text(
-                        text = "Sign Up",
+                        text = stringResource(R.string.sign_up_button),
                         textAlign = TextAlign.Center,
                         fontFamily = FontFamily(Font(R.font.inter_medium)),
                         fontSize = 16.sp,
@@ -150,36 +151,11 @@ fun SignUpContent(
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            val primaryColor = MaterialTheme.colorScheme.primary
-            val termsText = buildAnnotatedString {
-                append("By signing up, you agree to our ")
-                withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.Underline)) {
-                    append("Terms")
-                }
-                append(" & ")
-                withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.Underline)) {
-                    append("Privacy Policy")
-                }
-            }
-
-            Text(
-                text = termsText,
-                textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(R.font.inter_regular)),
-                fontSize = 12.sp,
-                lineHeight = 16.sp,
-                modifier = Modifier.padding(horizontal = 16.dp),
-                color = Color(0xFF999999)
-            )
-
             Spacer(modifier = Modifier.height(26.dp))
+            val primaryColor = MaterialTheme.colorScheme.primary
 
             val signInText = buildAnnotatedString {
-                append("Already have an account? ")
+                append("${stringResource(R.string.sign_up_already_have_account)} ")
                 withLink(
                     LinkAnnotation.Clickable(
                         tag = "SIGN_IN",
@@ -187,7 +163,7 @@ fun SignUpContent(
                     )
                 ) {
                     withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.None)) {
-                        append("Sign In")
+                        append(stringResource(R.string.sign_up_sign_in_link))
                     }
                 }
             }
@@ -200,6 +176,31 @@ fun SignUpContent(
                 lineHeight = 21.sp,
                 modifier = Modifier.padding(horizontal = 16.dp),
                 color = Color.Black,
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            val termsText = buildAnnotatedString {
+                append("${stringResource(R.string.sign_up_terms_prefix)} ")
+                withStyle(SpanStyle(color = primaryColor)) {
+                    append(stringResource(R.string.sign_up_terms))
+                }
+                append(" ${stringResource(R.string.sign_up_terms_and)} ")
+                withStyle(SpanStyle(color = primaryColor)) {
+                    append(stringResource(R.string.sign_up_privacy_policy))
+                }
+            }
+
+            Text(
+                text = termsText,
+                textAlign = TextAlign.Center,
+                fontFamily = FontFamily(Font(R.font.inter_regular)),
+                fontSize = 12.sp,
+                lineHeight = 16.sp,
+                modifier = Modifier.padding(horizontal = 16.dp),
+                color = Color(0xFF999999)
             )
 
             Spacer(modifier = Modifier.height(16.dp))

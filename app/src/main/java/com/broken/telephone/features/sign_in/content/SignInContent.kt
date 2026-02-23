@@ -28,6 +28,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -82,7 +83,7 @@ fun SignInContent(
             SignUpTextField(
                 text = state.email,
                 onTextChange = onEmailChanged,
-                label = "Email",
+                label = stringResource(R.string.sign_in_email),
                 error = if (state.credentialsError != null) "" else null,
                 imeAction = ImeAction.Next,
                 onImeAction = { passwordFocus.requestFocus() },
@@ -93,7 +94,7 @@ fun SignInContent(
             SignUpTextField(
                 text = state.password,
                 onTextChange = onPasswordChanged,
-                label = "Password",
+                label = stringResource(R.string.sign_in_password),
                 error = state.credentialsError,
                 isPasswordVisible = state.isPasswordVisible,
                 onPasswordVisibilityToggle = onTogglePasswordVisibility,
@@ -125,7 +126,7 @@ fun SignInContent(
                     )
                 } else {
                     Text(
-                        text = "Sign In",
+                        text = stringResource(R.string.sign_in_button),
                         textAlign = TextAlign.Center,
                         fontFamily = FontFamily(Font(R.font.inter_medium)),
                         fontSize = 16.sp,
@@ -134,11 +135,11 @@ fun SignInContent(
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(24.dp))
 
             val primaryColor = MaterialTheme.colorScheme.primary
             val signUpText = buildAnnotatedString {
-                append("Don't have an account? ")
+                append(stringResource(R.string.sign_in_dont_have_account))
                 withLink(
                     LinkAnnotation.Clickable(
                         tag = "SIGN_UP",
@@ -146,7 +147,7 @@ fun SignInContent(
                     )
                 ) {
                     withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.None)) {
-                        append("Sign Up")
+                        append(stringResource(R.string.sign_in_sign_up_link))
                     }
                 }
             }
@@ -161,7 +162,6 @@ fun SignInContent(
                 modifier = Modifier.padding(horizontal = 16.dp),
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }

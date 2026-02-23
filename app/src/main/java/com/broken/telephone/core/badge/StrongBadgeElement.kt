@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -19,17 +20,17 @@ import com.broken.telephone.R
 
 enum class StrongBadgeElementType(
     val iconResId: Int,
-    val text: String,
+    val textResId: Int,
     val color: Color,
 ) {
     COMPLETE(
         iconResId = R.drawable.ic_complete,
-        text = "Complete",
+        textResId = R.string.dashboard_badge_complete,
         color = Color(0xFF22C55E),
     ),
     YOU(
         iconResId = R.drawable.ic_fire,
-        text = "You",
+        textResId = R.string.dashboard_badge_you,
         color = Color(0xFF9B5DE5),
     )
 }
@@ -53,7 +54,7 @@ fun StrongBadgeElement(
         )
 
         Text(
-            text = type.text,
+            text = stringResource(type.textResId),
             textAlign = TextAlign.Center,
             fontFamily = FontFamily(Font(R.font.inter_medium)),
             fontSize = 14.sp,

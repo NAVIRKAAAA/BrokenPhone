@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -36,12 +38,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import coil3.compose.AsyncImage
 import com.broken.telephone.R
-import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.core.utils.coloredShadow
 import com.broken.telephone.features.bottom_nav_bar.model.BottomNavBar
 import com.broken.telephone.features.bottom_nav_bar.model.BottomNavBarEvent
@@ -125,9 +125,8 @@ fun AppNavBottomBar(
                     AppNavBottomBarItem(
                         item = item,
                         isSelected = item == state.selectedItem,
-                        onClick = {
-                            viewModel.onItemClick(item)
-                        },
+                        avatarUrl = if (item == BottomNavBar.PROFILE) state.userAvatarUrl else null,
+                        onClick = { viewModel.onItemClick(item) },
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -141,7 +140,8 @@ private fun AppNavBottomBarItem(
     item: BottomNavBar,
     isSelected: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    avatarUrl: String? = null,
 ) {
 
     val color = if (isSelected) {
@@ -156,6 +156,12 @@ private fun AppNavBottomBarItem(
         24.dp
     }
 
+    val itemBackground = if(isSelected) {
+        MaterialTheme.colorScheme.primaryContainer
+    } else {
+        Color.Transparent
+    }
+    
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(28.dp))
@@ -164,25 +170,29 @@ private fun AppNavBottomBarItem(
                 indication = ripple(bounded = false),
                 onClick = onClick
             )
+            .background(itemBackground)
             .padding(vertical = 6.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-//        val (rotation, scale) = if(item == BottomNavBar.CREATE) {
-//            10f to 1.3f
-//        } else {
-//            0f to 1f
-//        }
-
-        Icon(
-            painter = painterResource(item.iconResId),
-            contentDescription = item.title,
-            modifier = Modifier
-                .size(iconSize),
-//                .rotate(rotation)
-//                .scale(scale),
-            tint = color
-        )
+        if (avatarUrl != null) {
+            AsyncImage(
+                model = avatarUrl,
+                contentDescription = item.title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(iconSize)
+                    .clip(CircleShape)
+                    .background(Color.LightGray)
+            )
+        } else {
+            Icon(
+                painter = painterResource(item.iconResId),
+                contentDescription = item.title,
+                modifier = Modifier.size(iconSize),
+                tint = color
+            )
+        }
 
         Text(
             text = item.title,
@@ -197,14 +207,32 @@ private fun AppNavBottomBarItem(
 @Preview
 @Composable
 fun AppNavBottomBarPreview() {
+    Row(
+        modifier = Modifier
+            .coloredShadow(
+                color = Color.Black.copy(alpha = 0.14f),
+                blurRadius = 16f,
+                offsetY = 0.dp,
+                offsetX = 0.dp,
+                shape = RoundedCornerShape(28.dp)
+            )
+            .background(
+                color = Color.White,
+                shape = RoundedCornerShape(28.dp)
+            )
+            .padding(horizontal = 8.dp, vertical = 6.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        BottomNavBar.entries.forEach { item ->
+            AppNavBottomBarItem(
+                item = item,
+                isSelected = item == BottomNavBar.DASHBOARD,
+                avatarUrl = null,
+                onClick = { {} },
+                modifier = Modifier.weight(1f)
+            )
+        }
 
-    BrokenTelephoneTheme {
-        val navController = rememberNavController()
-
-        AppNavBottomBar(
-            navController = navController,
-            viewModel = viewModel()
-        )
     }
-
 }

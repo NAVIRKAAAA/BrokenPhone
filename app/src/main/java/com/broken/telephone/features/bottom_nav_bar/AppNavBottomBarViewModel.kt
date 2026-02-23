@@ -7,16 +7,19 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import com.broken.telephone.features.bottom_nav_bar.model.BottomNavBar
 import com.broken.telephone.features.bottom_nav_bar.model.BottomNavBarEvent
 import com.broken.telephone.features.bottom_nav_bar.model.BottomNavBarState
+import com.broken.telephone.features.profile.use_case.GetCurrentUserUseCase
 import com.broken.telephone.navigation.routes.Routes
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AppNavBottomBarViewModel(
-
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(BottomNavBarState())
@@ -24,6 +27,14 @@ class AppNavBottomBarViewModel(
 
     private val _event = MutableSharedFlow<BottomNavBarEvent>()
     val event = _event.asSharedFlow()
+
+    init {
+        getCurrentUserUseCase()
+            .onEach { user ->
+                _state.update { it.copy(userAvatarUrl = user?.avatarUrl) }
+            }
+            .launchIn(viewModelScope)
+    }
 
     fun shouldShowBottomBar(entry: NavBackStackEntry): Boolean {
         return entry.destination.hasRoute<Routes.Dashboard>() ||

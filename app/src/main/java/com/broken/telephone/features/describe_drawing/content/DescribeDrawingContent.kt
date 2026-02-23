@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -84,7 +85,7 @@ fun DescribeDrawingContent(
             .statusBarsPadding(),
     ) {
         PostTopBar(
-            title = "Describe",
+            title = stringResource(R.string.describe_drawing_title),
             onBackClick = onBackClick,
             isPostButtonEnabled = state.text.isNotBlank() && !state.isTextOverLimit && !state.isTimerExpired,
             onPostClick = onPostClick
@@ -157,7 +158,7 @@ fun DescribeDrawingContent(
                         Box(modifier = Modifier.fillMaxWidth()) {
                             if (state.text.isEmpty()) {
                                 Text(
-                                    text = "Describe what you see...",
+                                    text = stringResource(R.string.describe_drawing_placeholder),
                                     fontFamily = FontFamily(Font(R.font.inter_regular)),
                                     fontSize = 15.sp,
                                     lineHeight = 22.sp,

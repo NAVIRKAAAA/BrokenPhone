@@ -6,7 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.broken.telephone.R
 import com.broken.telephone.core.dialog.ConfirmDialog
 import com.broken.telephone.core.dialog.TimesUpDialog
 import com.broken.telephone.features.describe_drawing.content.DescribeDrawingContent
@@ -47,10 +49,10 @@ fun DescribeDrawingScreen(
 
     if (state.showPostConfirmDialog || state.isPosting) {
         ConfirmDialog(
-            title = "Post description?",
-            body = "Your description will be submitted and visible to others.",
-            cancelText = "Cancel",
-            confirmText = "Post",
+            title = stringResource(R.string.describe_drawing_dialog_post_title),
+            body = stringResource(R.string.describe_drawing_dialog_post_body),
+            cancelText = stringResource(R.string.describe_drawing_dialog_post_cancel),
+            confirmText = stringResource(R.string.describe_drawing_dialog_post_confirm),
             onDismiss = viewModel::onPostDismiss,
             onConfirm = viewModel::onPostConfirm,
             confirmButtonColor = MaterialTheme.colorScheme.primary,
@@ -60,10 +62,10 @@ fun DescribeDrawingScreen(
 
     if (state.showDiscardDialog) {
         ConfirmDialog(
-            title = "Discard description?",
-            body = "Your text will be lost if you go back.",
-            cancelText = "Keep writing",
-            confirmText = "Discard",
+            title = stringResource(R.string.describe_drawing_dialog_discard_title),
+            body = stringResource(R.string.describe_drawing_dialog_discard_body),
+            cancelText = stringResource(R.string.describe_drawing_dialog_discard_cancel),
+            confirmText = stringResource(R.string.describe_drawing_dialog_discard_confirm),
             onDismiss = viewModel::onDiscardDismiss,
             onConfirm = viewModel::onDiscardConfirm,
         )
@@ -71,7 +73,7 @@ fun DescribeDrawingScreen(
 
     if (state.showTimesUpDialog) {
         TimesUpDialog(
-            message = "Your writing time has ended. You can try again in 10 minutes.",
+            message = stringResource(R.string.describe_drawing_times_up_message),
             onGotItClick = viewModel::onTimesUpGotIt,
         )
     }

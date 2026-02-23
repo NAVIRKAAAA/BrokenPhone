@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -123,7 +124,7 @@ fun SignUpTextField(
                             if (isPasswordVisible) R.drawable.password_visibility_on
                             else R.drawable.password_visibility_off
                         ),
-                        contentDescription = if (isPasswordVisible) "Hide password" else "Show password",
+                        contentDescription = if (isPasswordVisible) stringResource(R.string.sign_up_password_hide) else stringResource(R.string.sign_up_password_show),
                         tint = Color.Gray,
                     )
                 }

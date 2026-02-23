@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -33,7 +34,7 @@ fun DashboardTopBar(
     ) {
 
         Text(
-            text = "Dashboard",
+            text = stringResource(R.string.dashboard_title),
             textAlign = TextAlign.Center,
             fontFamily = FontFamily(Font(R.font.inter_medium)),
             fontSize = 16.sp,

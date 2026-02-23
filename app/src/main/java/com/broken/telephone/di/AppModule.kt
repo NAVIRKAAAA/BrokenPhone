@@ -154,5 +154,5 @@ val appModule = module {
     factoryOf(::UpdateThemeUseCase)
     viewModelOf(::ThemeViewModel)
 
-    single { AppNavBottomBarViewModel() }
+    single { AppNavBottomBarViewModel(get()) }
 }

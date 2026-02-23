@@ -6,7 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.broken.telephone.R
 import com.broken.telephone.core.dialog.ConfirmDialog
 import com.broken.telephone.core.dialog.TimesUpDialog
 import com.broken.telephone.features.draw.content.DrawContent
@@ -47,10 +49,10 @@ fun DrawScreen(
 
     if (state.showPostConfirmDialog || state.isPosting) {
         ConfirmDialog(
-            title = "Post drawing?",
-            body = "Your drawing will be submitted and visible to others.",
-            cancelText = "Cancel",
-            confirmText = "Post",
+            title = stringResource(R.string.draw_dialog_post_title),
+            body = stringResource(R.string.draw_dialog_post_body),
+            cancelText = stringResource(R.string.draw_dialog_post_cancel),
+            confirmText = stringResource(R.string.draw_dialog_post_confirm),
             onDismiss = { viewModel.onDrawAction(DrawingAction.OnPostDismiss) },
             onConfirm = { viewModel.onDrawAction(DrawingAction.OnPostConfirm) },
             confirmButtonColor = MaterialTheme.colorScheme.primary,
@@ -60,10 +62,10 @@ fun DrawScreen(
 
     if (state.showDiscardDialog) {
         ConfirmDialog(
-            title = "Discard drawing?",
-            body = "Your drawing will be lost if you go back.",
-            cancelText = "Keep drawing",
-            confirmText = "Discard",
+            title = stringResource(R.string.draw_dialog_discard_title),
+            body = stringResource(R.string.draw_dialog_discard_body),
+            cancelText = stringResource(R.string.draw_dialog_discard_cancel),
+            confirmText = stringResource(R.string.draw_dialog_discard_confirm),
             onDismiss = { viewModel.onDrawAction(DrawingAction.OnDiscardDismiss) },
             onConfirm = { viewModel.onDrawAction(DrawingAction.OnDiscardConfirm) },
         )
@@ -71,7 +73,7 @@ fun DrawScreen(
 
     if (state.showTimesUpDialog) {
         TimesUpDialog(
-            message = "Your drawing time has ended. You can try again in 10 minutes.",
+            message = stringResource(R.string.draw_times_up_message),
             onGotItClick = { viewModel.onDrawAction(DrawingAction.OnTimesUpGotIt) },
         )
     }

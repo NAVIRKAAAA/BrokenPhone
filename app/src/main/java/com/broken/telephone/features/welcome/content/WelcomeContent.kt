@@ -20,12 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -65,7 +65,7 @@ fun WelcomeContent(
             contentPadding = PaddingValues()
         ) {
             Text(
-                text = "Get Started",
+                text = stringResource(R.string.welcome_get_started),
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily(Font(R.font.inter_medium)),
                 fontSize = 16.sp,
@@ -90,7 +90,7 @@ fun WelcomeContent(
             contentPadding = PaddingValues()
         ) {
             Text(
-                text = "Sign In",
+                text = stringResource(R.string.welcome_sign_in),
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily(Font(R.font.inter_medium)),
                 fontSize = 16.sp,
@@ -105,7 +105,7 @@ fun WelcomeContent(
             onClick = onContinueAsGuest,
         ) {
             Text(
-                text = "Continue as Guest",
+                text = stringResource(R.string.welcome_continue_as_guest),
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily(Font(R.font.inter_medium)),
                 fontSize = 16.sp,
@@ -117,13 +117,13 @@ fun WelcomeContent(
 
         val primaryColor = MaterialTheme.colorScheme.primary
         val termsText = buildAnnotatedString {
-            append("By continuing, you agree to our ")
-            withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.Underline)) {
-                append("Terms")
+            append("${stringResource(R.string.welcome_terms_prefix)} ")
+            withStyle(SpanStyle(color = primaryColor)) {
+                append(stringResource(R.string.welcome_terms))
             }
-            append(" & ")
-            withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.Underline)) {
-                append("Privacy Policy")
+            append(" ${stringResource(R.string.welcome_terms_and)} ")
+            withStyle(SpanStyle(color = primaryColor)) {
+                append(stringResource(R.string.welcome_privacy_policy))
             }
         }
 

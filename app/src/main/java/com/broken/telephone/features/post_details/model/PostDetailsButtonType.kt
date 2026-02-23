@@ -1,39 +1,41 @@
 package com.broken.telephone.features.post_details.model
 
+import com.broken.telephone.R
+
 enum class PostDetailsButtonType(
-    val buttonText: String,
+    val buttonTextResId: Int,
     val isEnabled: Boolean,
-    val description: (timeLimit: Int) -> String,
+    val descriptionResId: Int,
 ) {
 
     DRAW(
-        buttonText = "Continue",
+        buttonTextResId = R.string.post_details_button_continue,
         isEnabled = true,
-        description = { timeLimit -> "Draw this in $timeLimit seconds" },
+        descriptionResId = R.string.post_details_description_draw,
     ),
 
     DESCRIBE(
-        buttonText = "Continue",
+        buttonTextResId = R.string.post_details_button_continue,
         isEnabled = true,
-        description = { timeLimit -> "Describe in $timeLimit seconds" },
+        descriptionResId = R.string.post_details_description_describe,
     ),
 
     UNAVAILABLE(
-        buttonText = "Continue",
+        buttonTextResId = R.string.post_details_button_continue,
         isEnabled = false,
-        description = { _ -> "Someone is working on this right now" },
+        descriptionResId = R.string.post_details_description_unavailable,
     ),
 
     COMPLETED(
-        buttonText = "View",
+        buttonTextResId = R.string.post_details_button_view,
         isEnabled = true,
-        description = { _ -> "The game has been completed" },
+        descriptionResId = R.string.post_details_description_completed,
     ),
 
     OWN_POST(
-        buttonText = "Continue",
+        buttonTextResId = R.string.post_details_button_continue,
         isEnabled = false,
-        description = { _ -> "You can't continue your own post" },
+        descriptionResId = R.string.post_details_description_own_post,
     ),
 
 }

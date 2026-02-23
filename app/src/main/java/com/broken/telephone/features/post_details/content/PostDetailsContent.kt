@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -111,7 +112,7 @@ fun PostDetailsContent(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         Text(
-                            text = buttonType.buttonText,
+                            text = stringResource(buttonType.buttonTextResId),
                             textAlign = TextAlign.Center,
                             fontFamily = FontFamily(Font(R.font.inter_medium)),
                             fontSize = 16.sp,
@@ -124,7 +125,7 @@ fun PostDetailsContent(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = buttonType.description(post.nextTimeLimit),
+                text = stringResource(buttonType.descriptionResId, post.nextTimeLimit),
                 fontFamily = FontFamily(Font(R.font.inter_regular)),
                 fontSize = 12.sp,
                 lineHeight = 16.sp,
