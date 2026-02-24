@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -87,7 +88,7 @@ fun ChainSettingsDialog(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Chain settings",
+                    text = stringResource(R.string.create_post_chain_settings_title),
                     textAlign = TextAlign.Center,
                     fontFamily = FontFamily(Font(R.font.inter_medium)),
                     fontSize = 18.sp,
@@ -109,7 +110,7 @@ fun ChainSettingsDialog(
             Spacer(modifier = Modifier.height(24.dp))
 
             ChainSettingsItem(
-                title = "Chain length",
+                title = stringResource(R.string.create_post_chain_settings_chain_length),
                 value = chainLength.toString(),
                 range = "$CHAIN_LENGTH_MIN-$CHAIN_LENGTH_MAX",
                 onMinusClick = { chainLength -= CHAIN_LENGTH_STEP },
@@ -121,7 +122,7 @@ fun ChainSettingsDialog(
             Spacer(modifier = Modifier.height(20.dp))
 
             ChainSettingsItem(
-                title = "Text response",
+                title = stringResource(R.string.create_post_chain_settings_text_response),
                 value = "${textTimeLimit}s",
                 range = "${TEXT_TIME_MIN}s-${TEXT_TIME_MAX}s",
                 onMinusClick = { textTimeLimit -= TEXT_TIME_STEP },
@@ -133,7 +134,7 @@ fun ChainSettingsDialog(
             Spacer(modifier = Modifier.height(20.dp))
 
             ChainSettingsItem(
-                title = "Drawing response",
+                title = stringResource(R.string.create_post_chain_settings_drawing_response),
                 value = "${drawingTimeLimit}s",
                 range = "${DRAWING_TIME_MIN}s-${DRAWING_TIME_MAX}s",
                 onMinusClick = { drawingTimeLimit -= DRAWING_TIME_STEP },
@@ -155,7 +156,7 @@ fun ChainSettingsDialog(
                 shape = RoundedCornerShape(14.dp),
             ) {
                 Text(
-                    text = "Done",
+                    text = stringResource(R.string.create_post_chain_settings_button_done),
                     textAlign = TextAlign.Center,
                     fontFamily = FontFamily(Font(R.font.inter_medium)),
                     fontSize = 18.sp,

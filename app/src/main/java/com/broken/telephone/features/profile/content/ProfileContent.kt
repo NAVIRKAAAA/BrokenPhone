@@ -16,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -63,7 +64,7 @@ fun ProfileContent(
             .statusBarsPadding(),
     ) {
         ProfileTopBar(
-            title = "Profile",
+            title = stringResource(R.string.profile_title),
             onEditClick = onEditClick,
             onSettingsClick = onSettingsClick,
         )
@@ -81,8 +82,6 @@ fun ProfileContent(
             containerColor = Color.Transparent,
         ) {
             ProfileTab.entries.forEachIndexed { index, tab ->
-                val tabName = tab.name.lowercase().replaceFirstChar { it.uppercase() }
-
                 val isSelected = state.selectedTab.ordinal == index
                 val color = if (isSelected) {
                     MaterialTheme.colorScheme.primary
@@ -95,7 +94,7 @@ fun ProfileContent(
                     onClick = { onTabSelect(tab) },
                     text = {
                         Text(
-                            text = tabName,
+                            text = stringResource(tab.labelResId),
                             textAlign = TextAlign.Start,
                             fontFamily = FontFamily(Font(R.font.inter_medium)),
                             fontSize = 17.sp,

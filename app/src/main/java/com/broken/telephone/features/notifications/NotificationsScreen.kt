@@ -10,10 +10,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.broken.telephone.R
 import com.broken.telephone.core.dialog.ConfirmDialog
 import com.broken.telephone.core.utils.findActivity
 import com.broken.telephone.core.utils.isPostNotificationsGranted
@@ -80,10 +82,10 @@ fun NotificationsScreen(
 
     if (state.showRationaleDialog) {
         ConfirmDialog(
-            title = "Allow Notifications",
-            body = "To receive updates about new posts and chain activity, please allow the app to send notifications.",
-            cancelText = "Cancel",
-            confirmText = "Allow",
+            title = stringResource(R.string.notifications_dialog_rationale_title),
+            body = stringResource(R.string.notifications_dialog_rationale_body),
+            cancelText = stringResource(R.string.common_cancel),
+            confirmText = stringResource(R.string.notifications_dialog_rationale_confirm),
             onDismiss = viewModel::onRationaleDismiss,
             onConfirm = viewModel::onRationaleConfirm,
             confirmButtonColor = MaterialTheme.colorScheme.primary,

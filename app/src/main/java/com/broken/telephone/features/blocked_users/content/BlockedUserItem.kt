@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -88,7 +89,7 @@ fun BlockedUserItem(
 
 
                 Text(
-                    text = "Blocked on $relativeTime",
+                    text = stringResource(R.string.blocked_users_item_blocked_on, relativeTime),
                     fontFamily = FontFamily(Font(R.font.inter_regular)),
                     fontSize = 13.sp,
                     lineHeight = 20.sp,
@@ -111,7 +112,7 @@ fun BlockedUserItem(
                 )
             ) {
                 Text(
-                    text = "Unblock",
+                    text = stringResource(R.string.blocked_users_item_unblock),
                     textAlign = TextAlign.Center,
                     fontFamily = FontFamily(Font(R.font.inter_medium)),
                     fontSize = 14.sp,

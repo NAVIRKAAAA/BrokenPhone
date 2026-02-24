@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -19,10 +18,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -63,7 +62,7 @@ fun StartNewChainDialog(
         ) {
 
             Text(
-                text = "Start new chain?",
+                text = stringResource(R.string.create_post_start_chain_title),
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily(Font(R.font.inter_medium)),
                 fontSize = 18.sp,
@@ -73,7 +72,7 @@ fun StartNewChainDialog(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "Your post will start a chain that others can continue. This cannot be undone.",
+                text = stringResource(R.string.create_post_start_chain_body),
                 fontFamily = FontFamily(Font(R.font.inter_regular)),
                 fontSize = 14.sp,
                 lineHeight = 21.sp,
@@ -83,28 +82,28 @@ fun StartNewChainDialog(
             Spacer(modifier = Modifier.height(12.dp))
 
             StartNewChainSettingsItem(
-                text = "Chain length: $maxGenerations posts",
+                text = stringResource(R.string.create_post_start_chain_chain_length, maxGenerations),
                 iconResId = R.drawable.ic_mutations,
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             StartNewChainSettingsItem(
-                text = "Text time: ${textTimeLimit}s",
+                text = stringResource(R.string.create_post_start_chain_text_time, textTimeLimit),
                 iconResId = R.drawable.ic_clock,
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             StartNewChainSettingsItem(
-                text = "Draw time: ${drawingTimeLimit}s",
+                text = stringResource(R.string.create_post_start_chain_draw_time, drawingTimeLimit),
                 iconResId = R.drawable.ic_clock,
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "Settings apply to the entire chain",
+                text = stringResource(R.string.create_post_start_chain_settings_note),
                 fontFamily = FontFamily(Font(R.font.inter_regular)),
                 fontSize = 14.sp,
                 lineHeight = 21.sp,
@@ -132,7 +131,7 @@ fun StartNewChainDialog(
                     contentPadding = PaddingValues()
                 ) {
                     Text(
-                        text = "Cancel",
+                        text = stringResource(R.string.common_cancel),
                         textAlign = TextAlign.Center,
                         fontFamily = FontFamily(Font(R.font.inter_medium)),
                         fontSize = 16.sp,
@@ -161,7 +160,7 @@ fun StartNewChainDialog(
                         )
                     } else {
                         Text(
-                            text = "Start Chain",
+                            text = stringResource(R.string.create_post_start_chain_confirm),
                             textAlign = TextAlign.Center,
                             fontFamily = FontFamily(Font(R.font.inter_medium)),
                             fontSize = 16.sp,

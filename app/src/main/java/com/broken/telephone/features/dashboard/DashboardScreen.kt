@@ -1,9 +1,9 @@
 package com.broken.telephone.features.dashboard
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,7 +13,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.broken.telephone.R
 import com.broken.telephone.core.bottom_sheet.post_bottom_sheet.PostBottomSheet
 import com.broken.telephone.core.bottom_sheet.post_bottom_sheet.model.PostBottomSheetAction
 import com.broken.telephone.core.bottom_sheet.report_post_bottom_sheet.ReportPostBottomSheet
@@ -24,6 +26,7 @@ import com.broken.telephone.features.dashboard.model.DashboardSideEffect
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
+@SuppressLint("LocalContextGetResourceValueCall")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
@@ -39,16 +42,15 @@ fun DashboardScreen(
 
     LaunchedEffect(Unit) {
         viewModel.sideEffects.collect { effect ->
-            Log.d("LOG_TAG", "show toast")
             when (effect) {
                 DashboardSideEffect.ShowReportSuccessToast ->
-                    Toast.makeText(context, "Thank you for your report!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.common_toast_report_success), Toast.LENGTH_SHORT).show()
                 DashboardSideEffect.ShowNotInterestedToast ->
-                    Toast.makeText(context, "Got it! We'll show you fewer posts like this.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.common_toast_not_interested), Toast.LENGTH_SHORT).show()
                 is DashboardSideEffect.ShowCopyLinkSuccessToast -> {
                     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     clipboard.setPrimaryClip(ClipData.newPlainText("post_link", effect.link))
-                    Toast.makeText(context, "Link copied!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.common_toast_link_copied), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -112,10 +114,10 @@ fun DashboardScreen(
 
     if (state.isBlockDialogVisible) {
         ConfirmDialog(
-            title = "Block user?",
-            body = "You won't see posts from this user anymore.",
-            cancelText = "Cancel",
-            confirmText = "Block",
+            title = stringResource(R.string.common_dialog_block_title),
+            body = stringResource(R.string.common_dialog_block_body),
+            cancelText = stringResource(R.string.common_cancel),
+            confirmText = stringResource(R.string.common_block),
             onDismiss = viewModel::onBlockDialogDismiss,
             onConfirm = viewModel::onBlockConfirm,
             isLoading = state.isBlockLoading,
@@ -124,10 +126,10 @@ fun DashboardScreen(
 
     if (state.isDeleteDialogVisible) {
         ConfirmDialog(
-            title = "Delete post?",
-            body = "This action cannot be undone.",
-            cancelText = "Cancel",
-            confirmText = "Delete",
+            title = stringResource(R.string.common_dialog_delete_post_title),
+            body = stringResource(R.string.common_dialog_delete_post_body),
+            cancelText = stringResource(R.string.common_cancel),
+            confirmText = stringResource(R.string.common_delete),
             onDismiss = viewModel::onDeleteDialogDismiss,
             onConfirm = viewModel::onDeleteConfirm,
             isLoading = state.isDeleteLoading,

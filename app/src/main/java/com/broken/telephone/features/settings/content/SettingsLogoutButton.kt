@@ -17,8 +17,8 @@ import com.broken.telephone.R
 @Composable
 fun SettingsLogoutButton(
     onClick: () -> Unit,
+    text: String,
     modifier: Modifier = Modifier,
-    text: String = "Log Out",
 ) {
     Text(
         text = text,
@@ -36,5 +36,5 @@ fun SettingsLogoutButton(
 @Preview(showBackground = true)
 @Composable
 fun SettingsLogoutButtonPreview() {
-    SettingsLogoutButton(onClick = {})
+    SettingsLogoutButton(onClick = {}, text = "Log Out")
 }

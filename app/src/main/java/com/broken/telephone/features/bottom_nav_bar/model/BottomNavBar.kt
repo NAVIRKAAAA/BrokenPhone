@@ -1,24 +1,25 @@
 package com.broken.telephone.features.bottom_nav_bar.model
 
+import androidx.annotation.StringRes
 import com.broken.telephone.R
 
 enum class BottomNavBar(
-    val title: String,
+    @param:StringRes val titleResId: Int,
     val iconResId: Int,
 ) {
 
     DASHBOARD(
-        title = "Dashboard",
+        titleResId = R.string.bottom_nav_bar_dashboard,
         iconResId = R.drawable.ic_mutations
     ),
 
     CREATE(
-        title = "Create",
+        titleResId = R.string.bottom_nav_bar_create,
         iconResId = R.drawable.ic_plus
     ),
 
     PROFILE(
-        title = "Profile",
+        titleResId = R.string.bottom_nav_bar_profile,
         iconResId = R.drawable.ic_profile
     )
 

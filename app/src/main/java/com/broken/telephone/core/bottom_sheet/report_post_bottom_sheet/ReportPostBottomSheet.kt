@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
@@ -77,7 +78,7 @@ fun ReportPostBottomSheetContent(
     ) {
 
         Text(
-            text = "Why are you reporting this?",
+            text = stringResource(R.string.report_post_bottom_sheet_title),
             fontFamily = FontFamily(Font(R.font.inter_medium)),
             fontSize = 16.sp,
             lineHeight = 24.sp,
@@ -90,7 +91,7 @@ fun ReportPostBottomSheetContent(
         val types = ReportPostType.entries
         types.forEachIndexed { index, type ->
             ReportPostBottomSheetButton(
-                text = type.label,
+                text = stringResource(type.labelResId),
                 modifier = Modifier
                     .clickable { onReportClick(type) }
                     .padding(horizontal = 16.dp),

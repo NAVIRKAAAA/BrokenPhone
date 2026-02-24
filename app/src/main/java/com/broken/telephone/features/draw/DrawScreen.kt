@@ -51,8 +51,8 @@ fun DrawScreen(
         ConfirmDialog(
             title = stringResource(R.string.draw_dialog_post_title),
             body = stringResource(R.string.draw_dialog_post_body),
-            cancelText = stringResource(R.string.draw_dialog_post_cancel),
-            confirmText = stringResource(R.string.draw_dialog_post_confirm),
+            cancelText = stringResource(R.string.common_cancel),
+            confirmText = stringResource(R.string.common_post),
             onDismiss = { viewModel.onDrawAction(DrawingAction.OnPostDismiss) },
             onConfirm = { viewModel.onDrawAction(DrawingAction.OnPostConfirm) },
             confirmButtonColor = MaterialTheme.colorScheme.primary,
@@ -65,7 +65,7 @@ fun DrawScreen(
             title = stringResource(R.string.draw_dialog_discard_title),
             body = stringResource(R.string.draw_dialog_discard_body),
             cancelText = stringResource(R.string.draw_dialog_discard_cancel),
-            confirmText = stringResource(R.string.draw_dialog_discard_confirm),
+            confirmText = stringResource(R.string.common_discard),
             onDismiss = { viewModel.onDrawAction(DrawingAction.OnDiscardDismiss) },
             onConfirm = { viewModel.onDrawAction(DrawingAction.OnDiscardConfirm) },
         )

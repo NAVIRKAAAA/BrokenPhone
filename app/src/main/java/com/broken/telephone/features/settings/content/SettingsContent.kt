@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,6 +24,7 @@ import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.features.edit_profile.content.EditProfileTopBar
 import com.broken.telephone.features.settings.model.SettingsState
+
 
 @Composable
 fun SettingsContent(
@@ -43,23 +45,22 @@ fun SettingsContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         EditProfileTopBar(
-            title = "Settings",
+            title = stringResource(R.string.settings_title),
             onBackClick = onBackClick,
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         SettingsItem(
-            text = "Account Settings",
+            text = stringResource(R.string.settings_item_account),
             onClick = onAccountSettingsClick,
             modifier = Modifier
         )
 
         HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
 
-
         SettingsItem(
-            text = "App Preferences",
+            text = stringResource(R.string.settings_item_app_preferences),
             onClick = onAppPreferencesClick,
             modifier = Modifier
         )
@@ -67,7 +68,7 @@ fun SettingsContent(
         HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
 
         SettingsItem(
-            text = "Information & Legal",
+            text = stringResource(R.string.settings_item_information_legal),
             onClick = onInformationLegalClick,
             modifier = Modifier
         )
@@ -76,6 +77,7 @@ fun SettingsContent(
 
         SettingsLogoutButton(
             onClick = onLogoutClick,
+            text = stringResource(R.string.settings_logout_button),
         )
 
         Spacer(modifier = Modifier.height(16.dp).weight(1f))

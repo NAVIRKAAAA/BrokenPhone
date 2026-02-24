@@ -12,8 +12,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.features.edit_profile.content.EditProfileTopBar
 import com.broken.telephone.features.settings.content.SettingsItem
@@ -32,21 +34,21 @@ fun InformationLegalContent(
             .statusBarsPadding(),
     ) {
         EditProfileTopBar(
-            title = "Information & Legal",
+            title = stringResource(R.string.information_legal_title),
             onBackClick = onBackClick,
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         SettingsItem(
-            text = "Terms of Service",
+            text = stringResource(R.string.information_legal_terms_of_service),
             onClick = onTermsOfServiceClick,
         )
 
         HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
 
         SettingsItem(
-            text = "Privacy Policy",
+            text = stringResource(R.string.information_legal_privacy_policy),
             onClick = onPrivacyPolicyClick,
         )
 

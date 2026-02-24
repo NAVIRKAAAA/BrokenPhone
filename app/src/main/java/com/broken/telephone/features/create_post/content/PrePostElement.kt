@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -130,7 +131,7 @@ fun PrePostElement(
                     Box(modifier = Modifier.fillMaxWidth()) {
                         if (text.isEmpty()) {
                             Text(
-                                text = "Start a new chain...",
+                                text = stringResource(R.string.create_post_placeholder),
                                 fontFamily = FontFamily(Font(R.font.inter_regular)),
                                 fontSize = 15.sp,
                                 lineHeight = 22.sp,
@@ -151,7 +152,7 @@ fun PrePostElement(
 
                 BadgeElement(
                     iconResId = R.drawable.ic_mutations,
-                    text = "0/$maxGenerations",
+                    text = stringResource(R.string.create_post_badge_generations, maxGenerations),
                     onClick = onBadgeClick,
                 )
 
@@ -159,7 +160,7 @@ fun PrePostElement(
 
                 BadgeElement(
                     iconResId = R.drawable.ic_clock,
-                    text = "${textTimeLimit}s / ${drawingTimeLimit}s",
+                    text = stringResource(R.string.create_post_badge_time_limits, textTimeLimit, drawingTimeLimit),
                     onClick = onBadgeClick,
                 )
                 
@@ -179,7 +180,7 @@ fun PrePostElement(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     Text(
-                        text = "${text.length}/${CreatePostState.MAX_TEXT_LENGTH}",
+                        text = stringResource(R.string.create_post_text_counter, text.length, CreatePostState.MAX_TEXT_LENGTH),
                         textAlign = TextAlign.Center,
                         fontFamily = FontFamily(Font(R.font.inter_medium)),
                         fontSize = 14.sp,

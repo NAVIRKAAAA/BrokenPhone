@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,7 +51,7 @@ fun ProfileTopBar(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_edit),
-                    contentDescription = "Edit",
+                    contentDescription = stringResource(R.string.profile_top_bar_edit),
                     modifier = Modifier.size(24.dp),
                     tint = Color(0xFF666666)
                 )
@@ -61,7 +62,7 @@ fun ProfileTopBar(
             IconButton(onClick = onSettingsClick) {
                 Icon(
                     painter = painterResource(R.drawable.ic_settings),
-                    contentDescription = "Settings",
+                    contentDescription = stringResource(R.string.profile_top_bar_settings),
                     modifier = Modifier.size(24.dp),
                     tint = Color(0xFF666666)
                 )

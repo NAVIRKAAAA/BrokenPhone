@@ -11,8 +11,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.domain.settings.AppTheme
 import com.broken.telephone.features.edit_profile.content.EditProfileTopBar
@@ -33,7 +35,7 @@ fun ThemeContent(
             .statusBarsPadding(),
     ) {
         EditProfileTopBar(
-            title = "Theme",
+            title = stringResource(R.string.theme_title),
             onBackClick = onBackClick,
         )
 
@@ -41,10 +43,10 @@ fun ThemeContent(
 
         AppTheme.entries.forEach { theme ->
             LanguageRadioItem(
-                text = theme.displayName,
+                text = stringResource(theme.displayNameResId),
                 selected = theme == state.selectedTheme,
                 onClick = { onThemeClick(theme) },
-                body = if (theme == AppTheme.SYSTEM) "Match device settings" else null,
+                body = if (theme == AppTheme.SYSTEM) stringResource(R.string.theme_system_description) else null,
             )
 
             if (theme != AppTheme.entries.lastOrNull()) {

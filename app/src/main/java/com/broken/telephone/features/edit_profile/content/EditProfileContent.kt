@@ -13,8 +13,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.features.edit_profile.model.EditProfileState
 import com.broken.telephone.features.profile.model.UserUi
@@ -33,12 +35,15 @@ fun EditProfileContent(
             .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding(),
     ) {
-        EditProfileTopBar(onBackClick = onBackClick)
+        EditProfileTopBar(
+            title = stringResource(R.string.edit_profile_title),
+            onBackClick = onBackClick,
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         AccountAvatarInfoItem(
-            name = "Avatar",
+            name = stringResource(R.string.edit_profile_field_avatar),
             avatarUrl = state.user?.avatarUrl,
             modifier = Modifier.clickable(onClick = onEditPhotoClick).padding(horizontal = 16.dp)
         )
@@ -46,7 +51,7 @@ fun EditProfileContent(
         HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
 
         AccountTextInfoItem(
-            name = "Username",
+            name = stringResource(R.string.edit_profile_field_username),
             value = state.user?.username.orEmpty(),
             modifier = Modifier.clickable(onClick = onEditUsernameClick).padding(horizontal = 16.dp)
         )
@@ -54,7 +59,7 @@ fun EditProfileContent(
         HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
 
         AccountTextInfoItem(
-            name = "Email",
+            name = stringResource(R.string.edit_profile_field_email),
             value = state.user?.email.orEmpty(),
             enabled = false,
             modifier = Modifier.padding(horizontal = 16.dp)

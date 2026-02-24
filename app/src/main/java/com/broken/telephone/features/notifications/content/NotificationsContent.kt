@@ -13,8 +13,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.domain.settings.NotificationType
 import com.broken.telephone.features.edit_profile.content.AccountTextInfoItem
@@ -37,15 +39,15 @@ fun NotificationsContent(
             .statusBarsPadding(),
     ) {
         EditProfileTopBar(
-            title = "Notifications",
+            title = stringResource(R.string.notifications_title),
             onBackClick = onBackClick,
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         AccountTextInfoItem(
-            name = "Notification Permission",
-            value = if (state.isNotificationPermissionGranted) "On" else "Off",
+            name = stringResource(R.string.notifications_permission),
+            value = if (state.isNotificationPermissionGranted) stringResource(R.string.notifications_permission_on) else stringResource(R.string.notifications_permission_off),
             modifier = Modifier
                 .clickable(onClick = onNotificationPermissionClick)
                 .padding(horizontal = 16.dp),
@@ -56,7 +58,7 @@ fun NotificationsContent(
         Spacer(modifier = Modifier.height(8.dp))
 
         NotificationSwitchItem(
-            text = "All Notifications",
+            text = stringResource(R.string.notifications_all),
             checked = NotificationType.entries.all { it in state.enabledNotifications },
             onCheckedChange = onAllNotificationsToggle,
         )
@@ -65,7 +67,7 @@ fun NotificationsContent(
 
         NotificationType.entries.forEach { type ->
             NotificationSwitchItem(
-                text = type.displayName,
+                text = stringResource(type.displayNameResId),
                 checked = type in state.enabledNotifications,
                 onCheckedChange = { enabled -> onNotificationToggle(type, enabled) },
             )

@@ -51,8 +51,8 @@ fun DescribeDrawingScreen(
         ConfirmDialog(
             title = stringResource(R.string.describe_drawing_dialog_post_title),
             body = stringResource(R.string.describe_drawing_dialog_post_body),
-            cancelText = stringResource(R.string.describe_drawing_dialog_post_cancel),
-            confirmText = stringResource(R.string.describe_drawing_dialog_post_confirm),
+            cancelText = stringResource(R.string.common_cancel),
+            confirmText = stringResource(R.string.common_post),
             onDismiss = viewModel::onPostDismiss,
             onConfirm = viewModel::onPostConfirm,
             confirmButtonColor = MaterialTheme.colorScheme.primary,
@@ -64,8 +64,8 @@ fun DescribeDrawingScreen(
         ConfirmDialog(
             title = stringResource(R.string.describe_drawing_dialog_discard_title),
             body = stringResource(R.string.describe_drawing_dialog_discard_body),
-            cancelText = stringResource(R.string.describe_drawing_dialog_discard_cancel),
-            confirmText = stringResource(R.string.describe_drawing_dialog_discard_confirm),
+            cancelText = stringResource(R.string.common_keep_writing),
+            confirmText = stringResource(R.string.common_discard),
             onDismiss = viewModel::onDiscardDismiss,
             onConfirm = viewModel::onDiscardConfirm,
         )

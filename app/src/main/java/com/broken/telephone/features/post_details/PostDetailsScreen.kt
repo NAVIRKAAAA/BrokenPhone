@@ -40,11 +40,11 @@ fun PostDetailsScreen(
         viewModel.sideEffects.collect { effect ->
             when (effect) {
                 PostDetailsSideEffect.ShowReportSuccessToast ->  {
-                    val text = context.getString(R.string.post_details_toast_report_success)
+                    val text = context.getString(R.string.common_toast_report_success)
                     Toast.makeText(context,text , Toast.LENGTH_SHORT).show()
                 }
                 is PostDetailsSideEffect.ShowCopyLinkSuccessToast -> {
-                    val text = context.getString(R.string.post_details_toast_link_copied)
+                    val text = context.getString(R.string.common_toast_link_copied)
                     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     clipboard.setPrimaryClip(ClipData.newPlainText("post_link", effect.link))
                     Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
@@ -90,10 +90,10 @@ fun PostDetailsScreen(
 
     if (state.isBlockDialogVisible) {
         ConfirmDialog(
-            title = stringResource(R.string.post_details_dialog_block_title),
-            body = stringResource(R.string.post_details_dialog_block_body),
-            cancelText = stringResource(R.string.post_details_dialog_block_cancel),
-            confirmText = stringResource(R.string.post_details_dialog_block_confirm),
+            title = stringResource(R.string.common_dialog_block_title),
+            body = stringResource(R.string.common_dialog_block_body),
+            cancelText = stringResource(R.string.common_cancel),
+            confirmText = stringResource(R.string.common_block),
             onDismiss = viewModel::onBlockDialogDismiss,
             onConfirm = viewModel::onBlockConfirm,
             isLoading = state.isBlockLoading,
@@ -102,10 +102,10 @@ fun PostDetailsScreen(
 
     if (state.isDeleteDialogVisible) {
         ConfirmDialog(
-            title = stringResource(R.string.post_details_dialog_delete_title),
-            body = stringResource(R.string.post_details_dialog_delete_body),
-            cancelText = stringResource(R.string.post_details_dialog_delete_cancel),
-            confirmText = stringResource(R.string.post_details_dialog_delete_confirm),
+            title = stringResource(R.string.common_dialog_delete_post_title),
+            body = stringResource(R.string.common_dialog_delete_post_body),
+            cancelText = stringResource(R.string.common_cancel),
+            confirmText = stringResource(R.string.common_delete),
             onDismiss = viewModel::onDeleteDialogDismiss,
             onConfirm = viewModel::onDeleteConfirm,
             isLoading = state.isDeleteLoading,

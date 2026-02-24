@@ -24,7 +24,7 @@ import com.broken.telephone.core.theme.BrokenTelephoneTheme
 
 @Composable
 fun EditProfileTopBar(
-    title: String = "Edit Profile",
+    title: String,
     onBackClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
@@ -60,7 +60,7 @@ fun EditProfileTopBar(
 fun EditProfileTopBarPreview() {
     BrokenTelephoneTheme {
         Box {
-            EditProfileTopBar()
+            EditProfileTopBar(title = "Edit Profile")
         }
     }
 }

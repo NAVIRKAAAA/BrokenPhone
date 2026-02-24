@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -39,7 +40,7 @@ fun BlockedUsersEmptyContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "No blocked users",
+            text = stringResource(R.string.blocked_users_empty_title),
             textAlign = TextAlign.Center,
             fontFamily = FontFamily(Font(R.font.inter_medium)),
             fontSize = 19.sp,
@@ -49,7 +50,7 @@ fun BlockedUsersEmptyContent(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Users you block will appear here",
+            text = stringResource(R.string.blocked_users_empty_body),
             textAlign = TextAlign.Center,
             fontFamily = FontFamily(Font(R.font.inter_medium)),
             fontSize = 14.sp,

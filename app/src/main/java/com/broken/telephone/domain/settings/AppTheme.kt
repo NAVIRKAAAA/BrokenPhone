@@ -1,7 +1,10 @@
 package com.broken.telephone.domain.settings
 
-enum class AppTheme(val displayName: String) {
-    SYSTEM("System"),
-    LIGHT("Light"),
-    DARK("Dark"),
+import androidx.annotation.StringRes
+import com.broken.telephone.R
+
+enum class AppTheme(@param:StringRes val displayNameResId: Int) {
+    SYSTEM(R.string.theme_system),
+    LIGHT(R.string.theme_light),
+    DARK(R.string.theme_dark),
 }

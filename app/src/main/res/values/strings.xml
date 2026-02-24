@@ -1,6 +1,21 @@
 <resources>
     <string name="app_name">Broken Telephone: Draw &amp; Guess</string>
 
+    <!-- Common -->
+    <string name="common_cancel">Cancel</string>
+    <string name="common_post">Post</string>
+    <string name="common_discard">Discard</string>
+    <string name="common_keep_writing">Keep writing</string>
+    <string name="common_block">Block</string>
+    <string name="common_delete">Delete</string>
+    <string name="common_toast_report_success">Thank you for your report!</string>
+    <string name="common_toast_link_copied">Link copied!</string>
+    <string name="common_toast_not_interested">Got it! We\'ll show you fewer posts like this.</string>
+    <string name="common_dialog_block_title">Block user?</string>
+    <string name="common_dialog_block_body">You won\'t see posts from this user anymore.</string>
+    <string name="common_dialog_delete_post_title">Delete post?</string>
+    <string name="common_dialog_delete_post_body">This action cannot be undone.</string>
+
     <!-- Chain Details -->
     <string name="chain_details_title">Chain Details</string>
     <string name="chain_details_complete">Chain Complete!</string>
@@ -11,24 +26,17 @@
     <string name="describe_drawing_placeholder">Describe what you see…</string>
     <string name="describe_drawing_dialog_post_title">Post description?</string>
     <string name="describe_drawing_dialog_post_body">Your description will be submitted and visible to others.</string>
-    <string name="describe_drawing_dialog_post_cancel">Cancel</string>
-    <string name="describe_drawing_dialog_post_confirm">Post</string>
     <string name="describe_drawing_dialog_discard_title">Discard description?</string>
     <string name="describe_drawing_dialog_discard_body">Your text will be lost if you go back.</string>
-    <string name="describe_drawing_dialog_discard_cancel">Keep writing</string>
-    <string name="describe_drawing_dialog_discard_confirm">Discard</string>
     <string name="describe_drawing_times_up_message">Your writing time has ended. You can try again in 10 minutes.</string>
 
     <!-- Draw -->
     <string name="draw_title">Draw</string>
     <string name="draw_dialog_post_title">Post drawing?</string>
     <string name="draw_dialog_post_body">Your drawing will be submitted and visible to others.</string>
-    <string name="draw_dialog_post_cancel">Cancel</string>
-    <string name="draw_dialog_post_confirm">Post</string>
     <string name="draw_dialog_discard_title">Discard drawing?</string>
     <string name="draw_dialog_discard_body">Your drawing will be lost if you go back.</string>
     <string name="draw_dialog_discard_cancel">Keep drawing</string>
-    <string name="draw_dialog_discard_confirm">Discard</string>
     <string name="draw_times_up_message">Your drawing time has ended. You can try again in 10 minutes.</string>
 
     <!-- Post Details -->
@@ -40,16 +48,90 @@
     <string name="post_details_description_unavailable">Someone is working on this right now</string>
     <string name="post_details_description_completed">The game has been completed</string>
     <string name="post_details_description_own_post">You can\'t continue your own post</string>
-    <string name="post_details_toast_report_success">Thank you for your report!</string>
-    <string name="post_details_toast_link_copied">Link copied!</string>
-    <string name="post_details_dialog_block_title">Block user?</string>
-    <string name="post_details_dialog_block_body">You won\'t see posts from this user anymore.</string>
-    <string name="post_details_dialog_block_cancel">Cancel</string>
-    <string name="post_details_dialog_block_confirm">Block</string>
-    <string name="post_details_dialog_delete_title">Delete post?</string>
-    <string name="post_details_dialog_delete_body">This action cannot be undone.</string>
-    <string name="post_details_dialog_delete_cancel">Cancel</string>
-    <string name="post_details_dialog_delete_confirm">Delete</string>
+
+    <!-- Times Up Dialog -->
+    <string name="times_up_dialog_title">Time\'s up!</string>
+    <string name="times_up_dialog_got_it">Got it</string>
+
+    <!-- Information & Legal -->
+    <string name="information_legal_title">Information &amp; Legal</string>
+    <string name="information_legal_terms_of_service">Terms of Service</string>
+    <string name="information_legal_privacy_policy">Privacy Policy</string>
+
+    <!-- App Preferences -->
+    <string name="app_preferences_title">App Preferences</string>
+    <string name="app_preferences_notifications">Notifications</string>
+    <string name="app_preferences_language">Language</string>
+    <string name="app_preferences_theme">Theme</string>
+
+    <!-- Language -->
+    <string name="language_title">Language</string>
+    <string name="language_english">English</string>
+    <string name="language_ukrainian">Українська</string>
+
+    <!-- Theme -->
+    <string name="theme_title">Theme</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_system_description">Match device settings</string>
+
+    <!-- Notifications -->
+    <string name="notifications_title">Notifications</string>
+    <string name="notifications_permission">Notification Permission</string>
+    <string name="notifications_permission_on">On</string>
+    <string name="notifications_permission_off">Off</string>
+    <string name="notifications_all">All Notifications</string>
+    <string name="notifications_type_news">News</string>
+    <string name="notifications_type_new_posts">New Posts</string>
+    <string name="notifications_type_chain_completed">Chain Completed</string>
+    <string name="notifications_dialog_rationale_title">Allow Notifications</string>
+    <string name="notifications_dialog_rationale_body">To receive updates about new posts and chain activity, please allow the app to send notifications.</string>
+    <string name="notifications_dialog_rationale_confirm">Allow</string>
+
+    <!-- Blocked Users -->
+    <string name="blocked_users_title">Blocked Users</string>
+    <string name="blocked_users_empty_title">No blocked users</string>
+    <string name="blocked_users_empty_body">Users you block will appear here</string>
+    <string name="blocked_users_item_blocked_on">Blocked on %1$s</string>
+    <string name="blocked_users_item_unblock">Unblock</string>
+    <string name="blocked_users_dialog_title">Unblock user?</string>
+    <string name="blocked_users_dialog_body">%1$s will be able to see your posts and interact with you again.</string>
+    <string name="blocked_users_dialog_confirm">Unblock</string>
+
+    <!-- Account Settings -->
+    <string name="account_settings_title">Account Settings</string>
+    <string name="account_settings_blocked_users">Blocked Users</string>
+    <string name="account_settings_delete_account">Delete Account</string>
+    <string name="account_settings_dialog_delete_title">Delete Account?</string>
+    <string name="account_settings_dialog_delete_body">This action cannot be undone. All your posts, contributions, and data will be permanently deleted.</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_item_account">Account Settings</string>
+    <string name="settings_item_app_preferences">App Preferences</string>
+    <string name="settings_item_information_legal">Information &amp; Legal</string>
+    <string name="settings_logout_button">Log Out</string>
+    <string name="settings_dialog_logout_title">Logout?</string>
+    <string name="settings_dialog_logout_body">Are you sure you want to logout?</string>
+    <string name="settings_dialog_logout_confirm">Logout</string>
+
+    <!-- Edit Username -->
+    <string name="edit_username_title">Edit Username</string>
+    <string name="edit_username_button_save">Save</string>
+    <string name="edit_username_label">Username</string>
+
+    <!-- Edit Avatar -->
+    <string name="edit_avatar_title">Edit Avatar</string>
+    <string name="edit_avatar_button_save">Save</string>
+    <string name="edit_avatar_current">Current Avatar</string>
+    <string name="edit_avatar_choose">Choose Avatar</string>
+
+    <!-- Edit Profile -->
+    <string name="edit_profile_title">Edit Profile</string>
+    <string name="edit_profile_field_avatar">Avatar</string>
+    <string name="edit_profile_field_username">Username</string>
+    <string name="edit_profile_field_email">Email</string>
 
     <!-- Dashboard -->
     <string name="dashboard_title">Dashboard</string>
@@ -79,6 +161,55 @@
     <string name="sign_up_sign_in_link">Sign In</string>
     <string name="sign_up_password_show">Show password</string>
     <string name="sign_up_password_hide">Hide password</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Profile</string>
+    <string name="profile_posts">Posts</string>
+    <string name="profile_contributions">Contributions</string>
+    <string name="profile_top_bar_edit">Edit</string>
+    <string name="profile_top_bar_settings">Settings</string>
+
+    <!-- Bottom Nav Bar -->
+    <string name="bottom_nav_bar_dashboard">Dashboard</string>
+    <string name="bottom_nav_bar_create">Create</string>
+    <string name="bottom_nav_bar_profile">Profile</string>
+
+    <!-- Create Post -->
+    <string name="create_post_title">New Post</string>
+    <string name="create_post_placeholder">Start a new chain…</string>
+    <string name="create_post_badge_generations">0/%1$d</string>
+    <string name="create_post_badge_time_limits">%1$ds / %2$ds</string>
+    <string name="create_post_text_counter">%1$d/%2$d</string>
+    <string name="create_post_dialog_discard_title">Discard post?</string>
+    <string name="create_post_dialog_discard_body">Your text will be lost if you go back.</string>
+
+    <!-- Create Post — Chain Settings Dialog -->
+    <string name="create_post_chain_settings_title">Chain settings</string>
+    <string name="create_post_chain_settings_chain_length">Chain length</string>
+    <string name="create_post_chain_settings_text_response">Text response</string>
+    <string name="create_post_chain_settings_drawing_response">Drawing response</string>
+    <string name="create_post_chain_settings_button_done">Done</string>
+
+    <!-- Create Post — Start New Chain Dialog -->
+    <string name="create_post_start_chain_title">Start new chain?</string>
+    <string name="create_post_start_chain_body">Your post will start a chain that others can continue. This cannot be undone.</string>
+    <string name="create_post_start_chain_chain_length">Chain length: %1$d posts</string>
+    <string name="create_post_start_chain_text_time">Text time: %1$ds</string>
+    <string name="create_post_start_chain_draw_time">Draw time: %1$ds</string>
+    <string name="create_post_start_chain_settings_note">Settings apply to the entire chain</string>
+    <string name="create_post_start_chain_confirm">Start Chain</string>
+
+    <!-- Post Bottom Sheet -->
+    <string name="post_bottom_sheet_copy_link">Copy Link</string>
+    <string name="post_bottom_sheet_not_interested">Not Interested</string>
+    <string name="post_bottom_sheet_report">Report</string>
+
+    <!-- Report Post Bottom Sheet -->
+    <string name="report_post_bottom_sheet_title">Why are you reporting this?</string>
+    <string name="report_post_bottom_sheet_spam">Spam</string>
+    <string name="report_post_bottom_sheet_inappropriate_content">Inappropriate content</string>
+    <string name="report_post_bottom_sheet_harassment">Harassment</string>
+    <string name="report_post_bottom_sheet_other">Other</string>
 
     <!-- Welcome -->
     <string name="welcome_get_started">Get Started</string>

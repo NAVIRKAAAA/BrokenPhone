@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -63,7 +64,7 @@ fun EditAvatarContent(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "Current Avatar",
+            text = stringResource(R.string.edit_avatar_current),
             fontFamily = FontFamily(Font(R.font.inter_medium)),
             fontSize = 14.sp,
             lineHeight = 21.sp,
@@ -89,7 +90,7 @@ fun EditAvatarContent(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "Choose Avatar",
+            text = stringResource(R.string.edit_avatar_choose),
             fontFamily = FontFamily(Font(R.font.inter_medium)),
             fontSize = 14.sp,
             lineHeight = 21.sp,

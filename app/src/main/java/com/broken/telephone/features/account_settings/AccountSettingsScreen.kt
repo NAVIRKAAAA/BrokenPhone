@@ -4,7 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.broken.telephone.R
 import com.broken.telephone.core.dialog.ConfirmDialog
 import com.broken.telephone.features.account_settings.content.AccountSettingsContent
 import com.broken.telephone.features.account_settings.model.AccountSettingsSideEffect
@@ -38,10 +40,10 @@ fun AccountSettingsScreen(
 
     if (state.isDeleteAccountDialogVisible) {
         ConfirmDialog(
-            title = "Delete Account?",
-            body = "This action cannot be undone. All your posts, contributions, and data will be permanently deleted.",
-            cancelText = "Cancel",
-            confirmText = "Delete",
+            title = stringResource(R.string.account_settings_dialog_delete_title),
+            body = stringResource(R.string.account_settings_dialog_delete_body),
+            cancelText = stringResource(R.string.common_cancel),
+            confirmText = stringResource(R.string.common_delete),
             onDismiss = viewModel::onDeleteAccountDismiss,
             onConfirm = viewModel::onDeleteAccountConfirm,
             isLoading = state.isDeleteAccountLoading,

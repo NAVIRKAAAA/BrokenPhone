@@ -180,7 +180,7 @@ fun DescribeDrawingContent(
 
                     BadgeElement(
                         iconResId = R.drawable.ic_mutations,
-                        text = "0/${post.maxGenerations}",
+                        text = stringResource(R.string.create_post_badge_generations, post.maxGenerations),
                     )
 
                     BadgeElement(

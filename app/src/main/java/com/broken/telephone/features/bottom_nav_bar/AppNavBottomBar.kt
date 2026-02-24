@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
@@ -161,7 +162,9 @@ private fun AppNavBottomBarItem(
     } else {
         Color.Transparent
     }
-    
+
+    val title = stringResource(item.titleResId)
+
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(28.dp))
@@ -178,7 +181,7 @@ private fun AppNavBottomBarItem(
         if (avatarUrl != null) {
             AsyncImage(
                 model = avatarUrl,
-                contentDescription = item.title,
+                contentDescription = title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(iconSize)
@@ -188,14 +191,14 @@ private fun AppNavBottomBarItem(
         } else {
             Icon(
                 painter = painterResource(item.iconResId),
-                contentDescription = item.title,
+                contentDescription = title,
                 modifier = Modifier.size(iconSize),
                 tint = color
             )
         }
 
         Text(
-            text = item.title,
+            text = title,
             fontSize = 10.sp,
             fontFamily = FontFamily(Font(R.font.inter_medium)),
             color = color,

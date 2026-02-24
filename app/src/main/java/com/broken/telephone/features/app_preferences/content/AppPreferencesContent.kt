@@ -13,8 +13,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.features.app_preferences.model.AppPreferencesState
 import com.broken.telephone.features.edit_profile.content.AccountTextInfoItem
@@ -37,22 +39,22 @@ fun AppPreferencesContent(
             .statusBarsPadding(),
     ) {
         EditProfileTopBar(
-            title = "App Preferences",
+            title = stringResource(R.string.app_preferences_title),
             onBackClick = onBackClick,
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         SettingsItem(
-            text = "Notifications",
+            text = stringResource(R.string.app_preferences_notifications),
             onClick = onNotificationsClick,
         )
 
         HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
 
         AccountTextInfoItem(
-            name = "Language",
-            value = state.language.displayName,
+            name = stringResource(R.string.app_preferences_language),
+            value = stringResource(state.language.displayNameResId),
             modifier = Modifier
                 .clickable(onClick = onLanguageClick)
                 .padding(horizontal = 16.dp),
@@ -61,8 +63,8 @@ fun AppPreferencesContent(
         HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
 
         AccountTextInfoItem(
-            name = "Theme",
-            value = state.theme.displayName,
+            name = stringResource(R.string.app_preferences_theme),
+            value = stringResource(state.theme.displayNameResId),
             modifier = Modifier
                 .clickable(onClick = onThemeClick)
                 .padding(horizontal = 16.dp),

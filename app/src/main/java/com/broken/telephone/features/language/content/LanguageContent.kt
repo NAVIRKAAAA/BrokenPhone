@@ -11,8 +11,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.domain.settings.Language
 import com.broken.telephone.features.edit_profile.content.EditProfileTopBar
@@ -32,7 +34,7 @@ fun LanguageContent(
             .statusBarsPadding(),
     ) {
         EditProfileTopBar(
-            title = "Language",
+            title = stringResource(R.string.language_title),
             onBackClick = onBackClick,
         )
 
@@ -40,7 +42,7 @@ fun LanguageContent(
 
         Language.entries.forEach { language ->
             LanguageRadioItem(
-                text = language.displayName,
+                text = stringResource(language.displayNameResId),
                 selected = language == state.selectedLanguage,
                 onClick = { onLanguageClick(language) },
             )

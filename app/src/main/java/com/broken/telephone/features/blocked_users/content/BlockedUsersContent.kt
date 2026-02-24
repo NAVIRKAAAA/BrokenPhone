@@ -20,8 +20,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.features.blocked_users.model.BlockedUserUi
 import com.broken.telephone.features.blocked_users.model.BlockedUsersState
@@ -41,7 +43,7 @@ fun BlockedUsersContent(
             .statusBarsPadding(),
     ) {
         EditProfileTopBar(
-            title = "Blocked Users",
+            title = stringResource(R.string.blocked_users_title),
             onBackClick = onBackClick,
         )
 

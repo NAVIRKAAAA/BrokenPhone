@@ -1,8 +1,11 @@
 package com.broken.telephone.core.bottom_sheet.report_post_bottom_sheet.model
 
-enum class ReportPostType(val label: String) {
-    SPAM("Spam"),
-    INAPPROPRIATE_CONTENT("Inappropriate content"),
-    HARASSMENT("Harassment"),
-    OTHER("Other"),
+import androidx.annotation.StringRes
+import com.broken.telephone.R
+
+enum class ReportPostType(@StringRes val labelResId: Int) {
+    SPAM(R.string.report_post_bottom_sheet_spam),
+    INAPPROPRIATE_CONTENT(R.string.report_post_bottom_sheet_inappropriate_content),
+    HARASSMENT(R.string.report_post_bottom_sheet_harassment),
+    OTHER(R.string.report_post_bottom_sheet_other),
 }

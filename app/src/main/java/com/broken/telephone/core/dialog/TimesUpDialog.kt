@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -66,7 +67,7 @@ fun TimesUpDialog(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "Time's up!",
+                text = stringResource(R.string.times_up_dialog_title),
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily(Font(R.font.inter_medium)),
                 fontSize = 18.sp,
@@ -96,7 +97,7 @@ fun TimesUpDialog(
                 shape = RoundedCornerShape(14.dp),
             ) {
                 Text(
-                    text = "Got it",
+                    text = stringResource(R.string.times_up_dialog_got_it),
                     textAlign = TextAlign.Center,
                     fontFamily = FontFamily(Font(R.font.inter_medium)),
                     fontSize = 18.sp,

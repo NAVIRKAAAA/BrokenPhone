@@ -4,7 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.broken.telephone.R
 import com.broken.telephone.core.dialog.ConfirmDialog
 import com.broken.telephone.features.settings.content.SettingsContent
 import com.broken.telephone.features.settings.model.SettingsSideEffect
@@ -42,10 +44,10 @@ fun SettingsScreen(
 
     if (state.isLogoutDialogVisible) {
         ConfirmDialog(
-            title = "Logout?",
-            body = "Are you sure you want to logout?",
-            cancelText = "Cancel",
-            confirmText = "Logout",
+            title = stringResource(R.string.settings_dialog_logout_title),
+            body = stringResource(R.string.settings_dialog_logout_body),
+            cancelText = stringResource(R.string.common_cancel),
+            confirmText = stringResource(R.string.settings_dialog_logout_confirm),
             onDismiss = viewModel::onLogoutDismiss,
             onConfirm = viewModel::onLogoutConfirm,
             isLoading = state.isLogoutLoading,
