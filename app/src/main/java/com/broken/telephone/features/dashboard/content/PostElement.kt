@@ -1,6 +1,5 @@
 package com.broken.telephone.features.dashboard.content
 
-import android.text.format.DateUtils
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -37,6 +36,7 @@ import com.broken.telephone.R
 import com.broken.telephone.core.badge.BadgeElement
 import com.broken.telephone.core.badge.StrongBadgeElement
 import com.broken.telephone.core.badge.StrongBadgeElementType
+import com.broken.telephone.core.utils.rememberRelativeTime
 import com.broken.telephone.domain.post.PostContent
 import com.broken.telephone.domain.post.PostStatus
 import com.broken.telephone.features.dashboard.model.PostUi
@@ -50,14 +50,7 @@ fun PostElement(
     onMoreClick: () -> Unit = {},
 ) {
 
-    val relativeTime = remember(post.createdAt) {
-        DateUtils.getRelativeTimeSpanString(
-            post.createdAt,
-            System.currentTimeMillis(),
-            DateUtils.MINUTE_IN_MILLIS,
-            DateUtils.FORMAT_ABBREV_ALL
-        ).toString()
-    }
+    val relativeTime = rememberRelativeTime(post.createdAt)
 
     Row(
         modifier = modifier

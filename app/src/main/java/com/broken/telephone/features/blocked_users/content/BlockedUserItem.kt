@@ -1,6 +1,5 @@
 package com.broken.telephone.features.blocked_users.content
 
-import android.text.format.DateUtils
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,7 +15,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.broken.telephone.R
+import com.broken.telephone.core.utils.rememberRelativeTime
 import com.broken.telephone.features.blocked_users.model.BlockedUserUi
 
 @Composable
@@ -41,14 +40,7 @@ fun BlockedUserItem(
     modifier: Modifier = Modifier,
 ) {
 
-    val relativeTime = remember(blockedUserUi.createdAt) {
-        DateUtils.getRelativeTimeSpanString(
-            blockedUserUi.createdAt,
-            System.currentTimeMillis(),
-            DateUtils.MINUTE_IN_MILLIS,
-            DateUtils.FORMAT_ABBREV_ALL
-        ).toString()
-    }
+    val relativeTime = rememberRelativeTime(blockedUserUi.createdAt)
 
     Row(
         modifier = modifier

@@ -1,6 +1,5 @@
 package com.broken.telephone.features.post_details.content
 
-import android.text.format.DateUtils
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,7 +13,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,6 +29,7 @@ import com.broken.telephone.R
 import com.broken.telephone.core.badge.BadgeElement
 import com.broken.telephone.core.badge.StrongBadgeElement
 import com.broken.telephone.core.badge.StrongBadgeElementType
+import com.broken.telephone.core.utils.rememberRelativeTime
 import com.broken.telephone.data.repository.MockPostRepository
 import com.broken.telephone.domain.post.PostContent
 import com.broken.telephone.features.dashboard.model.PostUi
@@ -44,14 +43,7 @@ fun PostDetailsElement(
     isUsersPost: Boolean = false,
 ) {
 
-    val relativeTime = remember(post.createdAt) {
-        DateUtils.getRelativeTimeSpanString(
-            post.createdAt,
-            System.currentTimeMillis(),
-            DateUtils.MINUTE_IN_MILLIS,
-            DateUtils.FORMAT_ABBREV_ALL
-        ).toString()
-    }
+    val relativeTime = rememberRelativeTime(post.createdAt)
 
     Column(
         modifier = modifier.fillMaxWidth()
