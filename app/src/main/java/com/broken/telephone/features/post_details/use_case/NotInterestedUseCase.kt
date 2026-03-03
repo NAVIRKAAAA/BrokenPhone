@@ -1,7 +1,6 @@
 package com.broken.telephone.features.post_details.use_case
 
 import com.broken.telephone.domain.repository.NotInterestedRepository
-import com.broken.telephone.domain.user.AuthState
 import com.broken.telephone.domain.user.UserSession
 import kotlinx.coroutines.flow.first
 
@@ -12,8 +11,9 @@ class NotInterestedUseCase(
 
     suspend operator fun invoke(postParentId: String) {
         val authState = userSession.authState.first()
-        if (authState !is AuthState.Auth) return
-        repository.notInterested(authState.user.id, postParentId)
+        val user = authState.getUserOrNull() ?: return
+
+        repository.notInterested(user.id, postParentId)
     }
 
 }

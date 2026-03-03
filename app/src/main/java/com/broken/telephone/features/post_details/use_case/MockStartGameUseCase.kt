@@ -2,7 +2,6 @@ package com.broken.telephone.features.post_details.use_case
 
 import com.broken.telephone.domain.repository.GamesRepository
 import com.broken.telephone.domain.repository.PostRepository
-import com.broken.telephone.domain.user.AuthState
 import com.broken.telephone.domain.user.UserSession
 import kotlinx.coroutines.flow.first
 
@@ -22,8 +21,8 @@ class MockStartGameUseCase(
 
     suspend operator fun invoke(postId: String) {
         val authState = userSession.authState.first()
-        if (authState !is AuthState.Auth) return
-        val userId = authState.user.id
+        val user = authState.getUserOrNull() ?: return
+        val userId = user.id
 
         gamesRepository.createGame(postId, userId)
         // other firebase functions

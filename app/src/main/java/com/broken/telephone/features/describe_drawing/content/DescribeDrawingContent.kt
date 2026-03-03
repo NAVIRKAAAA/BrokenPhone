@@ -31,7 +31,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -47,9 +46,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
 import com.broken.telephone.R
 import com.broken.telephone.core.badge.BadgeElement
+import com.broken.telephone.core.post.DrawPostImage
+import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.core.top_bar.PostTopBar
 import com.broken.telephone.data.repository.MockPostRepository
 import com.broken.telephone.domain.post.PostContent
@@ -57,7 +57,6 @@ import com.broken.telephone.features.create_post.model.CreatePostState
 import com.broken.telephone.features.dashboard.model.toUi
 import com.broken.telephone.features.describe_drawing.model.DescribeDrawingState
 import kotlinx.coroutines.delay
-import java.io.File
 
 @Composable
 fun DescribeDrawingContent(
@@ -103,24 +102,32 @@ fun DescribeDrawingContent(
             if (post != null) {
                 val content = post.content as? PostContent.Drawing ?: return@Column
 
-                val model = content.localPath?.let { File(it) } ?: content.imageUrl
-
-                Box(
+                DrawPostImage(
+                    content = content,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                         .aspectRatio(1f)
-                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f), RoundedCornerShape(14.dp))
-                ) {
-                    AsyncImage(
-                        model = model,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
-                    )
-                }
+                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f), RoundedCornerShape(14.dp)),
+                    contentScale = ContentScale.Crop
+                )
+
+//                Box(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(horizontal = 16.dp)
+//                        .aspectRatio(1f)
+//                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f), RoundedCornerShape(14.dp))
+//                ) {
+//                    AsyncImage(
+//                        model = model,
+//                        contentDescription = null,
+//                        contentScale = ContentScale.Crop,
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .clip(RoundedCornerShape(12.dp))
+//                    )
+//                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -222,10 +229,12 @@ fun DescribeDrawingContent(
 @Preview
 @Composable
 fun DescribeDrawingContentPreview() {
-    DescribeDrawingContent(
-        state = DescribeDrawingState(
-            text = "Lalala",
-            postUi = MockPostRepository.mockList.last().toUi()
+    BrokenTelephoneTheme() {
+        DescribeDrawingContent(
+            state = DescribeDrawingState(
+                text = "Lalala",
+                postUi = MockPostRepository.mockList.last().toUi()
+            )
         )
-    )
+    }
 }

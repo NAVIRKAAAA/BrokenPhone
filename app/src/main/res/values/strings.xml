@@ -134,7 +134,7 @@
     <string name="edit_profile_field_email">Email</string>
 
     <!-- Dashboard -->
-    <string name="dashboard_title">Dashboard</string>
+    <string name="dashboard_title">Hello, %1$s</string>
     <string name="dashboard_badge_complete">Complete</string>
     <string name="dashboard_badge_you">You</string>
 

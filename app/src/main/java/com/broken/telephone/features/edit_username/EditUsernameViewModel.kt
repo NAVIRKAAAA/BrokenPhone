@@ -2,7 +2,6 @@ package com.broken.telephone.features.edit_username
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.broken.telephone.domain.user.AuthState
 import com.broken.telephone.domain.user.UserSession
 import com.broken.telephone.features.edit_username.model.EditUsernameEvent
 import com.broken.telephone.features.edit_username.model.EditUsernameState
@@ -29,14 +28,20 @@ class EditUsernameViewModel(
     init {
         viewModelScope.launch {
             val authState = userSession.authState.first()
-            if (authState is AuthState.Auth) {
-                _state.update { it.copy(username = authState.user.username) }
-            }
+            val user = authState.getUserOrNull() ?: return@launch
+
+            _state.update { it.copy(username = user.username) }
+
         }
     }
 
     fun onUsernameChange(username: String) {
-        _state.update { it.copy(username = username, isSaveEnabled = username.isNotBlank() && username.length <= MAX_USERNAME_LENGTH) }
+        _state.update {
+            it.copy(
+                username = username,
+                isSaveEnabled = username.isNotBlank() && username.length <= MAX_USERNAME_LENGTH
+            )
+        }
     }
 
     companion object Companion {

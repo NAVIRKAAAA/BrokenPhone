@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,6 +25,7 @@ import com.broken.telephone.R
 
 @Composable
 fun DashboardTopBar(
+    name: String,
     modifier: Modifier = Modifier
 ) {
 
@@ -34,13 +36,15 @@ fun DashboardTopBar(
     ) {
 
         Text(
-            text = stringResource(R.string.dashboard_title),
-            textAlign = TextAlign.Center,
+            text = stringResource(R.string.dashboard_title, name),
+            textAlign = TextAlign.Start,
             fontFamily = FontFamily(Font(R.font.inter_medium)),
             fontSize = 16.sp,
             lineHeight = 24.sp,
-            color = MaterialTheme.colorScheme.primary
-
+            color = MaterialTheme.colorScheme.primary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f)
         )
 
         IconButton(
@@ -62,5 +66,7 @@ fun DashboardTopBar(
 @Preview
 @Composable
 fun DashboardTopBarPreview() {
-    DashboardTopBar()
+    DashboardTopBar(
+        "Alex"
+    )
 }

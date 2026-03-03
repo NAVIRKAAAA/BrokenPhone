@@ -42,7 +42,10 @@ fun DashboardContent(
             .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding()
     ) {
-        DashboardTopBar()
+        DashboardTopBar(
+            name = state.user?.username ?: "",
+            modifier = Modifier
+        )
 
         LazyColumn(
             state = listState,
@@ -105,7 +108,7 @@ fun DashboardContentPreview() {
                 posts = MockPostRepository.mockList.map { it.toUi() },
                 user = UserUi(
                     id = "user_1",
-                    username = "",
+                    username = "Alex",
                     email = "",
                     avatarUrl = "",
                 )

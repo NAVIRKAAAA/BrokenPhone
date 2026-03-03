@@ -7,6 +7,12 @@ import com.broken.telephone.features.welcome.WelcomeScreen
 import org.junit.Rule
 import org.junit.Test
 
+/*
+
+    ./gradlew :app:recordPaparazziDebug
+    ./gradlew :app:verifyPaparazziDebug
+
+ */
 class WelcomeScreenTest {
     @get:Rule
     val paparazziRule: Paparazzi = Paparazzi(

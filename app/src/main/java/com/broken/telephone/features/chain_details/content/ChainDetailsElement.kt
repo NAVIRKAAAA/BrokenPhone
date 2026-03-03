@@ -1,15 +1,12 @@
 package com.broken.telephone.features.chain_details.content
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.broken.telephone.R
+import com.broken.telephone.core.avatar.AvatarComponent
 import com.broken.telephone.core.utils.rememberRelativeTime
 import com.broken.telephone.domain.post.PostContent
 import com.broken.telephone.domain.post.PostStatus
@@ -46,14 +44,9 @@ fun ChainDetailsElement(
             .fillMaxWidth()
     ) {
 
-        AsyncImage(
-            model = post.avatarUrl,
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(Color.LightGray)
+        AvatarComponent(
+            avatarUrl = post.avatarUrl,
+            size = 40.dp
         )
 
         Spacer(modifier = Modifier.width(12.dp))

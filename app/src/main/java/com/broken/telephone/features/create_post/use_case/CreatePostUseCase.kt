@@ -5,7 +5,6 @@ import com.broken.telephone.domain.post.PostChainEntry
 import com.broken.telephone.domain.post.PostContent
 import com.broken.telephone.domain.post.PostStatus
 import com.broken.telephone.domain.repository.PostRepository
-import com.broken.telephone.domain.user.AuthState
 import com.broken.telephone.domain.user.UserSession
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -22,8 +21,7 @@ class CreatePostUseCase(
         drawingTimeLimit: Int,
     ) {
         val authState = userSession.authState.first()
-        if (authState !is AuthState.Auth) return
-        val user = authState.user
+        val user = authState.getUserOrNull() ?: return
 
         val postId = System.currentTimeMillis().toString()
         val post = Post(
@@ -32,7 +30,7 @@ class CreatePostUseCase(
             authorName = user.username,
             avatarUrl = user.avatarUrl,
             createdAt = System.currentTimeMillis(),
-            generation = 0,
+            generation = 1,
             maxGenerations = maxGenerations,
             textTimeLimit = textTimeLimit,
             drawingTimeLimit = drawingTimeLimit,

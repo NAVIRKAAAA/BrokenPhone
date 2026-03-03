@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -78,7 +79,9 @@ fun PostDetailsContent(
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Spacer(modifier = Modifier.weight(1f))
 
             val containerColor = if (buttonType == PostDetailsButtonType.COMPLETED) {
                 Color(0xFF22C55E)
@@ -89,15 +92,15 @@ fun PostDetailsContent(
             Button(
                 onClick = if (buttonType == PostDetailsButtonType.COMPLETED) onViewHistoryClick else onContinueClick,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
+                    .fillMaxWidth(0.6f)
+                    .height(48.dp)
                     .padding(horizontal = 16.dp),
                 colors = ButtonDefaults.buttonColors(
                     contentColor = Color.White,
                     containerColor = containerColor,
                 ),
                 enabled = buttonType.isEnabled && !state.isContinueLoading,
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(32.dp),
                 contentPadding = PaddingValues(),
             ) {
                 if (state.isContinueLoading) {
@@ -132,6 +135,8 @@ fun PostDetailsContent(
                 color = Color.Gray,
                 maxLines = 1,
             )
+
+            Spacer(modifier = Modifier.height(32.dp).navigationBarsPadding())
         }
     }
 
@@ -144,11 +149,11 @@ fun PostDetailsContentPreview() {
         PostDetailsContent(
             state = PostDetailsState(
                 MockPostRepository.mockList.first().toUi().copy(
-                    status = PostStatus.COMPLETED,
-                    generation = 10,
+                    status = PostStatus.AVAILABLE,
+                    generation = 4,
                     maxGenerations = 10
                 ),
-                isContinueLoading = true
+                isContinueLoading = false
             ),
             onContinueClick = {},
             onViewHistoryClick = {},
