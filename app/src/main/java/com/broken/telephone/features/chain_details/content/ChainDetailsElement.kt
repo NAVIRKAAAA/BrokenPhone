@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.broken.telephone.R
 import com.broken.telephone.core.avatar.AvatarComponent
+import com.broken.telephone.core.modifier.hidden
 import com.broken.telephone.core.utils.rememberRelativeTime
 import com.broken.telephone.domain.post.PostContent
 import com.broken.telephone.domain.post.PostStatus
@@ -33,7 +34,8 @@ import java.io.File
 @Composable
 fun ChainDetailsElement(
     post: PostUi,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isHidden: Boolean = false
 ) {
 
 
@@ -46,7 +48,8 @@ fun ChainDetailsElement(
 
         AvatarComponent(
             avatarUrl = post.avatarUrl,
-            size = 40.dp
+            size = 40.dp,
+            modifier = if (isHidden) Modifier.hidden(cornerRadius = 50.dp) else Modifier
         )
 
         Spacer(modifier = Modifier.width(12.dp))
@@ -69,7 +72,9 @@ fun ChainDetailsElement(
                         lineHeight = 24.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f, fill = false)
+                        modifier = Modifier
+                            .weight(1f, fill = false)
+                            .then(if (isHidden) Modifier.hidden(cornerRadius = 4.dp) else Modifier)
                     )
 
                     Spacer(modifier = Modifier.width(8.dp))
@@ -81,6 +86,7 @@ fun ChainDetailsElement(
                         lineHeight = 20.sp,
                         color = Color.Gray,
                         maxLines = 1,
+                        modifier = if (isHidden) Modifier.hidden(cornerRadius = 4.dp) else Modifier
                     )
                 }
 
@@ -95,6 +101,7 @@ fun ChainDetailsElement(
                         fontFamily = FontFamily(Font(R.font.inter_regular)),
                         fontSize = 15.sp,
                         lineHeight = 22.sp,
+                        modifier = if (isHidden) Modifier.hidden(cornerRadius = 4.dp) else Modifier
                     )
                 }
 
@@ -109,6 +116,7 @@ fun ChainDetailsElement(
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(12.dp))
                             .height(200.dp)
+                            .then(if (isHidden) Modifier.hidden(cornerRadius = 12.dp) else Modifier)
                     )
                 }
             }
@@ -125,14 +133,16 @@ fun ChainDetailsElementPreview() {
             id = "1",
             parentId = "",
             authorId = "user-1",
-            authorName = "Alex".repeat(55),
+            authorName = "Alex",
             avatarUrl = null,
-            content = PostContent.Text("Once upon a time there was a broken telephone..."),
+            content = PostContent.Drawing(),
+//            content = PostContent.Text("Once upon a time there was a broken telephone..."),
             createdAt = System.currentTimeMillis() - 300000,
             generation = 10,
             maxGenerations = 10,
             status = PostStatus.AVAILABLE,
             nextTimeLimit = 60,
         ),
+        isHidden = true
     )
 }

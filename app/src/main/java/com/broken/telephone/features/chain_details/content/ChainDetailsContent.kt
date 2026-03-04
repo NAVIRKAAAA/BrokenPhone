@@ -48,7 +48,8 @@ fun ChainDetailsContent(
 ) {
     val lazyListState = rememberLazyListState()
 
-    val generations = state.chains.firstOrNull()?.maxGenerations ?: 0
+    val chainSize = state.chains.size
+    val maxGenerations = state.post?.maxGenerations ?: 0
 
     Column(
         modifier = modifier
@@ -66,7 +67,7 @@ fun ChainDetailsContent(
                 .fillMaxSize()
                 .padding(horizontal = 16.dp),
             state = lazyListState,
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
             contentPadding = PaddingValues(vertical = 16.dp),
         ) {
@@ -83,7 +84,8 @@ fun ChainDetailsContent(
                     }
 
                     ChainDetailsElement(
-                        post = postUi
+                        post = postUi,
+                        isHidden = chainSize != maxGenerations && postUi.authorId != state.currentUserId
                     )
 
                     if (index != state.chains.lastIndex) {
@@ -129,36 +131,43 @@ fun ChainDetailsContent(
                 HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
 
                 Spacer(modifier = Modifier.height(24.dp))
+                if(chainSize == maxGenerations) {
+                    Row(
+                        modifier = modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(
+                            6.dp,
+                            Alignment.CenterHorizontally
+                        )
+                    ) {
 
-                Row(
-                    modifier = modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally)
-                ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_complete),
+                            contentDescription = null,
+                            tint = Color(0xFF22C55E),
+                            modifier = Modifier.size(20.dp)
+                        )
 
-                    Icon(
-                        painter = painterResource(R.drawable.ic_complete),
-                        contentDescription = null,
-                        tint = Color(0xFF22C55E),
-                        modifier = Modifier.size(20.dp)
-                    )
+                        Text(
+                            text = stringResource(R.string.chain_details_complete),
+                            textAlign = TextAlign.Center,
+                            fontFamily = FontFamily(Font(R.font.inter_medium)),
+                            fontSize = 14.sp,
+                            lineHeight = 20.sp,
+                            color = Color(0xFF22C55E)
+                        )
 
-                    Text(
-                        text = stringResource(R.string.chain_details_complete),
-                        textAlign = TextAlign.Center,
-                        fontFamily = FontFamily(Font(R.font.inter_medium)),
-                        fontSize = 14.sp,
-                        lineHeight = 20.sp,
-                        color = Color(0xFF22C55E)
-                    )
+                    }
 
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
 
-                Spacer(modifier = Modifier.height(4.dp))
-
-
                 Text(
-                    text = stringResource(R.string.chain_details_generations, generations, generations),
+                    text = stringResource(
+                        R.string.chain_details_generations,
+                        chainSize,
+                        maxGenerations
+                    ),
                     textAlign = TextAlign.Center,
                     fontFamily = FontFamily(Font(R.font.inter_regular)),
                     fontSize = 12.sp,
@@ -182,6 +191,7 @@ fun ChainDetailsContent(
 @Composable
 fun ChainDetailsContentPreview() {
     BrokenTelephoneTheme() {
+        val userId = "user_id"
         ChainDetailsContent(
             state = ChainDetailsState(
                 postId = "1",
@@ -192,8 +202,11 @@ fun ChainDetailsContentPreview() {
                         maxGenerations = MockPostRepository.chainsMockList.size,
                         textTimeLimit = 0,
                         drawingTimeLimit = 0
+                    ).copy(
+                        authorId = if(index == 1) userId else index.toString()
                     )
-                }
+                }.subList(0, 3),
+                currentUserId = userId
             ),
             onBackClick = {},
         )

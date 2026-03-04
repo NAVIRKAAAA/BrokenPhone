@@ -372,7 +372,7 @@ fun AppNavGraph(
         ) {
             ProfileScreen(
                 onPostClick = { postId ->
-                    navController.navigateSingle(Routes.PostDetails(postId = postId))
+                    navController.navigateSingle(Routes.ChainDetails(postId = postId))
                 },
                 onEditClick = {
                     navController.navigateSingle(Routes.EditProfile)

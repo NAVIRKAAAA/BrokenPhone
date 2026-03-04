@@ -24,6 +24,13 @@ import com.broken.telephone.features.profile.model.ProfileSideEffect
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
+/*
+
+    Posts -> navigate to chain history
+    Contributions
+
+ */
+
 @SuppressLint("LocalContextGetResourceValueCall")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
