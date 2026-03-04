@@ -12,6 +12,10 @@ interface PostRepository {
 
     fun getChainByPostId(postId: String): Flow<List<PostChainEntry>>
 
+    fun getUserPosts(userId: String): Flow<List<Post>>
+
+    fun getUserContributions(userId: String): Flow<List<Post>>
+
     suspend fun updatePost(post: Post)
 
     suspend fun createPost(post: Post)

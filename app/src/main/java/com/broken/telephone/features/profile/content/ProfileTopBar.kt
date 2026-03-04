@@ -30,6 +30,7 @@ fun ProfileTopBar(
     title: String,
     onEditClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    showEditButton: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -46,18 +47,18 @@ fun ProfileTopBar(
         )
 
         Row {
-            IconButton(
-                onClick = onEditClick
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_edit),
-                    contentDescription = stringResource(R.string.profile_top_bar_edit),
-                    modifier = Modifier.size(24.dp),
-                    tint = Color(0xFF666666)
-                )
-            }
+            if (showEditButton) {
+                IconButton(onClick = onEditClick) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_edit),
+                        contentDescription = stringResource(R.string.profile_top_bar_edit),
+                        modifier = Modifier.size(24.dp),
+                        tint = Color(0xFF666666)
+                    )
+                }
 
-            Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(12.dp))
+            }
 
             IconButton(onClick = onSettingsClick) {
                 Icon(

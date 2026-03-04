@@ -1,6 +1,7 @@
 package com.broken.telephone.features.profile.content
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -11,6 +12,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -62,7 +64,13 @@ fun ProfilePostsPage(
                 isUsersPost = false,
                 onMoreClick = { onMoreClick(post.id) },
                 modifier = Modifier
-                    .clickable { onPostClick(post.parentId) }
+                    .clickable(
+                        onClick = {
+                            onPostClick(post.parentId)
+                        },
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    )
                     .padding(horizontal = 16.dp, vertical = 16.dp),
             )
         }

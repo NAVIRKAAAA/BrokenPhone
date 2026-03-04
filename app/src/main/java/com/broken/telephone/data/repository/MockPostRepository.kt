@@ -18,9 +18,21 @@ class MockPostRepository : PostRepository {
 
     override fun getPosts(): Flow<List<Post>> = _posts
 
-    override fun getPostById(id: String): Flow<Post?> = _posts.map { list -> list.find { it.id == id } }
+    override fun getPostById(id: String): Flow<Post?> =
+        _posts.map { list -> list.find { it.id == id } }
 
-    override fun getChainByPostId(postId: String): Flow<List<PostChainEntry>> = flowOf(chainsMockList)
+    override fun getChainByPostId(postId: String): Flow<List<PostChainEntry>> =
+        flowOf(chainsMockList)
+
+    override fun getUserPosts(userId: String): Flow<List<Post>> =
+        _posts.map { list -> list.filter { it.authorId == userId } }
+
+    override fun getUserContributions(userId: String): Flow<List<Post>> =
+        _posts.map { list ->
+            list.filter { post ->
+                post.currentEntry.authorId == userId && post.generation > 1
+            }
+        }
 
     override suspend fun updatePost(post: Post) {
         _posts.update { list -> list.map { if (it.id == post.id) post else it } }
@@ -146,7 +158,7 @@ class MockPostRepository : PostRepository {
                 authorName = "Alice",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
                 createdAt = System.currentTimeMillis(),
-                generation = 0,
+                generation = 1,
                 maxGenerations = 10,
                 textTimeLimit = 30,
                 drawingTimeLimit = 60,
@@ -167,7 +179,7 @@ class MockPostRepository : PostRepository {
                 authorName = "Bob",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_2.png",
                 createdAt = System.currentTimeMillis() - 60_000,
-                generation = 0,
+                generation = 1,
                 maxGenerations = 10,
                 textTimeLimit = 30,
                 drawingTimeLimit = 60,
@@ -188,7 +200,7 @@ class MockPostRepository : PostRepository {
                 authorName = "Charlie",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_3.png",
                 createdAt = System.currentTimeMillis() - 120_000,
-                generation = 0,
+                generation = 1,
                 maxGenerations = 5,
                 textTimeLimit = 45,
                 drawingTimeLimit = 90,
@@ -209,7 +221,7 @@ class MockPostRepository : PostRepository {
                 authorName = "Diana",
                 avatarUrl = "",
                 createdAt = System.currentTimeMillis() - 180_000,
-                generation = 0,
+                generation = 1,
                 maxGenerations = 8,
                 textTimeLimit = 30,
                 drawingTimeLimit = 60,
@@ -230,7 +242,7 @@ class MockPostRepository : PostRepository {
                 authorName = "Eve",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_5.png",
                 createdAt = System.currentTimeMillis() - 300_000,
-                generation = 0,
+                generation = 1,
                 maxGenerations = 5,
                 textTimeLimit = 15,
                 drawingTimeLimit = 30,
@@ -254,7 +266,7 @@ class MockPostRepository : PostRepository {
                 authorName = "Alice",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
                 createdAt = System.currentTimeMillis(),
-                generation = 0,
+                generation = 1,
                 maxGenerations = 10,
                 textTimeLimit = 30,
                 drawingTimeLimit = 60,
@@ -338,7 +350,7 @@ class MockPostRepository : PostRepository {
                 authorName = "Eve",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_5.png",
                 createdAt = System.currentTimeMillis() - 300_000,
-                generation = 0,
+                generation = 1,
                 maxGenerations = 5,
                 textTimeLimit = 15,
                 drawingTimeLimit = 30,

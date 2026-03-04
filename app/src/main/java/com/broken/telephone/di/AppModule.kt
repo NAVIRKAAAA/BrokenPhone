@@ -68,6 +68,7 @@ import com.broken.telephone.features.profile.use_case.GetCurrentUserUseCase
 import com.broken.telephone.features.profile.use_case.GetMyContributionsUseCase
 import com.broken.telephone.features.profile.use_case.GetMyPostsUseCase
 import com.broken.telephone.features.settings.SettingsViewModel
+import com.broken.telephone.features.settings.use_case.GetAuthStateUseCase
 import com.broken.telephone.features.settings.use_case.GetVersionInfoUseCase
 import com.broken.telephone.features.settings.use_case.LogoutUseCase
 import com.broken.telephone.features.sign_in.SignInViewModel
@@ -77,6 +78,8 @@ import com.broken.telephone.features.sign_up.SignUpViewModel
 import com.broken.telephone.features.sign_up.use_case.SignUpUseCase
 import com.broken.telephone.features.theme.ThemeViewModel
 import com.broken.telephone.features.theme.use_case.UpdateThemeUseCase
+import com.broken.telephone.features.welcome.WelcomeViewModel
+import com.broken.telephone.features.welcome.use_case.ContinueAsGuestUseCase
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModelOf
@@ -109,6 +112,8 @@ val appModule = module {
     factoryOf(::SubmitDrawingUseCase)
     factoryOf(::SubmitDescriptionUseCase)
     factoryOf(::GetChainByPostIdUseCase)
+    factoryOf(::ContinueAsGuestUseCase)
+    viewModelOf(::WelcomeViewModel)
     factoryOf(::SignUpValidator)
     factoryOf(::SignUpUseCase)
     factoryOf(::SignInUseCase)
@@ -133,6 +138,7 @@ val appModule = module {
 
     factoryOf(::GetVersionInfoUseCase)
     factoryOf(::LogoutUseCase)
+    factoryOf(::GetAuthStateUseCase)
     viewModelOf(::SettingsViewModel)
     factoryOf(::DeleteAccountUseCase)
     factoryOf(::GetBlockedUsersCountUseCase)

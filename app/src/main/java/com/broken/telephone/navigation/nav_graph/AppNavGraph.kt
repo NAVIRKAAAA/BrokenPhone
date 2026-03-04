@@ -88,7 +88,7 @@ fun AppNavGraph(
                 onSignIn = {
                     navController.navigateSingle(Routes.SignIn)
                 },
-                onContinueAsGuest = {
+                onNavigateToDashboard = {
                     navController.navigateSingle(Routes.Dashboard) {
                         popUpTo(Routes.Welcome) { inclusive = true }
                     }

@@ -65,7 +65,6 @@ fun EditProfileContent(
             modifier = Modifier.padding(horizontal = 16.dp)
         )
 
-        HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
     }
 }
 

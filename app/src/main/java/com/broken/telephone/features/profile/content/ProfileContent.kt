@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -67,6 +68,7 @@ fun ProfileContent(
             title = stringResource(R.string.profile_title),
             onEditClick = onEditClick,
             onSettingsClick = onSettingsClick,
+            showEditButton = state.isAuth,
         )
 
         AccountInfoSection(
@@ -109,6 +111,7 @@ fun ProfileContent(
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.Top
         ) { page ->
             when (ProfileTab.entries[page]) {
                 ProfileTab.POSTS -> ProfilePostsPage(

@@ -2,6 +2,7 @@ package com.broken.telephone.features.dashboard.content
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +18,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,11 +64,15 @@ fun DashboardContent(
                 Column {
                     Column(
                         modifier = Modifier
-                            .clickable(onClick = {
-                                onPostClick(postUi.id)
-                            })
+                            .clickable(
+                                onClick = {
+                                    onPostClick(postUi.id)
+                                },
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            )
                     ) {
-                        if(index != 0) {
+                        if (index != 0) {
                             Spacer(modifier = Modifier.height(16.dp))
 
                         }
@@ -80,7 +86,7 @@ fun DashboardContent(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        if(index != state.posts.lastIndex) {
+                        if (index != state.posts.lastIndex) {
 
                             HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
                         }

@@ -3,6 +3,7 @@ package com.broken.telephone.features.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.broken.telephone.core.bottom_sheet.report_post_bottom_sheet.model.ReportPostType
+import com.broken.telephone.domain.user.AuthState
 import com.broken.telephone.features.dashboard.model.PostUi
 import com.broken.telephone.features.post_details.use_case.BlockUserUseCase
 import com.broken.telephone.features.post_details.use_case.DeletePostUseCase
@@ -15,13 +16,21 @@ import com.broken.telephone.features.profile.model.ProfileTab
 import com.broken.telephone.features.profile.use_case.GetCurrentUserUseCase
 import com.broken.telephone.features.profile.use_case.GetMyContributionsUseCase
 import com.broken.telephone.features.profile.use_case.GetMyPostsUseCase
+import com.broken.telephone.features.settings.use_case.GetAuthStateUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ProfileViewModel(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getMyPostsUseCase: GetMyPostsUseCase,
@@ -31,6 +40,7 @@ class ProfileViewModel(
     private val blockUserUseCase: BlockUserUseCase,
     private val notInterestedUseCase: NotInterestedUseCase,
     private val reportPostUseCase: ReportPostUseCase,
+    private val getAuthStateUseCase: GetAuthStateUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProfileState())
@@ -40,21 +50,26 @@ class ProfileViewModel(
     val sideEffects = _sideEffects.receiveAsFlow()
 
     init {
-        viewModelScope.launch {
-            getCurrentUserUseCase().collect { user ->
-                _state.update { it.copy(user = user) }
-            }
-        }
-        viewModelScope.launch {
-            getMyPostsUseCase().collect { posts ->
-                _state.update { it.copy(myPosts = posts) }
-            }
-        }
-        viewModelScope.launch {
-            getMyContributionsUseCase().collect { posts ->
-                _state.update { it.copy(myContributions = posts) }
-            }
-        }
+        getAuthStateUseCase()
+            .onEach { authState -> _state.update { it.copy(isAuth = authState is AuthState.Auth) } }
+            .launchIn(viewModelScope)
+
+        val userFlow = getCurrentUserUseCase()
+            .onEach { user -> _state.update { it.copy(user = user) } }
+
+        userFlow
+            .map { it?.id }
+            .filterNotNull()
+            .flatMapLatest { userId -> getMyPostsUseCase(userId) }
+            .onEach { posts -> _state.update { it.copy(myPosts = posts) } }
+            .launchIn(viewModelScope)
+
+        userFlow
+            .map { it?.id }
+            .filterNotNull()
+            .flatMapLatest { userId -> getMyContributionsUseCase(userId) }
+            .onEach { posts -> _state.update { it.copy(myContributions = posts) } }
+            .launchIn(viewModelScope)
     }
 
     fun onTabSelect(tab: ProfileTab) {

@@ -2,13 +2,17 @@ package com.broken.telephone.features.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.broken.telephone.domain.user.AuthState
 import com.broken.telephone.features.settings.model.SettingsSideEffect
 import com.broken.telephone.features.settings.model.SettingsState
+import com.broken.telephone.features.settings.use_case.GetAuthStateUseCase
 import com.broken.telephone.features.settings.use_case.GetVersionInfoUseCase
 import com.broken.telephone.features.settings.use_case.LogoutUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -16,6 +20,7 @@ import kotlinx.coroutines.launch
 class SettingsViewModel(
     private val getVersionInfoUseCase: GetVersionInfoUseCase,
     private val logoutUseCase: LogoutUseCase,
+    private val getAuthStateUseCase: GetAuthStateUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SettingsState())
@@ -26,6 +31,10 @@ class SettingsViewModel(
 
     init {
         _state.update { it.copy(versionInfo = getVersionInfoUseCase()) }
+
+        getAuthStateUseCase()
+            .onEach { authState -> _state.update { it.copy(isAuth = authState is AuthState.Auth) } }
+            .launchIn(viewModelScope)
     }
 
     fun onLogoutClick() {

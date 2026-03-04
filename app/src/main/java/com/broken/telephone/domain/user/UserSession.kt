@@ -1,13 +1,11 @@
 package com.broken.telephone.domain.user
 
-import com.broken.telephone.domain.post.Post
 import com.broken.telephone.domain.settings.NotificationType
 import kotlinx.coroutines.flow.Flow
 
 interface UserSession {
     val authState: Flow<AuthState>
-    fun getMyPosts(): Flow<List<Post>>
-    fun getMyContributions(): Flow<List<Post>>
+    suspend fun setupGuest()
     suspend fun updateProfile(username: String)
     suspend fun updateAvatar(avatarUrl: String)
     fun getBlockedUsers(): Flow<List<BlockedUser>>

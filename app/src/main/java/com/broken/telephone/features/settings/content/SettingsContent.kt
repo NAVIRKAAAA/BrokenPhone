@@ -51,13 +51,15 @@ fun SettingsContent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        SettingsItem(
-            text = stringResource(R.string.settings_item_account),
-            onClick = onAccountSettingsClick,
-            modifier = Modifier
-        )
+        if (state.isAuth) {
+            SettingsItem(
+                text = stringResource(R.string.settings_item_account),
+                onClick = onAccountSettingsClick,
+                modifier = Modifier
+            )
 
-        HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
+            HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
+        }
 
         SettingsItem(
             text = stringResource(R.string.settings_item_app_preferences),
@@ -73,12 +75,14 @@ fun SettingsContent(
             modifier = Modifier
         )
 
-        HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
+        if (state.isAuth) {
+            HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
 
-        SettingsLogoutButton(
-            onClick = onLogoutClick,
-            text = stringResource(R.string.settings_logout_button),
-        )
+            SettingsLogoutButton(
+                onClick = onLogoutClick,
+                text = stringResource(R.string.settings_logout_button),
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp).weight(1f))
 
