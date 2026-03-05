@@ -1,4 +1,4 @@
-package com.broken.telephone.features.information_legal.use_case
+package com.broken.telephone.features.settings.use_case
 
 import com.broken.telephone.domain.link.LinkProvider
 

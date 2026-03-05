@@ -127,6 +127,7 @@ fun AppNavBottomBar(
                         item = item,
                         isSelected = item == state.selectedItem,
                         avatarUrl = if (item == BottomNavBar.PROFILE) state.userAvatarUrl else null,
+                        isAuth = state.isAuth,
                         onClick = { viewModel.onItemClick(item) },
                         modifier = Modifier.weight(1f)
                     )
@@ -140,6 +141,7 @@ fun AppNavBottomBar(
 private fun AppNavBottomBarItem(
     item: BottomNavBar,
     isSelected: Boolean,
+    isAuth: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     avatarUrl: String? = null,
@@ -163,7 +165,11 @@ private fun AppNavBottomBarItem(
         Color.Transparent
     }
 
-    val title = stringResource(item.titleResId)
+    val title = if (item == BottomNavBar.PROFILE && !isAuth) {
+        stringResource(R.string.bottom_nav_bar_guest)
+    } else {
+        stringResource(item.titleResId)
+    }
 
     Column(
         modifier = modifier
@@ -231,6 +237,7 @@ fun AppNavBottomBarPreview() {
             AppNavBottomBarItem(
                 item = item,
                 isSelected = item == BottomNavBar.DASHBOARD,
+                isAuth = false,
                 avatarUrl = null,
                 onClick = { {} },
                 modifier = Modifier.weight(1f)

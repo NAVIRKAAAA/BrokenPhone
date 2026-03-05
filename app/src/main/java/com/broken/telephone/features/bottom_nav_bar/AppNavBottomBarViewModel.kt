@@ -4,10 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hasRoute
+import com.broken.telephone.domain.user.AuthState
 import com.broken.telephone.features.bottom_nav_bar.model.BottomNavBar
 import com.broken.telephone.features.bottom_nav_bar.model.BottomNavBarEvent
 import com.broken.telephone.features.bottom_nav_bar.model.BottomNavBarState
 import com.broken.telephone.features.profile.use_case.GetCurrentUserUseCase
+import com.broken.telephone.features.settings.use_case.GetAuthStateUseCase
 import com.broken.telephone.navigation.routes.Routes
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +22,7 @@ import kotlinx.coroutines.launch
 
 class AppNavBottomBarViewModel(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val getAuthStateUseCase: GetAuthStateUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(BottomNavBarState())
@@ -30,9 +33,11 @@ class AppNavBottomBarViewModel(
 
     init {
         getCurrentUserUseCase()
-            .onEach { user ->
-                _state.update { it.copy(userAvatarUrl = user?.avatarUrl) }
-            }
+            .onEach { user -> _state.update { it.copy(userAvatarUrl = user?.avatarUrl) } }
+            .launchIn(viewModelScope)
+
+        getAuthStateUseCase()
+            .onEach { authState -> _state.update { it.copy(isAuth = authState is AuthState.Auth) } }
             .launchIn(viewModelScope)
     }
 

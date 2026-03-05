@@ -173,6 +173,7 @@
     <string name="bottom_nav_bar_dashboard">Dashboard</string>
     <string name="bottom_nav_bar_create">Create</string>
     <string name="bottom_nav_bar_profile">Profile</string>
+    <string name="bottom_nav_bar_guest">Guest</string>
 
     <!-- Create Post -->
     <string name="create_post_title">New Post</string>

@@ -3,16 +3,11 @@ package com.broken.telephone.features.welcome.content
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -50,53 +45,23 @@ fun WelcomeContent(
         verticalArrangement = Arrangement.Bottom
     ) {
 
-        Button(
+        WelcomeButton(
+            text = stringResource(R.string.welcome_get_started),
             onClick = onGetStarted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .padding(horizontal = 16.dp),
-            colors = ButtonDefaults.buttonColors(
-                contentColor = Color.White,
-                containerColor = MaterialTheme.colorScheme.primary
-            ),
-            enabled = true,
-            shape = RoundedCornerShape(16.dp),
-            contentPadding = PaddingValues()
-        ) {
-            Text(
-                text = stringResource(R.string.welcome_get_started),
-                textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(R.font.inter_medium)),
-                fontSize = 16.sp,
-                lineHeight = 24.sp
-            )
-        }
+            contentColor = Color.White,
+            containerColor = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Button(
+        WelcomeButton(
+            text = stringResource(R.string.welcome_sign_in),
             onClick = onSignIn,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .padding(horizontal = 16.dp),
-            colors = ButtonDefaults.buttonColors(
-                contentColor = Color.Black,
-                containerColor = Color(0xFFF5F5F5)
-            ),
-            enabled = true,
-            shape = RoundedCornerShape(16.dp),
-            contentPadding = PaddingValues()
-        ) {
-            Text(
-                text = stringResource(R.string.welcome_sign_in),
-                textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(R.font.inter_medium)),
-                fontSize = 16.sp,
-                lineHeight = 24.sp
-            )
-        }
+            contentColor = Color.Black,
+            containerColor = Color(0xFFF5F5F5),
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 

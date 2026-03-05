@@ -36,6 +36,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun ProfileScreen(
     onPostClick: (postId: String) -> Unit,
+    onSignInClick: () -> Unit,
+    onGetStartedClick: () -> Unit,
     modifier: Modifier = Modifier,
     onEditClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {},
@@ -65,6 +67,8 @@ fun ProfileScreen(
         state = state,
         onEditClick = onEditClick,
         onSettingsClick = onSettingsClick,
+        onSignInClick = onSignInClick,
+        onGetStartedClick = onGetStartedClick,
         onTabSelect = viewModel::onTabSelect,
         onScrollDirectionChange = navBarViewModel::onScrollDirectionChange,
         onPostClick = onPostClick,

@@ -4,9 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.broken.telephone.R
+import com.broken.telephone.core.browser.openCustomTab
 import com.broken.telephone.core.dialog.ConfirmDialog
 import com.broken.telephone.features.settings.content.SettingsContent
 import com.broken.telephone.features.settings.model.SettingsSideEffect
@@ -16,18 +18,21 @@ import org.koin.compose.viewmodel.koinViewModel
 fun SettingsScreen(
     onNavigateToWelcome: () -> Unit,
     onAccountSettingsClick: () -> Unit,
-    onAppPreferencesClick: () -> Unit,
-    onInformationLegalClick: () -> Unit,
+    onNotificationsClick: () -> Unit,
+    onLanguageClick: () -> Unit,
+    onThemeClick: () -> Unit,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
     viewModel: SettingsViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.sideEffects.collect { effect ->
             when (effect) {
                 SettingsSideEffect.NavigateToWelcome -> onNavigateToWelcome()
+                is SettingsSideEffect.OpenLink -> context.openCustomTab(effect.url)
             }
         }
     }
@@ -37,8 +42,11 @@ fun SettingsScreen(
         onBackClick = onBackClick,
         onLogoutClick = viewModel::onLogoutClick,
         onAccountSettingsClick = onAccountSettingsClick,
-        onAppPreferencesClick = onAppPreferencesClick,
-        onInformationLegalClick = onInformationLegalClick,
+        onNotificationsClick = onNotificationsClick,
+        onLanguageClick = onLanguageClick,
+        onThemeClick = onThemeClick,
+        onTermsOfServiceClick = viewModel::onTermsOfServiceClick,
+        onPrivacyPolicyClick = viewModel::onPrivacyPolicyClick,
         modifier = modifier,
     )
 

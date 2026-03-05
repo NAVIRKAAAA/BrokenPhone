@@ -17,7 +17,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.broken.telephone.features.account_settings.AccountSettingsScreen
-import com.broken.telephone.features.app_preferences.AppPreferencesScreen
 import com.broken.telephone.features.blocked_users.BlockedUsersScreen
 import com.broken.telephone.features.chain_details.ChainDetailsScreen
 import com.broken.telephone.features.chain_details.ChainDetailsViewModel
@@ -28,7 +27,6 @@ import com.broken.telephone.features.draw.DrawScreen
 import com.broken.telephone.features.edit_avatar.EditAvatarScreen
 import com.broken.telephone.features.edit_profile.EditProfileScreen
 import com.broken.telephone.features.edit_username.EditUsernameScreen
-import com.broken.telephone.features.information_legal.InformationLegalScreen
 import com.broken.telephone.features.language.LanguageScreen
 import com.broken.telephone.features.notifications.NotificationsScreen
 import com.broken.telephone.features.post_details.PostDetailsScreen
@@ -288,7 +286,7 @@ fun AppNavGraph(
                 onBackClick = navController::safePopBackStack,
                 onSignedIn = {
                     navController.navigateSingle(Routes.Dashboard) {
-                        popUpTo(Routes.Welcome) { inclusive = true }
+                        popUpTo(0) { inclusive = true }
                     }
                 },
                 onSignUpClick = {
@@ -335,7 +333,7 @@ fun AppNavGraph(
                 onBackClick = navController::safePopBackStack,
                 onSignedUp = {
                     navController.navigateSingle(Routes.Dashboard) {
-                        popUpTo(Routes.Welcome) { inclusive = true }
+                        popUpTo(0) { inclusive = true }
                     }
                 },
                 onSignInClick = {
@@ -373,6 +371,12 @@ fun AppNavGraph(
             ProfileScreen(
                 onPostClick = { postId ->
                     navController.navigateSingle(Routes.ChainDetails(postId = postId))
+                },
+                onSignInClick = {
+                    navController.navigateSingle(Routes.SignIn)
+                },
+                onGetStartedClick = {
+                    navController.navigateSingle(Routes.SignUp)
                 },
                 onEditClick = {
                     navController.navigateSingle(Routes.EditProfile)
@@ -477,7 +481,7 @@ fun AppNavGraph(
             },
             exitTransition = {
                 val route = targetState.destination.route
-                if (route?.contains("AccountSettings") == true || route?.contains("InformationLegal") == true || route?.contains("AppPreferences") == true) {
+                if (route?.contains("AccountSettings") == true || route?.contains("Notifications") == true || route?.contains("Language") == true || route?.contains("Theme") == true) {
                     slideOutHorizontally(
                         targetOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -488,7 +492,7 @@ fun AppNavGraph(
             },
             popEnterTransition = {
                 val route = initialState.destination.route
-                if (route?.contains("AccountSettings") == true || route?.contains("InformationLegal") == true || route?.contains("AppPreferences") == true) {
+                if (route?.contains("AccountSettings") == true || route?.contains("Notifications") == true || route?.contains("Language") == true || route?.contains("Theme") == true) {
                     slideInHorizontally(
                         initialOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -514,11 +518,14 @@ fun AppNavGraph(
                 onAccountSettingsClick = {
                     navController.navigateSingle(Routes.AccountSettings)
                 },
-                onAppPreferencesClick = {
-                    navController.navigateSingle(Routes.AppPreferences)
+                onNotificationsClick = {
+                    navController.navigateSingle(Routes.Notifications)
                 },
-                onInformationLegalClick = {
-                    navController.navigateSingle(Routes.InformationLegal)
+                onLanguageClick = {
+                    navController.navigateSingle(Routes.Language)
+                },
+                onThemeClick = {
+                    navController.navigateSingle(Routes.Theme)
                 },
             )
         }
@@ -589,56 +596,6 @@ fun AppNavGraph(
             )
         }
 
-        composable<Routes.AppPreferences>(
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            exitTransition = {
-                val route = targetState.destination.route
-                if (route?.contains("Notifications") == true || route?.contains("Language") == true || route?.contains("Theme") == true) {
-                    slideOutHorizontally(
-                        targetOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                } else {
-                    ExitTransition.None
-                }
-            },
-            popEnterTransition = {
-                val route = initialState.destination.route
-                if (route?.contains("Notifications") == true || route?.contains("Language") == true || route?.contains("Theme") == true) {
-                    slideInHorizontally(
-                        initialOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                } else {
-                    EnterTransition.None
-                }
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeOut(animationSpec = tween(200))
-            }
-        ) {
-            AppPreferencesScreen(
-                onBackClick = navController::safePopBackStack,
-                onNotificationsClick = {
-                    navController.navigateSingle(Routes.Notifications)
-                },
-                onLanguageClick = {
-                    navController.navigateSingle(Routes.Language)
-                },
-                onThemeClick = {
-                    navController.navigateSingle(Routes.Theme)
-                },
-            )
-        }
-
         composable<Routes.Language>(
             enterTransition = {
                 slideInHorizontally(
@@ -696,24 +653,6 @@ fun AppNavGraph(
             )
         }
 
-        composable<Routes.InformationLegal>(
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeOut(animationSpec = tween(200))
-            }
-        ) {
-            InformationLegalScreen(
-                onBackClick = navController::safePopBackStack,
-            )
-        }
 
         composable<Routes.CreatePost>(
             enterTransition = {

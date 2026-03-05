@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -24,6 +25,7 @@ import com.broken.telephone.core.avatar.AvatarComponent
 @Composable
 fun AccountInfoSection(
     username: String,
+    isAuth: Boolean = true,
     modifier: Modifier = Modifier,
     postsCount: Int = 0,
     contributions: Int = 0,
@@ -54,20 +56,34 @@ fun AccountInfoSection(
                 maxLines = 1
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            if(isAuth) {
+                Spacer(modifier = Modifier.height(12.dp))
 
-            Row(
-                modifier = Modifier,
-                horizontalArrangement = Arrangement.spacedBy(24.dp)
-            ) {
-                StatInfo(
-                    value = postsCount,
-                    name = stringResource(R.string.profile_posts)
-                )
+                Row(
+                    modifier = Modifier,
+                    horizontalArrangement = Arrangement.spacedBy(24.dp)
+                ) {
+                    StatInfo(
+                        value = postsCount,
+                        name = stringResource(R.string.profile_posts)
+                    )
 
-                StatInfo(
-                    value = contributions,
-                    name = stringResource(R.string.profile_contributions)
+                    StatInfo(
+                        value = contributions,
+                        name = stringResource(R.string.profile_contributions)
+                    )
+                }
+            } else {
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Sign up to save your posts and\njoin the fun!",
+                    textAlign = TextAlign.Start,
+                    fontFamily = FontFamily(Font(R.font.inter_regular)),
+                    fontSize = 14.sp,
+                    lineHeight = 21.sp,
+                    color = Color(0xFF666666)
                 )
             }
         }
@@ -79,6 +95,7 @@ fun AccountInfoSection(
 @Composable
 fun AccountInfoSectionPreview() {
     AccountInfoSection(
-        username = "Alex"
+        username = "Alex",
+        isAuth = false
     )
 }

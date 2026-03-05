@@ -2,9 +2,14 @@ package com.broken.telephone.features.profile.content
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
@@ -31,12 +36,15 @@ import com.broken.telephone.features.dashboard.model.toUi
 import com.broken.telephone.features.profile.model.ProfileState
 import com.broken.telephone.features.profile.model.ProfileTab
 import com.broken.telephone.features.profile.model.UserUi
+import com.broken.telephone.features.welcome.content.WelcomeButton
 
 @Composable
 fun ProfileContent(
     state: ProfileState,
     onEditClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    onSignInClick: () -> Unit,
+    onGetStartedClick: () -> Unit,
     onTabSelect: (ProfileTab) -> Unit,
     onScrollDirectionChange: (Boolean) -> Unit,
     onPostClick: (postId: String) -> Unit,
@@ -77,56 +85,100 @@ fun ProfileContent(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp),
             postsCount = state.myPosts.size,
             contributions = state.myContributions.size,
+            isAuth = state.isAuth
         )
 
-        PrimaryTabRow(
-            selectedTabIndex = state.selectedTab.ordinal,
-            containerColor = Color.Transparent,
-        ) {
-            ProfileTab.entries.forEachIndexed { index, tab ->
-                val isSelected = state.selectedTab.ordinal == index
-                val color = if (isSelected) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    Color(0xFF666666)
-                }
+        if(state.isAuth) {
 
-                Tab(
-                    selected = isSelected,
-                    onClick = { onTabSelect(tab) },
-                    text = {
-                        Text(
-                            text = stringResource(tab.labelResId),
-                            textAlign = TextAlign.Start,
-                            fontFamily = FontFamily(Font(R.font.inter_medium)),
-                            fontSize = 17.sp,
-                            lineHeight = 25.sp,
-                            color = color
-                        )
+            PrimaryTabRow(
+                selectedTabIndex = state.selectedTab.ordinal,
+                containerColor = Color.Transparent,
+            ) {
+                ProfileTab.entries.forEachIndexed { index, tab ->
+                    val isSelected = state.selectedTab.ordinal == index
+                    val color = if (isSelected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        Color(0xFF666666)
                     }
-                )
-            }
-        }
 
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.Top
-        ) { page ->
-            when (ProfileTab.entries[page]) {
-                ProfileTab.POSTS -> ProfilePostsPage(
-                    posts = state.myPosts,
-                    onScrollDirectionChange = onScrollDirectionChange,
-                    onPostClick = onPostClick,
-                    onMoreClick = onMoreClick,
+                    Tab(
+                        selected = isSelected,
+                        onClick = { onTabSelect(tab) },
+                        text = {
+                            Text(
+                                text = stringResource(tab.labelResId),
+                                textAlign = TextAlign.Start,
+                                fontFamily = FontFamily(Font(R.font.inter_medium)),
+                                fontSize = 17.sp,
+                                lineHeight = 25.sp,
+                                color = color
+                            )
+                        }
+                    )
+                }
+            }
+
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxSize(),
+                verticalAlignment = Alignment.Top
+            ) { page ->
+                when (ProfileTab.entries[page]) {
+                    ProfileTab.POSTS -> ProfilePostsPage(
+                        posts = state.myPosts,
+                        onScrollDirectionChange = onScrollDirectionChange,
+                        onPostClick = onPostClick,
+                        onMoreClick = onMoreClick,
+                    )
+
+                    ProfileTab.CONTRIBUTIONS -> ProfilePostsPage(
+                        posts = state.myContributions,
+                        onScrollDirectionChange = onScrollDirectionChange,
+                        onPostClick = onPostClick,
+                        onMoreClick = onMoreClick,
+                    )
+                }
+            }
+
+        } else {
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            ) {
+                WelcomeButton(
+                    text = stringResource(R.string.welcome_sign_in),
+                    onClick = onSignInClick,
+                    contentColor = Color.Black,
+                    containerColor = Color(0xFFF5F5F5),
+                    modifier = Modifier.weight(1f).height(48.dp)
                 )
-                ProfileTab.CONTRIBUTIONS -> ProfilePostsPage(
-                    posts = state.myContributions,
-                    onScrollDirectionChange = onScrollDirectionChange,
-                    onPostClick = onPostClick,
-                    onMoreClick = onMoreClick,
+
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+
+                WelcomeButton(
+                    text = stringResource(R.string.welcome_get_started),
+                    onClick = onGetStartedClick,
+                    contentColor = Color.White,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.weight(1f).height(48.dp)
                 )
             }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(
+                text = "As a guest, you can play but can't save progress",
+                textAlign = TextAlign.Center,
+                fontFamily = FontFamily(Font(R.font.inter_regular)),
+                fontSize = 12.sp,
+                lineHeight = 18.sp,
+                color = Color(0xFF999999),
+                modifier = Modifier.align(Alignment.CenterHorizontally).padding(horizontal = 16.dp)
+            )
         }
     }
 }
@@ -148,6 +200,8 @@ fun ProfileContentPreview() {
             ),
             onEditClick = {},
             onSettingsClick = {},
+            onSignInClick = {},
+            onGetStartedClick = {},
             onTabSelect = {},
             onScrollDirectionChange = {},
             onPostClick = {},

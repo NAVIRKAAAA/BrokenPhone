@@ -24,7 +24,6 @@ import com.broken.telephone.domain.user.UserSession
 import com.broken.telephone.features.account_settings.AccountSettingsViewModel
 import com.broken.telephone.features.account_settings.use_case.DeleteAccountUseCase
 import com.broken.telephone.features.account_settings.use_case.GetBlockedUsersCountUseCase
-import com.broken.telephone.features.app_preferences.AppPreferencesViewModel
 import com.broken.telephone.features.app_preferences.use_case.GetLanguageUseCase
 import com.broken.telephone.features.app_preferences.use_case.GetThemeUseCase
 import com.broken.telephone.features.blocked_users.BlockedUsersViewModel
@@ -47,9 +46,6 @@ import com.broken.telephone.features.edit_avatar.use_case.UpdateAvatarUseCase
 import com.broken.telephone.features.edit_profile.EditProfileViewModel
 import com.broken.telephone.features.edit_username.EditUsernameViewModel
 import com.broken.telephone.features.edit_username.use_case.UpdateProfileUseCase
-import com.broken.telephone.features.information_legal.InformationLegalViewModel
-import com.broken.telephone.features.information_legal.use_case.GetPrivacyPolicyLinkUseCase
-import com.broken.telephone.features.information_legal.use_case.GetTermsOfServiceLinkUseCase
 import com.broken.telephone.features.language.LanguageViewModel
 import com.broken.telephone.features.language.use_case.UpdateLanguageUseCase
 import com.broken.telephone.features.notifications.NotificationsViewModel
@@ -69,6 +65,8 @@ import com.broken.telephone.features.profile.use_case.GetMyContributionsUseCase
 import com.broken.telephone.features.profile.use_case.GetMyPostsUseCase
 import com.broken.telephone.features.settings.SettingsViewModel
 import com.broken.telephone.features.settings.use_case.GetAuthStateUseCase
+import com.broken.telephone.features.settings.use_case.GetPrivacyPolicyLinkUseCase
+import com.broken.telephone.features.settings.use_case.GetTermsOfServiceLinkUseCase
 import com.broken.telephone.features.settings.use_case.GetVersionInfoUseCase
 import com.broken.telephone.features.settings.use_case.LogoutUseCase
 import com.broken.telephone.features.sign_in.SignInViewModel
@@ -148,10 +146,8 @@ val appModule = module {
     viewModelOf(::AccountSettingsViewModel)
     factoryOf(::GetTermsOfServiceLinkUseCase)
     factoryOf(::GetPrivacyPolicyLinkUseCase)
-    viewModelOf(::InformationLegalViewModel)
     factoryOf(::GetLanguageUseCase)
     factoryOf(::GetThemeUseCase)
-    viewModelOf(::AppPreferencesViewModel)
     factoryOf(::GetNotificationsUseCase)
     factoryOf(::UpdateNotificationsUseCase)
     viewModelOf(::NotificationsViewModel)
@@ -160,5 +156,5 @@ val appModule = module {
     factoryOf(::UpdateThemeUseCase)
     viewModelOf(::ThemeViewModel)
 
-    single { AppNavBottomBarViewModel(get()) }
+    single { AppNavBottomBarViewModel(get(), get()) }
 }

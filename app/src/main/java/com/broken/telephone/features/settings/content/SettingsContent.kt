@@ -1,11 +1,13 @@
 package com.broken.telephone.features.settings.content
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -22,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
+import com.broken.telephone.features.edit_profile.content.AccountTextInfoItem
 import com.broken.telephone.features.edit_profile.content.EditProfileTopBar
 import com.broken.telephone.features.settings.model.SettingsState
 
@@ -33,8 +36,11 @@ fun SettingsContent(
     onBackClick: () -> Unit = {},
     onLogoutClick: () -> Unit = {},
     onAccountSettingsClick: () -> Unit = {},
-    onAppPreferencesClick: () -> Unit = {},
-    onInformationLegalClick: () -> Unit = {},
+    onNotificationsClick: () -> Unit = {},
+    onLanguageClick: () -> Unit = {},
+    onThemeClick: () -> Unit = {},
+    onTermsOfServiceClick: () -> Unit = {},
+    onPrivacyPolicyClick: () -> Unit = {},
 ) {
 
     Column(
@@ -62,16 +68,38 @@ fun SettingsContent(
         }
 
         SettingsItem(
-            text = stringResource(R.string.settings_item_app_preferences),
-            onClick = onAppPreferencesClick,
+            text = stringResource(R.string.app_preferences_notifications),
+            onClick = onNotificationsClick,
             modifier = Modifier
+        )
+
+        AccountTextInfoItem(
+            name = stringResource(R.string.app_preferences_language),
+            value = stringResource(state.language.displayNameResId),
+            modifier = Modifier
+                .clickable(onClick = onLanguageClick)
+                .padding(horizontal = 16.dp),
+        )
+
+        AccountTextInfoItem(
+            name = stringResource(R.string.app_preferences_theme),
+            value = stringResource(state.theme.displayNameResId),
+            modifier = Modifier
+                .clickable(onClick = onThemeClick)
+                .padding(horizontal = 16.dp),
         )
 
         HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
 
         SettingsItem(
-            text = stringResource(R.string.settings_item_information_legal),
-            onClick = onInformationLegalClick,
+            text = stringResource(R.string.information_legal_terms_of_service),
+            onClick = onTermsOfServiceClick,
+            modifier = Modifier
+        )
+
+        SettingsItem(
+            text = stringResource(R.string.information_legal_privacy_policy),
+            onClick = onPrivacyPolicyClick,
             modifier = Modifier
         )
 
@@ -106,6 +134,7 @@ fun SettingsContent(
 @Composable
 fun SettingsContentPreview() {
     BrokenTelephoneTheme() {
-        SettingsContent(state = SettingsState(versionInfo = "1.0.0 (1)"))
+        SettingsContent(
+            state = SettingsState(versionInfo = "1.0.0 (1)", isAuth = true))
     }
 }

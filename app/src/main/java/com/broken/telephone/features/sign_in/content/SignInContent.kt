@@ -147,7 +147,7 @@ fun SignInContent(
                     )
                 ) {
                     withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.None)) {
-                        append(stringResource(R.string.sign_in_sign_up_link))
+                        append(" ${stringResource(R.string.sign_in_sign_up_link)}")
                     }
                 }
             }
