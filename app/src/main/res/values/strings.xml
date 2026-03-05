@@ -135,6 +135,9 @@
 
     <!-- Dashboard -->
     <string name="dashboard_title">Hello, %1$s</string>
+    <string name="dashboard_sort_almost_done">Almost Done</string>
+    <string name="dashboard_sort_just_started">Just Started</string>
+    <string name="dashboard_sort_longest_chain">Longest Chain</string>
     <string name="dashboard_badge_complete">Complete</string>
     <string name="dashboard_badge_you">You</string>
 
@@ -193,7 +196,7 @@
 
     <!-- Create Post — Start New Chain Dialog -->
     <string name="create_post_start_chain_title">Start new chain?</string>
-    <string name="create_post_start_chain_body">Your post will start a chain that others can continue. This cannot be undone.</string>
+    <string name="create_post_start_chain_body">Your post will start a chain that others can continue.</string>
     <string name="create_post_start_chain_chain_length">Chain length: %1$d posts</string>
     <string name="create_post_start_chain_text_time">Text time: %1$ds</string>
     <string name="create_post_start_chain_draw_time">Draw time: %1$ds</string>

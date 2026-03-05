@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.data.repository.MockPostRepository
+import com.broken.telephone.features.dashboard.model.DashboardSort
 import com.broken.telephone.features.dashboard.model.DashboardState
 import com.broken.telephone.features.dashboard.model.toUi
 import com.broken.telephone.features.profile.model.UserUi
@@ -35,6 +36,8 @@ fun DashboardContent(
     listState: LazyListState,
     onPostClick: (postId: String) -> Unit,
     onMoreClick: (postId: String) -> Unit,
+    onSortSelected: (DashboardSort) -> Unit,
+
     modifier: Modifier = Modifier,
 ) {
 
@@ -46,7 +49,8 @@ fun DashboardContent(
     ) {
         DashboardTopBar(
             name = state.user?.username ?: "",
-            modifier = Modifier
+            selectedSort = state.selectedSort,
+            onSortSelected = onSortSelected,
         )
 
         LazyColumn(
@@ -121,6 +125,7 @@ fun DashboardContentPreview() {
             ),
             onPostClick = {},
             onMoreClick = {},
+            onSortSelected = {},
             listState = rememberLazyListState()
         )
     }

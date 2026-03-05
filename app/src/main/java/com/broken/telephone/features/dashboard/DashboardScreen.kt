@@ -81,7 +81,8 @@ fun DashboardScreen(
             val post = state.posts.find { it.id == postId } ?: return@DashboardContent
             viewModel.onMoreClick(post)
         },
-        modifier = modifier
+        modifier = modifier,
+        onSortSelected = viewModel::onSortSelected
     )
 
     if (state.isPostBottomSheetVisible) {

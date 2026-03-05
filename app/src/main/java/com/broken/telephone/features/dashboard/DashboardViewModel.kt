@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.broken.telephone.core.bottom_sheet.report_post_bottom_sheet.model.ReportPostType
 import com.broken.telephone.features.dashboard.model.DashboardSideEffect
+import com.broken.telephone.features.dashboard.model.DashboardSort
 import com.broken.telephone.features.dashboard.model.DashboardState
 import com.broken.telephone.features.dashboard.model.PostUi
 import com.broken.telephone.features.dashboard.use_case.GetPostsUseCase
@@ -46,6 +47,10 @@ class DashboardViewModel(
         getCurrentUserUseCase()
             .onEach { user -> _state.update { it.copy(user = user) } }
             .launchIn(viewModelScope)
+    }
+
+    fun onSortSelected(sort: DashboardSort) {
+        _state.update { it.copy(selectedSort = sort) }
     }
 
     fun onCopyLinkClick() {
