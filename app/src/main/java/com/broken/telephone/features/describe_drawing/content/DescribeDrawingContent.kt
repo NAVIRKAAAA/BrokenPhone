@@ -4,24 +4,23 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -70,7 +69,6 @@ fun DescribeDrawingContent(
     val post = state.postUi
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
-    val scrollState = rememberScrollState()
 
     LaunchedEffect(Unit) {
         delay(150)
@@ -81,7 +79,8 @@ fun DescribeDrawingContent(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .statusBarsPadding(),
+            .systemBarsPadding()
+            .imePadding(),
     ) {
         PostTopBar(
             title = stringResource(R.string.describe_drawing_title),
@@ -92,9 +91,8 @@ fun DescribeDrawingContent(
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-                .imePadding()
+                .fillMaxWidth()
+                .weight(1f)
         ) {
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -102,15 +100,26 @@ fun DescribeDrawingContent(
             if (post != null) {
                 val content = post.content as? PostContent.Drawing ?: return@Column
 
-                DrawPostImage(
-                    content = content,
+                BoxWithConstraints(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .aspectRatio(1f)
-                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f), RoundedCornerShape(14.dp)),
-                    contentScale = ContentScale.Crop
-                )
+                        .weight(1f)
+                        .padding(horizontal = 16.dp),
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    val imageSize = minOf(maxWidth, maxHeight)
+                    DrawPostImage(
+                        content = content,
+                        modifier = Modifier
+                            .size(imageSize)
+                            .border(
+                                1.dp,
+                                Color.LightGray.copy(alpha = 0.5f),
+                                RoundedCornerShape(14.dp)
+                            ),
+                        contentScale = ContentScale.Crop
+                    )
+                }
 
 //                Box(
 //                    modifier = Modifier
@@ -187,7 +196,10 @@ fun DescribeDrawingContent(
 
                     BadgeElement(
                         iconResId = R.drawable.ic_mutations,
-                        text = stringResource(R.string.create_post_badge_generations, post.maxGenerations),
+                        text = stringResource(
+                            R.string.create_post_badge_generations,
+                            post.maxGenerations
+                        ),
                     )
 
                     BadgeElement(

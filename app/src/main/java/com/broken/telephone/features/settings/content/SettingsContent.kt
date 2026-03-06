@@ -67,12 +67,6 @@ fun SettingsContent(
             HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
         }
 
-        SettingsItem(
-            text = stringResource(R.string.app_preferences_notifications),
-            onClick = onNotificationsClick,
-            modifier = Modifier
-        )
-
         AccountTextInfoItem(
             name = stringResource(R.string.app_preferences_language),
             value = stringResource(state.language.displayNameResId),

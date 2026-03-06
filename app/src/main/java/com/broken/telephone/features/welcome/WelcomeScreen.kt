@@ -3,7 +3,7 @@ package com.broken.telephone.features.welcome
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import com.broken.telephone.features.welcome.content.WelcomeContent
+import com.broken.telephone.features.welcome.demo_new.DemoWelcomeContent
 import com.broken.telephone.features.welcome.model.WelcomeSideEffect
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -23,7 +23,7 @@ fun WelcomeScreen(
         }
     }
 
-    WelcomeContent(
+    DemoWelcomeContent(
         onContinueAsGuest = viewModel::onContinueAsGuest,
         onGetStarted = onGetStarted,
         onSignIn = onSignIn,

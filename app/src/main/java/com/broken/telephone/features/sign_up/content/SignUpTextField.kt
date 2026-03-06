@@ -65,7 +65,7 @@ fun SignUpTextField(
                             fontFamily = FontFamily(Font(R.font.inter_regular)),
                             fontSize = 12.sp,
                             lineHeight = 18.sp,
-                            color = Color.Gray,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         else -> Spacer(modifier = Modifier.weight(1f))
                     }
@@ -75,7 +75,7 @@ fun SignUpTextField(
                             fontFamily = FontFamily(Font(R.font.inter_regular)),
                             fontSize = 12.sp,
                             lineHeight = 18.sp,
-                            color = if (text.length > maxLength) MaterialTheme.colorScheme.error else Color.Gray,
+                            color = if (text.length > maxLength) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }
@@ -108,7 +108,7 @@ fun SignUpTextField(
                 fontFamily = FontFamily(Font(R.font.inter_regular)),
                 fontSize = 15.sp,
                 lineHeight = 22.sp,
-                color = Color.Gray
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         },
         supportingText = supportingText,
@@ -125,13 +125,13 @@ fun SignUpTextField(
                             else R.drawable.password_visibility_off
                         ),
                         contentDescription = if (isPasswordVisible) stringResource(R.string.sign_up_password_hide) else stringResource(R.string.sign_up_password_show),
-                        tint = Color.Gray,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
         },
         colors = TextFieldDefaults.colors(
-            unfocusedIndicatorColor = Color(0xFFE5E5E5),
+            unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,
             unfocusedContainerColor = Color.Transparent,
             focusedContainerColor = Color.Transparent,
             errorContainerColor = Color.Transparent,
@@ -145,7 +145,9 @@ fun SignUpTextField(
 @Preview
 @Composable
 fun SignUpTextFieldPreview() {
-    BrokenTelephoneTheme {
+    BrokenTelephoneTheme(
+        darkTheme = false
+    ) {
         SignUpTextField(
             text = "",
             label = "Email",
@@ -158,7 +160,9 @@ fun SignUpTextFieldPreview() {
 @Composable
 fun SignUpTextFieldPasswordPreview() {
     var visible by remember { mutableStateOf(false) }
-    BrokenTelephoneTheme {
+    BrokenTelephoneTheme(
+        darkTheme = true
+    ) {
         SignUpTextField(
             text = "secret123".repeat(555),
             label = "Password",

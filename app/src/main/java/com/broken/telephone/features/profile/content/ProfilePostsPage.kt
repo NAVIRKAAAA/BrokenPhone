@@ -1,6 +1,6 @@
 package com.broken.telephone.features.profile.content
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -64,9 +64,12 @@ fun ProfilePostsPage(
                 isUsersPost = false,
                 onMoreClick = { onMoreClick(post.id) },
                 modifier = Modifier
-                    .clickable(
+                    .combinedClickable(
                         onClick = {
-                            onPostClick(post.parentId)
+                            onPostClick(post.id)
+                        },
+                        onLongClick = {
+                            onMoreClick(post.id)
                         },
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }

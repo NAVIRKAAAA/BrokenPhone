@@ -1,4 +1,4 @@
-package com.broken.telephone
+package com.broken.telephone.main
 
 import android.app.Application
 import com.broken.telephone.di.appModule

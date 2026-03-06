@@ -1,7 +1,7 @@
 package com.broken.telephone.features.dashboard.content
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -68,9 +68,12 @@ fun DashboardContent(
                 Column {
                     Column(
                         modifier = Modifier
-                            .clickable(
+                            .combinedClickable(
                                 onClick = {
                                     onPostClick(postUi.id)
+                                },
+                                onLongClick = {
+                                    onMoreClick(postUi.id)
                                 },
                                 indication = null,
                                 interactionSource = remember { MutableInteractionSource() }

@@ -1,4 +1,4 @@
-package com.broken.telephone.features.sign_in.content
+package com.broken.telephone.core.top_bar
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -22,7 +21,8 @@ import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
 
 @Composable
-fun SignInTopBar(
+fun AuthTopBar(
+    title: String,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -38,11 +38,12 @@ fun SignInTopBar(
             Icon(
                 painter = painterResource(R.drawable.ic_back),
                 contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground,
             )
         }
 
         Text(
-            text = stringResource(R.string.sign_in_title),
+            text = title,
             textAlign = TextAlign.Center,
             fontFamily = FontFamily(Font(R.font.inter_medium)),
             fontSize = 16.sp,
@@ -55,8 +56,12 @@ fun SignInTopBar(
 
 @Preview
 @Composable
-fun SignInTopBarPreview() {
-    BrokenTelephoneTheme(darkTheme = false) {
-        SignInTopBar(onBackClick = {})
+fun AuthTopBarPreview() {
+    BrokenTelephoneTheme() {
+        AuthTopBar(
+            title = "Sign In",
+            onBackClick = {}
+        )
     }
+
 }

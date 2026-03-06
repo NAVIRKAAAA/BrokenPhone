@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 class MockUserSettingsRepositoryImpl : UserSettingsRepository {
 
     private val _language = MutableStateFlow(Language.ENGLISH)
-    private val _theme = MutableStateFlow(AppTheme.LIGHT)
+    private val _theme = MutableStateFlow(AppTheme.SYSTEM)
 
     override fun getLanguage(): Flow<Language> = _language.asStateFlow()
     override fun getTheme(): Flow<AppTheme> = _theme.asStateFlow()
