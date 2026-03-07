@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -21,6 +22,7 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
+import com.broken.telephone.core.theme.LocalAppLanguage
 import com.broken.telephone.domain.settings.AppTheme
 import com.broken.telephone.features.bottom_nav_bar.AppNavBottomBar
 import com.broken.telephone.navigation.nav_graph.AppNavGraph
@@ -52,24 +54,28 @@ class MainActivity : ComponentActivity() {
                 controller.isAppearanceLightNavigationBars = false
             }
 
-            BrokenTelephoneTheme(
-                darkTheme = isDarkTheme
-            ) {
-
-                Box(
-                    modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
+            CompositionLocalProvider(LocalAppLanguage provides state.language) {
+                BrokenTelephoneTheme(
+                    darkTheme = isDarkTheme
                 ) {
 
-                    AppNavGraph(navController = navController)
-
-                    AppNavBottomBar(
-                        navController = navController,
+                    Box(
                         modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .navigationBarsPadding()
-                            .padding(bottom = 16.dp)
-                            .fillMaxWidth(0.85f)
-                    )
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.background)
+                    ) {
+
+                        AppNavGraph(navController = navController)
+
+                        AppNavBottomBar(
+                            navController = navController,
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .navigationBarsPadding()
+                                .padding(bottom = 16.dp)
+                                .fillMaxWidth(0.85f)
+                        )
+                    }
                 }
             }
         }

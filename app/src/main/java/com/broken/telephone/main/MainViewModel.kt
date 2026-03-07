@@ -2,6 +2,7 @@ package com.broken.telephone.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.broken.telephone.features.app_preferences.use_case.GetLanguageUseCase
 import com.broken.telephone.features.app_preferences.use_case.GetThemeUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.update
 
 class MainViewModel(
     private val getThemeUseCase: GetThemeUseCase,
+    private val getLanguageUseCase: GetLanguageUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MainState())
@@ -19,6 +21,10 @@ class MainViewModel(
     init {
         getThemeUseCase()
             .onEach { theme -> _state.update { it.copy(theme = theme) } }
+            .launchIn(viewModelScope)
+
+        getLanguageUseCase()
+            .onEach { language -> _state.update { it.copy(language = language) } }
             .launchIn(viewModelScope)
     }
 }

@@ -6,8 +6,6 @@ val dividerDark = Color(0xFF3C383E)
 
 val badgeCompleteLight = Color(0xFF22C55E)
 val badgeCompleteDark = Color(0xFF4ADE80)
-val navSelectedBackgroundLight = Color(0xFFF2E7FE)
-val navSelectedBackgroundDark = Color(0xFF6B4F8A)
 
 val primaryLight = Color(0xFF9B5DE5)
 val onPrimaryLight = Color(0xFFFFFFFF)
