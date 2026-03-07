@@ -1,8 +1,10 @@
 package com.broken.telephone.core.dialog
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -61,7 +62,7 @@ fun TimesUpDialog(
                 painter = painterResource(R.drawable.ic_clock),
                 contentDescription = null,
                 modifier = Modifier.size(40.dp),
-                tint = Color(0xFF666666)
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -71,7 +72,8 @@ fun TimesUpDialog(
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily(Font(R.font.inter_medium)),
                 fontSize = 18.sp,
-                lineHeight = 28.sp
+                lineHeight = 28.sp,
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -81,7 +83,7 @@ fun TimesUpDialog(
                 fontFamily = FontFamily(Font(R.font.inter_regular)),
                 fontSize = 14.sp,
                 lineHeight = 21.sp,
-                color = Color(0xFF666666),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
 
@@ -89,9 +91,11 @@ fun TimesUpDialog(
 
             Button(
                 onClick = onGotItClick,
-                modifier = Modifier.fillMaxWidth().height(48.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
                 colors = ButtonDefaults.buttonColors(
-                    contentColor = Color.White,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
                     containerColor = MaterialTheme.colorScheme.primary
                 ),
                 shape = RoundedCornerShape(14.dp),
@@ -114,7 +118,15 @@ fun TimesUpDialog(
 @Preview
 @Composable
 fun TimesUpDialogPreview() {
-    BrokenTelephoneTheme() {
-        TimesUpDialog(message = "Your drawing time has ended. You can try again in 10 minutes.")
+    BrokenTelephoneTheme(
+        darkTheme = true
+    ) {
+        Box(
+            modifier = Modifier
+            .fillMaxSize()
+//            .background(MaterialTheme.colorScheme.background)
+        ) {
+            TimesUpDialog(message = "Your drawing time has ended. You can try again in 10 minutes.")
+        }
     }
 }

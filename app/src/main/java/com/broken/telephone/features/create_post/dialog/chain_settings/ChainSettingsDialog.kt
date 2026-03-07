@@ -25,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -92,7 +91,8 @@ fun ChainSettingsDialog(
                     textAlign = TextAlign.Center,
                     fontFamily = FontFamily(Font(R.font.inter_medium)),
                     fontSize = 18.sp,
-                    lineHeight = 28.sp
+                    lineHeight = 28.sp,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 IconButton(
@@ -102,6 +102,7 @@ fun ChainSettingsDialog(
                     Icon(
                         painter = painterResource(R.drawable.ic_close),
                         contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground,
                     )
 
                 }
@@ -149,7 +150,7 @@ fun ChainSettingsDialog(
                 onClick = { onConfirm(chainLength, textTimeLimit, drawingTimeLimit) },
                 modifier = Modifier.fillMaxWidth().height(48.dp),
                 colors = ButtonDefaults.buttonColors(
-                    contentColor = Color.White,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
                     containerColor = MaterialTheme.colorScheme.primary
                 ),
                 enabled = hasChanged,

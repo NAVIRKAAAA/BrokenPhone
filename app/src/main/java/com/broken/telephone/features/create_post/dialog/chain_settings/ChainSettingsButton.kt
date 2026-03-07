@@ -14,7 +14,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,7 +53,7 @@ fun ChainSettingsButton(
             )
             .size(40.dp)
             .clip(RoundedCornerShape(10.dp))
-            .border(1.dp, Color(0xFFE5E5E5), RoundedCornerShape(10.dp))
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(10.dp))
            ,
         contentAlignment = Alignment.Center
     ) {

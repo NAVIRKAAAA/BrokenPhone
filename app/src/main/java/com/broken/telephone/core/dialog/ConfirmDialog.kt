@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,11 +25,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.broken.telephone.R
+import com.broken.telephone.core.theme.BrokenTelephoneTheme
 
 @Composable
 fun ConfirmDialog(
@@ -61,7 +64,8 @@ fun ConfirmDialog(
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily(Font(R.font.inter_medium)),
                 fontSize = 18.sp,
-                lineHeight = 28.sp
+                lineHeight = 28.sp,
+                color = MaterialTheme.colorScheme.onSurface,
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -71,7 +75,7 @@ fun ConfirmDialog(
                 fontFamily = FontFamily(Font(R.font.inter_regular)),
                 fontSize = 14.sp,
                 lineHeight = 21.sp,
-                color = Color(0xFF666666)
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -85,9 +89,9 @@ fun ConfirmDialog(
                     modifier = Modifier
                         .weight(1f)
                         .height(48.dp)
-                        .border(1.dp, Color(0xFFE5E5E5), RoundedCornerShape(14.dp)),
+                        .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp)),
                     colors = ButtonDefaults.buttonColors(
-                        contentColor = Color.Black,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
                         containerColor = Color.Transparent
                     ),
                     shape = RoundedCornerShape(14.dp),
@@ -109,7 +113,7 @@ fun ConfirmDialog(
                         .weight(1f)
                         .height(48.dp),
                     colors = ButtonDefaults.buttonColors(
-                        contentColor = Color.White,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
                         containerColor = confirmButtonColor
                     ),
                     shape = RoundedCornerShape(14.dp),
@@ -118,7 +122,7 @@ fun ConfirmDialog(
                     if (isLoading) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(24.dp),
-                            color = Color.White,
+                            color = LocalContentColor.current,
                             strokeWidth = 2.dp
                         )
                     } else {
@@ -133,5 +137,20 @@ fun ConfirmDialog(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun ConfirmDialogPreview() {
+    BrokenTelephoneTheme(darkTheme = true) {
+        ConfirmDialog(
+            title = "Delete post?",
+            body = "This action cannot be undone.",
+            cancelText = "Cancel",
+            confirmText = "Delete",
+            onDismiss = {},
+            onConfirm = {},
+        )
     }
 }

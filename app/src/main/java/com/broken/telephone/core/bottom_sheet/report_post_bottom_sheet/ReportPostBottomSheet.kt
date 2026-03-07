@@ -17,7 +17,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -83,7 +82,7 @@ fun ReportPostBottomSheetContent(
             fontFamily = FontFamily(Font(R.font.inter_medium)),
             fontSize = 16.sp,
             lineHeight = 24.sp,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(start = 16.dp)
         )
 
@@ -111,7 +110,9 @@ fun ReportPostBottomSheetContent(
 @Preview
 @Composable
 fun ReportPostBottomSheetPreview() {
-    BrokenTelephoneTheme {
+    BrokenTelephoneTheme(
+        darkTheme = false
+    ) {
         ReportPostBottomSheet(onDismissRequest = {})
     }
 }

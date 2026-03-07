@@ -1,6 +1,8 @@
 package com.broken.telephone.core.bottom_sheet.post_bottom_sheet
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -14,7 +16,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -77,11 +78,11 @@ fun PostBottomSheetContent(
 
         actions.forEachIndexed { index, action ->
             val textColor = when (action) {
-                PostBottomSheetAction.NOT_INTERESTED, PostBottomSheetAction.COPY_LINK -> Color.Black
+                PostBottomSheetAction.NOT_INTERESTED, PostBottomSheetAction.COPY_LINK -> MaterialTheme.colorScheme.onSurface
                 PostBottomSheetAction.BLOCK, PostBottomSheetAction.REPORT, PostBottomSheetAction.DELETE -> errorColor
             }
             val iconColor = when (action) {
-                PostBottomSheetAction.NOT_INTERESTED, PostBottomSheetAction.COPY_LINK -> Color(0xFF666666)
+                PostBottomSheetAction.NOT_INTERESTED, PostBottomSheetAction.COPY_LINK -> MaterialTheme.colorScheme.onSurfaceVariant
                 PostBottomSheetAction.BLOCK, PostBottomSheetAction.REPORT, PostBottomSheetAction.DELETE -> errorColor
             }
 
@@ -108,10 +109,16 @@ fun PostBottomSheetContent(
 @Preview
 @Composable
 fun PostBottomSheetContentPreview() {
-    BrokenTelephoneTheme {
-        PostBottomSheet(
-            onDismissRequest = {},
-            actions = PostBottomSheetAction.entries,
-        )
+    BrokenTelephoneTheme(
+        darkTheme = false
+    ) {
+        Box(
+            modifier = Modifier.background(MaterialTheme.colorScheme.background)
+        ) {
+            PostBottomSheet(
+                onDismissRequest = {},
+                actions = PostBottomSheetAction.entries,
+            )
+        }
     }
 }

@@ -231,7 +231,7 @@ fun AppNavBottomBarPreview() {
                 Row(
                     modifier = Modifier
                         .coloredShadow(
-                            color = Color.Black.copy(alpha = 0.14f),
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.14f),
                             blurRadius = 16f,
                             offsetY = 0.dp,
                             offsetX = 0.dp,

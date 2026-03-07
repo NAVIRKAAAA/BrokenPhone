@@ -123,23 +123,6 @@ fun DescribeDrawingContent(
                     )
                 }
 
-//                Box(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(horizontal = 16.dp)
-//                        .aspectRatio(1f)
-//                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f), RoundedCornerShape(14.dp))
-//                ) {
-//                    AsyncImage(
-//                        model = model,
-//                        contentDescription = null,
-//                        contentScale = ContentScale.Crop,
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .clip(RoundedCornerShape(12.dp))
-//                    )
-//                }
-
                 Spacer(modifier = Modifier.height(16.dp))
 
                 HorizontalDivider(color = MaterialTheme.appColors.divider)

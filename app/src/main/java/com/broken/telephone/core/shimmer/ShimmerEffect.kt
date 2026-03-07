@@ -8,12 +8,12 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 
 @Composable
 fun ShimmerEffect(
@@ -30,11 +30,9 @@ fun ShimmerEffect(
         label = "shimmer_translate"
     )
 
-    val shimmerColors = listOf(
-        Color(0xFFE3E3E3),
-        Color(0xFFF5F5F5),
-        Color(0xFFE3E3E3)
-    )
+    val baseColor = MaterialTheme.colorScheme.surfaceContainerHighest
+    val highlightColor = MaterialTheme.colorScheme.surfaceVariant
+    val shimmerColors = listOf(baseColor, highlightColor, baseColor)
 
     val brush = Brush.linearGradient(
         colors = shimmerColors,

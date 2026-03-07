@@ -18,6 +18,7 @@ import coil3.compose.SubcomposeAsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.broken.telephone.core.shimmer.ShimmerEffect
+import com.broken.telephone.core.theme.BrokenTelephoneTheme
 
 @Composable
 fun AvatarComponent(
@@ -60,8 +61,12 @@ fun AvatarComponent(
 @Preview
 @Composable
 fun AvatarComponentPreview() {
-    AvatarComponent(
-        avatarUrl = "",
-        modifier = Modifier
-    )
+    BrokenTelephoneTheme(
+        darkTheme = true
+    ) {
+        AvatarComponent(
+            avatarUrl = "",
+            modifier = Modifier
+        )
+    }
 }

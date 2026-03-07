@@ -3,10 +3,12 @@ package com.broken.telephone.features.create_post.dialog.start_new_chain
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -66,7 +69,8 @@ fun StartNewChainDialog(
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily(Font(R.font.inter_medium)),
                 fontSize = 18.sp,
-                lineHeight = 28.sp
+                lineHeight = 28.sp,
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -76,7 +80,7 @@ fun StartNewChainDialog(
                 fontFamily = FontFamily(Font(R.font.inter_regular)),
                 fontSize = 14.sp,
                 lineHeight = 21.sp,
-                color = Color(0xFF666666)
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -107,7 +111,7 @@ fun StartNewChainDialog(
                 fontFamily = FontFamily(Font(R.font.inter_regular)),
                 fontSize = 14.sp,
                 lineHeight = 21.sp,
-                color = Color(0xFF666666)
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -121,9 +125,9 @@ fun StartNewChainDialog(
                     modifier = Modifier
                         .weight(1f)
                         .height(48.dp)
-                        .border(1.dp, Color(0xFFE5E5E5), RoundedCornerShape(14.dp)),
+                        .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp)),
                     colors = ButtonDefaults.buttonColors(
-                        contentColor = Color.Black,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
                         containerColor = Color.Transparent
                     ),
                     enabled = true,
@@ -145,7 +149,7 @@ fun StartNewChainDialog(
                         .weight(1f)
                         .height(48.dp),
                     colors = ButtonDefaults.buttonColors(
-                        contentColor = Color.White,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
                         containerColor = MaterialTheme.colorScheme.primary
                     ),
                     enabled = !isLoading,
@@ -154,7 +158,7 @@ fun StartNewChainDialog(
                 ) {
                     if (isLoading) {
                         CircularProgressIndicator(
-                            color = Color.White,
+                            color = LocalContentColor.current,
                             strokeWidth = 2.dp,
                             modifier = Modifier.size(24.dp)
                         )
@@ -178,15 +182,21 @@ fun StartNewChainDialog(
 @Preview()
 @Composable
 fun StartNewChainDialogPreview() {
-    BrokenTelephoneTheme {
-        StartNewChainDialog(
-            maxGenerations = 10,
-            textTimeLimit = 30,
-            drawingTimeLimit = 60,
-            isLoading = true,
-            onDismiss = {},
-            onCancel = {},
-            onStartChain = {},
-        )
+    BrokenTelephoneTheme(
+        darkTheme = true
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            StartNewChainDialog(
+                maxGenerations = 10,
+                textTimeLimit = 30,
+                drawingTimeLimit = 60,
+                isLoading = false,
+                onDismiss = {},
+                onCancel = {},
+                onStartChain = {},
+            )
+        }
     }
 }
