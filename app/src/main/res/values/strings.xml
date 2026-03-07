@@ -3,9 +3,9 @@
 
     <!-- Common -->
     <string name="common_cancel">Cancel</string>
-    <string name="common_post">Post</string>
+    <string name="common_post">Submit</string>
     <string name="common_discard">Discard</string>
-    <string name="common_keep_writing">Keep writing</string>
+    <string name="common_keep_writing">Keep going!</string>
     <string name="common_block">Block</string>
     <string name="common_delete">Delete</string>
     <string name="common_toast_report_success">Thank you for your report!</string>
@@ -17,41 +17,41 @@
     <string name="common_dialog_delete_post_body">This action cannot be undone.</string>
 
     <!-- Chain Details -->
-    <string name="chain_details_title">Chain Details</string>
+    <string name="chain_details_title">The Chain</string>
     <string name="chain_details_complete">Chain Complete!</string>
-    <string name="chain_details_generations">%1$d/%2$d generations</string>
+    <string name="chain_details_generations">%1$d of %2$d steps</string>
 
     <!-- Describe Drawing -->
     <string name="describe_drawing_title">Describe</string>
-    <string name="describe_drawing_placeholder">Describe what you see…</string>
-    <string name="describe_drawing_dialog_post_title">Post description?</string>
-    <string name="describe_drawing_dialog_post_body">Your description will be submitted and visible to others.</string>
-    <string name="describe_drawing_dialog_discard_title">Discard description?</string>
-    <string name="describe_drawing_dialog_discard_body">Your text will be lost if you go back.</string>
-    <string name="describe_drawing_times_up_message">Your writing time has ended. You can try again in 10 minutes.</string>
+    <string name="describe_drawing_placeholder">What do you see here?</string>
+    <string name="describe_drawing_dialog_post_title">Ready to submit?</string>
+    <string name="describe_drawing_dialog_post_body">Once submitted, the next player will draw based on your words.</string>
+    <string name="describe_drawing_dialog_discard_title">Give up?</string>
+    <string name="describe_drawing_dialog_discard_body">Your description will be gone forever. No take-backs!</string>
+    <string name="describe_drawing_times_up_message">Time\'s up! You can try again in 10 minutes.</string>
 
     <!-- Draw -->
     <string name="draw_title">Draw</string>
-    <string name="draw_dialog_post_title">Post drawing?</string>
-    <string name="draw_dialog_post_body">Your drawing will be submitted and visible to others.</string>
-    <string name="draw_dialog_discard_title">Discard drawing?</string>
-    <string name="draw_dialog_discard_body">Your drawing will be lost if you go back.</string>
-    <string name="draw_dialog_discard_cancel">Keep drawing</string>
-    <string name="draw_times_up_message">Your drawing time has ended. You can try again in 10 minutes.</string>
+    <string name="draw_dialog_post_title">Ready to submit?</string>
+    <string name="draw_dialog_post_body">Once submitted, everyone in the chain will see your masterpiece.</string>
+    <string name="draw_dialog_discard_title">Give up?</string>
+    <string name="draw_dialog_discard_body">Your drawing will be gone forever. No take-backs!</string>
+    <string name="draw_dialog_discard_cancel">Keep going!</string>
+    <string name="draw_times_up_message">Time\'s up! You can try again in 10 minutes.</string>
 
     <!-- Post Details -->
-    <string name="post_details_title">Post Details</string>
-    <string name="post_details_button_continue">Continue</string>
-    <string name="post_details_button_view">View</string>
-    <string name="post_details_description_draw">Draw this in %1$d seconds</string>
-    <string name="post_details_description_describe">Describe in %1$d seconds</string>
+    <string name="post_details_title">Chain</string>
+    <string name="post_details_button_continue">My Turn!</string>
+    <string name="post_details_button_view">See the Chain</string>
+    <string name="post_details_description_draw">You have %1$d seconds to draw!</string>
+    <string name="post_details_description_describe">You have %1$d seconds to describe!</string>
     <string name="post_details_description_unavailable">Someone is working on this right now</string>
-    <string name="post_details_description_completed">The game has been completed</string>
-    <string name="post_details_description_own_post">You can\'t continue your own post</string>
+    <string name="post_details_description_completed">This chain is complete!</string>
+    <string name="post_details_description_own_post">You started this one — wait for others!</string>
 
     <!-- Times Up Dialog -->
     <string name="times_up_dialog_title">Time\'s up!</string>
-    <string name="times_up_dialog_got_it">Got it</string>
+    <string name="times_up_dialog_got_it">Got it!</string>
 
     <!-- Information & Legal -->
     <string name="information_legal_title">Information &amp; Legal</string>
@@ -124,8 +124,8 @@
     <!-- Edit Avatar -->
     <string name="edit_avatar_title">Edit Avatar</string>
     <string name="edit_avatar_button_save">Save</string>
-    <string name="edit_avatar_current">Current Avatar</string>
-    <string name="edit_avatar_choose">Choose Avatar</string>
+    <string name="edit_avatar_current">Your Avatar</string>
+    <string name="edit_avatar_choose">Pick a New Avatar</string>
 
     <!-- Edit Profile -->
     <string name="edit_profile_title">Edit Profile</string>
@@ -134,33 +134,33 @@
     <string name="edit_profile_field_email">Email</string>
 
     <!-- Dashboard -->
-    <string name="dashboard_title">Hello, %1$s</string>
+    <string name="dashboard_title">Hey, %1$s!</string>
     <string name="dashboard_sort_almost_done">Almost Done</string>
     <string name="dashboard_sort_just_started">Just Started</string>
     <string name="dashboard_sort_longest_chain">Longest Chain</string>
-    <string name="dashboard_badge_complete">Complete</string>
-    <string name="dashboard_badge_you">You</string>
+    <string name="dashboard_badge_complete">Finished!</string>
+    <string name="dashboard_badge_you">You!</string>
 
     <!-- Sign In -->
-    <string name="sign_in_title">Sign In</string>
+    <string name="sign_in_title">Welcome Back</string>
     <string name="sign_in_email">Email</string>
     <string name="sign_in_password">Password</string>
     <string name="sign_in_button">Sign In</string>
-    <string name="sign_in_dont_have_account">Don\'t have an account?</string>
+    <string name="sign_in_dont_have_account">New here?</string>
     <string name="sign_in_sign_up_link">Sign Up</string>
 
     <!-- Sign Up -->
-    <string name="sign_up_title">Sign Up</string>
+    <string name="sign_up_title">Join the Game</string>
     <string name="sign_up_email">Email</string>
     <string name="sign_up_password">Password</string>
     <string name="sign_up_password_hint">At least 8 characters</string>
     <string name="sign_up_confirm_password">Confirm Password</string>
-    <string name="sign_up_button">Sign Up</string>
+    <string name="sign_up_button">Create Account</string>
     <string name="sign_up_terms_prefix">By signing up, you agree to our</string>
     <string name="sign_up_terms">Terms</string>
     <string name="sign_up_terms_and"> &amp; </string>
     <string name="sign_up_privacy_policy">Privacy Policy</string>
-    <string name="sign_up_already_have_account">Already have an account?</string>
+    <string name="sign_up_already_have_account">Been here before?</string>
     <string name="sign_up_sign_in_link">Sign In</string>
     <string name="sign_up_password_show">Show password</string>
     <string name="sign_up_password_hide">Hide password</string>
@@ -171,41 +171,43 @@
     <string name="profile_contributions">Contributions</string>
     <string name="profile_top_bar_edit">Edit</string>
     <string name="profile_top_bar_settings">Settings</string>
+    <string name="profile_guest_note">You\'re playing as a guest. Sign up to save your progress!</string>
 
     <!-- Bottom Nav Bar -->
-    <string name="bottom_nav_bar_dashboard">Dashboard</string>
+    <string name="bottom_nav_bar_dashboard">Feed</string>
     <string name="bottom_nav_bar_create">Create</string>
     <string name="bottom_nav_bar_profile">Profile</string>
     <string name="bottom_nav_bar_guest">Guest</string>
 
     <!-- Create Post -->
-    <string name="create_post_title">New Post</string>
-    <string name="create_post_placeholder">Start a new chain…</string>
+    <string name="create_post_title">Start a Chain</string>
+    <string name="create_post_placeholder">Write something to kick things off…</string>
     <string name="create_post_badge_generations">0/%1$d</string>
     <string name="create_post_badge_time_limits">%1$ds / %2$ds</string>
+    <string name="badge_seconds">%1$ds</string>
     <string name="create_post_text_counter">%1$d/%2$d</string>
-    <string name="create_post_dialog_discard_title">Discard post?</string>
-    <string name="create_post_dialog_discard_body">Your text will be lost if you go back.</string>
+    <string name="create_post_dialog_discard_title">Give up?</string>
+    <string name="create_post_dialog_discard_body">Your text will be gone forever. No take-backs!</string>
 
     <!-- Create Post — Chain Settings Dialog -->
     <string name="create_post_chain_settings_title">Chain settings</string>
     <string name="create_post_chain_settings_chain_length">Chain length</string>
-    <string name="create_post_chain_settings_text_response">Text response</string>
-    <string name="create_post_chain_settings_drawing_response">Drawing response</string>
+    <string name="create_post_chain_settings_text_response">Describe time</string>
+    <string name="create_post_chain_settings_drawing_response">Draw time</string>
     <string name="create_post_chain_settings_button_done">Done</string>
 
     <!-- Create Post — Start New Chain Dialog -->
-    <string name="create_post_start_chain_title">Start new chain?</string>
-    <string name="create_post_start_chain_body">Your post will start a chain that others can continue.</string>
-    <string name="create_post_start_chain_chain_length">Chain length: %1$d posts</string>
-    <string name="create_post_start_chain_text_time">Text time: %1$ds</string>
-    <string name="create_post_start_chain_draw_time">Draw time: %1$ds</string>
+    <string name="create_post_start_chain_title">Ready to start?</string>
+    <string name="create_post_start_chain_body">You\'re kicking off a chain — others will draw and describe after you!</string>
+    <string name="create_post_start_chain_chain_length">%1$d players</string>
+    <string name="create_post_start_chain_text_time">Describe: %1$ds</string>
+    <string name="create_post_start_chain_draw_time">Draw: %1$ds</string>
     <string name="create_post_start_chain_settings_note">Settings apply to the entire chain</string>
-    <string name="create_post_start_chain_confirm">Start Chain</string>
+    <string name="create_post_start_chain_confirm">Let\'s Go!</string>
 
     <!-- Post Bottom Sheet -->
     <string name="post_bottom_sheet_copy_link">Copy Link</string>
-    <string name="post_bottom_sheet_not_interested">Not Interested</string>
+    <string name="post_bottom_sheet_not_interested">Not for me</string>
     <string name="post_bottom_sheet_report">Report</string>
 
     <!-- Report Post Bottom Sheet -->
@@ -217,8 +219,8 @@
 
     <!-- Welcome -->
     <string name="welcome_get_started">Get Started</string>
-    <string name="welcome_sign_in">Sign In</string>
-    <string name="welcome_continue_as_guest">Continue as Guest</string>
+    <string name="welcome_sign_in">I have an account</string>
+    <string name="welcome_continue_as_guest">Play as Guest</string>
     <string name="welcome_terms_prefix">By continuing, you agree to our</string>
     <string name="welcome_terms">Terms</string>
     <string name="welcome_terms_and">&amp;</string>

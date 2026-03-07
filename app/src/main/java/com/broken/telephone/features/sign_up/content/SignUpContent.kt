@@ -189,7 +189,10 @@ fun SignUpContentPreview() {
     BrokenTelephoneTheme(darkTheme = true) {
         SignUpContent(
             state = SignUpState(
-                isLoading = true
+                isLoading = false,
+                email = "sa",
+                password = "sa",
+                confirmPassword = "sa"
             ),
             onBackClick = {},
         )

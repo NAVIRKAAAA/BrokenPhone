@@ -176,7 +176,7 @@ fun ProfileContent(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "As a guest, you can play but can't save progress",
+                text = stringResource(R.string.profile_guest_note),
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily(Font(R.font.inter_regular)),
                 fontSize = 12.sp,
