@@ -1,6 +1,8 @@
 package com.broken.telephone.features.language.content
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,7 +45,7 @@ fun LanguageRadioItem(
             onClick = onClick,
             colors = RadioButtonDefaults.colors().copy(
                 selectedColor = MaterialTheme.colorScheme.primary,
-                unselectedColor = Color.LightGray
+                unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
             )
         )
 
@@ -56,6 +57,7 @@ fun LanguageRadioItem(
                 fontFamily = FontFamily(Font(R.font.inter_medium)),
                 fontSize = 15.sp,
                 lineHeight = 22.sp,
+                color = MaterialTheme.colorScheme.onSurface,
             )
 
             if (body != null) {
@@ -67,7 +69,7 @@ fun LanguageRadioItem(
                     fontFamily = FontFamily(Font(R.font.inter_regular)),
                     fontSize = 13.sp,
                     lineHeight = 18.sp,
-                    color = Color(0xFF999999),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
@@ -77,12 +79,18 @@ fun LanguageRadioItem(
 @Preview(showBackground = true)
 @Composable
 fun LanguageRadioItemPreview() {
-    BrokenTelephoneTheme {
-        LanguageRadioItem(
-            text = "System",
-            body = "Match device settings",
-            selected = true,
-            onClick = {},
-        )
+    BrokenTelephoneTheme(
+        darkTheme = true
+    ) {
+        Box(
+            modifier = Modifier.background(MaterialTheme.colorScheme.background)
+        ) {
+            LanguageRadioItem(
+                text = "System",
+                body = "Match device settings",
+                selected = true,
+                onClick = {},
+            )
+        }
     }
 }

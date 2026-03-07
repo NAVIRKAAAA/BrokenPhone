@@ -1,5 +1,6 @@
 package com.broken.telephone.features.edit_profile.content
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,6 +39,7 @@ fun EditProfileTopBar(
             Icon(
                 painter = painterResource(R.drawable.ic_back),
                 contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground,
             )
         }
 
@@ -58,8 +60,12 @@ fun EditProfileTopBar(
 @Preview
 @Composable
 fun EditProfileTopBarPreview() {
-    BrokenTelephoneTheme {
-        Box {
+    BrokenTelephoneTheme(
+        darkTheme = true
+    ) {
+        Box(
+            modifier = Modifier.background(MaterialTheme.colorScheme.background)
+        ) {
             EditProfileTopBar(title = "Edit Profile")
         }
     }

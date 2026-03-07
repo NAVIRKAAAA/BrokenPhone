@@ -1,6 +1,8 @@
 package com.broken.telephone.features.edit_profile.content
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.broken.telephone.R
 import com.broken.telephone.core.avatar.AvatarComponent
+import com.broken.telephone.core.theme.BrokenTelephoneTheme
 
 @Composable
 fun AccountTextInfoItem(
@@ -65,7 +67,7 @@ fun AccountTextInfoItem(
                 fontFamily = FontFamily(Font(R.font.inter_medium)),
                 fontSize = 15.sp,
                 lineHeight = 22.sp,
-                color = Color(0xFF666666).copy(alpha = contentAlpha),
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
                 maxLines = 1,
                 textAlign = TextAlign.End,
                 modifier = Modifier.weight(1f, fill = false),
@@ -78,7 +80,7 @@ fun AccountTextInfoItem(
                 painter = painterResource(R.drawable.ic_arrow_right),
                 contentDescription = null,
                 modifier = Modifier.size(20.dp),
-                tint = Color(0xFF999999).copy(alpha = contentAlpha)
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha)
             )
         }
 
@@ -107,7 +109,8 @@ fun AccountAvatarInfoItem(
             lineHeight = 22.sp,
             modifier = Modifier.weight(1f),
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Spacer(modifier = Modifier.width(16.dp))
@@ -128,7 +131,7 @@ fun AccountAvatarInfoItem(
                 painter = painterResource(R.drawable.ic_arrow_right),
                 contentDescription = null,
                 modifier = Modifier.size(20.dp),
-                tint = Color(0xFF999999)
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
@@ -137,18 +140,26 @@ fun AccountAvatarInfoItem(
 @Preview
 @Composable
 fun AccountTextInfoItemPreview() {
-    AccountTextInfoItem(
-        name = "Username",
-        value = "Alex",
-        enabled = false
-    )
+    BrokenTelephoneTheme() {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            AccountTextInfoItem(
+                name = "Username",
+                value = "Alex",
+                enabled = false
+            )
+        }
+    }
 }
 
 @Preview
 @Composable
 fun AccountAvatarInfoItemPreview() {
-    AccountAvatarInfoItem(
-        name = "Avatar",
-        avatarUrl = null,
-    )
+    BrokenTelephoneTheme() {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            AccountAvatarInfoItem(
+                name = "Avatar",
+                avatarUrl = null,
+            )
+        }
+    }
 }

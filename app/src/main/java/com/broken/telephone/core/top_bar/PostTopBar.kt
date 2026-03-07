@@ -1,5 +1,6 @@
 package com.broken.telephone.core.top_bar
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -44,6 +45,7 @@ fun PostTopBar(
             Icon(
                 painter = painterResource(R.drawable.ic_back),
                 contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground,
             )
         }
 
@@ -75,8 +77,12 @@ fun PostTopBar(
 @Preview
 @Composable
 fun PostTopBarPreview() {
-    BrokenTelephoneTheme {
-        Box {
+    BrokenTelephoneTheme(
+        darkTheme = true
+    ) {
+        Box(
+            modifier = Modifier.background(MaterialTheme.colorScheme.background)
+        ) {
             PostTopBar(title = "Draw")
         }
     }

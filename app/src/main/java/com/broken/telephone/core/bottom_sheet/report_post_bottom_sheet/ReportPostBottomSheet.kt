@@ -28,6 +28,7 @@ import com.broken.telephone.R
 import com.broken.telephone.core.bottom_sheet.report_post_bottom_sheet.content.ReportPostBottomSheetButton
 import com.broken.telephone.core.bottom_sheet.report_post_bottom_sheet.model.ReportPostType
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
+import com.broken.telephone.core.theme.appColors
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -98,7 +99,7 @@ fun ReportPostBottomSheetContent(
             )
 
             if (index < types.lastIndex) {
-                HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
+                HorizontalDivider(color = MaterialTheme.appColors.divider)
             }
         }
 

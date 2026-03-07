@@ -19,12 +19,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
+import com.broken.telephone.core.theme.appColors
 import com.broken.telephone.features.blocked_users.model.BlockedUserUi
 import com.broken.telephone.features.blocked_users.model.BlockedUsersState
 import com.broken.telephone.features.edit_profile.content.EditProfileTopBar
@@ -77,7 +77,7 @@ fun BlockedUsersContent(
                         )
                         if (index != state.blockedUsers.lastIndex) {
                             Spacer(modifier = Modifier.height(16.dp))
-                            HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
+                            HorizontalDivider(color = MaterialTheme.appColors.divider)
                         }
                     }
                 }
@@ -93,29 +93,31 @@ fun BlockedUsersContent(
 @Preview
 @Composable
 fun BlockedUsersContentPreview() {
-    BrokenTelephoneTheme {
+    BrokenTelephoneTheme(
+        darkTheme = true
+    ) {
         BlockedUsersContent(
             state = BlockedUsersState(
-//                blockedUsers = listOf(
-//                    BlockedUserUi(
-//                        id = "block_1",
-//                        name = "Alice",
-//                        avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
-//                        createdAt = System.currentTimeMillis() - 60_000 * 5,
-//                    ),
-//                    BlockedUserUi(
-//                        id = "block_2",
-//                        name = "Bob",
-//                        avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_2.png",
-//                        createdAt = System.currentTimeMillis() - 60_000 * 60 * 24,
-//                    ),
-//                    BlockedUserUi(
-//                        id = "block_3",
-//                        name = "Diana",
-//                        avatarUrl = null,
-//                        createdAt = System.currentTimeMillis() - 60_000 * 60 * 24 * 7,
-//                    ),
-//                )
+                blockedUsers = listOf(
+                    BlockedUserUi(
+                        id = "block_1",
+                        name = "Alice",
+                        avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
+                        createdAt = System.currentTimeMillis() - 60_000 * 5,
+                    ),
+                    BlockedUserUi(
+                        id = "block_2",
+                        name = "Bob",
+                        avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_2.png",
+                        createdAt = System.currentTimeMillis() - 60_000 * 60 * 24,
+                    ),
+                    BlockedUserUi(
+                        id = "block_3",
+                        name = "Diana",
+                        avatarUrl = null,
+                        createdAt = System.currentTimeMillis() - 60_000 * 60 * 24 * 7,
+                    ),
+                )
             )
         )
     }

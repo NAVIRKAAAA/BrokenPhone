@@ -10,12 +10,12 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
+import com.broken.telephone.core.theme.appColors
 import com.broken.telephone.domain.settings.Language
 import com.broken.telephone.features.edit_profile.content.EditProfileTopBar
 import com.broken.telephone.features.language.model.LanguageState
@@ -48,7 +48,7 @@ fun LanguageContent(
             )
 
             if(language != Language.entries.lastOrNull()) {
-                HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
+                HorizontalDivider(color = MaterialTheme.appColors.divider)
             }
         }
     }
@@ -57,7 +57,9 @@ fun LanguageContent(
 @Preview
 @Composable
 fun LanguageContentPreview() {
-    BrokenTelephoneTheme {
+    BrokenTelephoneTheme(
+        darkTheme = true
+    ) {
         LanguageContent(state = LanguageState())
     }
 }

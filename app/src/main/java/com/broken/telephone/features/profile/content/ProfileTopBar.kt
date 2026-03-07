@@ -14,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -53,7 +52,7 @@ fun ProfileTopBar(
                         painter = painterResource(R.drawable.ic_edit),
                         contentDescription = stringResource(R.string.profile_top_bar_edit),
                         modifier = Modifier.size(24.dp),
-                        tint = Color(0xFF666666)
+                        tint = MaterialTheme.colorScheme.onBackground,
                     )
                 }
 
@@ -65,7 +64,7 @@ fun ProfileTopBar(
                     painter = painterResource(R.drawable.ic_settings),
                     contentDescription = stringResource(R.string.profile_top_bar_settings),
                     modifier = Modifier.size(24.dp),
-                    tint = Color(0xFF666666)
+                    tint = MaterialTheme.colorScheme.onBackground,
                 )
             }
         }

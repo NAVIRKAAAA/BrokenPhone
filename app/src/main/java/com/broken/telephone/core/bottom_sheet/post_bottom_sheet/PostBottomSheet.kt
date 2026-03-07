@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.broken.telephone.core.bottom_sheet.post_bottom_sheet.content.PostBottomSheetButton
 import com.broken.telephone.core.bottom_sheet.post_bottom_sheet.model.PostBottomSheetAction
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
+import com.broken.telephone.core.theme.appColors
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -95,7 +96,7 @@ fun PostBottomSheetContent(
             )
 
             if (index < actions.lastIndex) {
-                HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
+                HorizontalDivider(color = MaterialTheme.appColors.divider)
             }
         }
 

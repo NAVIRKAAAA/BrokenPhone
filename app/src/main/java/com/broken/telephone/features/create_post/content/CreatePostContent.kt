@@ -16,7 +16,9 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.features.create_post.model.CreatePostState
+import com.broken.telephone.features.profile.model.UserUi
 import kotlinx.coroutines.delay
 
 @Composable
@@ -74,11 +76,23 @@ fun CreatePostContent(
 @Preview
 @Composable
 fun CreatePostContentPreview() {
-    CreatePostContent(
-        state = CreatePostState(),
-        onTextChanged = {},
-        onBadgeClick = {},
-        onBackClick = {},
-        onPostClick = {}
-    )
+    BrokenTelephoneTheme(
+        darkTheme = true
+    ) {
+        CreatePostContent(
+            state = CreatePostState(
+                user = UserUi(
+                    id = "0",
+                    username = "Alex",
+                    email = "",
+                    avatarUrl = "",
+                ),
+                text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed lectus massa, gravida quis efficitur ut, vehicula id nulla. Phasellus placerat odio id tortor efficitur lacinia. Quisque a semper ante. In hac habitasse platea dictumst. Proin ut euismod massa. Sed sodales nibh purus, in consequat quam feugiat vitae. Curabitur scelerisque massa ac consequat luctus. In tincidunt blandit felis. In sed nulla diam. Nullam a auctor felis, ut pretium lacus.",
+            ),
+            onTextChanged = {},
+            onBadgeClick = {},
+            onBackClick = {},
+            onPostClick = {}
+        )
+    }
 }

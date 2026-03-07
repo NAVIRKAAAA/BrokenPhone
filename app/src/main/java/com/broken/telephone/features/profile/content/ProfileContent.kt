@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
+import com.broken.telephone.core.theme.appColors
 import com.broken.telephone.data.repository.MockPostRepository
 import com.broken.telephone.features.dashboard.model.toUi
 import com.broken.telephone.features.profile.model.ProfileState
@@ -93,13 +95,16 @@ fun ProfileContent(
             PrimaryTabRow(
                 selectedTabIndex = state.selectedTab.ordinal,
                 containerColor = Color.Transparent,
+                divider = {
+                    HorizontalDivider(color = MaterialTheme.appColors.divider)
+                }
             ) {
                 ProfileTab.entries.forEachIndexed { index, tab ->
                     val isSelected = state.selectedTab.ordinal == index
                     val color = if (isSelected) {
                         MaterialTheme.colorScheme.primary
                     } else {
-                        Color(0xFF666666)
+                        MaterialTheme.colorScheme.onSurfaceVariant
                     }
 
                     Tab(
@@ -150,8 +155,8 @@ fun ProfileContent(
                 WelcomeButton(
                     text = stringResource(R.string.welcome_sign_in),
                     onClick = onSignInClick,
-                    contentColor = Color.Black,
-                    containerColor = Color(0xFFF5F5F5),
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
                     modifier = Modifier.weight(1f).height(48.dp)
                 )
 
@@ -162,7 +167,7 @@ fun ProfileContent(
                 WelcomeButton(
                     text = stringResource(R.string.welcome_get_started),
                     onClick = onGetStartedClick,
-                    contentColor = Color.White,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
                     containerColor = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.weight(1f).height(48.dp)
                 )
@@ -176,7 +181,7 @@ fun ProfileContent(
                 fontFamily = FontFamily(Font(R.font.inter_regular)),
                 fontSize = 12.sp,
                 lineHeight = 18.sp,
-                color = Color(0xFF999999),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.align(Alignment.CenterHorizontally).padding(horizontal = 16.dp)
             )
         }
@@ -186,7 +191,9 @@ fun ProfileContent(
 @Preview
 @Composable
 fun ProfileContentPreview() {
-    BrokenTelephoneTheme {
+    BrokenTelephoneTheme(
+        darkTheme = false
+    ) {
         ProfileContent(
             state = ProfileState(
                 user = UserUi(
@@ -197,6 +204,7 @@ fun ProfileContentPreview() {
                 ),
                 myPosts = MockPostRepository.mockList.map { it.toUi() },
                 myContributions = MockPostRepository.mockList.map { it.toUi() },
+                isAuth = true
             ),
             onEditClick = {},
             onSettingsClick = {},

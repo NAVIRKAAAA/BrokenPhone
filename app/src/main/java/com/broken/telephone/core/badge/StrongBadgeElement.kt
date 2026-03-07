@@ -4,11 +4,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -17,21 +17,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.broken.telephone.R
+import com.broken.telephone.core.theme.appColors
 
 enum class StrongBadgeElementType(
     val iconResId: Int,
     val textResId: Int,
-    val color: Color,
 ) {
     COMPLETE(
         iconResId = R.drawable.ic_complete,
         textResId = R.string.dashboard_badge_complete,
-        color = Color(0xFF22C55E),
     ),
     YOU(
         iconResId = R.drawable.ic_fire,
         textResId = R.string.dashboard_badge_you,
-        color = Color(0xFF9B5DE5),
     )
 }
 
@@ -40,6 +38,12 @@ fun StrongBadgeElement(
     type: StrongBadgeElementType,
     modifier: Modifier = Modifier,
 ) {
+    val appColors = MaterialTheme.appColors
+    val color = when (type) {
+        StrongBadgeElementType.COMPLETE -> appColors.badgeComplete
+        StrongBadgeElementType.YOU -> appColors.badgeYou
+    }
+
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -49,7 +53,7 @@ fun StrongBadgeElement(
         Icon(
             painter = painterResource(type.iconResId),
             contentDescription = null,
-            tint = type.color,
+            tint = color,
             modifier = Modifier.size(20.dp)
         )
 
@@ -59,7 +63,7 @@ fun StrongBadgeElement(
             fontFamily = FontFamily(Font(R.font.inter_medium)),
             fontSize = 14.sp,
             lineHeight = 20.sp,
-            color = type.color
+            color = color
         )
 
     }

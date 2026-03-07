@@ -62,6 +62,7 @@ fun DashboardTopBar(
                 Icon(
                     painter = painterResource(R.drawable.ic_sort),
                     contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground,
                 )
             }
 
@@ -104,7 +105,7 @@ fun DashboardTopBar(
 @Preview
 @Composable
 fun DashboardTopBarPreview() {
-    BrokenTelephoneTheme() {
+    BrokenTelephoneTheme(true) {
         DashboardTopBar(
             name = "Alex",
             selectedSort = DashboardSort.JUST_STARTED,

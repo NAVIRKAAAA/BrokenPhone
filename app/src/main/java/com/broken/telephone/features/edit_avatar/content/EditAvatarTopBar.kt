@@ -1,5 +1,6 @@
 package com.broken.telephone.features.edit_avatar.content
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -42,6 +43,7 @@ fun EditAvatarTopBar(
             Icon(
                 painter = painterResource(R.drawable.ic_back),
                 contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground,
             )
         }
 
@@ -72,8 +74,12 @@ fun EditAvatarTopBar(
 @Preview
 @Composable
 fun EditAvatarTopBarPreview() {
-    BrokenTelephoneTheme {
-        Box {
+    BrokenTelephoneTheme(
+        darkTheme = true
+    ) {
+        Box(
+            modifier = Modifier.background(MaterialTheme.colorScheme.background)
+        ) {
             EditAvatarTopBar()
         }
     }

@@ -1,6 +1,7 @@
 package com.broken.telephone.features.post_details.content
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -88,7 +88,7 @@ fun PostDetailsContent(
                 fontFamily = FontFamily(Font(R.font.inter_regular)),
                 fontSize = 12.sp,
                 lineHeight = 16.sp,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
             )
 
@@ -101,19 +101,25 @@ fun PostDetailsContent(
 @Preview
 @Composable
 fun PostDetailsContentPreview() {
-    BrokenTelephoneTheme() {
-        PostDetailsContent(
-            state = PostDetailsState(
-                MockPostRepository.mockList.first().toUi().copy(
-                    status = PostStatus.AVAILABLE,
-                    generation = 4,
-                    maxGenerations = 10
+    BrokenTelephoneTheme(
+        darkTheme = true
+    ) {
+        Box(
+            modifier = Modifier.background(MaterialTheme.colorScheme.background)
+        ) {
+            PostDetailsContent(
+                state = PostDetailsState(
+                    MockPostRepository.mockList.first().toUi().copy(
+                        status = PostStatus.AVAILABLE,
+                        generation = 4,
+                        maxGenerations = 10
+                    ),
+                    isContinueLoading = false
                 ),
-                isContinueLoading = false
-            ),
-            onContinueClick = {},
-            onViewHistoryClick = {},
-            onMoreClick = {}
-        )
+                onContinueClick = {},
+                onViewHistoryClick = {},
+                onMoreClick = {}
+            )
+        }
     }
 }

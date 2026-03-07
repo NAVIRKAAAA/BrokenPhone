@@ -1,5 +1,6 @@
 package com.broken.telephone.features.post_details.content
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -43,6 +44,7 @@ fun PostDetailsTopBar(
             Icon(
                 painter = painterResource(R.drawable.ic_back),
                 contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground,
             )
 
         }
@@ -63,6 +65,7 @@ fun PostDetailsTopBar(
             Icon(
                 painter = painterResource(R.drawable.ic_more_vert),
                 contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground,
             )
 
         }
@@ -75,10 +78,10 @@ fun PostDetailsTopBar(
 @Composable
 fun PostDetailsTopBarPreview() {
     BrokenTelephoneTheme(
-        darkTheme = false
+        darkTheme = true
     ) {
         Box(
-            modifier = Modifier
+            modifier = Modifier.background(MaterialTheme.colorScheme.background)
         ) {
             PostDetailsTopBar()
         }

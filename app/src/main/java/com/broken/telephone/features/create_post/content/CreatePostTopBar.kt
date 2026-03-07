@@ -1,5 +1,6 @@
 package com.broken.telephone.features.create_post.content
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -45,6 +46,7 @@ fun CreatePostTopBar(
             Icon(
                 painter = painterResource(R.drawable.ic_close),
                 contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground,
             )
 
         }
@@ -82,7 +84,7 @@ fun CreatePostTopBarPreview() {
         darkTheme = true
     ) {
         Box(
-            modifier = Modifier
+            modifier = Modifier.background(MaterialTheme.colorScheme.background)
         ) {
             CreatePostTopBar()
         }

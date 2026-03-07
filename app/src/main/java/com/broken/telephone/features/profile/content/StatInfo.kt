@@ -1,16 +1,19 @@
 package com.broken.telephone.features.profile.content
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.broken.telephone.R
+import com.broken.telephone.core.theme.BrokenTelephoneTheme
 
 @Composable
 fun StatInfo(
@@ -28,6 +31,7 @@ fun StatInfo(
             fontFamily = FontFamily(Font(R.font.inter_medium)),
             fontSize = 17.sp,
             lineHeight = 25.sp,
+            color = MaterialTheme.colorScheme.onSurface,
         )
 
         Text(
@@ -36,7 +40,7 @@ fun StatInfo(
             fontFamily = FontFamily(Font(R.font.inter_regular)),
             fontSize = 12.sp,
             lineHeight = 18.sp,
-            color = Color(0xFF999999)
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 
@@ -45,8 +49,16 @@ fun StatInfo(
 @Preview
 @Composable
 fun StatInfoPreview() {
-    StatInfo(
-        value = 12,
-        name = "Posts"
-    )
+    BrokenTelephoneTheme(
+        darkTheme = true
+    ) {
+        Box(
+            modifier = Modifier.background(MaterialTheme.colorScheme.background)
+        ) {
+            StatInfo(
+                value = 12,
+                name = "Posts"
+            )
+        }
+    }
 }

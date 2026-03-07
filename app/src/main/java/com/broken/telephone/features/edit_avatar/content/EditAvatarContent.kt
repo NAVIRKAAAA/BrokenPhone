@@ -66,6 +66,7 @@ fun EditAvatarContent(
             fontFamily = FontFamily(Font(R.font.inter_medium)),
             fontSize = 14.sp,
             lineHeight = 21.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
@@ -88,6 +89,7 @@ fun EditAvatarContent(
             fontFamily = FontFamily(Font(R.font.inter_medium)),
             fontSize = 14.sp,
             lineHeight = 21.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
@@ -136,7 +138,9 @@ fun EditAvatarContent(
 @Preview
 @Composable
 fun EditAvatarContentPreview() {
-    BrokenTelephoneTheme {
+    BrokenTelephoneTheme(
+        darkTheme = true
+    ) {
         EditAvatarContent(
             state = EditAvatarState(
                 selectedAvatarId = Avatars.all[1].id

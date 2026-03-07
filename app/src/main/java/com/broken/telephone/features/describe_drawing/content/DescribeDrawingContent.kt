@@ -30,9 +30,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
@@ -49,6 +49,7 @@ import com.broken.telephone.R
 import com.broken.telephone.core.badge.BadgeElement
 import com.broken.telephone.core.post.DrawPostImage
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
+import com.broken.telephone.core.theme.appColors
 import com.broken.telephone.core.top_bar.PostTopBar
 import com.broken.telephone.data.repository.MockPostRepository
 import com.broken.telephone.domain.post.PostContent
@@ -112,9 +113,10 @@ fun DescribeDrawingContent(
                         content = content,
                         modifier = Modifier
                             .size(imageSize)
+                            .clip(RoundedCornerShape(14.dp))
                             .border(
                                 1.dp,
-                                Color.LightGray.copy(alpha = 0.5f),
+                                MaterialTheme.colorScheme.outlineVariant,
                                 RoundedCornerShape(14.dp)
                             ),
                         contentScale = ContentScale.Crop
@@ -140,14 +142,14 @@ fun DescribeDrawingContent(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
+                HorizontalDivider(color = MaterialTheme.appColors.divider)
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 CompositionLocalProvider(
                     LocalTextSelectionColors provides TextSelectionColors(
-                        handleColor = Color.Black,
-                        backgroundColor = Color.Black.copy(alpha = 0.3f)
+                        handleColor = MaterialTheme.colorScheme.primary,
+                        backgroundColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
                     )
                 ) {
                     BasicTextField(
@@ -160,16 +162,18 @@ fun DescribeDrawingContent(
                         textStyle = TextStyle(
                             fontFamily = FontFamily(Font(R.font.inter_regular)),
                             fontSize = 15.sp,
-                            lineHeight = 22.sp
+                            lineHeight = 22.sp,
+                            color = MaterialTheme.colorScheme.onBackground
                         ),
                         minLines = 3,
+                        maxLines = 3,
                         keyboardActions = KeyboardActions(
                             onDone = {
                                 focusManager.clearFocus()
                             }
                         ),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                        cursorBrush = SolidColor(Color.Black),
+                        cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
                     ) { innerTextField ->
                         Box(modifier = Modifier.fillMaxWidth()) {
                             if (state.text.isEmpty()) {
@@ -178,7 +182,7 @@ fun DescribeDrawingContent(
                                     fontFamily = FontFamily(Font(R.font.inter_regular)),
                                     fontSize = 15.sp,
                                     lineHeight = 22.sp,
-                                    color = Color.Gray
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                             innerTextField()
@@ -215,7 +219,7 @@ fun DescribeDrawingContent(
                             fontFamily = FontFamily(Font(R.font.inter_medium)),
                             fontSize = 14.sp,
                             lineHeight = 20.sp,
-                            color = Color.LightGray.copy(alpha = 0.5f)
+                            color = MaterialTheme.appColors.divider
                         )
 
 
@@ -225,7 +229,7 @@ fun DescribeDrawingContent(
                             fontFamily = FontFamily(Font(R.font.inter_medium)),
                             fontSize = 14.sp,
                             lineHeight = 20.sp,
-                            color = if (state.isTextOverLimit) MaterialTheme.colorScheme.error else Color.Gray
+                            color = if (state.isTextOverLimit) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
 
@@ -241,12 +245,18 @@ fun DescribeDrawingContent(
 @Preview
 @Composable
 fun DescribeDrawingContentPreview() {
-    BrokenTelephoneTheme() {
-        DescribeDrawingContent(
-            state = DescribeDrawingState(
-                text = "Lalala",
-                postUi = MockPostRepository.mockList.last().toUi()
+    BrokenTelephoneTheme(
+        darkTheme = true
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            DescribeDrawingContent(
+                state = DescribeDrawingState(
+                    text = "Lalala",
+                    postUi = MockPostRepository.mockList.last().toUi()
+                )
             )
-        )
+        }
     }
 }

@@ -1,16 +1,18 @@
 package com.broken.telephone.features.profile.content
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -21,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.broken.telephone.R
 import com.broken.telephone.core.avatar.AvatarComponent
+import com.broken.telephone.core.theme.BrokenTelephoneTheme
 
 @Composable
 fun AccountInfoSection(
@@ -53,7 +56,8 @@ fun AccountInfoSection(
                 fontSize = 19.sp,
                 lineHeight = 28.sp,
                 overflow = TextOverflow.Ellipsis,
-                maxLines = 1
+                maxLines = 1,
+                color = MaterialTheme.colorScheme.onSurface,
             )
 
             if(isAuth) {
@@ -83,7 +87,7 @@ fun AccountInfoSection(
                     fontFamily = FontFamily(Font(R.font.inter_regular)),
                     fontSize = 14.sp,
                     lineHeight = 21.sp,
-                    color = Color(0xFF666666)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
@@ -94,8 +98,16 @@ fun AccountInfoSection(
 @Preview
 @Composable
 fun AccountInfoSectionPreview() {
-    AccountInfoSection(
-        username = "Alex",
-        isAuth = false
-    )
+    BrokenTelephoneTheme(
+        darkTheme = true
+    ) {
+        Box(
+            modifier = Modifier.background(MaterialTheme.colorScheme.background)
+        ) {
+            AccountInfoSection(
+                username = "Alex",
+                isAuth = false
+            )
+        }
+    }
 }

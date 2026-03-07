@@ -20,10 +20,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
+import com.broken.telephone.core.theme.appColors
 import com.broken.telephone.data.repository.MockPostRepository
 import com.broken.telephone.features.dashboard.model.DashboardSort
 import com.broken.telephone.features.dashboard.model.DashboardState
@@ -37,7 +37,6 @@ fun DashboardContent(
     onPostClick: (postId: String) -> Unit,
     onMoreClick: (postId: String) -> Unit,
     onSortSelected: (DashboardSort) -> Unit,
-
     modifier: Modifier = Modifier,
 ) {
 
@@ -81,7 +80,6 @@ fun DashboardContent(
                     ) {
                         if (index != 0) {
                             Spacer(modifier = Modifier.height(16.dp))
-
                         }
 
                         PostElement(
@@ -95,7 +93,7 @@ fun DashboardContent(
 
                         if (index != state.posts.lastIndex) {
 
-                            HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
+                            HorizontalDivider(color = MaterialTheme.appColors.divider)
                         }
                     }
                 }
@@ -115,7 +113,9 @@ fun DashboardContent(
 @Preview
 @Composable
 fun DashboardContentPreview() {
-    BrokenTelephoneTheme() {
+    BrokenTelephoneTheme(
+        darkTheme = true
+    ) {
         DashboardContent(
             state = DashboardState(
                 posts = MockPostRepository.mockList.map { it.toUi() },

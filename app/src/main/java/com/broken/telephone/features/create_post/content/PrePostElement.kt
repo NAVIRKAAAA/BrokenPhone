@@ -1,5 +1,6 @@
 package com.broken.telephone.features.create_post.content
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import com.broken.telephone.R
 import com.broken.telephone.core.avatar.AvatarComponent
 import com.broken.telephone.core.badge.BadgeElement
+import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.features.create_post.model.CreatePostState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,7 +87,8 @@ fun PrePostElement(
                     lineHeight = 24.sp,
                     modifier = Modifier.weight(1f),
                     overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
+                    maxLines = 1,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
 
@@ -94,8 +96,8 @@ fun PrePostElement(
 
             CompositionLocalProvider(
                 LocalTextSelectionColors provides TextSelectionColors(
-                    handleColor = Color.Black,
-                    backgroundColor = Color.Black.copy(alpha = 0.3f)
+                    handleColor = MaterialTheme.colorScheme.primary,
+                    backgroundColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
                 )
             ) {
                 BasicTextField(
@@ -107,7 +109,8 @@ fun PrePostElement(
                     textStyle = TextStyle(
                         fontFamily = FontFamily(Font(R.font.inter_regular)),
                         fontSize = 15.sp,
-                        lineHeight = 22.sp
+                        lineHeight = 22.sp,
+                        color = MaterialTheme.colorScheme.onBackground
                     ),
                     minLines = 3,
                     keyboardActions = KeyboardActions(
@@ -116,7 +119,7 @@ fun PrePostElement(
                         }
                     ),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    cursorBrush = SolidColor(Color.Black),
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
                 ) { innerTextField ->
                     Box(modifier = Modifier.fillMaxWidth()) {
                         if (text.isEmpty()) {
@@ -125,7 +128,7 @@ fun PrePostElement(
                                 fontFamily = FontFamily(Font(R.font.inter_regular)),
                                 fontSize = 15.sp,
                                 lineHeight = 22.sp,
-                                color = Color.Gray
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                         innerTextField()
@@ -164,7 +167,7 @@ fun PrePostElement(
                         fontFamily = FontFamily(Font(R.font.inter_medium)),
                         fontSize = 14.sp,
                         lineHeight = 20.sp,
-                        color = Color.LightGray.copy(alpha = 0.5f)
+                        color = MaterialTheme.colorScheme.outlineVariant
                     )
 
                     Spacer(modifier = Modifier.width(8.dp))
@@ -175,7 +178,7 @@ fun PrePostElement(
                         fontFamily = FontFamily(Font(R.font.inter_medium)),
                         fontSize = 14.sp,
                         lineHeight = 20.sp,
-                        color = if (isTextOverLimit) MaterialTheme.colorScheme.error else Color.Gray
+                        color = if (isTextOverLimit) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -189,12 +192,20 @@ fun PrePostElement(
 @Preview
 @Composable
 fun PrePostElementPreview() {
-    PrePostElement(
-        name = "Alex",
-        text = "Дфдфдф",
-//        text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed lectus massa, gravida quis efficitur ut, vehicula id nulla. Phasellus placerat odio id tortor efficitur lacinia. Quisque a semper ante. In hac habitasse platea dictumst. Proin ut euismod massa. Sed sodales nibh purus, in consequat quam feugiat vitae. Curabitur scelerisque massa ac consequat luctus. In tincidunt blandit felis. In sed nulla diam. Nullam a auctor felis, ut pretium lacus.",
-        onTextChanged = {},
-        onBadgeClick = {},
-        isTextOverLimit = false,
-    )
+    BrokenTelephoneTheme(
+        darkTheme = true
+    ) {
+        Box(
+            modifier = Modifier.background(MaterialTheme.colorScheme.background)
+        ) {
+            PrePostElement(
+                name = "Alex",
+//                text = "Дфдфдф",
+        text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed lectus massa, gravida quis efficitur ut, vehicula id nulla. Phasellus placerat odio id tortor efficitur lacinia. Quisque a semper ante. In hac habitasse platea dictumst. Proin ut euismod massa. Sed sodales nibh purus, in consequat quam feugiat vitae. Curabitur scelerisque massa ac consequat luctus. In tincidunt blandit felis. In sed nulla diam. Nullam a auctor felis, ut pretium lacus.",
+                onTextChanged = {},
+                onBadgeClick = {},
+                isTextOverLimit = false,
+            )
+        }
+    }
 }

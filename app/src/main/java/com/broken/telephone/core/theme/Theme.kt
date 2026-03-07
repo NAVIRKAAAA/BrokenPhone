@@ -2,13 +2,12 @@ package com.broken.telephone.core.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
-import androidx.core.view.WindowCompat
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -260,10 +259,26 @@ fun BrokenTelephoneTheme(
         else -> lightScheme
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = AppTypography,
-        content = content
-    )
+    val appColors = if (darkTheme) {
+        AppColors(
+            badgeComplete = badgeCompleteDark,
+            badgeYou = primaryDark,
+            divider = dividerDark,
+        )
+    } else {
+        AppColors(
+            badgeComplete = badgeCompleteLight,
+            badgeYou = primaryLight,
+            divider = dividerLight,
+        )
+    }
+
+    CompositionLocalProvider(LocalAppColors provides appColors) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = AppTypography,
+            content = content
+        )
+    }
 }
 

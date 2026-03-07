@@ -1,5 +1,7 @@
 package com.broken.telephone.features.blocked_users.content
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -10,11 +12,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -25,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.broken.telephone.R
 import com.broken.telephone.core.avatar.AvatarComponent
+import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.core.utils.rememberRelativeTime
 import com.broken.telephone.features.blocked_users.model.BlockedUserUi
 
@@ -65,6 +68,7 @@ fun BlockedUserItem(
                     lineHeight = 24.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -75,7 +79,7 @@ fun BlockedUserItem(
                     fontFamily = FontFamily(Font(R.font.inter_regular)),
                     fontSize = 13.sp,
                     lineHeight = 20.sp,
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                 )
             }
@@ -84,8 +88,8 @@ fun BlockedUserItem(
                 onClick = onUnblockClick,
                 modifier = Modifier,
                 colors = ButtonDefaults.buttonColors(
-                    contentColor = Color.Black,
-                    containerColor = Color(0xFFF5F5F5)
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
                 ),
                 shape = RoundedCornerShape(10.dp),
                 contentPadding = PaddingValues(
@@ -110,13 +114,21 @@ fun BlockedUserItem(
 @Preview
 @Composable
 fun BlockedUserItemPreview() {
-    BlockedUserItem(
-        blockedUserUi = BlockedUserUi(
-            id = "",
-            name = "Alex",
-            avatarUrl = "",
-            createdAt = System.currentTimeMillis(),
-        ),
-        onUnblockClick = {},
-    )
+    BrokenTelephoneTheme(
+        darkTheme = false
+    ) {
+        Box(
+            modifier = Modifier.background(MaterialTheme.colorScheme.background)
+        ) {
+            BlockedUserItem(
+                blockedUserUi = BlockedUserUi(
+                    id = "",
+                    name = "Alex",
+                    avatarUrl = "",
+                    createdAt = System.currentTimeMillis(),
+                ),
+                onUnblockClick = {},
+            )
+        }
+    }
 }

@@ -58,7 +58,9 @@ fun EditUsernameContent(
 @Preview
 @Composable
 fun EditUsernameContentPreview() {
-    BrokenTelephoneTheme {
+    BrokenTelephoneTheme(
+        darkTheme = true
+    ) {
         EditUsernameContent(
             state = EditUsernameState(),
             onBackClick = {},

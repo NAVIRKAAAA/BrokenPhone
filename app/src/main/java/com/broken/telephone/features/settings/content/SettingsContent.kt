@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
+import com.broken.telephone.core.theme.appColors
 import com.broken.telephone.features.edit_profile.content.AccountTextInfoItem
 import com.broken.telephone.features.edit_profile.content.EditProfileTopBar
 import com.broken.telephone.features.settings.model.SettingsState
@@ -64,7 +65,7 @@ fun SettingsContent(
                 modifier = Modifier
             )
 
-            HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
+            HorizontalDivider(color = MaterialTheme.appColors.divider)
         }
 
         AccountTextInfoItem(
@@ -83,7 +84,7 @@ fun SettingsContent(
                 .padding(horizontal = 16.dp),
         )
 
-        HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
+        HorizontalDivider(color = MaterialTheme.appColors.divider)
 
         SettingsItem(
             text = stringResource(R.string.information_legal_terms_of_service),
@@ -98,7 +99,7 @@ fun SettingsContent(
         )
 
         if (state.isAuth) {
-            HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
+            HorizontalDivider(color = MaterialTheme.appColors.divider)
 
             SettingsLogoutButton(
                 onClick = onLogoutClick,
@@ -127,7 +128,9 @@ fun SettingsContent(
 @Preview
 @Composable
 fun SettingsContentPreview() {
-    BrokenTelephoneTheme() {
+    BrokenTelephoneTheme(
+        darkTheme = false
+    ) {
         SettingsContent(
             state = SettingsState(versionInfo = "1.0.0 (1)", isAuth = true))
     }

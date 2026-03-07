@@ -23,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -34,9 +33,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
+import com.broken.telephone.core.theme.appColors
 import com.broken.telephone.data.repository.MockPostRepository
 import com.broken.telephone.features.chain_details.model.ChainDetailsState
 import com.broken.telephone.features.chain_details.model.toUi
+import com.broken.telephone.features.edit_profile.content.EditProfileTopBar
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -57,7 +58,7 @@ fun ChainDetailsContent(
             .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding(),
     ) {
-        ChainDetailsTopBar(
+        EditProfileTopBar(
             title = stringResource(R.string.chain_details_title),
             onBackClick = onBackClick,
         )
@@ -128,7 +129,7 @@ fun ChainDetailsContent(
             item {
                 Spacer(modifier = Modifier.height(32.dp))
 
-                HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
+                HorizontalDivider(color = MaterialTheme.appColors.divider)
 
                 Spacer(modifier = Modifier.height(24.dp))
                 if(chainSize == maxGenerations) {
@@ -144,7 +145,7 @@ fun ChainDetailsContent(
                         Icon(
                             painter = painterResource(R.drawable.ic_complete),
                             contentDescription = null,
-                            tint = Color(0xFF22C55E),
+                            tint = MaterialTheme.appColors.badgeComplete,
                             modifier = Modifier.size(20.dp)
                         )
 
@@ -154,7 +155,7 @@ fun ChainDetailsContent(
                             fontFamily = FontFamily(Font(R.font.inter_medium)),
                             fontSize = 14.sp,
                             lineHeight = 20.sp,
-                            color = Color(0xFF22C55E)
+                            color = MaterialTheme.appColors.badgeComplete
                         )
 
                     }
@@ -172,7 +173,7 @@ fun ChainDetailsContent(
                     fontFamily = FontFamily(Font(R.font.inter_regular)),
                     fontSize = 12.sp,
                     lineHeight = 16.sp,
-                    color = Color(0xFF999999),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
 
                 Spacer(
@@ -190,7 +191,9 @@ fun ChainDetailsContent(
 @Preview
 @Composable
 fun ChainDetailsContentPreview() {
-    BrokenTelephoneTheme() {
+    BrokenTelephoneTheme(
+        darkTheme = true
+    ) {
         val userId = "user_id"
         ChainDetailsContent(
             state = ChainDetailsState(
