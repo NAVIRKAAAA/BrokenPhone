@@ -71,10 +71,6 @@ fun NotificationsContent(
                 checked = type in state.enabledNotifications,
                 onCheckedChange = { enabled -> onNotificationToggle(type, enabled) },
             )
-
-            if (type != NotificationType.entries.last()) {
-                HorizontalDivider(color = MaterialTheme.appColors.divider)
-            }
         }
     }
 }
@@ -82,7 +78,9 @@ fun NotificationsContent(
 @Preview
 @Composable
 fun NotificationsContentPreview() {
-    BrokenTelephoneTheme {
+    BrokenTelephoneTheme(
+        darkTheme = true
+    ) {
         NotificationsContent(state = NotificationsState())
     }
 }

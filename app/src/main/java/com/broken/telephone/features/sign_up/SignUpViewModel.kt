@@ -3,6 +3,8 @@ package com.broken.telephone.features.sign_up
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.broken.telephone.domain.auth.SignUpResult
+import com.broken.telephone.features.settings.use_case.GetPrivacyPolicyLinkUseCase
+import com.broken.telephone.features.settings.use_case.GetTermsOfServiceLinkUseCase
 import com.broken.telephone.features.sign_up.model.SignUpSideEffect
 import com.broken.telephone.features.sign_up.model.SignUpState
 import com.broken.telephone.features.sign_up.use_case.SignUpUseCase
@@ -16,6 +18,8 @@ import kotlinx.coroutines.launch
 class SignUpViewModel(
     private val signUpUseCase: SignUpUseCase,
     private val signUpValidator: SignUpValidator,
+    private val getTermsOfServiceLinkUseCase: GetTermsOfServiceLinkUseCase,
+    private val getPrivacyPolicyLinkUseCase: GetPrivacyPolicyLinkUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SignUpState())
@@ -42,6 +46,18 @@ class SignUpViewModel(
 
     fun onToggleConfirmPasswordVisibility() {
         _state.update { it.copy(isConfirmPasswordVisible = !it.isConfirmPasswordVisible) }
+    }
+
+    fun onTermsClick() {
+        viewModelScope.launch {
+            _sideEffects.send(SignUpSideEffect.OpenLink(getTermsOfServiceLinkUseCase()))
+        }
+    }
+
+    fun onPrivacyPolicyClick() {
+        viewModelScope.launch {
+            _sideEffects.send(SignUpSideEffect.OpenLink(getPrivacyPolicyLinkUseCase()))
+        }
     }
 
     fun onSignUpClick() {

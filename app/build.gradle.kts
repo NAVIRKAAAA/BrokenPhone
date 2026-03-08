@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.coil.network.okhttp)
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.browser)
+    implementation(libs.androidx.core.splashscreen)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

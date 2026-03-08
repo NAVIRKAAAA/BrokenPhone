@@ -202,7 +202,8 @@ fun ProfileContentPreview() {
                     id = "user-1",
                     username = "Alex",
                     avatarUrl = null,
-                    email = ""
+                    email = "",
+                    createdAt = 0
                 ),
                 myPosts = MockPostRepository.mockList.map { it.toUi() },
                 myContributions = MockPostRepository.mockList.map { it.toUi() },

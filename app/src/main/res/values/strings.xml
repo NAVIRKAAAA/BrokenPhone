@@ -101,6 +101,12 @@
 
     <!-- Account Settings -->
     <string name="account_settings_title">Account Settings</string>
+    <string name="account_settings_email">Email</string>
+    <string name="account_settings_provider">Sign-in method</string>
+    <string name="account_settings_provider_email">Email</string>
+    <string name="account_settings_provider_google">Google</string>
+    <string name="account_settings_provider_guest">Guest</string>
+    <string name="account_settings_member_since">Member since</string>
     <string name="account_settings_blocked_users">Blocked Users</string>
     <string name="account_settings_delete_account">Delete Account</string>
     <string name="account_settings_dialog_delete_title">Delete Account?</string>

@@ -77,6 +77,12 @@
     <string name="blocked_users_dialog_confirm">Розблокувати</string>
 
     <string name="account_settings_title">Акаунт</string>
+    <string name="account_settings_email">Ел. пошта</string>
+    <string name="account_settings_provider">Спосіб входу</string>
+    <string name="account_settings_provider_email">Ел. пошта</string>
+    <string name="account_settings_provider_google">Google</string>
+    <string name="account_settings_provider_guest">Гість</string>
+    <string name="account_settings_member_since">У додатку з</string>
     <string name="account_settings_blocked_users">Заблоковані користувачі</string>
     <string name="account_settings_delete_account">Видалити акаунт</string>
     <string name="account_settings_dialog_delete_title">Видалити акаунт?</string>

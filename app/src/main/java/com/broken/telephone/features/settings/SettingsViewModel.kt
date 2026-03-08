@@ -2,7 +2,6 @@ package com.broken.telephone.features.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.broken.telephone.domain.user.AuthState
 import com.broken.telephone.features.app_preferences.use_case.GetLanguageUseCase
 import com.broken.telephone.features.app_preferences.use_case.GetThemeUseCase
 import com.broken.telephone.features.settings.model.SettingsSideEffect
@@ -41,7 +40,7 @@ class SettingsViewModel(
         _state.update { it.copy(versionInfo = getVersionInfoUseCase()) }
 
         getAuthStateUseCase()
-            .onEach { authState -> _state.update { it.copy(isAuth = authState is AuthState.Auth) } }
+            .onEach { authState -> _state.update { it.copy(isAuth = authState.isAuth()) } }
             .launchIn(viewModelScope)
 
         getLanguageUseCase()
@@ -63,6 +62,10 @@ class SettingsViewModel(
         viewModelScope.launch {
             _sideEffects.send(SettingsSideEffect.OpenLink(getPrivacyPolicyLinkUseCase()))
         }
+    }
+
+    fun checkNotificationsPermission(isGranted: Boolean) {
+        _state.update { it.copy(notificationsEnabled = isGranted) }
     }
 
     fun onLogoutClick() {

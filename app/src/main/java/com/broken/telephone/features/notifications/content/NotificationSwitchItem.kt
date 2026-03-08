@@ -1,7 +1,9 @@
 package com.broken.telephone.features.notifications.content
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -46,6 +48,7 @@ fun NotificationSwitchItem(
             lineHeight = 22.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(1f),
         )
 
@@ -55,10 +58,10 @@ fun NotificationSwitchItem(
             colors = SwitchDefaults.colors().copy(
                 checkedBorderColor = Color.Transparent,
                 uncheckedBorderColor = Color.Transparent,
-                uncheckedTrackColor = Color(0xFFCCCCCC),
-                uncheckedThumbColor = Color.White,
-                checkedThumbColor = Color.White,
-                checkedTrackColor = MaterialTheme.colorScheme.primary
+                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                uncheckedThumbColor = MaterialTheme.colorScheme.outline,
+                checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                checkedTrackColor = MaterialTheme.colorScheme.primary,
             )
         )
     }
@@ -67,11 +70,15 @@ fun NotificationSwitchItem(
 @Preview(showBackground = true)
 @Composable
 fun NotificationSwitchItemPreview() {
-    BrokenTelephoneTheme {
-        NotificationSwitchItem(
-            text = "All Notifications",
-            checked = true,
-            onCheckedChange = {},
-        )
+    BrokenTelephoneTheme(
+        darkTheme = false
+    ) {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            NotificationSwitchItem(
+                text = "All Notifications",
+                checked = true,
+                onCheckedChange = {},
+            )
+        }
     }
 }

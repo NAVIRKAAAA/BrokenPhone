@@ -1,6 +1,7 @@
 package com.broken.telephone.data.session
 
 import com.broken.telephone.domain.settings.NotificationType
+import com.broken.telephone.domain.user.AuthProvider
 import com.broken.telephone.domain.user.AuthState
 import com.broken.telephone.domain.user.BlockedUser
 import com.broken.telephone.domain.user.User
@@ -24,6 +25,7 @@ class MockUserSessionImpl : UserSession {
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
                 createdAt = 1_700_000_000_000L,
                 updatedAt = 1_700_000_000_000L,
+                authProvider = AuthProvider.EMAIL,
             )
         )
     )
@@ -43,21 +45,22 @@ class MockUserSessionImpl : UserSession {
                 avatarUrl = avatarUrl,
                 createdAt = createdAt,
                 updatedAt = createdAt,
+                authProvider = AuthProvider.GUEST,
             )
         )
     }
 
     override suspend fun updateProfile(username: String) {
-        val current = _authState.value
-        if (current is AuthState.Auth) {
-            _authState.value = AuthState.Auth(current.user.copy(username = username, updatedAt = System.currentTimeMillis()))
+        val user = _authState.value.getUserOrNull()
+        if (user != null) {
+            _authState.value = AuthState.Auth(user.copy(username = username, updatedAt = System.currentTimeMillis()))
         }
     }
 
     override suspend fun updateAvatar(avatarUrl: String) {
-        val current = _authState.value
-        if (current is AuthState.Auth) {
-            _authState.value = AuthState.Auth(current.user.copy(avatarUrl = avatarUrl, updatedAt = System.currentTimeMillis()))
+        val user = _authState.value.getUserOrNull()
+        if (user != null) {
+            _authState.value = AuthState.Auth(user.copy(avatarUrl = avatarUrl, updatedAt = System.currentTimeMillis()))
         }
     }
 
@@ -87,9 +90,9 @@ class MockUserSessionImpl : UserSession {
     }
 
     override suspend fun updateNotifications(enabledNotifications: List<NotificationType>) {
-        val current = _authState.value
-        if (current is AuthState.Auth) {
-            _authState.value = AuthState.Auth(current.user.copy(enabledNotifications = enabledNotifications))
+        val user = _authState.value.getUserOrNull()
+        if (user != null) {
+            _authState.value = AuthState.Auth(user.copy(enabledNotifications = enabledNotifications))
         }
     }
 

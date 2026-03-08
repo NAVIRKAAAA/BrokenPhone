@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hasRoute
-import com.broken.telephone.domain.user.AuthState
 import com.broken.telephone.features.bottom_nav_bar.model.BottomNavBar
 import com.broken.telephone.features.bottom_nav_bar.model.BottomNavBarEvent
 import com.broken.telephone.features.bottom_nav_bar.model.BottomNavBarState
@@ -37,7 +36,7 @@ class AppNavBottomBarViewModel(
             .launchIn(viewModelScope)
 
         getAuthStateUseCase()
-            .onEach { authState -> _state.update { it.copy(isAuth = authState is AuthState.Auth) } }
+            .onEach { authState -> _state.update { it.copy(isAuth = authState.isAuth()) } }
             .launchIn(viewModelScope)
     }
 

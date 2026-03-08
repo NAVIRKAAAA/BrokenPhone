@@ -3,7 +3,6 @@ package com.broken.telephone.features.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.broken.telephone.core.bottom_sheet.report_post_bottom_sheet.model.ReportPostType
-import com.broken.telephone.domain.user.AuthState
 import com.broken.telephone.features.dashboard.model.PostUi
 import com.broken.telephone.features.post_details.use_case.BlockUserUseCase
 import com.broken.telephone.features.post_details.use_case.DeletePostUseCase
@@ -51,7 +50,7 @@ class ProfileViewModel(
 
     init {
         getAuthStateUseCase()
-            .onEach { authState -> _state.update { it.copy(isAuth = authState is AuthState.Auth) } }
+            .onEach { authState -> _state.update { it.copy(isAuth = authState.isAuth()) } }
             .launchIn(viewModelScope)
 
         val userFlow = getCurrentUserUseCase()

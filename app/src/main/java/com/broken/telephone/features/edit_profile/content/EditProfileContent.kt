@@ -80,7 +80,8 @@ fun EditProfileContentPreview() {
                     id = "user-1",
                     username = "Alex",
                     email = "alex@example.com",
-                    avatarUrl = null
+                    avatarUrl = null,
+                    createdAt = 0
                 )
             ),
             onBackClick = {},

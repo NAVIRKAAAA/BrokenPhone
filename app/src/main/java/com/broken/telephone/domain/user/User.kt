@@ -10,4 +10,5 @@ data class User(
     val createdAt: Long,
     val updatedAt: Long,
     val enabledNotifications: List<NotificationType> = NotificationType.entries,
+    val authProvider: AuthProvider,
 )

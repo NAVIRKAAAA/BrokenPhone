@@ -54,6 +54,8 @@ fun SignUpContent(
     onToggleConfirmPasswordVisibility: () -> Unit = {},
     onSignUpClick: () -> Unit = {},
     onSignInClick: () -> Unit = {},
+    onTermsClick: () -> Unit = {},
+    onPrivacyPolicyClick: () -> Unit = {},
 ) {
     Column(
         modifier = modifier
@@ -170,12 +172,26 @@ fun SignUpContent(
 
             val termsText = buildAnnotatedString {
                 append("${stringResource(R.string.sign_up_terms_prefix)} ")
-                withStyle(SpanStyle(color = primaryColor)) {
-                    append(stringResource(R.string.sign_up_terms))
+                withLink(
+                    LinkAnnotation.Clickable(
+                        tag = "TERMS",
+                        linkInteractionListener = { onTermsClick() },
+                    )
+                ) {
+                    withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.None)) {
+                        append(stringResource(R.string.sign_up_terms))
+                    }
                 }
                 append(" ${stringResource(R.string.sign_up_terms_and)} ")
-                withStyle(SpanStyle(color = primaryColor)) {
-                    append(stringResource(R.string.sign_up_privacy_policy))
+                withLink(
+                    LinkAnnotation.Clickable(
+                        tag = "PRIVACY",
+                        linkInteractionListener = { onPrivacyPolicyClick() },
+                    )
+                ) {
+                    withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.None)) {
+                        append(stringResource(R.string.sign_up_privacy_policy))
+                    }
                 }
             }
 

@@ -10,4 +10,5 @@ data class SettingsState(
     val isLogoutLoading: Boolean = false,
     val language: Language = Language.ENGLISH,
     val theme: AppTheme = AppTheme.LIGHT,
+    val notificationsEnabled: Boolean = false,
 )

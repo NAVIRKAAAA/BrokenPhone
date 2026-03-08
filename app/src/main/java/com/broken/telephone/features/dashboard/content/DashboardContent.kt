@@ -129,6 +129,7 @@ fun DashboardContentPreview() {
                     username = "Alex",
                     email = "",
                     avatarUrl = "",
+                    createdAt = 0
                 )
             ),
             onPostClick = {},

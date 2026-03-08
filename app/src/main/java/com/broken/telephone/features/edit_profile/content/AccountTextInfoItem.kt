@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -86,6 +87,79 @@ fun AccountTextInfoItem(
 
     }
 
+}
+
+@Composable
+fun AccountStaticInfoItem(
+    name: String,
+    value: String?,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = name,
+            fontFamily = FontFamily(Font(R.font.inter_medium)),
+            fontSize = 15.sp,
+            lineHeight = 22.sp,
+            modifier = Modifier.weight(1f),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        if (value != null) {
+            Text(
+                text = value,
+                fontFamily = FontFamily(Font(R.font.inter_medium)),
+                fontSize = 15.sp,
+                lineHeight = 22.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                textAlign = TextAlign.End,
+                overflow = TextOverflow.Ellipsis
+            )
+        } else {
+            CircularProgressIndicator(
+                modifier = Modifier.size(18.dp),
+                strokeWidth = 2.dp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun AccountStaticInfoItemLoadingPreview() {
+    BrokenTelephoneTheme(darkTheme = false) {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            AccountStaticInfoItem(
+                name = "Provider",
+                value = null,
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun AccountStaticInfoItemPreview() {
+    BrokenTelephoneTheme(darkTheme = true) {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            AccountStaticInfoItem(
+                name = "Provider",
+                value = "Email",
+            )
+        }
+    }
 }
 
 @Composable

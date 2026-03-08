@@ -68,6 +68,17 @@ fun SettingsContent(
         }
 
         AccountTextInfoItem(
+            name = stringResource(R.string.app_preferences_notifications),
+            value = stringResource(
+                if (state.notificationsEnabled) R.string.notifications_permission_on
+                else R.string.notifications_permission_off
+            ),
+            modifier = Modifier
+                .clickable(onClick = onNotificationsClick)
+                .padding(horizontal = 16.dp),
+        )
+
+        AccountTextInfoItem(
             name = stringResource(R.string.app_preferences_language),
             value = stringResource(state.language.displayNameResId),
             modifier = Modifier

@@ -20,8 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.broken.telephone.core.locale.LocalizedContextWrapper
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
@@ -30,6 +32,8 @@ import com.broken.telephone.domain.settings.AppTheme
 import com.broken.telephone.domain.settings.Language
 import com.broken.telephone.features.bottom_nav_bar.AppNavBottomBar
 import com.broken.telephone.navigation.nav_graph.AppNavGraph
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
@@ -38,7 +42,16 @@ class MainActivity : ComponentActivity() {
     private val mainViewModel: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashscreen = installSplashScreen()
+        var keepSplashScreen = true
         super.onCreate(savedInstanceState)
+
+        splashscreen.setKeepOnScreenCondition { keepSplashScreen }
+        lifecycleScope.launch {
+            delay(1000)
+            keepSplashScreen = false
+        }
+
         enableEdgeToEdge()
 
         mainViewModel.initializeDefaultLanguage(Locale.getDefault().language)

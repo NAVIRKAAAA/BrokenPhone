@@ -12,4 +12,8 @@ sealed class AuthState {
             NotAuth -> null
         }
     }
+
+    fun isAuth(): Boolean {
+        return this is Auth
+    }
 }

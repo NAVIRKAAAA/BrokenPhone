@@ -18,9 +18,13 @@ import androidx.compose.ui.unit.dp
 import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.core.theme.appColors
+import com.broken.telephone.core.utils.rememberMemberSince
+import com.broken.telephone.domain.user.AuthProvider
 import com.broken.telephone.features.account_settings.model.AccountSettingsState
+import com.broken.telephone.features.edit_profile.content.AccountStaticInfoItem
 import com.broken.telephone.features.edit_profile.content.AccountTextInfoItem
 import com.broken.telephone.features.edit_profile.content.EditProfileTopBar
+import com.broken.telephone.features.profile.model.UserUi
 import com.broken.telephone.features.settings.content.SettingsLogoutButton
 
 @Composable
@@ -46,6 +50,27 @@ fun AccountSettingsContent(
         Spacer(modifier = Modifier.height(8.dp))
 
         AccountTextInfoItem(
+            name = stringResource(R.string.account_settings_email),
+            value = state.user?.email ?: "",
+            modifier = Modifier.padding(horizontal = 16.dp),
+            enabled = false
+        )
+
+        AccountStaticInfoItem(
+            name = stringResource(R.string.account_settings_provider),
+            value = state.user?.authProvider?.let { stringResource(it.labelResId) },
+            modifier = Modifier.padding(horizontal = 16.dp),
+        )
+
+        AccountStaticInfoItem(
+            name = stringResource(R.string.account_settings_member_since),
+            value = state.user?.createdAt?.let { rememberMemberSince(it) },
+            modifier = Modifier.padding(horizontal = 16.dp),
+        )
+
+        HorizontalDivider(color = MaterialTheme.appColors.divider)
+
+        AccountTextInfoItem(
             name = stringResource(R.string.account_settings_blocked_users),
             value = state.blockedUsersCount.toString(),
             modifier = Modifier
@@ -67,7 +92,19 @@ fun AccountSettingsContent(
 @Preview
 @Composable
 fun AccountSettingsContentPreview() {
-    BrokenTelephoneTheme() {
-        AccountSettingsContent(state = AccountSettingsState(blockedUsersCount = 3))
+    BrokenTelephoneTheme {
+        AccountSettingsContent(
+            state = AccountSettingsState(
+                user = UserUi(
+                    id = "1",
+                    username = "Alex",
+                    email = "alex@example.com",
+                    avatarUrl = null,
+                    authProvider = AuthProvider.EMAIL,
+                    createdAt = 1_700_000_000_000L,
+                ),
+                blockedUsersCount = 3,
+            )
+        )
     }
 }

@@ -6,6 +6,7 @@ import com.broken.telephone.features.account_settings.model.AccountSettingsSideE
 import com.broken.telephone.features.account_settings.model.AccountSettingsState
 import com.broken.telephone.features.account_settings.use_case.DeleteAccountUseCase
 import com.broken.telephone.features.account_settings.use_case.GetBlockedUsersCountUseCase
+import com.broken.telephone.features.profile.use_case.GetCurrentUserUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 class AccountSettingsViewModel(
     private val deleteAccountUseCase: DeleteAccountUseCase,
     private val getBlockedUsersCountUseCase: GetBlockedUsersCountUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AccountSettingsState())
@@ -29,6 +31,10 @@ class AccountSettingsViewModel(
     init {
         getBlockedUsersCountUseCase()
             .onEach { count -> _state.update { it.copy(blockedUsersCount = count) } }
+            .launchIn(viewModelScope)
+
+        getCurrentUserUseCase()
+            .onEach { user -> _state.update { it.copy(user = user) } }
             .launchIn(viewModelScope)
     }
 

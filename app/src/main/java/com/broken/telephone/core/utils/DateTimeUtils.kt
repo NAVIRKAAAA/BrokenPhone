@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.broken.telephone.core.theme.LocalAppLanguage
 import com.broken.telephone.domain.settings.Language
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 @Composable
@@ -66,5 +68,17 @@ fun rememberRelativeTime(timestamp: Long): String {
                 DateUtils.FORMAT_ABBREV_ALL
             ).toString()
         }
+    }
+}
+
+@Composable
+fun rememberMemberSince(timestamp: Long): String {
+    val language = LocalAppLanguage.current
+    val locale = when (language) {
+        Language.ENGLISH -> Locale.ENGLISH
+        Language.UKRAINIAN -> Locale.forLanguageTag("uk")
+    }
+    return remember(timestamp, language) {
+        SimpleDateFormat("MMM yyyy", locale).format(Date(timestamp))
     }
 }
