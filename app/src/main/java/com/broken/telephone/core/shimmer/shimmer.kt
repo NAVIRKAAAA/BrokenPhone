@@ -1,6 +1,6 @@
 package com.broken.telephone.core.shimmer
 
-import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -23,24 +23,26 @@ fun Modifier.shimmer(cornerRadius: Dp = 0.dp): Modifier {
     val shimmerColors = listOf(baseColor, highlightColor, baseColor)
 
     val transition = rememberInfiniteTransition(label = "Shimmer")
-    val translateAnim by transition.animateFloat(
-        initialValue = -400f,
-        targetValue = 1200f,
+    val progress by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
         animationSpec = infiniteRepeatable(
             animation = tween(
-                durationMillis = 1600, // slower = smoother
-                easing = FastOutSlowInEasing // smoother easing
+                durationMillis = 1600,
+                easing = LinearEasing
             )
         ),
         label = "Translate"
     )
 
     return this.drawWithCache {
+        val gradientWidth = size.width * 0.7f
+        val margin = size.width * 1.5f
+        val startX = -(gradientWidth + margin) + (size.width + gradientWidth + margin * 2f) * progress
         val brush = Brush.linearGradient(
             colors = shimmerColors,
-            start = Offset(translateAnim, 0f),
-            // wider gradient
-            end = Offset(translateAnim + size.width / 1.5f, size.height)
+            start = Offset(startX, 0f),
+            end = Offset(startX + gradientWidth, size.height)
         )
         val cornerPx = cornerRadius.toPx()
         onDrawWithContent {

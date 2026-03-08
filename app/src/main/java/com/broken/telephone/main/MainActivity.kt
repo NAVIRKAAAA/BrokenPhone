@@ -15,18 +15,23 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.broken.telephone.core.locale.LocalizedContextWrapper
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.core.theme.LocalAppLanguage
 import com.broken.telephone.domain.settings.AppTheme
+import com.broken.telephone.domain.settings.Language
 import com.broken.telephone.features.bottom_nav_bar.AppNavBottomBar
 import com.broken.telephone.navigation.nav_graph.AppNavGraph
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
 
@@ -35,6 +40,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        mainViewModel.initializeDefaultLanguage(Locale.getDefault().language)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
@@ -54,7 +61,20 @@ class MainActivity : ComponentActivity() {
                 controller.isAppearanceLightNavigationBars = false
             }
 
-            CompositionLocalProvider(LocalAppLanguage provides state.language) {
+            val locale = remember(state.language) {
+                when (state.language) {
+                    Language.ENGLISH -> Locale.ENGLISH
+                    Language.UKRAINIAN -> Locale.forLanguageTag("uk")
+                }
+            }
+            val localizedContext = remember(locale) {
+                LocalizedContextWrapper(base = this@MainActivity, locale = locale)
+            }
+
+            CompositionLocalProvider(
+                LocalAppLanguage provides state.language,
+                LocalContext provides localizedContext,
+            ) {
                 BrokenTelephoneTheme(
                     darkTheme = isDarkTheme
                 ) {

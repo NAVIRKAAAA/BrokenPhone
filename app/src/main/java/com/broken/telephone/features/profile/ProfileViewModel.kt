@@ -61,7 +61,7 @@ class ProfileViewModel(
             .map { it?.id }
             .filterNotNull()
             .flatMapLatest { userId -> getMyPostsUseCase(userId) }
-            .onEach { posts -> _state.update { it.copy(myPosts = posts) } }
+            .onEach { posts -> _state.update { it.copy(myPosts = posts, isLoading = false) } }
             .launchIn(viewModelScope)
 
         userFlow

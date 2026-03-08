@@ -52,6 +52,11 @@ fun DashboardContent(
             onSortSelected = onSortSelected,
         )
 
+        if (state.isLoading) {
+            DashboardShimmerList()
+            return@Column
+        }
+
         LazyColumn(
             state = listState,
             modifier = Modifier

@@ -11,9 +11,16 @@ class MockUserSettingsRepositoryImpl : UserSettingsRepository {
 
     private val _language = MutableStateFlow(Language.ENGLISH)
     private val _theme = MutableStateFlow(AppTheme.SYSTEM)
+    private var isFirstLaunch = true
 
     override fun getLanguage(): Flow<Language> = _language.asStateFlow()
     override fun getTheme(): Flow<AppTheme> = _theme.asStateFlow()
+
+    override suspend fun isFirstLaunch(): Boolean = isFirstLaunch
+
+    override suspend fun markFirstLaunchComplete() {
+        isFirstLaunch = false
+    }
 
     override suspend fun updateLanguage(language: Language) {
         _language.value = language

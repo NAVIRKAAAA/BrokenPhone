@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Broken Telephone: Draw &amp; Guess</string>
+
+    <string name="badge_seconds">%1$dс</string>
+
+    <string name="times_up_dialog_title">Час вийшов!</string>
+    <string name="times_up_dialog_got_it">Зрозуміло!</string>
+
+    <string name="notifications_title">Сповіщення</string>
+    <string name="notifications_permission">Дозвіл на сповіщення</string>
+    <string name="notifications_permission_on">Увімк.</string>
+    <string name="notifications_permission_off">Вимк.</string>
+    <string name="notifications_all">Всі сповіщення</string>
+    <string name="notifications_type_news">Новини</string>
+    <string name="notifications_type_new_posts">Нові пости</string>
+    <string name="notifications_type_chain_completed">Ланцюжок завершено</string>
+    <string name="notifications_dialog_rationale_title">Дозволити сповіщення</string>
+    <string name="notifications_dialog_rationale_body">Щоб отримувати оновлення про нові пости та активність у ланцюжках, дозволь додатку надсилати сповіщення.</string>
+    <string name="notifications_dialog_rationale_confirm">Дозволити</string>
+
+    <string name="common_cancel">Скасувати</string>
+    <string name="common_post">Відправити</string>
+    <string name="common_discard">Закинути</string>
+    <string name="common_keep_writing">Продовжити!</string>
+    <string name="common_block">Заблокувати</string>
+    <string name="common_delete">Видалити</string>
+    <string name="common_toast_report_success">Дякуємо за скаргу!</string>
+    <string name="common_toast_link_copied">Посилання скопійовано!</string>
+    <string name="common_toast_not_interested">Зрозуміло! Покажемо менше таких постів.</string>
+    <string name="common_dialog_block_title">Заблокувати користувача?</string>
+    <string name="common_dialog_block_body">Ти більше не бачитимеш пости цього користувача.</string>
+    <string name="common_dialog_delete_post_title">Видалити пост?</string>
+    <string name="common_dialog_delete_post_body">Цю дію не можна скасувати.</string>
+
+    <string name="edit_profile_title">Редагувати профіль</string>
+    <string name="edit_profile_field_avatar">Аватар</string>
+    <string name="edit_profile_field_username">Твоє імʼя</string>
+    <string name="edit_profile_field_email">Ел. пошта</string>
+
+    <string name="edit_avatar_title">Змінити аватар</string>
+    <string name="edit_avatar_button_save">Зберегти</string>
+    <string name="edit_avatar_current">Твій аватар</string>
+    <string name="edit_avatar_choose">Обери свій аватар</string>
+
+    <string name="edit_username_title">Змінити імʼя</string>
+    <string name="edit_username_button_save">Зберегти</string>
+    <string name="edit_username_label">Твоє імʼя</string>
+
+    <string name="post_bottom_sheet_copy_link">Копіювати посилання</string>
+    <string name="post_bottom_sheet_not_interested">Не цікавить</string>
+    <string name="post_bottom_sheet_report">Поскаржитись</string>
+
+    <string name="report_post_bottom_sheet_title">Чому ти скаржишся?</string>
+    <string name="report_post_bottom_sheet_spam">Спам</string>
+    <string name="report_post_bottom_sheet_inappropriate_content">Неприйнятний контент</string>
+    <string name="report_post_bottom_sheet_harassment">Переслідування</string>
+    <string name="report_post_bottom_sheet_other">Інше</string>
+
+    <string name="theme_title">Тема</string>
+    <string name="theme_system">Системна</string>
+    <string name="theme_light">Світла</string>
+    <string name="theme_dark">Темна</string>
+    <string name="theme_system_description">Відповідає налаштуванням пристрою</string>
+
+    <string name="language_title">Мова</string>
+    <string name="language_english">English</string>
+    <string name="language_ukrainian">Українська</string>
+
+    <string name="blocked_users_title">Заблоковані</string>
+    <string name="blocked_users_empty_title">Нікого не заблоковано</string>
+    <string name="blocked_users_empty_body">Заблоковані користувачі зʼявляться тут</string>
+    <string name="blocked_users_item_blocked_on">Заблоковано %1$s</string>
+    <string name="blocked_users_item_unblock">Розблокувати</string>
+    <string name="blocked_users_dialog_title">Розблокувати?</string>
+    <string name="blocked_users_dialog_body">%1$s знову зможе бачити твої пости та взаємодіяти з тобою.</string>
+    <string name="blocked_users_dialog_confirm">Розблокувати</string>
+
+    <string name="account_settings_title">Акаунт</string>
+    <string name="account_settings_blocked_users">Заблоковані користувачі</string>
+    <string name="account_settings_delete_account">Видалити акаунт</string>
+    <string name="account_settings_dialog_delete_title">Видалити акаунт?</string>
+    <string name="account_settings_dialog_delete_body">Цю дію не можна скасувати. Твій акаунт та особисті дані будуть назавжди видалені.</string>
+
+    <string name="settings_title">Налаштування</string>
+    <string name="settings_item_account">Акаунт</string>
+    <string name="settings_item_app_preferences">Параметри додатку</string>
+    <string name="settings_item_information_legal">Інформація &amp; Правові документи</string>
+    <string name="settings_logout_button">Вийти</string>
+    <string name="settings_dialog_logout_title">Вийти?</string>
+    <string name="settings_dialog_logout_body">Ти впевнений, що хочеш вийти?</string>
+    <string name="settings_dialog_logout_confirm">Вийти</string>
+
+    <string name="app_preferences_title">Параметри додатку</string>
+    <string name="app_preferences_notifications">Сповіщення</string>
+    <string name="app_preferences_language">Мова</string>
+    <string name="app_preferences_theme">Тема</string>
+
+    <string name="information_legal_title">Інформація &amp; Правові документи</string>
+    <string name="information_legal_terms_of_service">Умови використання</string>
+    <string name="information_legal_privacy_policy">Політика конфіденційності</string>
+
+    <string name="profile_sign_in">Увійти</string>
+    <string name="profile_title">Профіль</string>
+    <string name="profile_posts">Пости</string>
+    <string name="profile_contributions">Внески</string>
+    <string name="profile_top_bar_edit">Редагувати</string>
+    <string name="profile_top_bar_settings">Налаштування</string>
+    <string name="profile_guest_note">Ти граєш як гість. Зареєструйся, щоб зберегти прогрес!</string>
+
+    <string name="create_post_title">Новий ланцюжок</string>
+    <string name="create_post_placeholder">Напиши щось, щоб почати…</string>
+    <string name="create_post_badge_generations">0/%1$d</string>
+    <string name="create_post_badge_time_limits">%1$dс / %2$dс</string>
+    <string name="create_post_text_counter">%1$d/%2$d</string>
+    <string name="create_post_dialog_discard_title">Здатися?</string>
+    <string name="create_post_dialog_discard_body">Твій текст зникне назавжди. Без права на повернення!</string>
+    <string name="create_post_chain_settings_title">Налаштування ланцюжка</string>
+    <string name="create_post_chain_settings_chain_length">Довжина ланцюжка</string>
+    <string name="create_post_chain_settings_text_response">Час на опис</string>
+    <string name="create_post_chain_settings_drawing_response">Час на малювання</string>
+    <string name="create_post_chain_settings_button_done">Готово</string>
+    <string name="create_post_start_chain_title">Готовий почати?</string>
+    <string name="create_post_start_chain_body">Ти запускаєш ланцюжок — інші гравці малюватимуть і описуватимуть після тебе!</string>
+    <string name="create_post_start_chain_chain_length">%1$d гравців</string>
+    <string name="create_post_start_chain_text_time">Опис: %1$dс</string>
+    <string name="create_post_start_chain_draw_time">Малювання: %1$dс</string>
+    <string name="create_post_start_chain_settings_note">Налаштування діють на весь ланцюжок</string>
+    <string name="create_post_start_chain_confirm">Поїхали!</string>
+
+    <string name="chain_details_title">Ланцюжок</string>
+    <string name="chain_details_complete">Ланцюжок завершено!</string>
+    <string name="chain_details_generations">%1$d з %2$d кроків</string>
+
+    <string name="describe_drawing_title">Описуй</string>
+    <string name="describe_drawing_placeholder">Що ти тут бачиш?</string>
+    <string name="describe_drawing_dialog_post_title">Готовий відправити?</string>
+    <string name="describe_drawing_dialog_post_body">Після відправки наступний гравець малюватиме за твоїми словами.</string>
+    <string name="describe_drawing_dialog_discard_title">Здатися?</string>
+    <string name="describe_drawing_dialog_discard_body">Твій опис зникне назавжди. Без права на повернення!</string>
+    <string name="describe_drawing_times_up_message">Час вийшов! Спробуй знову через 10 хвилин.</string>
+
+    <string name="draw_title">Малюй</string>
+    <string name="draw_dialog_post_title">Готовий відправити?</string>
+    <string name="draw_dialog_post_body">Після відправки всі в ланцюжку побачать твій шедевр.</string>
+    <string name="draw_dialog_discard_title">Здатися?</string>
+    <string name="draw_dialog_discard_body">Твій малюнок зникне назавжди. Без права на повернення!</string>
+    <string name="draw_dialog_discard_cancel">Продовжити!</string>
+    <string name="draw_times_up_message">Час вийшов! Спробуй знову через 10 хвилин.</string>
+
+    <string name="post_details_title">Ланцюжок</string>
+    <string name="post_details_button_continue">Моя черга!</string>
+    <string name="post_details_button_view">Переглянути</string>
+    <string name="post_details_description_draw">У тебе є %1$d секунд, щоб намалювати!</string>
+    <string name="post_details_description_describe">У тебе є %1$d секунд, щоб описати!</string>
+    <string name="post_details_description_unavailable">Хтось зараз над цим працює</string>
+    <string name="post_details_description_completed">Усі зіграли — гра завершена!</string>
+    <string name="post_details_description_own_post">Ти це створив — чекай на інших!</string>
+
+    <string name="bottom_nav_bar_dashboard">Стрічка</string>
+    <string name="bottom_nav_bar_create">Створити</string>
+    <string name="bottom_nav_bar_profile">Профіль</string>
+    <string name="bottom_nav_bar_guest">Гість</string>
+
+    <string name="dashboard_title">Привіт, %1$s!</string>
+    <string name="dashboard_sort_almost_done">Майже готово</string>
+    <string name="dashboard_sort_just_started">Тільки почалось</string>
+    <string name="dashboard_sort_longest_chain">Найдовший ланцюг</string>
+    <string name="dashboard_badge_complete">Завершено!</string>
+    <string name="dashboard_badge_you">Ти!</string>
+
+    <string name="sign_up_title">До гри!</string>
+    <string name="sign_up_email">Ел. пошта</string>
+    <string name="sign_up_password">Пароль</string>
+    <string name="sign_up_password_hint">Мінімум 8 символів</string>
+    <string name="sign_up_confirm_password">Підтвердіть пароль</string>
+    <string name="sign_up_button">Створити акаунт</string>
+    <string name="sign_up_terms_prefix">Реєструючись, ви погоджуєтесь з нашими</string>
+    <string name="sign_up_terms">Умовами</string>
+    <string name="sign_up_terms_and"> &amp; </string>
+    <string name="sign_up_privacy_policy">Політикою конфіденційності</string>
+    <string name="sign_up_already_have_account">Вже грали раніше?</string>
+    <string name="sign_up_sign_in_link">Увійти</string>
+    <string name="sign_up_password_show">Показати пароль</string>
+    <string name="sign_up_password_hide">Сховати пароль</string>
+
+    <string name="sign_in_title">З поверненням!</string>
+    <string name="sign_in_email">Ел. пошта</string>
+    <string name="sign_in_password">Пароль</string>
+    <string name="sign_in_button">Увійти</string>
+    <string name="sign_in_dont_have_account">Вперше тут?</string>
+    <string name="sign_in_sign_up_link">Реєстрація</string>
+
+    <string name="welcome_get_started">Розпочати</string>
+    <string name="welcome_sign_in">Я вже маю акаунт</string>
+    <string name="welcome_continue_as_guest">Грати як гість</string>
+    <string name="welcome_terms_prefix">Продовжуючи, ви погоджуєтесь з нашими</string>
+    <string name="welcome_terms">Умовами</string>
+    <string name="welcome_terms_and">&amp;</string>
+    <string name="welcome_privacy_policy">Політикою конфіденційності</string>
+</resources>

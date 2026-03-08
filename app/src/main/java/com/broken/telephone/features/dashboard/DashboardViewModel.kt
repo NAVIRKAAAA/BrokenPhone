@@ -41,7 +41,7 @@ class DashboardViewModel(
 
     init {
         getPostsUseCase()
-            .onEach { posts -> _state.update { it.copy(posts = posts) } }
+            .onEach { posts -> _state.update { it.copy(posts = posts, isLoading = false) } }
             .launchIn(viewModelScope)
 
         getCurrentUserUseCase()

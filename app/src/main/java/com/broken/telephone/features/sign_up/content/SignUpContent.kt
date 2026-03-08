@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -15,6 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +40,7 @@ import com.broken.telephone.core.button.AuthButton
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.core.top_bar.AuthTopBar
 import com.broken.telephone.features.sign_up.model.SignUpState
+import kotlinx.coroutines.delay
 
 @Composable
 fun SignUpContent(
@@ -67,9 +68,15 @@ fun SignUpContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        val emailFocus = remember { FocusRequester() }
         val passwordFocus = remember { FocusRequester() }
         val confirmPasswordFocus = remember { FocusRequester() }
         val focusManager = LocalFocusManager.current
+
+        LaunchedEffect(Unit) {
+            delay(150)
+            emailFocus.requestFocus()
+        }
 
         Column(
             modifier = Modifier.fillMaxSize()
@@ -86,6 +93,7 @@ fun SignUpContent(
                 error = state.emailError,
                 imeAction = ImeAction.Next,
                 onImeAction = { passwordFocus.requestFocus() },
+                modifier = Modifier.focusRequester(emailFocus),
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -113,7 +121,10 @@ fun SignUpContent(
                 isPasswordVisible = state.isConfirmPasswordVisible,
                 onPasswordVisibilityToggle = onToggleConfirmPasswordVisibility,
                 imeAction = ImeAction.Done,
-                onImeAction = { focusManager.clearFocus() },
+                onImeAction = {
+                    focusManager.clearFocus()
+                    onSignUpClick()
+                },
                 modifier = Modifier.focusRequester(confirmPasswordFocus),
             )
 

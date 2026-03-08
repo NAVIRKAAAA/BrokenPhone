@@ -14,6 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +41,7 @@ import com.broken.telephone.core.theme.BrokenTelephoneTheme
 import com.broken.telephone.core.top_bar.AuthTopBar
 import com.broken.telephone.features.sign_in.model.SignInState
 import com.broken.telephone.features.sign_up.content.SignUpTextField
+import kotlinx.coroutines.delay
 
 @Composable
 fun SignInContent(
@@ -52,8 +54,14 @@ fun SignInContent(
     onSignInClick: () -> Unit = {},
     onSignUpClick: () -> Unit = {},
 ) {
+    val emailFocus = remember { FocusRequester() }
     val passwordFocus = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(Unit) {
+        delay(150)
+        emailFocus.requestFocus()
+    }
 
     Column(
         modifier = modifier
@@ -84,6 +92,7 @@ fun SignInContent(
                 error = if (state.credentialsError != null) "" else null,
                 imeAction = ImeAction.Next,
                 onImeAction = { passwordFocus.requestFocus() },
+                modifier = Modifier.focusRequester(emailFocus),
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -96,7 +105,10 @@ fun SignInContent(
                 isPasswordVisible = state.isPasswordVisible,
                 onPasswordVisibilityToggle = onTogglePasswordVisibility,
                 imeAction = ImeAction.Done,
-                onImeAction = { focusManager.clearFocus() },
+                onImeAction = {
+                    focusManager.clearFocus()
+                    onSignInClick()
+                },
                 modifier = Modifier.focusRequester(passwordFocus),
             )
 

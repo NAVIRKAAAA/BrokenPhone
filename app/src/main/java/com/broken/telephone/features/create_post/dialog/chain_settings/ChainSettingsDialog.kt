@@ -124,8 +124,8 @@ fun ChainSettingsDialog(
 
             ChainSettingsItem(
                 title = stringResource(R.string.create_post_chain_settings_text_response),
-                value = "${textTimeLimit}s",
-                range = "${TEXT_TIME_MIN}s-${TEXT_TIME_MAX}s",
+                value = stringResource(R.string.badge_seconds, textTimeLimit),
+                range = "${stringResource(R.string.badge_seconds, TEXT_TIME_MIN)}-${stringResource(R.string.badge_seconds, TEXT_TIME_MAX)}",
                 onMinusClick = { textTimeLimit -= TEXT_TIME_STEP },
                 onPlusClick = { textTimeLimit += TEXT_TIME_STEP },
                 isMinusEnabled = textTimeLimit > TEXT_TIME_MIN,
@@ -136,8 +136,8 @@ fun ChainSettingsDialog(
 
             ChainSettingsItem(
                 title = stringResource(R.string.create_post_chain_settings_drawing_response),
-                value = "${drawingTimeLimit}s",
-                range = "${DRAWING_TIME_MIN}s-${DRAWING_TIME_MAX}s",
+                value = stringResource(R.string.badge_seconds, drawingTimeLimit),
+                range = "${stringResource(R.string.badge_seconds, DRAWING_TIME_MIN)}-${stringResource(R.string.badge_seconds, DRAWING_TIME_MAX)}",
                 onMinusClick = { drawingTimeLimit -= DRAWING_TIME_STEP },
                 onPlusClick = { drawingTimeLimit += DRAWING_TIME_STEP },
                 isMinusEnabled = drawingTimeLimit > DRAWING_TIME_MIN,

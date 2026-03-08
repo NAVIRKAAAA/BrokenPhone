@@ -104,7 +104,7 @@
     <string name="account_settings_blocked_users">Blocked Users</string>
     <string name="account_settings_delete_account">Delete Account</string>
     <string name="account_settings_dialog_delete_title">Delete Account?</string>
-    <string name="account_settings_dialog_delete_body">This action cannot be undone. All your posts, contributions, and data will be permanently deleted.</string>
+    <string name="account_settings_dialog_delete_body">This action cannot be undone. Your account and personal data will be permanently deleted.</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
@@ -171,6 +171,7 @@
     <string name="profile_contributions">Contributions</string>
     <string name="profile_top_bar_edit">Edit</string>
     <string name="profile_top_bar_settings">Settings</string>
+    <string name="profile_sign_in">Sign In</string>
     <string name="profile_guest_note">You\'re playing as a guest. Sign up to save your progress!</string>
 
     <!-- Bottom Nav Bar -->

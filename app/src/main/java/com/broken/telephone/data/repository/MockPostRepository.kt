@@ -8,7 +8,10 @@ import com.broken.telephone.domain.repository.PostRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
@@ -16,7 +19,10 @@ class MockPostRepository : PostRepository {
 
     private val _posts = MutableStateFlow(mockList)
 
-    override fun getPosts(): Flow<List<Post>> = _posts
+    override fun getPosts(): Flow<List<Post>> = flow {
+        delay(1000)
+        emitAll(_posts)
+    }
 
     override fun getPostById(id: String): Flow<Post?> =
         _posts.map { list -> list.find { it.id == id } }
@@ -24,15 +30,19 @@ class MockPostRepository : PostRepository {
     override fun getChainByPostId(postId: String): Flow<List<PostChainEntry>> =
         flowOf(chainsMockList)
 
-    override fun getUserPosts(userId: String): Flow<List<Post>> =
-        _posts.map { list -> list.filter { it.authorId == userId } }
+    override fun getUserPosts(userId: String): Flow<List<Post>> = flow {
+        delay(2000)
+        emitAll(_posts.map { list -> list.filter { it.authorId == userId } })
+    }
 
-    override fun getUserContributions(userId: String): Flow<List<Post>> =
-        _posts.map { list ->
+    override fun getUserContributions(userId: String): Flow<List<Post>> = flow {
+        delay(2000)
+        emitAll(_posts.map { list ->
             list.filter { post ->
                 post.currentEntry.authorId == userId && post.generation > 1
             }
-        }
+        })
+    }
 
     override suspend fun updatePost(post: Post) {
         _posts.update { list -> list.map { if (it.id == post.id) post else it } }

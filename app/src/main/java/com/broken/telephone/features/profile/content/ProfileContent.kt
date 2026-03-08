@@ -132,6 +132,7 @@ fun ProfileContent(
                 when (ProfileTab.entries[page]) {
                     ProfileTab.POSTS -> ProfilePostsPage(
                         posts = state.myPosts,
+                        isLoading = state.isLoading,
                         onScrollDirectionChange = onScrollDirectionChange,
                         onPostClick = onPostClick,
                         onMoreClick = onMoreClick,
@@ -139,6 +140,7 @@ fun ProfileContent(
 
                     ProfileTab.CONTRIBUTIONS -> ProfilePostsPage(
                         posts = state.myContributions,
+                        isLoading = state.isLoading,
                         onScrollDirectionChange = onScrollDirectionChange,
                         onPostClick = onPostClick,
                         onMoreClick = onMoreClick,
@@ -153,7 +155,7 @@ fun ProfileContent(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
             ) {
                 WelcomeButton(
-                    text = stringResource(R.string.welcome_sign_in),
+                    text = stringResource(R.string.profile_sign_in),
                     onClick = onSignInClick,
                     contentColor = MaterialTheme.colorScheme.onSurface,
                     containerColor = MaterialTheme.colorScheme.surfaceVariant,

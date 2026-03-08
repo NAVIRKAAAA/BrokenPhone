@@ -18,17 +18,23 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.broken.telephone.core.theme.appColors
+import com.broken.telephone.features.dashboard.content.DashboardShimmerList
 import com.broken.telephone.features.dashboard.content.PostElement
 import com.broken.telephone.features.dashboard.model.PostUi
 
 @Composable
 fun ProfilePostsPage(
     posts: List<PostUi>,
+    isLoading: Boolean,
     onScrollDirectionChange: (isScrollingUp: Boolean) -> Unit,
     onPostClick: (postId: String) -> Unit,
     onMoreClick: (postId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    if (isLoading) {
+        DashboardShimmerList(modifier = modifier)
+        return
+    }
     val listState = rememberLazyListState()
 
     LaunchedEffect(listState) {

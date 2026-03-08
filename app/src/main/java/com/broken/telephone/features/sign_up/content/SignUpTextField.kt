@@ -121,8 +121,8 @@ fun SignUpTextField(
                 IconButton(onClick = it) {
                     Icon(
                         painter = painterResource(
-                            if (isPasswordVisible) R.drawable.password_visibility_on
-                            else R.drawable.password_visibility_off
+                            if (isPasswordVisible) R.drawable.password_visibility_off
+                            else R.drawable.password_visibility_on
                         ),
                         contentDescription = if (isPasswordVisible) stringResource(R.string.sign_up_password_hide) else stringResource(R.string.sign_up_password_show),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
