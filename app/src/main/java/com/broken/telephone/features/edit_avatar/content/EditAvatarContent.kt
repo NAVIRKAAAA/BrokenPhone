@@ -1,8 +1,14 @@
 package com.broken.telephone.features.edit_avatar.content
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,8 +28,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -78,12 +87,17 @@ fun EditAvatarContent(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        AvatarComponent(
-            avatarUrl = Avatars.all.find { it.id == state.selectedAvatarId }?.url,
-            size = 120.dp,
-            modifier = Modifier
-                .padding(start = 16.dp)
-        )
+        Crossfade(
+            targetState = Avatars.all.find { it.id == state.selectedAvatarId }?.url,
+            animationSpec = tween(300),
+            label = "currentAvatar"
+        ) { avatarUrl ->
+            AvatarComponent(
+                avatarUrl = avatarUrl,
+                size = 120.dp,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -110,6 +124,22 @@ fun EditAvatarContent(
                 key = { it.id }
             ) { avatar ->
                 val isSelected = avatar.id == state.selectedAvatarId
+                val scale by animateFloatAsState(
+                    targetValue = if (isSelected) 1.1f else 1f,
+                    animationSpec = spring(
+                        dampingRatio = 0.5f,
+                        stiffness = 400f
+                    ),
+                    label = "avatarScale"
+                )
+                val borderWidth by animateDpAsState(
+                    targetValue = if (isSelected) 3.dp else 0.dp,
+                    animationSpec = spring(
+                        dampingRatio = 0.5f,
+                        stiffness = 400f
+                    ),
+                    label = "avatarBorder"
+                )
 
                 AvatarComponent(
                     avatarUrl = avatar.url,
@@ -117,15 +147,19 @@ fun EditAvatarContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(1f)
+                        .scale(scale)
                         .clip(CircleShape)
                         .then(
                             if (isSelected) Modifier.border(
-                                width = 3.dp,
+                                width = borderWidth,
                                 color = MaterialTheme.colorScheme.primary,
                                 shape = CircleShape
                             ) else Modifier
                         )
-                        .clickable { onAvatarClick(avatar) }
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) { onAvatarClick(avatar) }
                 )
             }
 

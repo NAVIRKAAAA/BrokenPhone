@@ -92,7 +92,7 @@ fun BlockedUserItem(
                     contentColor = MaterialTheme.colorScheme.onSurface,
                     containerColor = MaterialTheme.colorScheme.surfaceVariant
                 ),
-                shape = RoundedCornerShape(10.dp),
+                shape = RoundedCornerShape(14.dp),
                 contentPadding = PaddingValues(
                     horizontal = 16.dp,
                     vertical = 0.dp

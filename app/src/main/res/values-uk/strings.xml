@@ -16,7 +16,7 @@
     <string name="notifications_type_new_posts">Нові пости</string>
     <string name="notifications_type_chain_completed">Ланцюжок завершено</string>
     <string name="notifications_dialog_rationale_title">Дозволити сповіщення</string>
-    <string name="notifications_dialog_rationale_body">Щоб отримувати оновлення про нові пости та активність у ланцюжках, дозволь додатку надсилати сповіщення.</string>
+    <string name="notifications_dialog_rationale_body">Дізнавайся першим, коли твоя черга або ланцюжок завершено!</string>
     <string name="notifications_dialog_rationale_confirm">Дозволити</string>
 
     <string name="common_cancel">Скасувати</string>
@@ -68,8 +68,8 @@
     <string name="language_ukrainian">Українська</string>
 
     <string name="blocked_users_title">Заблоковані</string>
-    <string name="blocked_users_empty_title">Нікого не заблоковано</string>
-    <string name="blocked_users_empty_body">Заблоковані користувачі зʼявляться тут</string>
+    <string name="blocked_users_empty_title">Все чисто!</string>
+    <string name="blocked_users_empty_body">Ті, кого ти заблокуєш, зʼявляться тут.</string>
     <string name="blocked_users_item_blocked_on">Заблоковано %1$s</string>
     <string name="blocked_users_item_unblock">Розблокувати</string>
     <string name="blocked_users_dialog_title">Розблокувати?</string>

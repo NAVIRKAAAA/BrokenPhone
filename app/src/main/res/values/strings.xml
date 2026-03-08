@@ -86,13 +86,13 @@
     <string name="notifications_type_new_posts">New Posts</string>
     <string name="notifications_type_chain_completed">Chain Completed</string>
     <string name="notifications_dialog_rationale_title">Allow Notifications</string>
-    <string name="notifications_dialog_rationale_body">To receive updates about new posts and chain activity, please allow the app to send notifications.</string>
+    <string name="notifications_dialog_rationale_body">Know when it\'s your turn or a chain wraps up — don\'t miss out!</string>
     <string name="notifications_dialog_rationale_confirm">Allow</string>
 
     <!-- Blocked Users -->
     <string name="blocked_users_title">Blocked Users</string>
-    <string name="blocked_users_empty_title">No blocked users</string>
-    <string name="blocked_users_empty_body">Users you block will appear here</string>
+    <string name="blocked_users_empty_title">All clear!</string>
+    <string name="blocked_users_empty_body">Anyone you block will show up here.</string>
     <string name="blocked_users_item_blocked_on">Blocked on %1$s</string>
     <string name="blocked_users_item_unblock">Unblock</string>
     <string name="blocked_users_dialog_title">Unblock user?</string>

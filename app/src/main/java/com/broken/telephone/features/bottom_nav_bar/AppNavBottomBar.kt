@@ -1,6 +1,8 @@
 package com.broken.telephone.features.bottom_nav_bar
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -20,7 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,7 +32,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -155,17 +158,23 @@ private fun AppNavBottomBarItem(
         MaterialTheme.colorScheme.onSurfaceVariant
     }
 
-    val iconSize = if (item == BottomNavBar.DASHBOARD) {
-        20.dp
-    } else {
-        24.dp
+    val iconSize = when (item) {
+        BottomNavBar.DASHBOARD -> 20.dp
+        BottomNavBar.CREATE -> 32.dp
+        else -> 24.dp
     }
 
-    val itemBackground = if (isSelected) {
-        MaterialTheme.colorScheme.primaryContainer
-    } else {
-        Color.Transparent
-    }
+    val primaryContainerColor = MaterialTheme.colorScheme.primaryContainer
+    val backgroundScale by animateFloatAsState(
+        targetValue = if (isSelected) 1f else 0f,
+        animationSpec = spring(dampingRatio = 0.6f, stiffness = 500f),
+        label = "backgroundScale"
+    )
+    val backgroundAlpha by animateFloatAsState(
+        targetValue = if (isSelected) 1f else 0f,
+        animationSpec = tween(200),
+        label = "backgroundAlpha"
+    )
 
     val title = if (item == BottomNavBar.PROFILE && !isAuth) {
         stringResource(R.string.bottom_nav_bar_guest)
@@ -178,10 +187,17 @@ private fun AppNavBottomBarItem(
             .clip(RoundedCornerShape(28.dp))
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = ripple(bounded = false),
+                indication = null,
                 onClick = onClick
             )
-            .background(itemBackground)
+            .drawBehind {
+                scale(backgroundScale) {
+                    drawRoundRect(
+                        color = primaryContainerColor.copy(alpha = backgroundAlpha),
+                        cornerRadius = CornerRadius(28.dp.toPx())
+                    )
+                }
+            }
             .padding(vertical = 6.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -200,13 +216,15 @@ private fun AppNavBottomBarItem(
             )
         }
 
-        Text(
-            text = title,
-            fontSize = 10.sp,
-            fontFamily = FontFamily(Font(R.font.nunito_bold)),
-            color = color,
-            lineHeight = 10.sp
-        )
+        if (item != BottomNavBar.CREATE) {
+            Text(
+                text = title,
+                fontSize = 10.sp,
+                fontFamily = FontFamily(Font(R.font.nunito_bold)),
+                color = color,
+                lineHeight = 10.sp
+            )
+        }
     }
 }
 
