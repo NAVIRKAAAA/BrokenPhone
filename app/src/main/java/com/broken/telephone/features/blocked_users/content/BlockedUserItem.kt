@@ -63,7 +63,7 @@ fun BlockedUserItem(
 
                 Text(
                     text = blockedUserUi.name,
-                    fontFamily = FontFamily(Font(R.font.inter_regular)),
+                    fontFamily = FontFamily(Font(R.font.nunito_bold)),
                     fontSize = 16.sp,
                     lineHeight = 24.sp,
                     maxLines = 1,
@@ -76,11 +76,12 @@ fun BlockedUserItem(
 
                 Text(
                     text = stringResource(R.string.blocked_users_item_blocked_on, relativeTime),
-                    fontFamily = FontFamily(Font(R.font.inter_regular)),
+                    fontFamily = FontFamily(Font(R.font.nunito_regular)),
                     fontSize = 13.sp,
                     lineHeight = 20.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
 
@@ -100,7 +101,7 @@ fun BlockedUserItem(
                 Text(
                     text = stringResource(R.string.blocked_users_item_unblock),
                     textAlign = TextAlign.Center,
-                    fontFamily = FontFamily(Font(R.font.inter_medium)),
+                    fontFamily = FontFamily(Font(R.font.nunito_bold)),
                     fontSize = 14.sp,
                     lineHeight = 21.sp,
                 )

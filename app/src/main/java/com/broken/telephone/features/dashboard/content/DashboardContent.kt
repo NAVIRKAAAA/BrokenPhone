@@ -130,7 +130,8 @@ fun DashboardContentPreview() {
                     email = "",
                     avatarUrl = "",
                     createdAt = 0
-                )
+                ),
+                isLoading = false
             ),
             onPostClick = {},
             onMoreClick = {},

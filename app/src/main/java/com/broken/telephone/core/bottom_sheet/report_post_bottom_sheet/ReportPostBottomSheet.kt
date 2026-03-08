@@ -79,7 +79,7 @@ fun ReportPostBottomSheetContent(
 
         Text(
             text = stringResource(R.string.report_post_bottom_sheet_title),
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
+            fontFamily = FontFamily(Font(R.font.nunito_bold)),
             fontSize = 16.sp,
             lineHeight = 24.sp,
             color = MaterialTheme.colorScheme.onSurface,

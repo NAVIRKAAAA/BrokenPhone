@@ -85,7 +85,7 @@ fun PostDetailsContent(
 
             Text(
                 text = stringResource(buttonType.descriptionResId, post.nextTimeLimit),
-                fontFamily = FontFamily(Font(R.font.inter_regular)),
+                fontFamily = FontFamily(Font(R.font.nunito_regular)),
                 fontSize = 12.sp,
                 lineHeight = 16.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,

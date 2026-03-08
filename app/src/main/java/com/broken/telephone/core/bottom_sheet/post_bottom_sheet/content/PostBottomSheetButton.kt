@@ -53,7 +53,7 @@ fun PostBottomSheetButton(
         Text(
             text = text,
             textAlign = TextAlign.Center,
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
+            fontFamily = FontFamily(Font(R.font.nunito_semi_bold)),
             fontSize = 15.sp,
             lineHeight = 22.sp,
             color = resolvedTextColor

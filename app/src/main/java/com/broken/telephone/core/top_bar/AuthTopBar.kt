@@ -45,8 +45,8 @@ fun AuthTopBar(
         Text(
             text = title,
             textAlign = TextAlign.Center,
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
-            fontSize = 16.sp,
+            fontFamily = FontFamily(Font(R.font.nunito_bold)),
+            fontSize = 18.sp,
             lineHeight = 24.sp,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.align(Alignment.Center),

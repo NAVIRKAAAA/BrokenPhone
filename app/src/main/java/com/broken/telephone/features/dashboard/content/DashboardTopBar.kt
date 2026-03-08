@@ -1,5 +1,6 @@
 package com.broken.telephone.features.dashboard.content
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -41,15 +42,17 @@ fun DashboardTopBar(
     var isSortMenuVisible by remember { mutableStateOf(false) }
 
     Row(
-        modifier = modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 16.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp, horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = stringResource(R.string.dashboard_title, name),
             textAlign = TextAlign.Start,
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
-            fontSize = 16.sp,
+            fontFamily = FontFamily(Font(R.font.nunito_extra_bold)),
+            fontSize = 20.sp,
             lineHeight = 24.sp,
             color = MaterialTheme.colorScheme.primary,
             maxLines = 1,
@@ -76,7 +79,7 @@ fun DashboardTopBar(
                         text = {
                             Text(
                                 text = stringResource(sort.labelResId),
-                                fontFamily = FontFamily(Font(R.font.inter_medium)),
+                                fontFamily = FontFamily(Font(R.font.nunito_semi_bold)),
                                 fontSize = 15.sp,
                                 color = if (sort == selectedSort) MaterialTheme.colorScheme.primary
                                 else MaterialTheme.colorScheme.onBackground,
@@ -106,10 +109,12 @@ fun DashboardTopBar(
 @Composable
 fun DashboardTopBarPreview() {
     BrokenTelephoneTheme(true) {
-        DashboardTopBar(
-            name = "Alex",
-            selectedSort = DashboardSort.JUST_STARTED,
-            onSortSelected = {},
-        )
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            DashboardTopBar(
+                name = "Alex",
+                selectedSort = DashboardSort.JUST_STARTED,
+                onSortSelected = {},
+            )
+        }
     }
 }

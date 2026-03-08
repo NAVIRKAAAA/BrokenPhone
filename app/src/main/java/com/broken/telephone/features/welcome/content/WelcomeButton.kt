@@ -40,7 +40,7 @@ fun WelcomeButton(
         Text(
             text = text,
             textAlign = TextAlign.Center,
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
+            fontFamily = FontFamily(Font(R.font.nunito_bold)),
             fontSize = 16.sp,
             lineHeight = 24.sp
         )

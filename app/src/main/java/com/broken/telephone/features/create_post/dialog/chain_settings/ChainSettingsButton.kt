@@ -62,7 +62,7 @@ fun ChainSettingsButton(
             text = type.value,
             color = color,
             fontSize = 18.sp,
-            fontFamily = FontFamily(Font(R.font.inter_medium))
+            fontFamily = FontFamily(Font(R.font.nunito_bold))
         )
 
     }

@@ -78,7 +78,7 @@ fun PostElement(
                 ) {
                     Text(
                         text = post.authorName,
-                        fontFamily = FontFamily(Font(R.font.inter_regular)),
+                        fontFamily = FontFamily(Font(R.font.nunito_bold)),
                         fontSize = 16.sp,
                         lineHeight = 24.sp,
                         color = MaterialTheme.colorScheme.onSurface,
@@ -91,7 +91,7 @@ fun PostElement(
 
                     Text(
                         text = relativeTime,
-                        fontFamily = FontFamily(Font(R.font.inter_medium)),
+                        fontFamily = FontFamily(Font(R.font.nunito_regular)),
                         fontSize = 14.sp,
                         lineHeight = 20.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -120,7 +120,7 @@ fun PostElement(
                 is PostContent.Text -> {
                     Text(
                         text = content.text,
-                        fontFamily = FontFamily(Font(R.font.inter_regular)),
+                        fontFamily = FontFamily(Font(R.font.nunito_regular)),
                         fontSize = 15.sp,
                         lineHeight = 22.sp,
                         color = MaterialTheme.colorScheme.onSurface,
@@ -185,8 +185,8 @@ fun PostElementPreview() {
                     authorId = "user-1",
                     authorName = "Alex".repeat(55),
                     avatarUrl = null,
-                    content = PostContent.Drawing(),
-//            content = PostContent.Text("Once upon a time there was a broken telephone..."),
+//                    content = PostContent.Drawing(),
+            content = PostContent.Text("Once upon a time there was a broken telephone..."),
                     createdAt = System.currentTimeMillis() - 300000,
                     generation = 7,
                     maxGenerations = 10,

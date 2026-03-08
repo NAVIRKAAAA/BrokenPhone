@@ -62,7 +62,7 @@ fun ConfirmDialog(
             Text(
                 text = title,
                 textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(R.font.inter_medium)),
+                fontFamily = FontFamily(Font(R.font.nunito_bold)),
                 fontSize = 18.sp,
                 lineHeight = 28.sp,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -72,7 +72,7 @@ fun ConfirmDialog(
 
             Text(
                 text = body,
-                fontFamily = FontFamily(Font(R.font.inter_regular)),
+                fontFamily = FontFamily(Font(R.font.nunito_regular)),
                 fontSize = 14.sp,
                 lineHeight = 21.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -100,7 +100,7 @@ fun ConfirmDialog(
                     Text(
                         text = cancelText,
                         textAlign = TextAlign.Center,
-                        fontFamily = FontFamily(Font(R.font.inter_medium)),
+                        fontFamily = FontFamily(Font(R.font.nunito_bold)),
                         fontSize = 16.sp,
                         lineHeight = 24.sp
                     )
@@ -129,7 +129,7 @@ fun ConfirmDialog(
                         Text(
                             text = confirmText,
                             textAlign = TextAlign.Center,
-                            fontFamily = FontFamily(Font(R.font.inter_medium)),
+                            fontFamily = FontFamily(Font(R.font.nunito_bold)),
                             fontSize = 16.sp,
                             lineHeight = 24.sp
                         )

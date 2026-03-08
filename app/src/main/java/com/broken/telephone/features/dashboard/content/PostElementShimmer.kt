@@ -61,7 +61,7 @@ fun PostElementShimmer(
                 ) {
                     Text(
                         text = "Author name",
-                        fontFamily = FontFamily(Font(R.font.inter_regular)),
+                        fontFamily = FontFamily(Font(R.font.nunito_bold)),
                         fontSize = 16.sp,
                         lineHeight = 24.sp,
                         color = MaterialTheme.colorScheme.onSurface,
@@ -72,7 +72,7 @@ fun PostElementShimmer(
 
                     Text(
                         text = "2m ago",
-                        fontFamily = FontFamily(Font(R.font.inter_medium)),
+                        fontFamily = FontFamily(Font(R.font.nunito_regular)),
                         fontSize = 14.sp,
                         lineHeight = 20.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -96,7 +96,7 @@ fun PostElementShimmer(
                 is PostContent.Text -> {
                     Text(
                         text = "Once upon a time there was a broken telephone and nobody remembered what the original message was.",
-                        fontFamily = FontFamily(Font(R.font.inter_regular)),
+                        fontFamily = FontFamily(Font(R.font.nunito_regular)),
                         fontSize = 15.sp,
                         lineHeight = 22.sp,
                         color = MaterialTheme.colorScheme.onSurface,

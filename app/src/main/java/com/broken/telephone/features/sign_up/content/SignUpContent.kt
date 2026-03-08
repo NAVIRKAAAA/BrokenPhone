@@ -159,7 +159,7 @@ fun SignUpContent(
             Text(
                 text = signInText,
                 textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(R.font.inter_regular)),
+                fontFamily = FontFamily(Font(R.font.nunito_semi_bold)),
                 fontSize = 14.sp,
                 lineHeight = 21.sp,
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -198,7 +198,7 @@ fun SignUpContent(
             Text(
                 text = termsText,
                 textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(R.font.inter_regular)),
+                fontFamily = FontFamily(Font(R.font.nunito_regular)),
                 fontSize = 12.sp,
                 lineHeight = 16.sp,
                 modifier = Modifier.padding(horizontal = 16.dp),

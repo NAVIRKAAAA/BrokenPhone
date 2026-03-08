@@ -132,7 +132,7 @@ fun ChainDetailsContent(
                 HorizontalDivider(color = MaterialTheme.appColors.divider)
 
                 Spacer(modifier = Modifier.height(24.dp))
-                if(chainSize == maxGenerations) {
+                if (chainSize == maxGenerations) {
                     Row(
                         modifier = modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
@@ -152,7 +152,7 @@ fun ChainDetailsContent(
                         Text(
                             text = stringResource(R.string.chain_details_complete),
                             textAlign = TextAlign.Center,
-                            fontFamily = FontFamily(Font(R.font.inter_medium)),
+                            fontFamily = FontFamily(Font(R.font.nunito_bold)),
                             fontSize = 14.sp,
                             lineHeight = 20.sp,
                             color = MaterialTheme.appColors.badgeComplete
@@ -170,7 +170,7 @@ fun ChainDetailsContent(
                         maxGenerations
                     ),
                     textAlign = TextAlign.Center,
-                    fontFamily = FontFamily(Font(R.font.inter_regular)),
+                    fontFamily = FontFamily(Font(R.font.nunito_regular)),
                     fontSize = 12.sp,
                     lineHeight = 16.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -206,7 +206,7 @@ fun ChainDetailsContentPreview() {
                         textTimeLimit = 0,
                         drawingTimeLimit = 0
                     ).copy(
-                        authorId = if(index == 1) userId else index.toString()
+                        authorId = if (index == 1) userId else index.toString()
                     )
                 }.subList(0, 3),
                 currentUserId = userId

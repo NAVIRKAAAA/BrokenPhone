@@ -1,4 +1,4 @@
-package com.broken.telephone.features.edit_username.content
+package com.broken.telephone.core.top_bar
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -25,9 +24,11 @@ import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
 
 @Composable
-fun EditUsernameTopBar(
+fun SaveTopBar(
+    title: String,
+    saveButtonText: String,
     isSaveEnabled: Boolean = true,
-    onCloseClick: () -> Unit = {},
+    onBackClick: () -> Unit = {},
     onSaveClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
@@ -38,7 +39,7 @@ fun EditUsernameTopBar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        IconButton(onClick = onCloseClick) {
+        IconButton(onClick = onBackClick) {
             Icon(
                 painter = painterResource(R.drawable.ic_back),
                 contentDescription = null,
@@ -47,10 +48,10 @@ fun EditUsernameTopBar(
         }
 
         Text(
-            text = stringResource(R.string.edit_username_title),
+            text = title,
             textAlign = TextAlign.Center,
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
-            fontSize = 16.sp,
+            fontFamily = FontFamily(Font(R.font.nunito_bold)),
+            fontSize = 18.sp,
             lineHeight = 24.sp,
             color = MaterialTheme.colorScheme.primary,
         )
@@ -60,9 +61,9 @@ fun EditUsernameTopBar(
             enabled = isSaveEnabled,
         ) {
             Text(
-                text = stringResource(R.string.edit_username_button_save),
+                text = saveButtonText,
                 textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(R.font.inter_medium)),
+                fontFamily = FontFamily(Font(R.font.nunito_bold)),
                 fontSize = 16.sp,
                 lineHeight = 24.sp,
             )
@@ -72,10 +73,13 @@ fun EditUsernameTopBar(
 
 @Preview
 @Composable
-fun EditUsernameTopBarPreview() {
-    BrokenTelephoneTheme {
+fun SaveTopBarPreview() {
+    BrokenTelephoneTheme(darkTheme = true) {
         Box {
-            EditUsernameTopBar()
+            SaveTopBar(
+                title = "Edit Avatar",
+                saveButtonText = "Save",
+            )
         }
     }
 }

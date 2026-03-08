@@ -89,7 +89,7 @@ fun ChainSettingsDialog(
                 Text(
                     text = stringResource(R.string.create_post_chain_settings_title),
                     textAlign = TextAlign.Center,
-                    fontFamily = FontFamily(Font(R.font.inter_medium)),
+                    fontFamily = FontFamily(Font(R.font.nunito_bold)),
                     fontSize = 18.sp,
                     lineHeight = 28.sp,
                     color = MaterialTheme.colorScheme.onSurface
@@ -159,7 +159,7 @@ fun ChainSettingsDialog(
                 Text(
                     text = stringResource(R.string.create_post_chain_settings_button_done),
                     textAlign = TextAlign.Center,
-                    fontFamily = FontFamily(Font(R.font.inter_medium)),
+                    fontFamily = FontFamily(Font(R.font.nunito_bold)),
                     fontSize = 18.sp,
                     lineHeight = 28.sp
                 )

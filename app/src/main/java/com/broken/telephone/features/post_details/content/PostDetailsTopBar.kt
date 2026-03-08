@@ -52,8 +52,8 @@ fun PostDetailsTopBar(
         Text(
             text = stringResource(R.string.post_details_title),
             textAlign = TextAlign.Center,
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
-            fontSize = 16.sp,
+            fontFamily = FontFamily(Font(R.font.nunito_bold)),
+            fontSize = 18.sp,
             lineHeight = 24.sp,
             color = MaterialTheme.colorScheme.primary
         )

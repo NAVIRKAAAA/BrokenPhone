@@ -60,7 +60,7 @@ fun StrongBadgeElement(
         Text(
             text = stringResource(type.textResId),
             textAlign = TextAlign.Center,
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
+            fontFamily = FontFamily(Font(R.font.nunito_bold)),
             fontSize = 14.sp,
             lineHeight = 20.sp,
             color = color

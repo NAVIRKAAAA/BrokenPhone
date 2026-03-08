@@ -62,7 +62,7 @@ fun PostDetailsElement(
 
             Text(
                 text = post.authorName,
-                fontFamily = FontFamily(Font(R.font.inter_regular)),
+                fontFamily = FontFamily(Font(R.font.nunito_bold)),
                 fontSize = 16.sp,
                 lineHeight = 24.sp,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -75,7 +75,7 @@ fun PostDetailsElement(
 
             Text(
                 text = relativeTime,
-                fontFamily = FontFamily(Font(R.font.inter_medium)),
+                fontFamily = FontFamily(Font(R.font.nunito_regular)),
                 fontSize = 14.sp,
                 lineHeight = 20.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -89,7 +89,7 @@ fun PostDetailsElement(
             is PostContent.Text -> {
                 Text(
                     text = content.text,
-                    fontFamily = FontFamily(Font(R.font.inter_regular)),
+                    fontFamily = FontFamily(Font(R.font.nunito_regular)),
                     fontSize = 15.sp,
                     lineHeight = 22.sp,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -140,10 +140,10 @@ fun PostDetailsElement(
 @Preview
 @Composable
 fun PostDetailsElementPreview() {
-    val post = MockPostRepository.mockList[2].toUi()
+    val post = MockPostRepository.mockList[1].toUi()
 
     BrokenTelephoneTheme(
-        darkTheme = true
+        darkTheme = false
     ) {
         Box(
             modifier = Modifier.background(MaterialTheme.colorScheme.background)

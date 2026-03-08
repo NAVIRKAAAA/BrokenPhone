@@ -54,8 +54,8 @@ fun CreatePostTopBar(
         Text(
             text = stringResource(R.string.create_post_title),
             textAlign = TextAlign.Center,
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
-            fontSize = 16.sp,
+            fontFamily = FontFamily(Font(R.font.nunito_bold)),
+            fontSize = 18.sp,
             lineHeight = 24.sp,
             color = MaterialTheme.colorScheme.primary
         )
@@ -67,7 +67,7 @@ fun CreatePostTopBar(
             Text(
                 text = stringResource(R.string.common_post),
                 textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(R.font.inter_medium)),
+                fontFamily = FontFamily(Font(R.font.nunito_bold)),
                 fontSize = 16.sp,
                 lineHeight = 24.sp,
             )

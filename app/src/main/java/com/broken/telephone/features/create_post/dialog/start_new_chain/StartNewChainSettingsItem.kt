@@ -45,7 +45,7 @@ fun StartNewChainSettingsItem(
 
         Text(
             text = text,
-            fontFamily = FontFamily(Font(R.font.inter_regular)),
+            fontFamily = FontFamily(Font(R.font.nunito_regular)),
             fontSize = 14.sp,
             lineHeight = 20.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant

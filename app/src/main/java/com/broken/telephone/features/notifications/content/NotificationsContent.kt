@@ -63,8 +63,6 @@ fun NotificationsContent(
             onCheckedChange = onAllNotificationsToggle,
         )
 
-        HorizontalDivider(color = MaterialTheme.appColors.divider)
-
         NotificationType.entries.forEach { type ->
             NotificationSwitchItem(
                 text = stringResource(type.displayNameResId),

@@ -203,7 +203,7 @@ private fun AppNavBottomBarItem(
         Text(
             text = title,
             fontSize = 10.sp,
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
+            fontFamily = FontFamily(Font(R.font.nunito_bold)),
             color = color,
             lineHeight = 10.sp
         )

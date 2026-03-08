@@ -41,9 +41,10 @@ class MainActivity : ComponentActivity() {
 
     private val mainViewModel: MainViewModel by viewModel()
 
+    private var keepSplashScreen = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashscreen = installSplashScreen()
-        var keepSplashScreen = true
         super.onCreate(savedInstanceState)
 
         splashscreen.setKeepOnScreenCondition { keepSplashScreen }

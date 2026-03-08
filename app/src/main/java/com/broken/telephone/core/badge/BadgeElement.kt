@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.broken.telephone.R
+import com.broken.telephone.core.theme.BrokenTelephoneTheme
 
 @Composable
 fun BadgeElement(
@@ -50,7 +51,7 @@ fun BadgeElement(
         Text(
             text = text,
             textAlign = TextAlign.Center,
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
+            fontFamily = FontFamily(Font(R.font.nunito_bold)),
             fontSize = 14.sp,
             lineHeight = 20.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -83,7 +84,7 @@ fun BadgeElement(
         Text(
             text = text,
             textAlign = TextAlign.Center,
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
+            fontFamily = FontFamily(Font(R.font.nunito_bold)),
             fontSize = 14.sp,
             lineHeight = 20.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -96,9 +97,11 @@ fun BadgeElement(
 @Preview
 @Composable
 fun BadgeElementPreview() {
-    BadgeElement(
-        R.drawable.ic_mutations,
-        text = "0/10",
-        onClick = {},
-    )
+    BrokenTelephoneTheme() {
+        BadgeElement(
+            R.drawable.ic_mutations,
+            text = "0/10",
+            onClick = {},
+        )
+    }
 }

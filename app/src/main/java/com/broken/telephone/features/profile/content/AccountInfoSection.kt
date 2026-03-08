@@ -52,7 +52,7 @@ fun AccountInfoSection(
             Text(
                 text = username,
                 textAlign = TextAlign.Start,
-                fontFamily = FontFamily(Font(R.font.inter_regular)),
+                fontFamily = FontFamily(Font(R.font.nunito_extra_bold)),
                 fontSize = 19.sp,
                 lineHeight = 28.sp,
                 overflow = TextOverflow.Ellipsis,
@@ -84,7 +84,7 @@ fun AccountInfoSection(
                 Text(
                     text = "Sign up to save your posts and\njoin the fun!",
                     textAlign = TextAlign.Start,
-                    fontFamily = FontFamily(Font(R.font.inter_regular)),
+                    fontFamily = FontFamily(Font(R.font.nunito_regular)),
                     fontSize = 14.sp,
                     lineHeight = 21.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant

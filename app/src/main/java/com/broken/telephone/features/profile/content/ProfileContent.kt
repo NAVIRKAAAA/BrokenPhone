@@ -114,7 +114,7 @@ fun ProfileContent(
                             Text(
                                 text = stringResource(tab.labelResId),
                                 textAlign = TextAlign.Start,
-                                fontFamily = FontFamily(Font(R.font.inter_medium)),
+                                fontFamily = FontFamily(Font(R.font.nunito_bold)),
                                 fontSize = 17.sp,
                                 lineHeight = 25.sp,
                                 color = color
@@ -180,7 +180,7 @@ fun ProfileContent(
             Text(
                 text = stringResource(R.string.profile_guest_note),
                 textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(R.font.inter_regular)),
+                fontFamily = FontFamily(Font(R.font.nunito_regular)),
                 fontSize = 12.sp,
                 lineHeight = 18.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,

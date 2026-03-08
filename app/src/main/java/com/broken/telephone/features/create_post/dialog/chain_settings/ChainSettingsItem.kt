@@ -42,7 +42,7 @@ fun ChainSettingsItem(
         Text(
             text = title,
             textAlign = TextAlign.Center,
-            fontFamily = FontFamily(Font(R.font.inter_regular)),
+            fontFamily = FontFamily(Font(R.font.nunito_regular)),
             fontSize = 14.sp,
             lineHeight = 20.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -68,7 +68,7 @@ fun ChainSettingsItem(
                 Text(
                     text = value,
                     textAlign = TextAlign.Center,
-                    fontFamily = FontFamily(Font(R.font.inter_medium)),
+                    fontFamily = FontFamily(Font(R.font.nunito_extra_bold)),
                     fontSize = 24.sp,
                     lineHeight = 32.sp,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -88,7 +88,7 @@ fun ChainSettingsItem(
         Text(
             text = range,
             textAlign = TextAlign.Center,
-            fontFamily = FontFamily(Font(R.font.inter_regular)),
+            fontFamily = FontFamily(Font(R.font.nunito_regular)),
             fontSize = 10.sp,
             lineHeight = 15.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,

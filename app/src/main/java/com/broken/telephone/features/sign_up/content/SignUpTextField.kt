@@ -55,14 +55,14 @@ fun SignUpTextField(
                         error != null -> Text(
                             text = error,
                             modifier = Modifier.weight(1f),
-                            fontFamily = FontFamily(Font(R.font.inter_regular)),
+                            fontFamily = FontFamily(Font(R.font.nunito_regular)),
                             fontSize = 12.sp,
                             lineHeight = 18.sp,
                         )
                         hint != null -> Text(
                             text = hint,
                             modifier = Modifier.weight(1f),
-                            fontFamily = FontFamily(Font(R.font.inter_regular)),
+                            fontFamily = FontFamily(Font(R.font.nunito_regular)),
                             fontSize = 12.sp,
                             lineHeight = 18.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -72,7 +72,7 @@ fun SignUpTextField(
                     if (maxLength != null) {
                         Text(
                             text = "${text.length}/$maxLength",
-                            fontFamily = FontFamily(Font(R.font.inter_regular)),
+                            fontFamily = FontFamily(Font(R.font.nunito_regular)),
                             fontSize = 12.sp,
                             lineHeight = 18.sp,
                             color = if (text.length > maxLength) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
@@ -95,7 +95,7 @@ fun SignUpTextField(
         onValueChange = onTextChange,
         modifier = modifier.fillMaxWidth(),
         textStyle = TextStyle(
-            fontFamily = FontFamily(Font(R.font.inter_regular)),
+            fontFamily = FontFamily(Font(R.font.nunito_regular)),
             fontSize = 15.sp,
             lineHeight = 22.sp
         ),
@@ -105,7 +105,7 @@ fun SignUpTextField(
         label = {
             Text(
                 text = label,
-                fontFamily = FontFamily(Font(R.font.inter_regular)),
+                fontFamily = FontFamily(Font(R.font.nunito_regular)),
                 fontSize = 15.sp,
                 lineHeight = 22.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant

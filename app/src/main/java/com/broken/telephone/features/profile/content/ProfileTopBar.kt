@@ -39,8 +39,8 @@ fun ProfileTopBar(
     ) {
         Text(
             text = title,
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
-            fontSize = 16.sp,
+            fontFamily = FontFamily(Font(R.font.nunito_extra_bold)),
+            fontSize = 20.sp,
             lineHeight = 24.sp,
             color = MaterialTheme.colorScheme.primary,
         )

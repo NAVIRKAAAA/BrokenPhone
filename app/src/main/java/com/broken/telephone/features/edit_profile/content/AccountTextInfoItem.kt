@@ -47,7 +47,7 @@ fun AccountTextInfoItem(
 
         Text(
             text = name,
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
+            fontFamily = FontFamily(Font(R.font.nunito_semi_bold)),
             fontSize = 15.sp,
             lineHeight = 22.sp,
             modifier = Modifier.weight(1f),
@@ -65,7 +65,7 @@ fun AccountTextInfoItem(
         ) {
             Text(
                 text = value,
-                fontFamily = FontFamily(Font(R.font.inter_medium)),
+                fontFamily = FontFamily(Font(R.font.nunito_regular)),
                 fontSize = 15.sp,
                 lineHeight = 22.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
@@ -104,7 +104,7 @@ fun AccountStaticInfoItem(
     ) {
         Text(
             text = name,
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
+            fontFamily = FontFamily(Font(R.font.nunito_semi_bold)),
             fontSize = 15.sp,
             lineHeight = 22.sp,
             modifier = Modifier.weight(1f),
@@ -118,7 +118,7 @@ fun AccountStaticInfoItem(
         if (value != null) {
             Text(
                 text = value,
-                fontFamily = FontFamily(Font(R.font.inter_medium)),
+                fontFamily = FontFamily(Font(R.font.nunito_regular)),
                 fontSize = 15.sp,
                 lineHeight = 22.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -178,7 +178,7 @@ fun AccountAvatarInfoItem(
 
         Text(
             text = name,
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
+            fontFamily = FontFamily(Font(R.font.nunito_semi_bold)),
             fontSize = 15.sp,
             lineHeight = 22.sp,
             modifier = Modifier.weight(1f),

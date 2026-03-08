@@ -121,7 +121,7 @@ fun SettingsContent(
 
         Text(
             text = state.versionInfo,
-            fontFamily = FontFamily(Font(R.font.inter_regular)),
+            fontFamily = FontFamily(Font(R.font.nunito_regular)),
             fontSize = 12.sp,
             lineHeight = 18.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,

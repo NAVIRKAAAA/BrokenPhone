@@ -45,7 +45,7 @@ fun BlockedUsersEmptyContent(
         Text(
             text = stringResource(R.string.blocked_users_empty_title),
             textAlign = TextAlign.Center,
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
+            fontFamily = FontFamily(Font(R.font.nunito_bold)),
             fontSize = 19.sp,
             lineHeight = 28.sp,
             color = MaterialTheme.colorScheme.onSurface,
@@ -56,7 +56,7 @@ fun BlockedUsersEmptyContent(
         Text(
             text = stringResource(R.string.blocked_users_empty_body),
             textAlign = TextAlign.Center,
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
+            fontFamily = FontFamily(Font(R.font.nunito_regular)),
             fontSize = 14.sp,
             lineHeight = 20.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant

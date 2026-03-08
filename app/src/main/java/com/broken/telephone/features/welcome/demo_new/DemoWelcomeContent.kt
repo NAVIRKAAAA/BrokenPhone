@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
+import com.broken.telephone.features.welcome.content.WelcomeButton
 
 @Composable
 fun DemoWelcomeContent(
@@ -41,7 +42,7 @@ fun DemoWelcomeContent(
         verticalArrangement = Arrangement.Bottom
     ) {
 
-        DemoWelcomeButton(
+        WelcomeButton(
             text = stringResource(R.string.welcome_get_started),
             onClick = onGetStarted,
             contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -51,7 +52,7 @@ fun DemoWelcomeContent(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        DemoWelcomeButton(
+        WelcomeButton(
             text = stringResource(R.string.welcome_sign_in),
             onClick = onSignIn,
             contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -68,7 +69,7 @@ fun DemoWelcomeContent(
             Text(
                 text = stringResource(R.string.welcome_continue_as_guest),
                 textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(R.font.inter_medium)),
+                fontFamily = FontFamily(Font(R.font.nunito_semi_bold)),
                 fontSize = 16.sp,
                 lineHeight = 22.sp,
             )

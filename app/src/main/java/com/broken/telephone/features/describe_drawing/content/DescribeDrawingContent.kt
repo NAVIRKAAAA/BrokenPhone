@@ -143,7 +143,7 @@ fun DescribeDrawingContent(
                             .padding(horizontal = 16.dp)
                             .focusRequester(focusRequester),
                         textStyle = TextStyle(
-                            fontFamily = FontFamily(Font(R.font.inter_regular)),
+                            fontFamily = FontFamily(Font(R.font.nunito_regular)),
                             fontSize = 15.sp,
                             lineHeight = 22.sp,
                             color = MaterialTheme.colorScheme.onBackground
@@ -162,7 +162,7 @@ fun DescribeDrawingContent(
                             if (state.text.isEmpty()) {
                                 Text(
                                     text = stringResource(R.string.describe_drawing_placeholder),
-                                    fontFamily = FontFamily(Font(R.font.inter_regular)),
+                                    fontFamily = FontFamily(Font(R.font.nunito_regular)),
                                     fontSize = 15.sp,
                                     lineHeight = 22.sp,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -199,7 +199,7 @@ fun DescribeDrawingContent(
                         Text(
                             text = "|",
                             textAlign = TextAlign.Center,
-                            fontFamily = FontFamily(Font(R.font.inter_medium)),
+                            fontFamily = FontFamily(Font(R.font.nunito_bold)),
                             fontSize = 14.sp,
                             lineHeight = 20.sp,
                             color = MaterialTheme.appColors.divider
@@ -209,7 +209,7 @@ fun DescribeDrawingContent(
                         Text(
                             text = "${state.text.length}/${CreatePostState.MAX_TEXT_LENGTH}",
                             textAlign = TextAlign.Center,
-                            fontFamily = FontFamily(Font(R.font.inter_medium)),
+                            fontFamily = FontFamily(Font(R.font.nunito_bold)),
                             fontSize = 14.sp,
                             lineHeight = 20.sp,
                             color = if (state.isTextOverLimit) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
@@ -236,7 +236,7 @@ fun DescribeDrawingContentPreview() {
         ) {
             DescribeDrawingContent(
                 state = DescribeDrawingState(
-                    text = "Lalala",
+                    text = "",
                     postUi = MockPostRepository.mockList.last().toUi()
                 )
             )

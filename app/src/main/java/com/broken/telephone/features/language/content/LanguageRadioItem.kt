@@ -54,7 +54,7 @@ fun LanguageRadioItem(
         Column {
             Text(
                 text = text,
-                fontFamily = FontFamily(Font(R.font.inter_medium)),
+                fontFamily = FontFamily(Font(R.font.nunito_semi_bold)),
                 fontSize = 15.sp,
                 lineHeight = 22.sp,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -66,7 +66,7 @@ fun LanguageRadioItem(
 
                 Text(
                     text = body,
-                    fontFamily = FontFamily(Font(R.font.inter_regular)),
+                    fontFamily = FontFamily(Font(R.font.nunito_regular)),
                     fontSize = 13.sp,
                     lineHeight = 18.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,

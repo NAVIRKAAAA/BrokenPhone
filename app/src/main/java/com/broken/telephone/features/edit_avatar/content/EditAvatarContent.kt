@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import com.broken.telephone.R
 import com.broken.telephone.core.avatar.AvatarComponent
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
+import com.broken.telephone.core.top_bar.SaveTopBar
 import com.broken.telephone.features.edit_avatar.model.AvatarUi
 import com.broken.telephone.features.edit_avatar.model.Avatars
 import com.broken.telephone.features.edit_avatar.model.EditAvatarState
@@ -53,9 +54,11 @@ fun EditAvatarContent(
             .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding(),
     ) {
-        EditAvatarTopBar(
+        SaveTopBar(
+            title = stringResource(R.string.edit_avatar_title),
+            saveButtonText = stringResource(R.string.edit_avatar_button_save),
             isSaveEnabled = state.isSaveEnabled,
-            onCloseClick = onBackClick,
+            onBackClick = onBackClick,
             onSaveClick = onSaveClick,
         )
 
@@ -63,7 +66,7 @@ fun EditAvatarContent(
 
         Text(
             text = stringResource(R.string.edit_avatar_current),
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
+            fontFamily = FontFamily(Font(R.font.nunito_regular)),
             fontSize = 14.sp,
             lineHeight = 21.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -86,7 +89,7 @@ fun EditAvatarContent(
 
         Text(
             text = stringResource(R.string.edit_avatar_choose),
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
+            fontFamily = FontFamily(Font(R.font.nunito_regular)),
             fontSize = 14.sp,
             lineHeight = 21.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,

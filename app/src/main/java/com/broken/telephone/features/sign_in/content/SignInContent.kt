@@ -141,7 +141,7 @@ fun SignInContent(
             Text(
                 text = signUpText,
                 textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(R.font.inter_regular)),
+                fontFamily = FontFamily(Font(R.font.nunito_semi_bold)),
                 fontSize = 14.sp,
                 lineHeight = 21.sp,
                 color = MaterialTheme.colorScheme.onBackground,
@@ -155,7 +155,7 @@ fun SignInContent(
 @Preview
 @Composable
 fun SignInContentPreview() {
-    BrokenTelephoneTheme(darkTheme = true) {
+    BrokenTelephoneTheme(darkTheme = false) {
         SignInContent(
             state = SignInState(),
             onBackClick = {},

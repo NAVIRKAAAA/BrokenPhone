@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.broken.telephone.R
 import com.broken.telephone.core.theme.BrokenTelephoneTheme
+import com.broken.telephone.core.top_bar.SaveTopBar
 import com.broken.telephone.features.edit_username.EditUsernameViewModel
 import com.broken.telephone.features.edit_username.model.EditUsernameState
 import com.broken.telephone.features.sign_up.content.SignUpTextField
@@ -36,9 +37,11 @@ fun EditUsernameContent(
             .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding(),
     ) {
-        EditUsernameTopBar(
+        SaveTopBar(
+            title = stringResource(R.string.edit_username_title),
+            saveButtonText = stringResource(R.string.edit_username_button_save),
             isSaveEnabled = state.isSaveEnabled,
-            onCloseClick = onBackClick,
+            onBackClick = onBackClick,
             onSaveClick = onSaveClick,
         )
 

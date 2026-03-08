@@ -28,7 +28,7 @@ fun StatInfo(
         Text(
             text = value.toString(),
             textAlign = TextAlign.Start,
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
+            fontFamily = FontFamily(Font(R.font.nunito_extra_bold)),
             fontSize = 17.sp,
             lineHeight = 25.sp,
             color = MaterialTheme.colorScheme.onSurface,
@@ -37,7 +37,7 @@ fun StatInfo(
         Text(
             text = name,
             textAlign = TextAlign.Start,
-            fontFamily = FontFamily(Font(R.font.inter_regular)),
+            fontFamily = FontFamily(Font(R.font.nunito_regular)),
             fontSize = 12.sp,
             lineHeight = 18.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant

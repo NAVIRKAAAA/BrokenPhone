@@ -66,7 +66,7 @@ fun ChainDetailsElement(
                 ) {
                     Text(
                         text = post.authorName,
-                        fontFamily = FontFamily(Font(R.font.inter_regular)),
+                        fontFamily = FontFamily(Font(R.font.nunito_bold)),
                         fontSize = 16.sp,
                         lineHeight = 24.sp,
                         maxLines = 1,
@@ -81,7 +81,7 @@ fun ChainDetailsElement(
 
                     Text(
                         text = relativeTime,
-                        fontFamily = FontFamily(Font(R.font.inter_medium)),
+                        fontFamily = FontFamily(Font(R.font.nunito_regular)),
                         fontSize = 14.sp,
                         lineHeight = 20.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -98,7 +98,7 @@ fun ChainDetailsElement(
                 is PostContent.Text -> {
                     Text(
                         text = content.text,
-                        fontFamily = FontFamily(Font(R.font.inter_regular)),
+                        fontFamily = FontFamily(Font(R.font.nunito_regular)),
                         fontSize = 15.sp,
                         lineHeight = 22.sp,
                         modifier = if (isHidden) Modifier.hidden(cornerRadius = 4.dp) else Modifier,
@@ -138,15 +138,15 @@ fun ChainDetailsElementPreview() {
                     authorId = "user-1",
                     authorName = "Alex",
                     avatarUrl = null,
-                    content = PostContent.Drawing(),
-//            content = PostContent.Text("Once upon a time there was a broken telephone..."),
+//                    content = PostContent.Drawing(),
+            content = PostContent.Text("Once upon a time there was a broken telephone..."),
                     createdAt = System.currentTimeMillis() - 300000,
                     generation = 10,
                     maxGenerations = 10,
                     status = PostStatus.AVAILABLE,
                     nextTimeLimit = 60,
                 ),
-                isHidden = true
+                isHidden = false
             )
         }
     }

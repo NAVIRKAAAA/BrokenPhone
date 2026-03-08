@@ -87,7 +87,7 @@ fun BrushSizeComponentSingle(
 
         Text(
             text = text,
-            fontFamily = FontFamily(Font(R.font.inter_medium)),
+            fontFamily = FontFamily(Font(R.font.nunito_bold)),
             fontSize = 14.sp,
             lineHeight = 24.sp,
             maxLines = 1,

@@ -68,7 +68,7 @@ fun DrawContent(
 
             Text(
                 text = content.text,
-                fontFamily = FontFamily(Font(R.font.inter_regular)),
+                fontFamily = FontFamily(Font(R.font.nunito_regular)),
                 fontSize = 15.sp,
                 lineHeight = 22.sp,
                 modifier = Modifier.padding(horizontal = 16.dp),

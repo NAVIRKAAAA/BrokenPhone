@@ -70,7 +70,7 @@ fun TimesUpDialog(
             Text(
                 text = stringResource(R.string.times_up_dialog_title),
                 textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(R.font.inter_medium)),
+                fontFamily = FontFamily(Font(R.font.nunito_bold)),
                 fontSize = 18.sp,
                 lineHeight = 28.sp,
                 color = MaterialTheme.colorScheme.onSurface
@@ -80,7 +80,7 @@ fun TimesUpDialog(
 
             Text(
                 text = message,
-                fontFamily = FontFamily(Font(R.font.inter_regular)),
+                fontFamily = FontFamily(Font(R.font.nunito_regular)),
                 fontSize = 14.sp,
                 lineHeight = 21.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -103,7 +103,7 @@ fun TimesUpDialog(
                 Text(
                     text = stringResource(R.string.times_up_dialog_got_it),
                     textAlign = TextAlign.Center,
-                    fontFamily = FontFamily(Font(R.font.inter_medium)),
+                    fontFamily = FontFamily(Font(R.font.nunito_bold)),
                     fontSize = 18.sp,
                     lineHeight = 28.sp
                 )
