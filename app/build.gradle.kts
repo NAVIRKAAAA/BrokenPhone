@@ -2,16 +2,17 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.services)
 
     id ("app.cash.paparazzi") version "2.0.0-alpha04"
 }
 
 android {
-    namespace = "com.broken.telephone"
+    namespace = "com.brokentelephone.game"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.broken.telephone"
+        applicationId = "com.brokentelephone.game"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -56,6 +57,10 @@ dependencies {
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.browser)
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.startup)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.analytics)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

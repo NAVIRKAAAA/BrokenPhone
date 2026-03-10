@@ -28,3 +28,4 @@ local.properties
 /.idea/runConfigurations.xml
 /app/src/test/snapshots/
 /CLAUDE.md
+/app/google-services.json

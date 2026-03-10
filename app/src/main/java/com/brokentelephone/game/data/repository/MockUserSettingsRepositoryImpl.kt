@@ -1,0 +1,32 @@
+package com.brokentelephone.game.data.repository
+
+import com.brokentelephone.game.domain.repository.UserSettingsRepository
+import com.brokentelephone.game.domain.settings.AppTheme
+import com.brokentelephone.game.domain.settings.Language
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
+class MockUserSettingsRepositoryImpl : UserSettingsRepository {
+
+    private val _language = MutableStateFlow(Language.ENGLISH)
+    private val _theme = MutableStateFlow(AppTheme.SYSTEM)
+    private var isFirstLaunch = true
+
+    override fun getLanguage(): Flow<Language> = _language.asStateFlow()
+    override fun getTheme(): Flow<AppTheme> = _theme.asStateFlow()
+
+    override suspend fun isFirstLaunch(): Boolean = isFirstLaunch
+
+    override suspend fun markFirstLaunchComplete() {
+        isFirstLaunch = false
+    }
+
+    override suspend fun updateLanguage(language: Language) {
+        _language.value = language
+    }
+
+    override suspend fun updateTheme(theme: AppTheme) {
+        _theme.value = theme
+    }
+}
