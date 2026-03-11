@@ -1,5 +1,6 @@
 package com.brokentelephone.game.data.repository
 
+import android.util.Log
 import com.brokentelephone.game.domain.repository.AuthRepository
 import com.brokentelephone.game.essentials.exceptions.auth.EmailAlreadyInUseException
 import com.brokentelephone.game.essentials.exceptions.auth.InvalidCredentialsException
@@ -23,7 +24,7 @@ class AuthRepositoryImpl(
     override suspend fun signUpWithEmailPassword(email: String, password: String): String {
         return try {
             val authResult = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
-            val uid = authResult.user?.uid ?: throw NullPointerException()
+            val uid = authResult.user?.uid ?: throw UnknownAuthException()
 
             uid
         } catch (_: FirebaseAuthUserCollisionException) {
@@ -37,6 +38,20 @@ class AuthRepositoryImpl(
         } catch (_: FirebaseTooManyRequestsException) {
             throw TooManyRequestsException()
         } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
+
+    override suspend fun signInAnonymously(): String {
+        try {
+            val authResult = firebaseAuth.signInAnonymously().await()
+            return authResult.user?.uid ?: throw UnknownAuthException()
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (_: FirebaseTooManyRequestsException) {
+            throw TooManyRequestsException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "signInAnonymously: $e")
             throw UnknownAuthException()
         }
     }

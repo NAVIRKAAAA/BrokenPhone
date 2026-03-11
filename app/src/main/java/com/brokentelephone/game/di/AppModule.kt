@@ -81,7 +81,7 @@ import com.brokentelephone.game.features.sign_up.use_case.ValidateSignUpUseCase
 import com.brokentelephone.game.features.theme.ThemeViewModel
 import com.brokentelephone.game.features.theme.use_case.UpdateThemeUseCase
 import com.brokentelephone.game.features.welcome.WelcomeViewModel
-import com.brokentelephone.game.features.welcome.use_case.ContinueAsGuestUseCase
+import com.brokentelephone.game.features.welcome.use_case.SignInAnonymouslyUseCase
 import com.brokentelephone.game.main.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 import org.koin.android.ext.koin.androidContext
@@ -118,7 +118,7 @@ val appModule = module {
     factoryOf(::SubmitDrawingUseCase)
     factoryOf(::SubmitDescriptionUseCase)
     factoryOf(::GetChainByPostIdUseCase)
-    factoryOf(::ContinueAsGuestUseCase)
+    factoryOf(::SignInAnonymouslyUseCase)
     viewModelOf(::WelcomeViewModel)
     factoryOf(::SignUpValidator)
     factoryOf(::ValidateSignUpUseCase)

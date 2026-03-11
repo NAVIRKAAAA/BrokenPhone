@@ -15,6 +15,11 @@ class MockAuthRepository : AuthRepository {
         delay(MOCK_DELAY_MS)
     }
 
+    override suspend fun signInAnonymously(): String {
+        delay(MOCK_DELAY_MS)
+        return "mock-guest-uid"
+    }
+
     companion object {
         private const val MOCK_DELAY_MS = 1_500L
     }
