@@ -131,6 +131,9 @@
     <string name="edit_username_button_save">Save</string>
     <string name="edit_username_label">Username</string>
 
+    <!-- Choose Avatar -->
+    <string name="choose_avatar_title">Who are you today?</string>
+
     <!-- Edit Avatar -->
     <string name="edit_avatar_title">Edit Avatar</string>
     <string name="edit_avatar_button_save">Save</string>
