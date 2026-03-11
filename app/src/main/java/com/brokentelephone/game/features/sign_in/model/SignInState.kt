@@ -6,6 +6,7 @@ data class SignInState(
     val isPasswordVisible: Boolean = false,
     val isLoading: Boolean = false,
     val credentialsError: String? = null,
+    val globalError: String? = null,
 ) {
     val isSignInEnabled: Boolean
         get() = email.isNotBlank() && password.isNotBlank() && !isLoading

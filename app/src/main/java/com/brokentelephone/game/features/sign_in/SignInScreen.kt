@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.brokentelephone.game.core.dialog.ErrorDialog
 import com.brokentelephone.game.features.sign_in.content.SignInContent
 import com.brokentelephone.game.features.sign_in.model.SignInSideEffect
 import org.koin.compose.viewmodel.koinViewModel
@@ -40,4 +41,11 @@ fun SignInScreen(
         onSignUpClick = onSignUpClick,
         modifier = modifier,
     )
+
+    state.globalError?.let { message ->
+        ErrorDialog(
+            body = message,
+            onOkClick = { viewModel.onGlobalErrorDismissed() },
+        )
+    }
 }

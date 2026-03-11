@@ -157,7 +157,9 @@ fun SignInContent(
 fun SignInContentPreview() {
     BrokenTelephoneTheme(darkTheme = false) {
         SignInContent(
-            state = SignInState(),
+            state = SignInState(
+                credentialsError = ""
+            ),
             onBackClick = {},
         )
     }

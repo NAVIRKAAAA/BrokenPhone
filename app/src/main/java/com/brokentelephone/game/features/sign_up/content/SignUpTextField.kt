@@ -48,7 +48,7 @@ fun SignUpTextField(
     onImeAction: () -> Unit = {},
 ) {
     val supportingText: @Composable (() -> Unit)? = when {
-        error != null || hint != null || maxLength != null -> {
+        (error != null && error.isNotBlank()) || hint != null || maxLength != null -> {
             {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     when {
