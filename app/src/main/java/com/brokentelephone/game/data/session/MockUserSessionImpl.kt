@@ -30,6 +30,10 @@ class MockUserSessionImpl : UserSession {
 
     override val authState: Flow<AuthState> = _authState.asStateFlow()
 
+    override suspend fun initialize() {
+        return
+    }
+
 //    override suspend fun setupGuest() {
 //        val createdAt = System.currentTimeMillis()
 //        val suffix = createdAt.toString().takeLast(5)
@@ -94,7 +98,7 @@ class MockUserSessionImpl : UserSession {
         }
     }
 
-    override suspend fun logout() {
+    override suspend fun signOut() {
         delay(1500)
         _authState.value = AuthState.NotAuth
     }

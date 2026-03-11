@@ -2,6 +2,10 @@ package com.brokentelephone.game.features.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.brokentelephone.game.domain.handler.onError
+import com.brokentelephone.game.domain.handler.onSuccess
+import com.brokentelephone.game.domain.user.AuthState
+import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.app_preferences.use_case.GetLanguageUseCase
 import com.brokentelephone.game.features.app_preferences.use_case.GetThemeUseCase
 import com.brokentelephone.game.features.settings.model.SettingsSideEffect
@@ -23,6 +27,7 @@ import kotlinx.coroutines.launch
 class SettingsViewModel(
     private val getVersionInfoUseCase: GetVersionInfoUseCase,
     private val logoutUseCase: LogoutUseCase,
+    private val exceptionToMessageMapper: ExceptionToMessageMapper,
     private val getAuthStateUseCase: GetAuthStateUseCase,
     private val getLanguageUseCase: GetLanguageUseCase,
     private val getThemeUseCase: GetThemeUseCase,
@@ -40,7 +45,7 @@ class SettingsViewModel(
         _state.update { it.copy(versionInfo = getVersionInfoUseCase()) }
 
         getAuthStateUseCase()
-            .onEach { authState -> _state.update { it.copy(isAuth = authState.isAuth()) } }
+            .onEach { authState -> _state.update { it.copy(isAuth = authState.isAuth() || authState is AuthState.Guest) } }
             .launchIn(viewModelScope)
 
         getLanguageUseCase()
@@ -68,6 +73,10 @@ class SettingsViewModel(
         _state.update { it.copy(notificationsEnabled = isGranted) }
     }
 
+    fun onGlobalErrorDismissed() {
+        _state.update { it.copy(globalError = null) }
+    }
+
     fun onLogoutClick() {
         _state.update { it.copy(isLogoutDialogVisible = true) }
     }
@@ -79,9 +88,19 @@ class SettingsViewModel(
     fun onLogoutConfirm() {
         _state.update { it.copy(isLogoutLoading = true) }
         viewModelScope.launch {
-            logoutUseCase()
-            _state.update { it.copy(isLogoutLoading = false, isLogoutDialogVisible = false) }
-            _sideEffects.send(SettingsSideEffect.NavigateToWelcome)
+            logoutUseCase.execute().onSuccess {
+                _state.update { it.copy(isLogoutLoading = false, isLogoutDialogVisible = false) }
+                _sideEffects.send(SettingsSideEffect.NavigateToWelcome)
+            }.onError { error ->
+                val message = exceptionToMessageMapper.map(error)
+                _state.update {
+                    it.copy(
+                        isLogoutLoading = false,
+                        isLogoutDialogVisible = false,
+                        globalError = message
+                    )
+                }
+            }
         }
     }
 }

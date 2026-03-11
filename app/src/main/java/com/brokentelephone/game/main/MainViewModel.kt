@@ -2,9 +2,14 @@ package com.brokentelephone.game.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.brokentelephone.game.domain.handler.onError
+import com.brokentelephone.game.domain.handler.onSuccess
+import com.brokentelephone.game.domain.user.AuthState
 import com.brokentelephone.game.features.app_preferences.use_case.GetLanguageUseCase
 import com.brokentelephone.game.features.app_preferences.use_case.GetThemeUseCase
 import com.brokentelephone.game.features.language.use_case.InitializeLanguageUseCase
+import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
+import com.brokentelephone.game.navigation.routes.Routes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -16,19 +21,40 @@ class MainViewModel(
     private val getThemeUseCase: GetThemeUseCase,
     private val getLanguageUseCase: GetLanguageUseCase,
     private val initializeLanguageUseCase: InitializeLanguageUseCase,
+    private val initializeSessionUseCase: InitializeSessionUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MainState())
     val state = _state.asStateFlow()
 
     init {
+        observeTheme()
+        observeLanguage()
+        initializeSession()
+    }
+
+    private fun observeTheme() {
         getThemeUseCase()
             .onEach { theme -> _state.update { it.copy(theme = theme) } }
             .launchIn(viewModelScope)
+    }
 
+    private fun observeLanguage() {
         getLanguageUseCase()
             .onEach { language -> _state.update { it.copy(language = language) } }
             .launchIn(viewModelScope)
+    }
+
+    private fun initializeSession() {
+        viewModelScope.launch {
+            initializeSessionUseCase.execute().onSuccess { authState ->
+                val destination =
+                    if (authState is AuthState.NotAuth) Routes.Welcome else Routes.Dashboard
+                _state.update { it.copy(startDestination = destination) }
+            }.onError {
+                _state.update { it.copy(startDestination = Routes.Welcome) }
+            }
+        }
     }
 
     fun initializeDefaultLanguage(deviceLanguageTag: String) {

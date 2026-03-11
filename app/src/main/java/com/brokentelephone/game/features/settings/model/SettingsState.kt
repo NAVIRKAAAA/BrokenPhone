@@ -11,4 +11,5 @@ data class SettingsState(
     val language: Language = Language.ENGLISH,
     val theme: AppTheme = AppTheme.LIGHT,
     val notificationsEnabled: Boolean = false,
+    val globalError: String? = null,
 )

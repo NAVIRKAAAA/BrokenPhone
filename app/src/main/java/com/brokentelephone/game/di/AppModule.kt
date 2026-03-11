@@ -83,6 +83,7 @@ import com.brokentelephone.game.features.theme.use_case.UpdateThemeUseCase
 import com.brokentelephone.game.features.welcome.WelcomeViewModel
 import com.brokentelephone.game.features.welcome.use_case.SignInAnonymouslyUseCase
 import com.brokentelephone.game.main.MainViewModel
+import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
 import com.google.firebase.auth.FirebaseAuth
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.factoryOf
@@ -166,6 +167,7 @@ val appModule = module {
     factoryOf(::UpdateThemeUseCase)
     viewModelOf(::ThemeViewModel)
 
+    factoryOf(::InitializeSessionUseCase)
     single { AppNavBottomBarViewModel(get(), get()) }
     viewModelOf(::MainViewModel)
 }

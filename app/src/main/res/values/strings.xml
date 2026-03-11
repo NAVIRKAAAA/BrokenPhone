@@ -123,7 +123,7 @@
     <string name="settings_item_information_legal">Information &amp; Legal</string>
     <string name="settings_logout_button">Log Out</string>
     <string name="settings_dialog_logout_title">Logout?</string>
-    <string name="settings_dialog_logout_body">Are you sure you want to logout?</string>
+    <string name="settings_dialog_logout_body">Leaving already? We\'ll assume you\'re just switching accounts.</string>
     <string name="settings_dialog_logout_confirm">Logout</string>
 
     <!-- Edit Username -->

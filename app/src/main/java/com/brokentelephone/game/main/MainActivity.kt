@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.brokentelephone.game.core.locale.LocalizedContextWrapper
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
@@ -32,8 +31,6 @@ import com.brokentelephone.game.domain.settings.AppTheme
 import com.brokentelephone.game.domain.settings.Language
 import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBar
 import com.brokentelephone.game.navigation.nav_graph.AppNavGraph
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
@@ -41,17 +38,11 @@ class MainActivity : ComponentActivity() {
 
     private val mainViewModel: MainViewModel by viewModel()
 
-    private var keepSplashScreen = true
-
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashscreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
-        splashscreen.setKeepOnScreenCondition { keepSplashScreen }
-        lifecycleScope.launch {
-            delay(1000)
-            keepSplashScreen = false
-        }
+        splashscreen.setKeepOnScreenCondition { !mainViewModel.state.value.isReady }
 
         enableEdgeToEdge()
 
@@ -85,30 +76,34 @@ class MainActivity : ComponentActivity() {
                 LocalizedContextWrapper(base = this@MainActivity, locale = locale)
             }
 
-            CompositionLocalProvider(
-                LocalAppLanguage provides state.language,
-                LocalContext provides localizedContext,
-            ) {
-                BrokenTelephoneTheme(
-                    darkTheme = isDarkTheme
+            state.startDestination?.let { startDestination ->
+                CompositionLocalProvider(
+                    LocalAppLanguage provides state.language,
+                    LocalContext provides localizedContext,
                 ) {
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.background)
+                    BrokenTelephoneTheme(
+                        darkTheme = isDarkTheme
                     ) {
 
-                        AppNavGraph(navController = navController)
-
-                        AppNavBottomBar(
-                            navController = navController,
+                        Box(
                             modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .navigationBarsPadding()
-                                .padding(bottom = 16.dp)
-                                .fillMaxWidth(0.85f)
-                        )
+                                .fillMaxSize()
+                                .background(MaterialTheme.colorScheme.background)
+                        ) {
+                            AppNavGraph(
+                                startDestination = startDestination,
+                                navController = navController,
+                            )
+
+                            AppNavBottomBar(
+                                navController = navController,
+                                modifier = Modifier
+                                    .align(Alignment.BottomCenter)
+                                    .navigationBarsPadding()
+                                    .padding(bottom = 16.dp)
+                                    .fillMaxWidth(0.85f)
+                            )
+                        }
                     }
                 }
             }

@@ -45,12 +45,13 @@ import org.koin.core.parameter.parametersOf
 
 @Composable
 fun AppNavGraph(
+    startDestination: Routes,
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
 ) {
     NavHost(
         navController = navController,
-        startDestination = Routes.Welcome,
+        startDestination = startDestination,
         modifier = modifier,
     ) {
         composable<Routes.Welcome>(

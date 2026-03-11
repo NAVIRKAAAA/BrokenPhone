@@ -97,7 +97,7 @@
     <string name="settings_item_information_legal">Інформація &amp; Правові документи</string>
     <string name="settings_logout_button">Вийти</string>
     <string name="settings_dialog_logout_title">Вийти?</string>
-    <string name="settings_dialog_logout_body">Ти впевнений, що хочеш вийти?</string>
+    <string name="settings_dialog_logout_body">Вже йдеш? Ну добре, будемо вважати, що просто заходиш з іншого акаунту</string>
     <string name="settings_dialog_logout_confirm">Вийти</string>
 
     <string name="app_preferences_title">Параметри додатку</string>

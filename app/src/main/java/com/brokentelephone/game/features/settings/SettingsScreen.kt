@@ -12,6 +12,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.brokentelephone.game.R
 import com.brokentelephone.game.core.browser.openCustomTab
 import com.brokentelephone.game.core.dialog.ConfirmDialog
+import com.brokentelephone.game.core.dialog.ErrorDialog
 import com.brokentelephone.game.core.utils.isPostNotificationsGranted
 import com.brokentelephone.game.features.settings.content.SettingsContent
 import com.brokentelephone.game.features.settings.model.SettingsSideEffect
@@ -66,6 +67,13 @@ fun SettingsScreen(
             onDismiss = viewModel::onLogoutDismiss,
             onConfirm = viewModel::onLogoutConfirm,
             isLoading = state.isLogoutLoading,
+        )
+    }
+
+    state.globalError?.let { message ->
+        ErrorDialog(
+            body = message,
+            onOkClick = viewModel::onGlobalErrorDismissed,
         )
     }
 }
