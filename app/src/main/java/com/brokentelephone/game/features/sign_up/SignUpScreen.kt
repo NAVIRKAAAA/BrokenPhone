@@ -8,6 +8,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.brokentelephone.game.core.browser.openCustomTab
+import com.brokentelephone.game.core.dialog.ErrorDialog
 import com.brokentelephone.game.features.sign_up.content.SignUpContent
 import com.brokentelephone.game.features.sign_up.model.SignUpSideEffect
 import org.koin.compose.viewmodel.koinViewModel
@@ -48,4 +49,11 @@ fun SignUpScreen(
         onPrivacyPolicyClick = viewModel::onPrivacyPolicyClick,
         modifier = modifier,
     )
+
+    state.globalError?.let { message ->
+        ErrorDialog(
+            body = message,
+            onOkClick = { viewModel.onGlobalErrorDismissed() },
+        )
+    }
 }

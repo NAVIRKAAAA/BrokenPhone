@@ -1,20 +1,18 @@
 package com.brokentelephone.game.data.repository
 
-import com.brokentelephone.game.domain.auth.SignInResult
-import com.brokentelephone.game.domain.auth.SignUpResult
 import com.brokentelephone.game.domain.repository.AuthRepository
 import kotlinx.coroutines.delay
 
 class MockAuthRepository : AuthRepository {
 
-    override suspend fun signUp(email: String, password: String): SignUpResult {
+    override suspend fun signUpWithEmailPassword(email: String, password: String): String {
         delay(MOCK_DELAY_MS)
-        return SignUpResult.Success
+
+        return ""
     }
 
-    override suspend fun signIn(email: String, password: String): SignInResult {
+    override suspend fun signInWithEmailPassword(email: String, password: String) {
         delay(MOCK_DELAY_MS)
-        return SignInResult.Success
     }
 
     companion object {

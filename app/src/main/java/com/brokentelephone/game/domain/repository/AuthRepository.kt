@@ -1,9 +1,6 @@
 package com.brokentelephone.game.domain.repository
 
-import com.brokentelephone.game.domain.auth.SignInResult
-import com.brokentelephone.game.domain.auth.SignUpResult
-
 interface AuthRepository {
-    suspend fun signUp(email: String, password: String): SignUpResult
-    suspend fun signIn(email: String, password: String): SignInResult
+    suspend fun signUpWithEmailPassword(email: String, password: String): String
+    suspend fun signInWithEmailPassword(email: String, password: String)
 }

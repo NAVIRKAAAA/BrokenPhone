@@ -9,6 +9,7 @@ data class SignUpState(
     val emailError: String? = null,
     val passwordError: String? = null,
     val confirmPasswordError: String? = null,
+    val globalError: String? = null,
     val isLoading: Boolean = false,
 ) {
     val isSignUpEnabled: Boolean

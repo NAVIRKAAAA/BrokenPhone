@@ -3,8 +3,8 @@ package com.brokentelephone.game.di
 import com.brokentelephone.game.core.timer.CountdownTimer
 import com.brokentelephone.game.data.handler.ApiHandlerImpl
 import com.brokentelephone.game.data.link.MockLinkProviderImpl
+import com.brokentelephone.game.data.repository.AuthRepositoryImpl
 import com.brokentelephone.game.data.repository.MockAppInfoRepositoryImpl
-import com.brokentelephone.game.data.repository.MockAuthRepository
 import com.brokentelephone.game.data.repository.MockGamesRepositoryImpl
 import com.brokentelephone.game.data.repository.MockNotInterestedRepositoryImpl
 import com.brokentelephone.game.data.repository.MockPostRepository
@@ -77,6 +77,7 @@ import com.brokentelephone.game.features.sign_in.use_case.SignInUseCase
 import com.brokentelephone.game.features.sign_up.SignUpValidator
 import com.brokentelephone.game.features.sign_up.SignUpViewModel
 import com.brokentelephone.game.features.sign_up.use_case.SignUpUseCase
+import com.brokentelephone.game.features.sign_up.use_case.ValidateSignUpUseCase
 import com.brokentelephone.game.features.theme.ThemeViewModel
 import com.brokentelephone.game.features.theme.use_case.UpdateThemeUseCase
 import com.brokentelephone.game.features.welcome.WelcomeViewModel
@@ -92,7 +93,7 @@ val appModule = module {
     single<LinkProvider> { MockLinkProviderImpl() }
     single<AppInfoRepository> { MockAppInfoRepositoryImpl() }
     single<PostRepository> { MockPostRepository() }
-    single<AuthRepository> { MockAuthRepository() }
+    single<AuthRepository> { AuthRepositoryImpl(get()) }
     single { FirebaseAuth.getInstance() }
     single<ApiHandler> { ApiHandlerImpl() }
     single<UserSession> { UserSessionImpl(get()) }
@@ -120,6 +121,7 @@ val appModule = module {
     factoryOf(::ContinueAsGuestUseCase)
     viewModelOf(::WelcomeViewModel)
     factoryOf(::SignUpValidator)
+    factoryOf(::ValidateSignUpUseCase)
     factoryOf(::SignUpUseCase)
     factoryOf(::SignInUseCase)
     factoryOf(::GetCurrentUserUseCase)

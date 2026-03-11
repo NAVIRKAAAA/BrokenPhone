@@ -1,6 +1,7 @@
-package com.brokentelephone.game.essentials.exceptions
+package com.brokentelephone.game.essentials.exceptions.main
 
 import android.content.Context
+import com.brokentelephone.game.essentials.R
 
 abstract class AppException(
     message: String,
@@ -15,7 +16,7 @@ interface StringProvider {
     fun getString(resId: Int): String
 }
 
-class StringProviderImpl(
+internal class StringProviderImpl(
     private val context: Context
 ) : StringProvider {
     override fun getString(resId: Int): String {
@@ -23,24 +24,18 @@ class StringProviderImpl(
     }
 }
 
-class TestAppException : AppException("Test App Exception") {
-    override fun getLocalizedMessage(stringProvider: StringProvider): String {
-        return stringProvider.getString(0)
-    }
-}
-
 interface ExceptionToMessageMapper {
     fun map(exception: Exception): String
 }
 
-class ExceptionToMessageMapperImpl(
+internal class ExceptionToMessageMapperImpl(
     private val stringProvider: StringProvider
 ) : ExceptionToMessageMapper {
     override fun map(exception: Exception): String {
         return if (exception is AppException) {
             exception.getLocalizedMessage(stringProvider)
         } else {
-            stringProvider.getString(0)
+            stringProvider.getString(R.string.error_auth_unknown)
         }
     }
 }

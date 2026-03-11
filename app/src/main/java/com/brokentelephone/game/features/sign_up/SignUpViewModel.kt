@@ -2,12 +2,18 @@ package com.brokentelephone.game.features.sign_up
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.brokentelephone.game.domain.auth.SignUpResult
+import com.brokentelephone.game.domain.handler.onError
+import com.brokentelephone.game.domain.handler.onSuccess
+import com.brokentelephone.game.essentials.exceptions.auth.InvalidEmailException
+import com.brokentelephone.game.essentials.exceptions.auth.PasswordsDoNotMatchException
+import com.brokentelephone.game.essentials.exceptions.auth.WeakPasswordException
+import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.settings.use_case.GetPrivacyPolicyLinkUseCase
 import com.brokentelephone.game.features.settings.use_case.GetTermsOfServiceLinkUseCase
 import com.brokentelephone.game.features.sign_up.model.SignUpSideEffect
 import com.brokentelephone.game.features.sign_up.model.SignUpState
 import com.brokentelephone.game.features.sign_up.use_case.SignUpUseCase
+import com.brokentelephone.game.features.sign_up.use_case.ValidateSignUpUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +23,8 @@ import kotlinx.coroutines.launch
 
 class SignUpViewModel(
     private val signUpUseCase: SignUpUseCase,
-    private val signUpValidator: SignUpValidator,
+    private val validateSignUpUseCase: ValidateSignUpUseCase,
+    private val exceptionToMessageMapper: ExceptionToMessageMapper,
     private val getTermsOfServiceLinkUseCase: GetTermsOfServiceLinkUseCase,
     private val getPrivacyPolicyLinkUseCase: GetPrivacyPolicyLinkUseCase,
 ) : ViewModel() {
@@ -48,6 +55,10 @@ class SignUpViewModel(
         _state.update { it.copy(isConfirmPasswordVisible = !it.isConfirmPasswordVisible) }
     }
 
+    fun onGlobalErrorDismissed() {
+        _state.update { it.copy(globalError = null) }
+    }
+
     fun onTermsClick() {
         viewModelScope.launch {
             _sideEffects.send(SignUpSideEffect.OpenLink(getTermsOfServiceLinkUseCase()))
@@ -61,20 +72,25 @@ class SignUpViewModel(
     }
 
     fun onSignUpClick() {
-        val currentState = state.value
+        val currentState = state.value.copy(email = state.value.email.trim())
         if (!currentState.isSignUpEnabled) return
 
-        if (currentState.password != currentState.confirmPassword) {
-            _state.update { it.copy(confirmPasswordError = "Passwords do not match") }
-            return
-        }
-
-        val localError = signUpValidator.validate(currentState.email, currentState.password)
-        if (localError != null) {
-            when (localError) {
-                SignUpResult.Error.InvalidEmail -> _state.update { it.copy(emailError = "Invalid email address") }
-                SignUpResult.Error.PasswordTooShort -> _state.update { it.copy(passwordError = "At least 8 characters required") }
-                else -> Unit
+        val validationErrors = validateSignUpUseCase(
+            email = currentState.email,
+            password = currentState.password,
+            confirmPassword = currentState.confirmPassword,
+        )
+        if (validationErrors.isNotEmpty()) {
+            _state.update { state ->
+                validationErrors.fold(state) { acc, error ->
+                    val message = exceptionToMessageMapper.map(error)
+                    when (error) {
+                        is InvalidEmailException -> acc.copy(emailError = message)
+                        is WeakPasswordException -> acc.copy(passwordError = message)
+                        is PasswordsDoNotMatchException -> acc.copy(confirmPasswordError = message)
+                        else -> acc
+                    }
+                }
             }
             return
         }
@@ -83,22 +99,12 @@ class SignUpViewModel(
             _sideEffects.send(SignUpSideEffect.ClearFocus)
             _state.update { it.copy(isLoading = true, emailError = null, passwordError = null, confirmPasswordError = null) }
 
-            val result = signUpUseCase(currentState.email, currentState.password, currentState.confirmPassword)
-
-            when (result) {
-                SignUpResult.Success -> {
-                    _state.update { it.copy(isLoading = false) }
-                    _sideEffects.send(SignUpSideEffect.SignedUp)
-                }
-                SignUpResult.Error.InvalidEmail -> {
-                    _state.update { it.copy(isLoading = false, emailError = "Invalid email address") }
-                }
-                SignUpResult.Error.PasswordTooShort -> {
-                    _state.update { it.copy(isLoading = false, passwordError = "At least 8 characters required") }
-                }
-                SignUpResult.Error.PasswordsDoNotMatch -> {
-                    _state.update { it.copy(isLoading = false, confirmPasswordError = "Passwords do not match") }
-                }
+            signUpUseCase.execute(currentState.email, currentState.password).onSuccess {
+                _state.update { it.copy(isLoading = false) }
+                _sideEffects.send(SignUpSideEffect.SignedUp)
+            }.onError { error ->
+                val message = exceptionToMessageMapper.map(error)
+                _state.update { it.copy(isLoading = false, globalError = message) }
             }
         }
     }

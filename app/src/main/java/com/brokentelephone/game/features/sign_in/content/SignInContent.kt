@@ -121,7 +121,7 @@ fun SignInContent(
                 isLoading = state.isLoading,
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             val primaryColor = MaterialTheme.colorScheme.primary
             val signUpText = buildAnnotatedString {

@@ -53,6 +53,10 @@
     <string name="times_up_dialog_title">Time\'s up!</string>
     <string name="times_up_dialog_got_it">Got it!</string>
 
+    <!-- Error Dialog -->
+    <string name="error_dialog_title">Something went wrong</string>
+    <string name="error_dialog_ok">OK</string>
+
     <!-- Information & Legal -->
     <string name="information_legal_title">Information &amp; Legal</string>
     <string name="information_legal_terms_of_service">Terms of Service</string>

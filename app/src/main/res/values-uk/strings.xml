@@ -7,6 +7,9 @@
     <string name="times_up_dialog_title">Час вийшов!</string>
     <string name="times_up_dialog_got_it">Зрозуміло!</string>
 
+    <string name="error_dialog_title">Щось пішло не так</string>
+    <string name="error_dialog_ok">OK</string>
+
     <string name="notifications_title">Сповіщення</string>
     <string name="notifications_permission">Дозвіл на сповіщення</string>
     <string name="notifications_permission_on">Увімк.</string>

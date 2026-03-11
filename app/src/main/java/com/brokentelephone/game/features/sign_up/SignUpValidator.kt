@@ -1,20 +1,19 @@
 package com.brokentelephone.game.features.sign_up
 
 import android.util.Patterns
-import com.brokentelephone.game.domain.auth.SignUpResult
+import com.brokentelephone.game.essentials.exceptions.auth.InvalidEmailException
+import com.brokentelephone.game.essentials.exceptions.auth.PasswordsDoNotMatchException
+import com.brokentelephone.game.essentials.exceptions.auth.WeakPasswordException
+import com.brokentelephone.game.essentials.exceptions.main.AppException
 
 class SignUpValidator {
 
-    fun validate(email: String, password: String): SignUpResult.Error? {
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            return SignUpResult.Error.InvalidEmail
+    fun validate(email: String, password: String, confirmPassword: String): List<AppException> {
+        return buildList {
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) add(InvalidEmailException())
+            if (password.length < MIN_PASSWORD_LENGTH) add(WeakPasswordException())
+            if (password != confirmPassword) add(PasswordsDoNotMatchException())
         }
-
-        if (password.length < MIN_PASSWORD_LENGTH) {
-            return SignUpResult.Error.PasswordTooShort
-        }
-
-        return null
     }
 
     companion object {

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Auth errors -->
+    <string name="error_auth_email_already_in_use">Цей email вже зареєстрований. Спробуй увійти.</string>
+    <string name="error_auth_invalid_email">Введи коректну адресу електронної пошти.</string>
+    <string name="error_auth_weak_password">Пароль має містити щонайменше 8 символів.</string>
+    <string name="error_auth_passwords_do_not_match">Паролі не збігаються. Спробуй ще раз.</string>
+    <string name="error_auth_network">Немає з\'єднання з інтернетом. Перевір мережу та спробуй знову.</string>
+    <string name="error_auth_too_many_requests">Забагато спроб. Зачекай трохи та спробуй знову.</string>
+    <string name="error_auth_invalid_credentials">Невірний email або пароль.</string>
+    <string name="error_auth_unknown">Щось пішло не так. Спробуй ще раз.</string>
+</resources>
