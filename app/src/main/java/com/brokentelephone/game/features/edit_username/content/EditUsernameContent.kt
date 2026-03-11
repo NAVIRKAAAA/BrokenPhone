@@ -52,6 +52,8 @@ fun EditUsernameContent(
             onTextChange = onUsernameChange,
             modifier = Modifier.padding(horizontal = 16.dp),
             label = stringResource(R.string.edit_username_label),
+            hint = stringResource(R.string.edit_username_hint),
+            onClearClick = if (state.username.isNotBlank()) { { onUsernameChange("") } } else null,
             onImeAction = { focusManager.clearFocus() },
             maxLength = EditUsernameViewModel.MAX_USERNAME_LENGTH
         )

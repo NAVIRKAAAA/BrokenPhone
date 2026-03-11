@@ -42,6 +42,7 @@ fun SignUpTextField(
     error: String? = null,
     hint: String? = null,
     maxLength: Int? = null,
+    onClearClick: (() -> Unit)? = null,
     isPasswordVisible: Boolean = false,
     onPasswordVisibilityToggle: (() -> Unit)? = null,
     imeAction: ImeAction = ImeAction.Done,
@@ -116,19 +117,33 @@ fun SignUpTextField(
         visualTransformation = visualTransformation,
         keyboardOptions = KeyboardOptions(imeAction = imeAction),
         keyboardActions = KeyboardActions(onAny = { onImeAction() }),
-        trailingIcon = onPasswordVisibilityToggle?.let {
-            {
-                IconButton(onClick = it) {
-                    Icon(
-                        painter = painterResource(
-                            if (isPasswordVisible) R.drawable.password_visibility_off
-                            else R.drawable.password_visibility_on
-                        ),
-                        contentDescription = if (isPasswordVisible) stringResource(R.string.sign_up_password_hide) else stringResource(R.string.sign_up_password_show),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+        trailingIcon = when {
+            onPasswordVisibilityToggle != null -> {
+                {
+                    IconButton(onClick = onPasswordVisibilityToggle) {
+                        Icon(
+                            painter = painterResource(
+                                if (isPasswordVisible) R.drawable.password_visibility_off
+                                else R.drawable.password_visibility_on
+                            ),
+                            contentDescription = if (isPasswordVisible) stringResource(R.string.sign_up_password_hide) else stringResource(R.string.sign_up_password_show),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
             }
+            onClearClick != null -> {
+                {
+                    IconButton(onClick = onClearClick) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_close),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
+            else -> null
         },
         colors = TextFieldDefaults.colors(
             unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,

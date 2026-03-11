@@ -130,6 +130,11 @@
     <string name="edit_username_title">Edit Username</string>
     <string name="edit_username_button_save">Save</string>
     <string name="edit_username_label">Username</string>
+    <string name="edit_username_hint">This is how others will see you</string>
+
+    <!-- Choose Username -->
+    <string name="choose_username_title">What\'s your name?</string>
+    <string name="choose_username_button_continue">Let\'s Play!</string>
 
     <!-- Choose Avatar -->
     <string name="choose_avatar_title">Who are you today?</string>

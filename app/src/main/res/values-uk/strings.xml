@@ -51,6 +51,10 @@
     <string name="edit_username_title">Змінити імʼя</string>
     <string name="edit_username_button_save">Зберегти</string>
     <string name="edit_username_label">Твоє імʼя</string>
+    <string name="edit_username_hint">Саме так тебе бачитимуть інші</string>
+
+    <string name="choose_username_title">Як тебе звати?</string>
+    <string name="choose_username_button_continue">Грати!</string>
 
     <string name="post_bottom_sheet_copy_link">Копіювати посилання</string>
     <string name="post_bottom_sheet_not_interested">Не цікавить</string>
