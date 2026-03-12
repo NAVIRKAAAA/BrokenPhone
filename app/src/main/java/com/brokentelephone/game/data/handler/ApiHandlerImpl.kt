@@ -2,8 +2,10 @@ package com.brokentelephone.game.data.handler
 
 import com.brokentelephone.game.domain.handler.ApiHandler
 import com.brokentelephone.game.domain.handler.AppResult
+import com.brokentelephone.game.essentials.exceptions.auth.OperationCancelledException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
@@ -30,8 +32,10 @@ class ApiHandlerImpl(
             try {
                 val result = withTimeout(timeoutMs) { block() }
                 return@withContext AppResult.Success(result)
-            } catch (e: CancellationException) {
-                throw e
+            } catch (_: CancellationException) {
+                throw OperationCancelledException()
+            } catch (_: TimeoutCancellationException) {
+                throw OperationCancelledException()
             } catch (e: Exception) {
                 if (attempt == maxRetries) return@withContext AppResult.Error(e)
                 delay(currentDelay)

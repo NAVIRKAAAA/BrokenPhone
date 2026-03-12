@@ -20,6 +20,8 @@ import com.brokentelephone.game.features.account_settings.AccountSettingsScreen
 import com.brokentelephone.game.features.blocked_users.BlockedUsersScreen
 import com.brokentelephone.game.features.chain_details.ChainDetailsScreen
 import com.brokentelephone.game.features.chain_details.ChainDetailsViewModel
+import com.brokentelephone.game.features.choose_avatar.ChooseAvatarScreen
+import com.brokentelephone.game.features.choose_username.ChooseUsernameScreen
 import com.brokentelephone.game.features.create_post.CreatePostScreen
 import com.brokentelephone.game.features.dashboard.DashboardScreen
 import com.brokentelephone.game.features.describe_drawing.DescribeDrawingScreen
@@ -333,7 +335,7 @@ fun AppNavGraph(
             SignUpScreen(
                 onBackClick = navController::safePopBackStack,
                 onSignedUp = {
-                    navController.navigateSingle(Routes.Dashboard) {
+                    navController.navigateSingle(Routes.ChooseAvatar) {
                         popUpTo(0) { inclusive = true }
                     }
                 },
@@ -451,6 +453,57 @@ fun AppNavGraph(
         ) {
             EditUsernameScreen(
                 onBackClick = navController::safePopBackStack,
+            )
+        }
+
+        composable<Routes.ChooseAvatar>(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { -it / 3 },
+                    animationSpec = tween(250)
+                ) + fadeOut(animationSpec = tween(200))
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { -it / 3 },
+                    animationSpec = tween(250)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+        ) {
+            ChooseAvatarScreen(
+                navigateToChooseUsername = {
+                    navController.navigateSingle(Routes.ChooseUsername)
+                },
+            )
+        }
+
+        composable<Routes.ChooseUsername>(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeOut(animationSpec = tween(200))
+            },
+        ) {
+            ChooseUsernameScreen(
+                onBackClick = navController::safePopBackStack,
+                navigateToFeed = {
+                    navController.navigateSingle(Routes.Dashboard) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
             )
         }
 

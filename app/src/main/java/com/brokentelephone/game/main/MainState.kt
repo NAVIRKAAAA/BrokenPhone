@@ -8,6 +8,7 @@ data class MainState(
     val theme: AppTheme = AppTheme.SYSTEM,
     val language: Language = Language.ENGLISH,
     val startDestination: Routes? = null,
+    val pendingRoutes: List<Routes> = emptyList(),
 ) {
-    val isReady: Boolean get() = startDestination != null
+    val isReady: Boolean get() = startDestination != null && pendingRoutes.isEmpty()
 }

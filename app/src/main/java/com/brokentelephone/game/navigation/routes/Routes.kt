@@ -44,6 +44,12 @@ sealed class Routes {
     data object EditAvatar : Routes()
 
     @Serializable
+    data object ChooseAvatar : Routes()
+
+    @Serializable
+    data object ChooseUsername : Routes()
+
+    @Serializable
     data object Settings : Routes()
 
     @Serializable

@@ -29,7 +29,7 @@ class NotificationsViewModel(
 
     init {
         getNotificationsUseCase()
-            .onEach { notifications -> _state.update { it.copy(enabledNotifications = notifications) } }
+            .onEach { notifications -> _state.update { it.copy(notifications = notifications) } }
             .launchIn(viewModelScope)
     }
 
@@ -66,7 +66,7 @@ class NotificationsViewModel(
     }
 
     fun onNotificationToggle(type: NotificationType, enabled: Boolean) {
-        val current = _state.value.enabledNotifications
+        val current = _state.value.notifications
         val updated = if (enabled) current + type else current - type
         viewModelScope.launch {
             updateNotificationsUseCase(updated)

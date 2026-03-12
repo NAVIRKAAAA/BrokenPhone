@@ -10,7 +10,7 @@ import com.brokentelephone.game.data.repository.MockNotInterestedRepositoryImpl
 import com.brokentelephone.game.data.repository.MockPostRepository
 import com.brokentelephone.game.data.repository.MockReportRepositoryImpl
 import com.brokentelephone.game.data.repository.MockUserSettingsRepositoryImpl
-import com.brokentelephone.game.data.repository.MockUsersRepositoryImpl
+import com.brokentelephone.game.data.repository.UsersRepositoryImpl
 import com.brokentelephone.game.data.session.UserSessionImpl
 import com.brokentelephone.game.domain.handler.ApiHandler
 import com.brokentelephone.game.domain.link.LinkProvider
@@ -34,6 +34,10 @@ import com.brokentelephone.game.features.blocked_users.use_case.UnblockUserUseCa
 import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBarViewModel
 import com.brokentelephone.game.features.chain_details.ChainDetailsViewModel
 import com.brokentelephone.game.features.chain_details.use_case.GetChainByPostIdUseCase
+import com.brokentelephone.game.features.choose_avatar.ChooseAvatarViewModel
+import com.brokentelephone.game.features.choose_avatar.use_case.CompleteAvatarStepUseCase
+import com.brokentelephone.game.features.choose_username.ChooseUsernameViewModel
+import com.brokentelephone.game.features.choose_username.use_case.CompleteUsernameStepUseCase
 import com.brokentelephone.game.features.create_post.CreatePostViewModel
 import com.brokentelephone.game.features.create_post.use_case.CreatePostUseCase
 import com.brokentelephone.game.features.dashboard.DashboardViewModel
@@ -85,6 +89,9 @@ import com.brokentelephone.game.features.welcome.use_case.SignInAnonymouslyUseCa
 import com.brokentelephone.game.main.MainViewModel
 import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestoreSettings
+import com.google.firebase.firestore.memoryCacheSettings
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModelOf
@@ -96,13 +103,20 @@ val appModule = module {
     single<PostRepository> { MockPostRepository() }
     single<AuthRepository> { AuthRepositoryImpl(get()) }
     single { FirebaseAuth.getInstance() }
+    single {
+        FirebaseFirestore.getInstance().apply {
+            firestoreSettings = firestoreSettings {
+                setLocalCacheSettings(memoryCacheSettings {})
+            }
+        }
+    }
     single<ApiHandler> { ApiHandlerImpl() }
-    single<UserSession> { UserSessionImpl(get()) }
+    single<UserSession> { UserSessionImpl(get(), get()) }
     single<ReportRepository> { MockReportRepositoryImpl() }
     single<NotInterestedRepository> { MockNotInterestedRepositoryImpl() }
     single<GamesRepository> { MockGamesRepositoryImpl() }
     single<UserSettingsRepository> { MockUserSettingsRepositoryImpl() }
-    single<UsersRepository> { MockUsersRepositoryImpl() }
+    single<UsersRepository> { UsersRepositoryImpl(get()) }
 
     single { DrawingBitmapSaver(androidContext()) }
     factoryOf(::CountdownTimer)
@@ -142,6 +156,10 @@ val appModule = module {
     viewModelOf(::ProfileViewModel)
     viewModelOf(::EditUsernameViewModel)
     viewModelOf(::EditProfileViewModel)
+    viewModelOf(::ChooseUsernameViewModel)
+    factoryOf(::CompleteAvatarStepUseCase)
+    factoryOf(::CompleteUsernameStepUseCase)
+    viewModelOf(::ChooseAvatarViewModel)
     viewModelOf(::EditAvatarViewModel)
 
     factoryOf(::GetVersionInfoUseCase)

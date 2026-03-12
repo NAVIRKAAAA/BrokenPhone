@@ -7,14 +7,26 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.R
@@ -24,7 +36,8 @@ import com.brokentelephone.game.core.top_bar.AuthTopBar
 import com.brokentelephone.game.features.choose_username.ChooseUsernameViewModel
 import com.brokentelephone.game.features.choose_username.model.ChooseUsernameState
 import com.brokentelephone.game.features.choose_username.model.SuggestedUsernames
-import com.brokentelephone.game.features.sign_up.content.SignUpTextField
+import com.brokentelephone.game.features.sign_up.content.SignUpTextFieldValue
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -36,6 +49,17 @@ fun ChooseUsernameContent(
     modifier: Modifier = Modifier,
 ) {
     val focusManager = LocalFocusManager.current
+    val usernameFocus = remember { FocusRequester() }
+    var textFieldValue by remember {
+        mutableStateOf(
+            TextFieldValue(state.username, TextRange(state.username.length))
+        )
+    }
+
+    LaunchedEffect(Unit) {
+        delay(150)
+        usernameFocus.requestFocus()
+    }
 
     Column(
         modifier = modifier
@@ -49,42 +73,66 @@ fun ChooseUsernameContent(
             onBackClick = onBackClick,
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .imePadding(),
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
 
-        SignUpTextField(
-            text = state.username,
-            onTextChange = onUsernameChange,
-            modifier = Modifier.padding(horizontal = 16.dp),
-            label = stringResource(R.string.edit_username_label),
-            hint = stringResource(R.string.edit_username_hint),
-            onClearClick = if (state.username.isNotBlank()) { { onUsernameChange("") } } else null,
-            onImeAction = { focusManager.clearFocus() },
-            maxLength = ChooseUsernameViewModel.MAX_USERNAME_LENGTH,
-        )
+            SignUpTextFieldValue(
+                value = textFieldValue,
+                onValueChange = { newValue ->
+                    textFieldValue = newValue
+                    onUsernameChange(newValue.text)
+                },
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .focusRequester(usernameFocus),
+                label = stringResource(R.string.edit_username_label),
+                hint = stringResource(R.string.edit_username_hint),
+                onClearClick = if (state.username.isNotBlank()) {
+                    {
+                        textFieldValue = TextFieldValue("")
+                        onUsernameChange("")
+                    }
+                } else null,
+                onImeAction = {
+                    focusManager.clearFocus()
+                    onContinueClick()
+                },
+                maxLength = ChooseUsernameViewModel.MAX_USERNAME_LENGTH,
+            )
 
-        FlowRow(modifier = Modifier.padding(horizontal = 16.dp)) {
-            state.suggestions.forEach { name ->
-                UsernameChip(
-                    name = name,
-                    onClick = { onUsernameChange(name) },
-                    enabled = state.username != name,
-                )
+            FlowRow(modifier = Modifier.padding(horizontal = 16.dp)) {
+                state.suggestions.forEach { name ->
+                    UsernameChip(
+                        name = name,
+                        onClick = {
+                            textFieldValue = TextFieldValue(name, TextRange(name.length))
+                            onUsernameChange(name)
+                            usernameFocus.requestFocus()
+                        },
+                        enabled = state.username != name,
+                    )
+                }
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            AuthButton(
+                text = stringResource(R.string.choose_username_button_continue),
+                onClick = onContinueClick,
+                enabled = state.isContinueEnabled,
+                isLoading = state.isLoading,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+            )
+
+            Spacer(modifier = Modifier.navigationBarsPadding())
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        AuthButton(
-            text = stringResource(R.string.choose_username_button_continue),
-            onClick = onContinueClick,
-            enabled = state.isContinueEnabled,
-            isLoading = false,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
-        )
-
-        Spacer(modifier = Modifier.navigationBarsPadding())
     }
 }
 

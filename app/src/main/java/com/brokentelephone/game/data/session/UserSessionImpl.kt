@@ -1,58 +1,129 @@
 package com.brokentelephone.game.data.session
 
 import com.brokentelephone.game.domain.settings.NotificationType
-import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.domain.user.AuthState
 import com.brokentelephone.game.domain.user.BlockedUser
+import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.domain.user.User
 import com.brokentelephone.game.domain.user.UserSession
+import com.brokentelephone.game.essentials.exceptions.auth.NetworkException
+import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.tasks.await
 
 class UserSessionImpl(
     private val firebaseAuth: FirebaseAuth,
+    private val firestore: FirebaseFirestore,
 ) : UserSession {
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.NotAuth)
     override val authState: Flow<AuthState> = _authState.asStateFlow()
 
+    private var firestoreListener: ListenerRegistration? = null
+
     override suspend fun initialize() {
-        val firebaseUser = firebaseAuth.currentUser
-        _authState.value = when {
-            firebaseUser == null -> AuthState.NotAuth
-            firebaseUser.isAnonymous -> AuthState.Guest(firebaseUser.toDomain())
-            else -> AuthState.Auth(firebaseUser.toDomain())
+        val currentUser = firebaseAuth.currentUser
+        if (currentUser != null) {
+            val snapshot = firestore.collection(COLLECTION_USERS).document(currentUser.uid).get().await()
+            val user = snapshot.data?.let { User.fromMap(it) }
+            _authState.value = when {
+                user == null -> AuthState.NotAuth
+                currentUser.isAnonymous -> AuthState.Guest(user)
+                else -> AuthState.Auth(user)
+            }
+        } else {
+            _authState.value = AuthState.NotAuth
         }
 
         firebaseAuth.addAuthStateListener { auth ->
             val user = auth.currentUser
-            _authState.value = when {
-                user == null -> AuthState.NotAuth
-                user.isAnonymous -> AuthState.Guest(user.toDomain())
-                else -> AuthState.Auth(user.toDomain())
+            firestoreListener?.remove()
+            firestoreListener = null
+
+            if (user != null) {
+                observeFirestoreUser(uid = user.uid, isAnonymous = user.isAnonymous)
+            } else {
+                _authState.value = AuthState.NotAuth
             }
         }
     }
 
+    private fun observeFirestoreUser(uid: String, isAnonymous: Boolean) {
+        firestoreListener = firestore
+            .collection(COLLECTION_USERS)
+            .document(uid)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null || snapshot == null) return@addSnapshotListener
+                val user = snapshot.data?.let { User.fromMap(it) } ?: return@addSnapshotListener
+                _authState.value = if (isAnonymous) AuthState.Guest(user) else AuthState.Auth(user)
+            }
+    }
+
     override suspend fun updateProfile(username: String) = Unit
-    override suspend fun updateAvatar(avatarUrl: String) = Unit
-    override fun getBlockedUsers(): Flow<List<BlockedUser>> = kotlinx.coroutines.flow.flowOf()
+    override suspend fun updateAvatar(avatarUrl: String) {
+        val uid = firebaseAuth.currentUser?.uid ?: return
+        try {
+            firestore.collection(COLLECTION_USERS)
+                .document(uid)
+                .update(User.FIELD_AVATAR_URL, avatarUrl, User.FIELD_UPDATED_AT, System.currentTimeMillis())
+                .await()
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
+    override suspend fun completeAvatarStep(avatarUrl: String) {
+        val uid = firebaseAuth.currentUser?.uid ?: return
+        try {
+            firestore.collection(COLLECTION_USERS)
+                .document(uid)
+                .update(
+                    User.FIELD_AVATAR_URL, avatarUrl,
+                    User.FIELD_ONBOARDING_STEP, OnboardingStep.CHOOSE_USERNAME.name,
+                    User.FIELD_UPDATED_AT, System.currentTimeMillis(),
+                )
+                .await()
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (e: Exception) {
+            throw UnknownAuthException()
+        }
+    }
+
+    override suspend fun completeUsernameStep(username: String) {
+        val uid = firebaseAuth.currentUser?.uid ?: return
+        try {
+            firestore.collection(COLLECTION_USERS)
+                .document(uid)
+                .update(
+                    User.FIELD_USERNAME, username,
+                    User.FIELD_ONBOARDING_STEP, OnboardingStep.COMPLETED.name,
+                    User.FIELD_UPDATED_AT, System.currentTimeMillis(),
+                )
+                .await()
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
+
+    override fun getBlockedUsers(): Flow<List<BlockedUser>> = flowOf()
     override suspend fun blockUser(blockedUserId: String) = Unit
     override suspend fun unblockUser(blockId: String) = Unit
-    override suspend fun updateNotifications(enabledNotifications: List<NotificationType>) = Unit
+    override suspend fun updateNotifications(notifications: List<NotificationType>) = Unit
     override suspend fun signOut() = firebaseAuth.signOut()
     override suspend fun deleteAccount() = Unit
 
-    private fun FirebaseUser.toDomain(): User = User(
-        id = uid,
-        username = "",
-        email = "",
-        avatarUrl = "",
-        createdAt = 0L,
-        updatedAt = 0L,
-        authProvider = AuthProvider.EMAIL,
-    )
+    companion object {
+        private const val COLLECTION_USERS = "users"
+    }
 }

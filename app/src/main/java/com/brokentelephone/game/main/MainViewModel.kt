@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.domain.handler.onError
 import com.brokentelephone.game.domain.handler.onSuccess
-import com.brokentelephone.game.domain.user.AuthState
+import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.features.app_preferences.use_case.GetLanguageUseCase
 import com.brokentelephone.game.features.app_preferences.use_case.GetThemeUseCase
 import com.brokentelephone.game.features.language.use_case.InitializeLanguageUseCase
@@ -48,13 +48,21 @@ class MainViewModel(
     private fun initializeSession() {
         viewModelScope.launch {
             initializeSessionUseCase.execute().onSuccess { authState ->
-                val destination =
-                    if (authState is AuthState.NotAuth) Routes.Welcome else Routes.Dashboard
-                _state.update { it.copy(startDestination = destination) }
+                val (destination, pendingRoutes) = when (authState.getUserOrNull()?.onboardingStep) {
+                    null -> Routes.Welcome to emptyList()
+                    OnboardingStep.CHOOSE_AVATAR -> Routes.ChooseAvatar to emptyList()
+                    OnboardingStep.CHOOSE_USERNAME -> Routes.ChooseAvatar to listOf(Routes.ChooseUsername)
+                    OnboardingStep.COMPLETED -> Routes.Dashboard to emptyList()
+                }
+                _state.update { it.copy(startDestination = destination, pendingRoutes = pendingRoutes) }
             }.onError {
                 _state.update { it.copy(startDestination = Routes.Welcome) }
             }
         }
+    }
+
+    fun onPendingRoutesConsumed() {
+        _state.update { it.copy(pendingRoutes = emptyList()) }
     }
 
     fun initializeDefaultLanguage(deviceLanguageTag: String) {

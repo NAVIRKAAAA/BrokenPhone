@@ -43,3 +43,8 @@ class UnknownAuthException : AppException("Unknown auth error") {
     override fun getLocalizedMessage(stringProvider: StringProvider): String =
         stringProvider.getString(R.string.error_auth_unknown)
 }
+
+class OperationCancelledException : AppException("Operation was cancelled") {
+    override fun getLocalizedMessage(stringProvider: StringProvider): String =
+        stringProvider.getString(R.string.error_cancelled)
+}

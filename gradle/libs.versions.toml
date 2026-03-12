@@ -48,6 +48,7 @@ androidx-startup = { group = "androidx.startup", name = "startup-runtime", versi
 paparazzi = { module = "app.cash.paparazzi:paparazzi", version.ref = "paparazzi" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

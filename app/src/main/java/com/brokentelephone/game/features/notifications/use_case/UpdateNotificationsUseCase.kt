@@ -6,7 +6,7 @@ import com.brokentelephone.game.domain.user.UserSession
 class UpdateNotificationsUseCase(
     private val userSession: UserSession,
 ) {
-    suspend operator fun invoke(enabledNotifications: List<NotificationType>) {
-        userSession.updateNotifications(enabledNotifications)
+    suspend operator fun invoke(notifications: List<NotificationType>) {
+        userSession.updateNotifications(notifications)
     }
 }

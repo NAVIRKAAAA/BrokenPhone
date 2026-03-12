@@ -10,7 +10,7 @@ class GetNotificationsUseCase(
 ) {
     operator fun invoke(): Flow<List<NotificationType>> {
         return userSession.authState.map { authState ->
-            authState.getUserOrNull()?.enabledNotifications ?: emptyList()
+            authState.getUserOrNull()?.notifications ?: emptyList()
         }
     }
 }

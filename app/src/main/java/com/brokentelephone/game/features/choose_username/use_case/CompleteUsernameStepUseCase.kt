@@ -1,17 +1,17 @@
-package com.brokentelephone.game.features.edit_avatar.use_case
+package com.brokentelephone.game.features.choose_username.use_case
 
 import com.brokentelephone.game.domain.handler.ApiHandler
 import com.brokentelephone.game.domain.handler.AppResult
 import com.brokentelephone.game.domain.user.UserSession
 import kotlinx.coroutines.Dispatchers
 
-class UpdateAvatarUseCase(
+class CompleteUsernameStepUseCase(
     private val userSession: UserSession,
-    private val handler: ApiHandler
+    private val handler: ApiHandler,
 ) {
-    suspend fun execute(avatarUrl: String) : AppResult<Unit> {
+    suspend fun execute(username: String): AppResult<Unit> {
         return handler.handle(Dispatchers.IO) {
-            userSession.updateAvatar(avatarUrl)
+            userSession.completeUsernameStep(username)
         }
     }
 }

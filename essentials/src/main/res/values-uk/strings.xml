@@ -9,4 +9,5 @@
     <string name="error_auth_too_many_requests">Забагато спроб. Зачекай трохи та спробуй знову.</string>
     <string name="error_auth_invalid_credentials">Невірний email або пароль.</string>
     <string name="error_auth_unknown">Щось пішло не так. Спробуй ще раз.</string>
+    <string name="error_cancelled">Час на запит вичерпано. Спробуй ще раз.</string>
 </resources>

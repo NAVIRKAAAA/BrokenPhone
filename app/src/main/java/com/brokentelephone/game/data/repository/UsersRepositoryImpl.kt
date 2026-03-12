@@ -1,0 +1,54 @@
+package com.brokentelephone.game.data.repository
+
+import com.brokentelephone.game.domain.repository.UsersRepository
+import com.brokentelephone.game.domain.settings.NotificationType
+import com.brokentelephone.game.domain.user.AuthProvider
+import com.brokentelephone.game.domain.user.OnboardingStep
+import com.brokentelephone.game.domain.user.User
+import com.brokentelephone.game.essentials.exceptions.auth.NetworkException
+import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
+
+class UsersRepositoryImpl(
+    firestore: FirebaseFirestore,
+) : FirestoreRepository(firestore), UsersRepository {
+
+    override val collectionName = "users"
+
+    override suspend fun getUsersById(ids: List<String>): List<User> {
+        return emptyList()
+    }
+
+    override suspend fun createUser(
+        id: String,
+        email: String,
+        authProvider: AuthProvider,
+    ) {
+        val now = System.currentTimeMillis()
+
+        val user = User(
+            id = id,
+            username = "",
+            email = email,
+            avatarUrl = null,
+            authProvider = authProvider,
+            createdAt = now,
+            updatedAt = now,
+            notifications = NotificationType.entries,
+            onboardingStep = OnboardingStep.CHOOSE_AVATAR,
+        )
+
+        try {
+            collection
+                .document(id)
+                .set(user.toMap())
+                .await()
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
+}

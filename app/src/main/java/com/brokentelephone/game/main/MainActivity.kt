@@ -31,6 +31,7 @@ import com.brokentelephone.game.domain.settings.AppTheme
 import com.brokentelephone.game.domain.settings.Language
 import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBar
 import com.brokentelephone.game.navigation.nav_graph.AppNavGraph
+import kotlinx.coroutines.delay
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
@@ -84,6 +85,14 @@ class MainActivity : ComponentActivity() {
                     BrokenTelephoneTheme(
                         darkTheme = isDarkTheme
                     ) {
+
+                        LaunchedEffect(state.pendingRoutes) {
+                            if (state.pendingRoutes.isNotEmpty()) {
+                                state.pendingRoutes.forEach { route -> navController.navigate(route) }
+                                delay(350)
+                                mainViewModel.onPendingRoutesConsumed()
+                            }
+                        }
 
                         Box(
                             modifier = Modifier

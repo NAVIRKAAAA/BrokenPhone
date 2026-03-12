@@ -3,10 +3,13 @@ package com.brokentelephone.game.features.sign_up.use_case
 import com.brokentelephone.game.domain.handler.ApiHandler
 import com.brokentelephone.game.domain.handler.AppResult
 import com.brokentelephone.game.domain.repository.AuthRepository
+import com.brokentelephone.game.domain.repository.UsersRepository
+import com.brokentelephone.game.domain.user.AuthProvider
 import kotlinx.coroutines.Dispatchers
 
 class SignUpUseCase(
     private val authRepository: AuthRepository,
+    private val usersRepository: UsersRepository,
     private val handler: ApiHandler,
 ) {
     suspend fun execute(
@@ -14,7 +17,8 @@ class SignUpUseCase(
         password: String,
     ): AppResult<Unit> {
         return handler.handle(Dispatchers.IO) {
-            authRepository.signUpWithEmailPassword(email, password)
+            val userId = authRepository.signUpWithEmailPassword(email, password)
+            usersRepository.createUser(id = userId, email = email, authProvider = AuthProvider.EMAIL)
         }
     }
 }

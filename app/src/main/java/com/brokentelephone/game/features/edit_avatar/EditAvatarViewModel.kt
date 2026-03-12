@@ -43,7 +43,7 @@ class EditAvatarViewModel(
         val selectedId = _state.value.selectedAvatarId ?: return
         val avatarUrl = Avatars.all.first { it.id == selectedId }.url
         viewModelScope.launch {
-            updateAvatarUseCase(avatarUrl)
+//            updateAvatarUseCase.execute(avatarUrl)
             _event.emit(EditAvatarEvent.NavigateBack)
         }
     }

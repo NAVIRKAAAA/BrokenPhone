@@ -59,14 +59,14 @@ fun NotificationsContent(
 
         NotificationSwitchItem(
             text = stringResource(R.string.notifications_all),
-            checked = NotificationType.entries.all { it in state.enabledNotifications },
+            checked = NotificationType.entries.all { it in state.notifications },
             onCheckedChange = onAllNotificationsToggle,
         )
 
         NotificationType.entries.forEach { type ->
             NotificationSwitchItem(
                 text = stringResource(type.displayNameResId),
-                checked = type in state.enabledNotifications,
+                checked = type in state.notifications,
                 onCheckedChange = { enabled -> onNotificationToggle(type, enabled) },
             )
         }

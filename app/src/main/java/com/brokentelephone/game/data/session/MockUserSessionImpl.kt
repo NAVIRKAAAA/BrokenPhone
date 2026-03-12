@@ -4,6 +4,7 @@ import com.brokentelephone.game.domain.settings.NotificationType
 import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.domain.user.AuthState
 import com.brokentelephone.game.domain.user.BlockedUser
+import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.domain.user.User
 import com.brokentelephone.game.domain.user.UserSession
 import kotlinx.coroutines.delay
@@ -24,6 +25,8 @@ class MockUserSessionImpl : UserSession {
                 createdAt = 1_700_000_000_000L,
                 updatedAt = 1_700_000_000_000L,
                 authProvider = AuthProvider.EMAIL,
+                notifications = NotificationType.entries,
+                onboardingStep = OnboardingStep.CHOOSE_AVATAR,
             )
         )
     )
@@ -55,22 +58,52 @@ class MockUserSessionImpl : UserSession {
     override suspend fun updateProfile(username: String) {
         val user = _authState.value.getUserOrNull()
         if (user != null) {
-            _authState.value = AuthState.Auth(user.copy(username = username, updatedAt = System.currentTimeMillis()))
+            _authState.value = AuthState.Auth(
+                user.copy(
+                    username = username,
+                    updatedAt = System.currentTimeMillis()
+                )
+            )
         }
     }
 
     override suspend fun updateAvatar(avatarUrl: String) {
         val user = _authState.value.getUserOrNull()
         if (user != null) {
-            _authState.value = AuthState.Auth(user.copy(avatarUrl = avatarUrl, updatedAt = System.currentTimeMillis()))
+            _authState.value = AuthState.Auth(
+                user.copy(
+                    avatarUrl = avatarUrl,
+                    updatedAt = System.currentTimeMillis()
+                )
+            )
         }
+    }
+
+    override suspend fun completeAvatarStep(avatarUrl: String) {
+        return
+    }
+
+    override suspend fun completeUsernameStep(username: String) {
+        return
     }
 
     private val _blockedUsers = MutableStateFlow(
         listOf(
-            BlockedUser(id = "block_1", userId = "user_2", createdAt = System.currentTimeMillis() - 86_400_000),
-            BlockedUser(id = "block_2", userId = "user_3", createdAt = System.currentTimeMillis() - 172_800_000),
-            BlockedUser(id = "block_3", userId = "user_4", createdAt = System.currentTimeMillis() - 259_200_000),
+            BlockedUser(
+                id = "block_1",
+                userId = "user_2",
+                createdAt = System.currentTimeMillis() - 86_400_000
+            ),
+            BlockedUser(
+                id = "block_2",
+                userId = "user_3",
+                createdAt = System.currentTimeMillis() - 172_800_000
+            ),
+            BlockedUser(
+                id = "block_3",
+                userId = "user_4",
+                createdAt = System.currentTimeMillis() - 259_200_000
+            ),
         )
     )
 
@@ -91,10 +124,10 @@ class MockUserSessionImpl : UserSession {
         _blockedUsers.update { list -> list.filter { it.id != blockId } }
     }
 
-    override suspend fun updateNotifications(enabledNotifications: List<NotificationType>) {
+    override suspend fun updateNotifications(notifications: List<NotificationType>) {
         val user = _authState.value.getUserOrNull()
         if (user != null) {
-            _authState.value = AuthState.Auth(user.copy(enabledNotifications = enabledNotifications))
+            _authState.value = AuthState.Auth(user.copy(notifications = notifications))
         }
     }
 
