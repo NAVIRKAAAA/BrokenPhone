@@ -48,3 +48,8 @@ class OperationCancelledException : AppException("Operation was cancelled") {
     override fun getLocalizedMessage(stringProvider: StringProvider): String =
         stringProvider.getString(R.string.error_cancelled)
 }
+
+class SessionDataException : AppException("Session found but user data could not be loaded") {
+    override fun getLocalizedMessage(stringProvider: StringProvider): String =
+        stringProvider.getString(R.string.error_session_data)
+}

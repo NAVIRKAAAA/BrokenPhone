@@ -9,6 +9,8 @@ data class MainState(
     val language: Language = Language.ENGLISH,
     val startDestination: Routes? = null,
     val pendingRoutes: List<Routes> = emptyList(),
+    val sessionDataError: String? = null,
+    val isSessionLoading: Boolean = false,
 ) {
     val isReady: Boolean get() = startDestination != null && pendingRoutes.isEmpty()
 }

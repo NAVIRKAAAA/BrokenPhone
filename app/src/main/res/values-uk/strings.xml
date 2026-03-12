@@ -43,6 +43,11 @@
 
     <string name="choose_avatar_title">Хто ти сьогодні?</string>
 
+    <!-- Session error dialog -->
+    <string name="error_session_data_title">Помилка з\'єднання</string>
+    <string name="error_session_data_retry">Повторити</string>
+    <string name="error_session_data_cancel">Продовжити як гість</string>
+
     <string name="edit_avatar_title">Змінити аватар</string>
     <string name="edit_avatar_button_save">Зберегти</string>
     <string name="edit_avatar_current">Твій аватар</string>

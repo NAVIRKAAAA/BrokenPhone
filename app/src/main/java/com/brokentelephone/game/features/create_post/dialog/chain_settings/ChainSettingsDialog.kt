@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -88,12 +89,15 @@ fun ChainSettingsDialog(
             ) {
                 Text(
                     text = stringResource(R.string.create_post_chain_settings_title),
-                    textAlign = TextAlign.Center,
+                    textAlign = TextAlign.Start,
                     fontFamily = FontFamily(Font(R.font.nunito_bold)),
                     fontSize = 18.sp,
                     lineHeight = 28.sp,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.weight(1f, false)
                 )
+
+                Spacer(modifier = Modifier.width(16.dp))
 
                 IconButton(
                     onClick = onDismiss

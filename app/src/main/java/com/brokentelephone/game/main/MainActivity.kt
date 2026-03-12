@@ -19,11 +19,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.brokentelephone.game.R
+import com.brokentelephone.game.core.dialog.ConfirmDialog
 import com.brokentelephone.game.core.locale.LocalizedContextWrapper
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.LocalAppLanguage
@@ -77,15 +80,13 @@ class MainActivity : ComponentActivity() {
                 LocalizedContextWrapper(base = this@MainActivity, locale = locale)
             }
 
-            state.startDestination?.let { startDestination ->
-                CompositionLocalProvider(
-                    LocalAppLanguage provides state.language,
-                    LocalContext provides localizedContext,
-                ) {
-                    BrokenTelephoneTheme(
-                        darkTheme = isDarkTheme
-                    ) {
+            CompositionLocalProvider(
+                LocalAppLanguage provides state.language,
+                LocalContext provides localizedContext,
+            ) {
+                BrokenTelephoneTheme(darkTheme = isDarkTheme) {
 
+                    state.startDestination?.let { startDestination ->
                         LaunchedEffect(state.pendingRoutes) {
                             if (state.pendingRoutes.isNotEmpty()) {
                                 state.pendingRoutes.forEach { route -> navController.navigate(route) }
@@ -114,9 +115,21 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     }
+
+                    state.sessionDataError?.let { message ->
+                        ConfirmDialog(
+                            title = stringResource(R.string.error_session_data_title),
+                            body = message,
+                            confirmText = stringResource(R.string.error_session_data_retry),
+                            cancelText = stringResource(R.string.common_cancel),
+                            onDismiss = mainViewModel::onSessionErrorDismissed,
+                            onConfirm = mainViewModel::initializeSession,
+                            confirmButtonColor = MaterialTheme.colorScheme.primary,
+                            isLoading = state.isSessionLoading,
+                        )
+                    }
                 }
             }
         }
-
     }
 }

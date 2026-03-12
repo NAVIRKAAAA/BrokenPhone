@@ -15,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +37,7 @@ import com.brokentelephone.game.features.choose_username.model.SuggestedUsername
 import com.brokentelephone.game.features.edit_username.EditUsernameViewModel
 import com.brokentelephone.game.features.edit_username.model.EditUsernameState
 import com.brokentelephone.game.features.sign_up.content.SignUpTextFieldValue
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -50,6 +52,11 @@ fun EditUsernameContent(
     val usernameFocus = remember { FocusRequester() }
     var textFieldValue by remember {
         mutableStateOf(TextFieldValue(state.username, TextRange(state.username.length)))
+    }
+
+    LaunchedEffect(Unit) {
+        delay(150)
+        usernameFocus.requestFocus()
     }
 
     Column(

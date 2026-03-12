@@ -139,6 +139,11 @@
     <!-- Choose Avatar -->
     <string name="choose_avatar_title">Who are you today?</string>
 
+    <!-- Session error dialog -->
+    <string name="error_session_data_title">Connection error</string>
+    <string name="error_session_data_retry">Retry</string>
+    <string name="error_session_data_cancel">Continue as guest</string>
+
     <!-- Edit Avatar -->
     <string name="edit_avatar_title">Edit Avatar</string>
     <string name="edit_avatar_button_save">Save</string>

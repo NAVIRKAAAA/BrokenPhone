@@ -7,6 +7,7 @@ import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.domain.user.User
 import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.essentials.exceptions.auth.NetworkException
+import com.brokentelephone.game.essentials.exceptions.auth.SessionDataException
 import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
@@ -31,12 +32,14 @@ class UserSessionImpl(
     override suspend fun initialize() {
         val currentUser = firebaseAuth.currentUser
         if (currentUser != null) {
-            val snapshot = firestore.collection(COLLECTION_USERS).document(currentUser.uid).get().await()
-            val user = snapshot.data?.let { User.fromMap(it) }
-            _authState.value = when {
-                user == null -> AuthState.NotAuth
-                currentUser.isAnonymous -> AuthState.Guest(user)
-                else -> AuthState.Auth(user)
+            try {
+                val snapshot = firestore.collection(COLLECTION_USERS).document(currentUser.uid).get().await()
+                val user = snapshot.data?.let { User.fromMap(it) } ?: throw SessionDataException()
+                _authState.value = if (currentUser.isAnonymous) AuthState.Guest(user) else AuthState.Auth(user)
+            } catch (e: SessionDataException) {
+                throw e
+            } catch (_: Exception) {
+                throw SessionDataException()
             }
         } else {
             _authState.value = AuthState.NotAuth
