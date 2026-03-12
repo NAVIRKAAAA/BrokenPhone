@@ -5,8 +5,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -27,10 +30,11 @@ import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 fun SaveTopBar(
     title: String,
     saveButtonText: String,
+    modifier: Modifier = Modifier,
     isSaveEnabled: Boolean = true,
+    isLoading: Boolean = false,
     onBackClick: () -> Unit = {},
     onSaveClick: () -> Unit = {},
-    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
@@ -60,13 +64,21 @@ fun SaveTopBar(
             onClick = onSaveClick,
             enabled = isSaveEnabled,
         ) {
-            Text(
-                text = saveButtonText,
-                textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(R.font.nunito_bold)),
-                fontSize = 16.sp,
-                lineHeight = 24.sp,
-            )
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    color = LocalContentColor.current,
+                    strokeWidth = 2.dp,
+                )
+            } else {
+                Text(
+                    text = saveButtonText,
+                    textAlign = TextAlign.Center,
+                    fontFamily = FontFamily(Font(R.font.nunito_bold)),
+                    fontSize = 16.sp,
+                    lineHeight = 24.sp,
+                )
+            }
         }
     }
 }
@@ -79,6 +91,8 @@ fun SaveTopBarPreview() {
             SaveTopBar(
                 title = "Edit Avatar",
                 saveButtonText = "Save",
+                isSaveEnabled = false,
+                isLoading = true
             )
         }
     }

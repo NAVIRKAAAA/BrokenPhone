@@ -2,10 +2,13 @@ package com.brokentelephone.game.features.edit_username
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.brokentelephone.game.domain.handler.onError
+import com.brokentelephone.game.domain.handler.onSuccess
 import com.brokentelephone.game.domain.user.UserSession
+import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.edit_username.model.EditUsernameEvent
 import com.brokentelephone.game.features.edit_username.model.EditUsernameState
-import com.brokentelephone.game.features.edit_username.use_case.UpdateProfileUseCase
+import com.brokentelephone.game.features.edit_username.use_case.UpdateUsernameUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -15,8 +18,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class EditUsernameViewModel(
-    private val updateProfileUseCase: UpdateProfileUseCase,
+    private val updateUsernameUseCase: UpdateUsernameUseCase,
     private val userSession: UserSession,
+    private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(EditUsernameState())
@@ -27,31 +31,33 @@ class EditUsernameViewModel(
 
     init {
         viewModelScope.launch {
-            val authState = userSession.authState.first()
-            val user = authState.getUserOrNull() ?: return@launch
-
-            _state.update { it.copy(username = user.username) }
-
+            val user = userSession.authState.first().getUserOrNull() ?: return@launch
+            _state.update { it.copy(username = user.username, initialUsername = user.username) }
         }
     }
 
     fun onUsernameChange(username: String) {
-        _state.update {
-            it.copy(
-                username = username,
-                isSaveEnabled = username.isNotBlank() && username.length <= MAX_USERNAME_LENGTH
-            )
-        }
-    }
-
-    companion object Companion {
-        const val MAX_USERNAME_LENGTH = 20
+        _state.update { it.copy(username = username) }
     }
 
     fun onSave() {
+        if (_state.value.isLoading) return
         viewModelScope.launch {
-            updateProfileUseCase(_state.value.username)
-            _event.emit(EditUsernameEvent.NavigateBack)
+            _state.update { it.copy(isLoading = true) }
+            updateUsernameUseCase.execute(_state.value.username).onSuccess {
+                _state.update { it.copy(isLoading = false) }
+                _event.emit(EditUsernameEvent.NavigateBack)
+            }.onError { error ->
+                _state.update { it.copy(isLoading = false, globalError = exceptionToMessageMapper.map(error)) }
+            }
         }
+    }
+
+    fun onGlobalErrorDismissed() {
+        _state.update { it.copy(globalError = null) }
+    }
+
+    companion object {
+        const val MAX_USERNAME_LENGTH = 20
     }
 }

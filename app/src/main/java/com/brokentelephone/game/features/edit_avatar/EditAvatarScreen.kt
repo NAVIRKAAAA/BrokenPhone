@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.brokentelephone.game.core.dialog.ErrorDialog
 import com.brokentelephone.game.features.edit_avatar.content.EditAvatarContent
 import com.brokentelephone.game.features.edit_avatar.model.EditAvatarEvent
 import org.koin.compose.viewmodel.koinViewModel
@@ -28,8 +29,14 @@ fun EditAvatarScreen(
     EditAvatarContent(
         state = state,
         onBackClick = onBackClick,
-        onSaveClick = viewModel::onSave,
-        onAvatarClick = viewModel::onAvatarSelect,
+        onAvatarClick = viewModel::onAvatarClick,
         modifier = modifier,
     )
+
+    state.globalError?.let { message ->
+        ErrorDialog(
+            body = message,
+            onOkClick = viewModel::onGlobalErrorDismissed,
+        )
+    }
 }

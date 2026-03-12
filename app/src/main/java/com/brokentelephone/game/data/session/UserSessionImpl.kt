@@ -66,7 +66,19 @@ class UserSessionImpl(
             }
     }
 
-    override suspend fun updateProfile(username: String) = Unit
+    override suspend fun updateUsername(username: String) {
+        val uid = firebaseAuth.currentUser?.uid ?: return
+        try {
+            firestore.collection(COLLECTION_USERS)
+                .document(uid)
+                .update(User.FIELD_USERNAME, username, User.FIELD_UPDATED_AT, System.currentTimeMillis())
+                .await()
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
     override suspend fun updateAvatar(avatarUrl: String) {
         val uid = firebaseAuth.currentUser?.uid ?: return
         try {
@@ -93,7 +105,7 @@ class UserSessionImpl(
                 .await()
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             throw UnknownAuthException()
         }
     }

@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.brokentelephone.game.core.dialog.ErrorDialog
 import com.brokentelephone.game.features.edit_username.content.EditUsernameContent
 import com.brokentelephone.game.features.edit_username.model.EditUsernameEvent
 import org.koin.compose.viewmodel.koinViewModel
@@ -32,4 +33,11 @@ fun EditUsernameScreen(
         onUsernameChange = viewModel::onUsernameChange,
         modifier = modifier,
     )
+
+    state.globalError?.let { message ->
+        ErrorDialog(
+            body = message,
+            onOkClick = viewModel::onGlobalErrorDismissed,
+        )
+    }
 }

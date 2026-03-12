@@ -55,7 +55,7 @@ class MockUserSessionImpl : UserSession {
 //        )
 //    }
 
-    override suspend fun updateProfile(username: String) {
+    override suspend fun updateUsername(username: String) {
         val user = _authState.value.getUserOrNull()
         if (user != null) {
             _authState.value = AuthState.Auth(

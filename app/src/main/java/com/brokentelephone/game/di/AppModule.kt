@@ -51,7 +51,7 @@ import com.brokentelephone.game.features.edit_avatar.EditAvatarViewModel
 import com.brokentelephone.game.features.edit_avatar.use_case.UpdateAvatarUseCase
 import com.brokentelephone.game.features.edit_profile.EditProfileViewModel
 import com.brokentelephone.game.features.edit_username.EditUsernameViewModel
-import com.brokentelephone.game.features.edit_username.use_case.UpdateProfileUseCase
+import com.brokentelephone.game.features.edit_username.use_case.UpdateUsernameUseCase
 import com.brokentelephone.game.features.language.LanguageViewModel
 import com.brokentelephone.game.features.language.use_case.InitializeLanguageUseCase
 import com.brokentelephone.game.features.language.use_case.UpdateLanguageUseCase
@@ -140,7 +140,7 @@ val appModule = module {
     factoryOf(::SignUpUseCase)
     factoryOf(::SignInUseCase)
     factoryOf(::GetCurrentUserUseCase)
-    factoryOf(::UpdateProfileUseCase)
+    factoryOf(::UpdateUsernameUseCase)
     factoryOf(::UpdateAvatarUseCase)
     factoryOf(::GetMyPostsUseCase)
     factoryOf(::GetMyContributionsUseCase)

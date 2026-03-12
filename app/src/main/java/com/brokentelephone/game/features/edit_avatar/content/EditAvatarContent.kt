@@ -1,15 +1,12 @@
 package com.brokentelephone.game.features.edit_avatar.content
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -25,14 +22,15 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -44,7 +42,7 @@ import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.R
 import com.brokentelephone.game.core.avatar.AvatarComponent
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.core.top_bar.SaveTopBar
+import com.brokentelephone.game.core.top_bar.AuthTopBar
 import com.brokentelephone.game.features.edit_avatar.model.AvatarUi
 import com.brokentelephone.game.features.edit_avatar.model.Avatars
 import com.brokentelephone.game.features.edit_avatar.model.EditAvatarState
@@ -53,7 +51,6 @@ import com.brokentelephone.game.features.edit_avatar.model.EditAvatarState
 fun EditAvatarContent(
     state: EditAvatarState,
     onBackClick: () -> Unit,
-    onSaveClick: () -> Unit,
     onAvatarClick: (AvatarUi) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -63,12 +60,9 @@ fun EditAvatarContent(
             .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding(),
     ) {
-        SaveTopBar(
+        AuthTopBar(
             title = stringResource(R.string.edit_avatar_title),
-            saveButtonText = stringResource(R.string.edit_avatar_button_save),
-            isSaveEnabled = state.isSaveEnabled,
             onBackClick = onBackClick,
-            onSaveClick = onSaveClick,
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -88,7 +82,7 @@ fun EditAvatarContent(
         Spacer(modifier = Modifier.height(12.dp))
 
         Crossfade(
-            targetState = Avatars.all.find { it.id == state.selectedAvatarId }?.url,
+            targetState = Avatars.all.find { it.id == state.initialAvatarId }?.url,
             animationSpec = tween(300),
             label = "currentAvatar"
         ) { avatarUrl ->
@@ -123,49 +117,41 @@ fun EditAvatarContent(
                 items = Avatars.all,
                 key = { it.id }
             ) { avatar ->
-                val isSelected = avatar.id == state.selectedAvatarId
-                val scale by animateFloatAsState(
-                    targetValue = if (isSelected) 1.1f else 1f,
-                    animationSpec = spring(
-                        dampingRatio = 0.5f,
-                        stiffness = 400f
-                    ),
-                    label = "avatarScale"
-                )
-                val borderWidth by animateDpAsState(
-                    targetValue = if (isSelected) 3.dp else 0.dp,
-                    animationSpec = spring(
-                        dampingRatio = 0.5f,
-                        stiffness = 400f
-                    ),
-                    label = "avatarBorder"
-                )
-
-                AvatarComponent(
-                    avatarUrl = avatar.url,
-                    size = Dp.Unspecified,
+                val isLoading = avatar.id == state.loadingAvatarId
+                Box(
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(1f)
-                        .scale(scale)
                         .clip(CircleShape)
-                        .then(
-                            if (isSelected) Modifier.border(
-                                width = borderWidth,
-                                color = MaterialTheme.colorScheme.primary,
-                                shape = CircleShape
-                            ) else Modifier
-                        )
                         .clickable(
+                            enabled = state.loadingAvatarId == null,
                             indication = null,
                             interactionSource = remember { MutableInteractionSource() }
                         ) { onAvatarClick(avatar) }
-                )
+                ) {
+                    AvatarComponent(
+                        avatarUrl = avatar.url,
+                        size = Dp.Unspecified,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                    if (isLoading) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Black.copy(alpha = 0.4f)),
+                        ) {
+                            CircularProgressIndicator(
+                                color = Color.White,
+                                strokeWidth = 2.dp,
+                            )
+                        }
+                    }
+                }
             }
 
-            item(
-                span = { GridItemSpan(maxLineSpan) }
-            ) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Spacer(modifier = Modifier.navigationBarsPadding())
             }
         }
@@ -175,15 +161,10 @@ fun EditAvatarContent(
 @Preview
 @Composable
 fun EditAvatarContentPreview() {
-    BrokenTelephoneTheme(
-        darkTheme = true
-    ) {
+    BrokenTelephoneTheme(darkTheme = true) {
         EditAvatarContent(
-            state = EditAvatarState(
-                selectedAvatarId = Avatars.all[1].id
-            ),
+            state = EditAvatarState(initialAvatarId = Avatars.all[1].id),
             onBackClick = {},
-            onSaveClick = {},
             onAvatarClick = {},
         )
     }
