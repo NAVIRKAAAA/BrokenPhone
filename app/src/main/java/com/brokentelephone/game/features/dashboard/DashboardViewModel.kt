@@ -1,20 +1,27 @@
 package com.brokentelephone.game.features.dashboard
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.core.bottom_sheet.report_post_bottom_sheet.model.ReportPostType
+import com.brokentelephone.game.domain.handler.onError
+import com.brokentelephone.game.domain.handler.onSuccess
 import com.brokentelephone.game.features.dashboard.model.DashboardSideEffect
 import com.brokentelephone.game.features.dashboard.model.DashboardSort
 import com.brokentelephone.game.features.dashboard.model.DashboardState
 import com.brokentelephone.game.features.dashboard.model.PostUi
-import com.brokentelephone.game.features.dashboard.use_case.GetPostsUseCase
+import com.brokentelephone.game.features.dashboard.model.toUi
+import com.brokentelephone.game.features.dashboard.use_case.LoadInitialPostsUseCase
+import com.brokentelephone.game.features.dashboard.use_case.LoadNextPostsUseCase
 import com.brokentelephone.game.features.post_details.use_case.BlockUserUseCase
 import com.brokentelephone.game.features.post_details.use_case.DeletePostUseCase
 import com.brokentelephone.game.features.post_details.use_case.GetPostLinkByIdUseCase
 import com.brokentelephone.game.features.post_details.use_case.NotInterestedUseCase
 import com.brokentelephone.game.features.post_details.use_case.ReportPostUseCase
 import com.brokentelephone.game.features.profile.use_case.GetCurrentUserUseCase
+import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -24,7 +31,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class DashboardViewModel(
-    private val getPostsUseCase: GetPostsUseCase,
+    private val loadInitialPostsUseCase: LoadInitialPostsUseCase,
+    private val loadNextPostsUseCase: LoadNextPostsUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getPostLinkByIdUseCase: GetPostLinkByIdUseCase,
     private val deletePostUseCase: DeletePostUseCase,
@@ -36,17 +44,101 @@ class DashboardViewModel(
     private val _state = MutableStateFlow(DashboardState())
     val state = _state.asStateFlow()
 
+    private var lastDocRef: DocumentSnapshot? = null
+    private var lastLoadedAt: Long = 0L
+
     private val _sideEffects = Channel<DashboardSideEffect>(Channel.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
 
     init {
-        getPostsUseCase()
-            .onEach { posts -> _state.update { it.copy(posts = posts, isLoading = false) } }
-            .launchIn(viewModelScope)
-
         getCurrentUserUseCase()
             .onEach { user -> _state.update { it.copy(user = user) } }
             .launchIn(viewModelScope)
+    }
+
+    fun loadInitialPosts() {
+        if (!isInitialLoadAllowed()) return
+        viewModelScope.launch {
+            Log.d("LOG_TAG", "loadInitialPosts()")
+            _state.update { it.copy(isInitialLoading = true) }
+            loadInitialPostsUseCase.execute(INITIAL_PAGE_SIZE)
+                .onSuccess { page ->
+                    Log.d("LOG_TAG", "loadInitialPosts: onSuccess (${page.posts.size})")
+                    lastLoadedAt = System.currentTimeMillis()
+                    lastDocRef = page.lastDocRef
+                    _state.update { state ->
+                        state.copy(
+                            isInitialLoading = false,
+                            posts = page.posts.map { it.toUi() },
+                            hasMore = page.posts.size >= INITIAL_PAGE_SIZE,
+                        )
+                    }
+                    _sideEffects.send(DashboardSideEffect.ScrollToTop)
+                }
+                .onError {
+                    _state.update { it.copy(isInitialLoading = false) }
+                }
+        }
+    }
+
+    fun loadNextPosts() {
+        val docRef = lastDocRef ?: return
+        if (state.value.isInitialLoading || state.value.isLoadingMore || !state.value.hasMore) return
+
+        viewModelScope.launch {
+            Log.d("LOG_TAG", "loadNextPosts()")
+            _state.update { it.copy(isLoadingMore = true) }
+
+            delay(150)
+
+            loadNextPostsUseCase.execute(docRef, DEFAULT_PAGE_SIZE)
+                .onSuccess { page ->
+                    Log.d("LOG_TAG", "loadNextPosts: onSuccess (${page.posts.size})")
+                    lastDocRef = page.lastDocRef
+                    _state.update { state ->
+                        state.copy(
+                            isLoadingMore = false,
+                            posts = state.posts + page.posts.map { it.toUi() },
+                            hasMore = page.posts.size >= DEFAULT_PAGE_SIZE,
+                        )
+                    }
+                }
+                .onError {
+                    _state.update { it.copy(isLoadingMore = false) }
+                }
+        }
+    }
+
+    fun onRefresh() {
+        viewModelScope.launch {
+            Log.d("LOG_TAG", "onRefresh()")
+            _state.update { it.copy(isRefreshing = true) }
+
+            delay(150)
+
+            loadInitialPostsUseCase.execute(INITIAL_PAGE_SIZE)
+                .onSuccess { page ->
+                    Log.d("LOG_TAG", "onRefresh: onSuccess (${page.posts.size})")
+                    lastLoadedAt = System.currentTimeMillis()
+                    lastDocRef = page.lastDocRef
+                    _state.update { state ->
+                        state.copy(
+                            isRefreshing = false,
+                            posts = page.posts.map { it.toUi() },
+                            hasMore = page.posts.size >= INITIAL_PAGE_SIZE,
+                        )
+                    }
+                    _sideEffects.send(DashboardSideEffect.ScrollToTop)
+                }
+                .onError {
+                    _state.update { it.copy(isRefreshing = false) }
+                }
+        }
+    }
+
+    private fun isInitialLoadAllowed(): Boolean {
+        if (lastLoadedAt == 0L) return true
+        return System.currentTimeMillis() - lastLoadedAt >= REFRESH_COOLDOWN_MS
     }
 
     fun onSortSelected(sort: DashboardSort) {
@@ -128,4 +220,9 @@ class DashboardViewModel(
         viewModelScope.launch { _sideEffects.send(DashboardSideEffect.ShowReportSuccessToast) }
     }
 
+    private companion object {
+        const val REFRESH_COOLDOWN_MS = 30_000L
+        const val INITIAL_PAGE_SIZE = 30
+        const val DEFAULT_PAGE_SIZE = 10
+    }
 }

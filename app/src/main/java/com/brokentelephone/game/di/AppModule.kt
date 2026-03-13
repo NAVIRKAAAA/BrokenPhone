@@ -41,7 +41,8 @@ import com.brokentelephone.game.features.choose_username.use_case.CompleteUserna
 import com.brokentelephone.game.features.create_post.CreatePostViewModel
 import com.brokentelephone.game.features.create_post.use_case.CreatePostUseCase
 import com.brokentelephone.game.features.dashboard.DashboardViewModel
-import com.brokentelephone.game.features.dashboard.use_case.GetPostsUseCase
+import com.brokentelephone.game.features.dashboard.use_case.LoadInitialPostsUseCase
+import com.brokentelephone.game.features.dashboard.use_case.LoadNextPostsUseCase
 import com.brokentelephone.game.features.describe_drawing.DescribeDrawingViewModel
 import com.brokentelephone.game.features.describe_drawing.use_case.SubmitDescriptionUseCase
 import com.brokentelephone.game.features.draw.DrawViewModel
@@ -121,7 +122,6 @@ val appModule = module {
     single { DrawingBitmapSaver(androidContext()) }
     factoryOf(::CountdownTimer)
 
-    factoryOf(::GetPostsUseCase)
     factoryOf(::GetPostByIdUseCase)
     factoryOf(::GetPostLinkByIdUseCase)
     factoryOf(::DeletePostUseCase)
@@ -146,6 +146,8 @@ val appModule = module {
     factoryOf(::GetMyContributionsUseCase)
 
     viewModelOf(::CreatePostViewModel)
+    factoryOf(::LoadInitialPostsUseCase)
+    factoryOf(::LoadNextPostsUseCase)
     viewModelOf(::DashboardViewModel)
     viewModelOf(::PostDetailsViewModel)
     viewModelOf(::DrawViewModel)

@@ -1,50 +1,52 @@
 package com.brokentelephone.game.data.repository
 
+import com.brokentelephone.game.data.model.PostsPage
 import com.brokentelephone.game.domain.post.Post
 import com.brokentelephone.game.domain.post.PostChainEntry
 import com.brokentelephone.game.domain.post.PostContent
 import com.brokentelephone.game.domain.post.PostStatus
 import com.brokentelephone.game.domain.repository.PostRepository
+import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
 
 class MockPostRepository : PostRepository {
 
-    private val _posts = MutableStateFlow(mockList)
-
-    override fun getPosts(): Flow<List<Post>> = flow {
-        delay(1000)
-        emitAll(_posts)
+    override suspend fun loadInitialPosts(pageSize: Int): PostsPage {
+        return PostsPage(listOf(), null)
     }
 
-    override fun getPostById(id: String): Flow<Post?> =
-        _posts.map { list -> list.find { it.id == id } }
+    override suspend fun loadNextPosts(
+        afterDoc: DocumentSnapshot,
+        pageSize: Int
+    ): PostsPage {
+        return PostsPage(listOf(), null)
+    }
+
+    override fun getPostById(id: String): Flow<Post?> = flowOf(null)
+//        _posts.map { list -> list.find { it.id == id } }
 
     override fun getChainByPostId(postId: String): Flow<List<PostChainEntry>> =
         flowOf(chainsMockList)
 
     override fun getUserPosts(userId: String): Flow<List<Post>> = flow {
         delay(2000)
-        emitAll(_posts.map { list -> list.filter { it.authorId == userId } })
+//        emitAll(_posts.map { list -> list.filter { it.authorId == userId } })
     }
 
     override fun getUserContributions(userId: String): Flow<List<Post>> = flow {
         delay(2000)
-        emitAll(_posts.map { list ->
-            list.filter { post ->
-                post.currentEntry.authorId == userId && post.generation > 1
-            }
-        })
+//        emitAll(_posts.map { list ->
+//            list.filter { post ->
+//                post.currentEntry.authorId == userId && post.generation > 1
+//            }
+//        })
     }
 
     override suspend fun updatePost(post: Post) {
-        _posts.update { list -> list.map { if (it.id == post.id) post else it } }
+//        _posts.update { list -> list.map { if (it.id == post.id) post else it } }
     }
 
     override suspend fun createPost(
@@ -80,12 +82,12 @@ class MockPostRepository : PostRepository {
                 status = PostStatus.AVAILABLE,
             ),
         )
-        _posts.update { list -> listOf(post) + list }
+//        _posts.update { list -> listOf(post) + list }
     }
 
     override suspend fun deletePost(postId: String) {
         delay(1500)
-        _posts.update { list -> list.filter { it.id != postId } }
+//        _posts.update { list -> list.filter { it.id != postId } }
     }
 
     companion object {

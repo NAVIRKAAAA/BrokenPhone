@@ -4,7 +4,10 @@ import com.brokentelephone.game.features.profile.model.UserUi
 
 data class DashboardState(
     val posts: List<PostUi> = emptyList(),
-    val isLoading: Boolean = true,
+    val isInitialLoading: Boolean = true,
+    val isRefreshing: Boolean = false,
+    val isLoadingMore: Boolean = false,
+    val hasMore: Boolean = true,
     val user: UserUi? = null,
     val selectedSort: DashboardSort = DashboardSort.JUST_STARTED,
     val selectedPost: PostUi? = null,

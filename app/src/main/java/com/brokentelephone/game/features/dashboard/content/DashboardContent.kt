@@ -15,21 +15,28 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.brokentelephone.game.core.pagination.LoadMoreIndicator
+import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
-import com.brokentelephone.game.data.repository.MockPostRepository
 import com.brokentelephone.game.features.dashboard.model.DashboardSort
 import com.brokentelephone.game.features.dashboard.model.DashboardState
-import com.brokentelephone.game.features.dashboard.model.toUi
 import com.brokentelephone.game.features.profile.model.UserUi
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardContent(
     state: DashboardState,
@@ -37,6 +44,8 @@ fun DashboardContent(
     onPostClick: (postId: String) -> Unit,
     onMoreClick: (postId: String) -> Unit,
     onSortSelected: (DashboardSort) -> Unit,
+    onRefresh: () -> Unit,
+    onLoadMore: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -52,68 +61,85 @@ fun DashboardContent(
             onSortSelected = onSortSelected,
         )
 
-        if (state.isLoading) {
+        if (state.isInitialLoading && state.posts.isEmpty()) {
             DashboardShimmerList()
             return@Column
         }
 
-        LazyColumn(
-            state = listState,
-            modifier = Modifier
-                .fillMaxSize(),
-            contentPadding = PaddingValues(vertical = 16.dp),
+        val reachedEnd = remember {
+            derivedStateOf {
+                val layoutInfo = listState.layoutInfo
+                val lastVisible = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: return@derivedStateOf false
+                lastVisible >= layoutInfo.totalItemsCount - LOAD_MORE_THRESHOLD
+            }
+        }
+        LaunchedEffect(reachedEnd.value) {
+            if (reachedEnd.value) onLoadMore()
+        }
+
+        val pullToRefreshState = rememberPullToRefreshState()
+        val isRefreshing = state.isRefreshing || state.isInitialLoading
+
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = onRefresh,
+            state = pullToRefreshState,
+            modifier = Modifier.fillMaxSize(),
+            indicator = {
+                AppPullToRefreshIndicator(
+                    state = pullToRefreshState,
+                    isRefreshing = isRefreshing,
+                    modifier = Modifier.align(Alignment.TopCenter),
+                )
+            },
         ) {
-
-            itemsIndexed(
-                items = state.posts,
-                key = { _, item -> item.id }
-            ) { index, postUi ->
-
-                Column {
-                    Column(
-                        modifier = Modifier
-                            .combinedClickable(
-                                onClick = {
-                                    onPostClick(postUi.id)
-                                },
-                                onLongClick = {
-                                    onMoreClick(postUi.id)
-                                },
+            LazyColumn(
+                state = listState,
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(vertical = 16.dp),
+            ) {
+                itemsIndexed(
+                    items = state.posts,
+                    key = { _, item -> item.id }
+                ) { index, postUi ->
+                    Column {
+                        Column(
+                            modifier = Modifier.combinedClickable(
+                                onClick = { onPostClick(postUi.id) },
+                                onLongClick = { onMoreClick(postUi.id) },
                                 indication = null,
                                 interactionSource = remember { MutableInteractionSource() }
                             )
-                    ) {
-                        if (index != 0) {
+                        ) {
+                            if (index != 0) {
+                                Spacer(modifier = Modifier.height(16.dp))
+                            }
+                            PostElement(
+                                post = postUi,
+                                isUsersPost = postUi.authorId == state.user?.id,
+                                onMoreClick = { onMoreClick(postUi.id) },
+                                modifier = Modifier.padding(horizontal = 16.dp)
+                            )
                             Spacer(modifier = Modifier.height(16.dp))
-                        }
-
-                        PostElement(
-                            post = postUi,
-                            isUsersPost = postUi.authorId == state.user?.id,
-                            onMoreClick = { onMoreClick(postUi.id) },
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        if (index != state.posts.lastIndex) {
-
-                            HorizontalDivider(color = MaterialTheme.appColors.divider)
+                            if (index != state.posts.lastIndex) {
+                                HorizontalDivider(color = MaterialTheme.appColors.divider)
+                            }
                         }
                     }
                 }
-
-
+                if (state.hasMore) {
+                    item { LoadMoreIndicator() }
+                }
+                item {
+                    Spacer(modifier = Modifier.navigationBarsPadding())
+                }
             }
-
-            item {
-                Spacer(modifier = Modifier.navigationBarsPadding())
-            }
-
         }
     }
 
 }
+
+private const val LOAD_MORE_THRESHOLD = 3
 
 @Preview
 @Composable
@@ -123,7 +149,7 @@ fun DashboardContentPreview() {
     ) {
         DashboardContent(
             state = DashboardState(
-                posts = MockPostRepository.mockList.map { it.toUi() },
+//                posts = MockPostRepository.mockList.map { it.toUi() },
                 user = UserUi(
                     id = "user_1",
                     username = "Alex",
@@ -131,11 +157,13 @@ fun DashboardContentPreview() {
                     avatarUrl = "",
                     createdAt = 0
                 ),
-                isLoading = true
+                isInitialLoading = true
             ),
             onPostClick = {},
             onMoreClick = {},
             onSortSelected = {},
+            onRefresh = {},
+            onLoadMore = {},
             listState = rememberLazyListState()
         )
     }

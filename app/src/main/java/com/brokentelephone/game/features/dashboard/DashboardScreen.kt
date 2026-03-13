@@ -41,6 +41,10 @@ fun DashboardScreen(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
+        viewModel.loadInitialPosts()
+    }
+
+    LaunchedEffect(Unit) {
         viewModel.sideEffects.collect { effect ->
             when (effect) {
                 DashboardSideEffect.ShowReportSuccessToast ->
@@ -52,6 +56,7 @@ fun DashboardScreen(
                     clipboard.setPrimaryClip(ClipData.newPlainText("post_link", effect.link))
                     Toast.makeText(context, context.getString(R.string.common_toast_link_copied), Toast.LENGTH_SHORT).show()
                 }
+                DashboardSideEffect.ScrollToTop -> listState.scrollToItem(0)
             }
         }
     }
@@ -81,6 +86,8 @@ fun DashboardScreen(
             val post = state.posts.find { it.id == postId } ?: return@DashboardContent
             viewModel.onMoreClick(post)
         },
+        onRefresh = viewModel::onRefresh,
+        onLoadMore = viewModel::loadNextPosts,
         modifier = modifier,
         onSortSelected = viewModel::onSortSelected
     )

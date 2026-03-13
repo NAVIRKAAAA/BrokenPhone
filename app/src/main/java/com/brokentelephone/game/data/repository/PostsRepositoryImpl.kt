@@ -1,6 +1,8 @@
 package com.brokentelephone.game.data.repository
 
 import com.brokentelephone.game.data.mapper.toMap
+import com.brokentelephone.game.data.mapper.toPost
+import com.brokentelephone.game.data.model.PostsPage
 import com.brokentelephone.game.domain.post.Post
 import com.brokentelephone.game.domain.post.PostChainEntry
 import com.brokentelephone.game.domain.post.PostContent
@@ -9,7 +11,9 @@ import com.brokentelephone.game.domain.repository.PostRepository
 import com.brokentelephone.game.essentials.exceptions.auth.NetworkException
 import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
 import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.tasks.await
@@ -20,7 +24,44 @@ class PostsRepositoryImpl(
 
     override val collectionName = "posts"
 
-    override fun getPosts(): Flow<List<Post>> = flowOf(emptyList())
+    override suspend fun loadInitialPosts(pageSize: Int): PostsPage {
+        try {
+            val snapshot = collection
+                .orderBy(FIELD_CREATED_AT, Query.Direction.DESCENDING)
+                .limit(pageSize.toLong())
+                .get()
+                .await()
+
+            val posts = snapshot.documents.mapNotNull { it.data?.toPost() }
+            val lastDocRef = snapshot.documents.lastOrNull()
+
+            return PostsPage(posts = posts, lastDocRef = lastDocRef)
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
+
+    override suspend fun loadNextPosts(afterDoc: DocumentSnapshot, pageSize: Int): PostsPage {
+        try {
+            val snapshot = collection
+                .orderBy(FIELD_CREATED_AT, Query.Direction.DESCENDING)
+                .startAfter(afterDoc)
+                .limit(pageSize.toLong())
+                .get()
+                .await()
+
+            val posts = snapshot.documents.mapNotNull { it.data?.toPost() }
+            val lastDocRef = snapshot.documents.lastOrNull()
+
+            return PostsPage(posts = posts, lastDocRef = lastDocRef)
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
 
     override fun getPostById(id: String): Flow<Post?> = flowOf(null)
 
@@ -76,4 +117,8 @@ class PostsRepositoryImpl(
     }
 
     override suspend fun deletePost(postId: String) = Unit
+
+    private companion object {
+        const val FIELD_CREATED_AT = "createdAt"
+    }
 }
