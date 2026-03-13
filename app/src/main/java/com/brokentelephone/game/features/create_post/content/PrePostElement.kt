@@ -48,6 +48,7 @@ fun PrePostElement(
     text: String,
     onTextChanged: (String) -> Unit,
     onBadgeClick: () -> Unit,
+    onDone: () -> Unit,
     isTextOverLimit: Boolean,
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester? = null,
@@ -116,6 +117,7 @@ fun PrePostElement(
                     keyboardActions = KeyboardActions(
                         onDone = {
                             focusManager.clearFocus()
+                            onDone()
                         }
                     ),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -153,10 +155,14 @@ fun PrePostElement(
 
                 BadgeElement(
                     iconResId = R.drawable.ic_clock,
-                    text = stringResource(R.string.create_post_badge_time_limits, textTimeLimit, drawingTimeLimit),
+                    text = stringResource(
+                        R.string.create_post_badge_time_limits,
+                        textTimeLimit,
+                        drawingTimeLimit
+                    ),
                     onClick = onBadgeClick,
                 )
-                
+
 
                 if (text.isNotBlank()) {
                     Spacer(modifier = Modifier.width(8.dp))
@@ -173,7 +179,11 @@ fun PrePostElement(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     Text(
-                        text = stringResource(R.string.create_post_text_counter, text.length, CreatePostState.MAX_TEXT_LENGTH),
+                        text = stringResource(
+                            R.string.create_post_text_counter,
+                            text.length,
+                            CreatePostState.MAX_TEXT_LENGTH
+                        ),
                         textAlign = TextAlign.Center,
                         fontFamily = FontFamily(Font(R.font.nunito_bold)),
                         fontSize = 14.sp,
@@ -201,10 +211,11 @@ fun PrePostElementPreview() {
             PrePostElement(
                 name = "Alex",
 //                text = "Дфдфдф",
-        text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed lectus massa, gravida quis efficitur ut, vehicula id nulla. Phasellus placerat odio id tortor efficitur lacinia. Quisque a semper ante. In hac habitasse platea dictumst. Proin ut euismod massa. Sed sodales nibh purus, in consequat quam feugiat vitae. Curabitur scelerisque massa ac consequat luctus. In tincidunt blandit felis. In sed nulla diam. Nullam a auctor felis, ut pretium lacus.",
+                text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed lectus massa, gravida quis efficitur ut, vehicula id nulla. Phasellus placerat odio id tortor efficitur lacinia. Quisque a semper ante. In hac habitasse platea dictumst. Proin ut euismod massa. Sed sodales nibh purus, in consequat quam feugiat vitae. Curabitur scelerisque massa ac consequat luctus. In tincidunt blandit felis. In sed nulla diam. Nullam a auctor felis, ut pretium lacus.",
                 onTextChanged = {},
                 onBadgeClick = {},
                 isTextOverLimit = false,
+                onDone = {}
             )
         }
     }

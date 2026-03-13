@@ -68,6 +68,7 @@ fun CreatePostContent(
             drawingTimeLimit = state.drawingTimeLimit,
             focusRequester = focusRequester,
             modifier = Modifier.padding(horizontal = 16.dp),
+            onDone = onPostClick
         )
     }
 

@@ -10,4 +10,5 @@ sealed class PostContent {
         val imageUrl: String? = null,
         val localPath: String? = null,
     ) : PostContent()
+
 }

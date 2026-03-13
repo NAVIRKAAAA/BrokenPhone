@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
@@ -48,7 +47,39 @@ class MockPostRepository : PostRepository {
         _posts.update { list -> list.map { if (it.id == post.id) post else it } }
     }
 
-    override suspend fun createPost(post: Post) {
+    override suspend fun createPost(
+        authorId: String,
+        authorName: String,
+        avatarUrl: String?,
+        text: String,
+        maxGenerations: Int,
+        textTimeLimit: Int,
+        drawingTimeLimit: Int,
+    ) {
+        val now = System.currentTimeMillis()
+        val postId = now.toString()
+        val post = Post(
+            id = postId,
+            authorId = authorId,
+            authorName = authorName,
+            avatarUrl = avatarUrl,
+            createdAt = now,
+            updatedAt = now,
+            generation = 1,
+            maxGenerations = maxGenerations,
+            textTimeLimit = textTimeLimit,
+            drawingTimeLimit = drawingTimeLimit,
+            currentEntry = PostChainEntry(
+                parentId = postId,
+                authorId = authorId,
+                authorName = authorName,
+                avatarUrl = avatarUrl,
+                content = PostContent.Text(text = text),
+                createdAt = now,
+                updatedAt = now,
+                status = PostStatus.AVAILABLE,
+            ),
+        )
         _posts.update { list -> listOf(post) + list }
     }
 
@@ -66,8 +97,8 @@ class MockPostRepository : PostRepository {
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
                 content = PostContent.Text("Once upon a time there was a broken telephone..."),
                 createdAt = System.currentTimeMillis() - 600_000,
+                updatedAt = System.currentTimeMillis() - 600_000,
                 status = PostStatus.COMPLETED,
-                lockedBy = null,
             ),
             PostChainEntry(
                 parentId = "mock-post",
@@ -76,8 +107,8 @@ class MockPostRepository : PostRepository {
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_2.png",
                 content = PostContent.Drawing(imageUrl = "https://example.com/drawing1.png"),
                 createdAt = System.currentTimeMillis() - 500_000,
+                updatedAt = System.currentTimeMillis() - 500_000,
                 status = PostStatus.COMPLETED,
-                lockedBy = null,
             ),
             PostChainEntry(
                 parentId = "mock-post",
@@ -86,8 +117,8 @@ class MockPostRepository : PostRepository {
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_3.png",
                 content = PostContent.Text("Something about a telephone that was very broken indeed."),
                 createdAt = System.currentTimeMillis() - 400_000,
+                updatedAt = System.currentTimeMillis() - 400_000,
                 status = PostStatus.COMPLETED,
-                lockedBy = null,
             ),
             PostChainEntry(
                 parentId = "mock-post",
@@ -96,8 +127,8 @@ class MockPostRepository : PostRepository {
                 avatarUrl = "",
                 content = PostContent.Drawing(imageUrl = "https://example.com/drawing2.png"),
                 createdAt = System.currentTimeMillis() - 300_000,
+                updatedAt = System.currentTimeMillis() - 300_000,
                 status = PostStatus.COMPLETED,
-                lockedBy = null,
             ),
             PostChainEntry(
                 parentId = "mock-post",
@@ -106,8 +137,8 @@ class MockPostRepository : PostRepository {
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_5.png",
                 content = PostContent.Text("A phone? Or maybe a megaphone? Nobody really knew."),
                 createdAt = System.currentTimeMillis() - 200_000,
+                updatedAt = System.currentTimeMillis() - 200_000,
                 status = PostStatus.COMPLETED,
-                lockedBy = null,
             ),
             PostChainEntry(
                 parentId = "mock-post",
@@ -116,8 +147,8 @@ class MockPostRepository : PostRepository {
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_6.png",
                 content = PostContent.Drawing(imageUrl = "https://example.com/drawing3.png"),
                 createdAt = System.currentTimeMillis() - 160_000,
+                updatedAt = System.currentTimeMillis() - 160_000,
                 status = PostStatus.COMPLETED,
-                lockedBy = null,
             ),
             PostChainEntry(
                 parentId = "mock-post",
@@ -126,8 +157,8 @@ class MockPostRepository : PostRepository {
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_7.png",
                 content = PostContent.Text("There was a giant trumpet floating above the city."),
                 createdAt = System.currentTimeMillis() - 120_000,
+                updatedAt = System.currentTimeMillis() - 120_000,
                 status = PostStatus.COMPLETED,
-                lockedBy = null,
             ),
             PostChainEntry(
                 parentId = "mock-post",
@@ -136,8 +167,8 @@ class MockPostRepository : PostRepository {
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_8.png",
                 content = PostContent.Drawing(imageUrl = "https://example.com/drawing4.png"),
                 createdAt = System.currentTimeMillis() - 80_000,
+                updatedAt = System.currentTimeMillis() - 80_000,
                 status = PostStatus.COMPLETED,
-                lockedBy = null,
             ),
             PostChainEntry(
                 parentId = "mock-post",
@@ -146,8 +177,8 @@ class MockPostRepository : PostRepository {
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_9.png",
                 content = PostContent.Text("I think I saw a trombone, but it had legs and was running."),
                 createdAt = System.currentTimeMillis() - 40_000,
+                updatedAt = System.currentTimeMillis() - 40_000,
                 status = PostStatus.COMPLETED,
-                lockedBy = null,
             ),
             PostChainEntry(
                 parentId = "mock-post",
@@ -156,8 +187,8 @@ class MockPostRepository : PostRepository {
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_10.png",
                 content = PostContent.Drawing(imageUrl = "https://example.com/drawing5.png"),
                 createdAt = System.currentTimeMillis() - 10_000,
+                updatedAt = System.currentTimeMillis() - 10_000,
                 status = PostStatus.COMPLETED,
-                lockedBy = null,
             ),
         )
 
@@ -168,6 +199,7 @@ class MockPostRepository : PostRepository {
                 authorName = "Alice",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
                 createdAt = System.currentTimeMillis(),
+                updatedAt = System.currentTimeMillis(),
                 generation = 1,
                 maxGenerations = 10,
                 textTimeLimit = 30,
@@ -179,8 +211,8 @@ class MockPostRepository : PostRepository {
                     avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
                     content = PostContent.Text("Once upon a time there was a broken telephone..."),
                     createdAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis(),
                     status = PostStatus.AVAILABLE,
-                    lockedBy = null,
                 ),
             ),
             Post(
@@ -189,6 +221,7 @@ class MockPostRepository : PostRepository {
                 authorName = "Bob",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_2.png",
                 createdAt = System.currentTimeMillis() - 60_000,
+                updatedAt = System.currentTimeMillis() - 60_000,
                 generation = 10,
                 maxGenerations = 10,
                 textTimeLimit = 30,
@@ -200,8 +233,8 @@ class MockPostRepository : PostRepository {
                     avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_2.png",
                     content = PostContent.Text("The message got twisted somewhere along the way."),
                     createdAt = System.currentTimeMillis() - 60_000,
+                    updatedAt = System.currentTimeMillis() - 60_000,
                     status = PostStatus.AVAILABLE,
-                    lockedBy = null,
                 ),
             ),
             Post(
@@ -210,6 +243,7 @@ class MockPostRepository : PostRepository {
                 authorName = "Charlie",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_3.png",
                 createdAt = System.currentTimeMillis() - 120_000,
+                updatedAt = System.currentTimeMillis() - 120_000,
                 generation = 2,
                 maxGenerations = 10,
                 textTimeLimit = 30,
@@ -221,8 +255,8 @@ class MockPostRepository : PostRepository {
                     avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_3.png",
                     content = PostContent.Drawing(imageUrl = "https://example.com/drawing1.png"),
                     createdAt = System.currentTimeMillis() - 120_000,
+                    updatedAt = System.currentTimeMillis() - 120_000,
                     status = PostStatus.AVAILABLE,
-                    lockedBy = null,
                 ),
             ),
             Post(
@@ -231,6 +265,7 @@ class MockPostRepository : PostRepository {
                 authorName = "Diana",
                 avatarUrl = "",
                 createdAt = System.currentTimeMillis() - 180_000,
+                updatedAt = System.currentTimeMillis() - 180_000,
                 generation = 3,
                 maxGenerations = 10,
                 textTimeLimit = 45,
@@ -242,8 +277,8 @@ class MockPostRepository : PostRepository {
                     avatarUrl = "",
                     content = PostContent.Text("Nobody remembered what the original message was."),
                     createdAt = System.currentTimeMillis() - 180_000,
+                    updatedAt = System.currentTimeMillis() - 180_000,
                     status = PostStatus.IN_PROGRESS,
-                    lockedBy = "user_5",
                 ),
             ),
             Post(
@@ -252,6 +287,7 @@ class MockPostRepository : PostRepository {
                 authorName = "Eve",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_5.png",
                 createdAt = System.currentTimeMillis() - 300_000,
+                updatedAt = System.currentTimeMillis() - 300_000,
                 generation = 1,
                 maxGenerations = 5,
                 textTimeLimit = 15,
@@ -263,8 +299,8 @@ class MockPostRepository : PostRepository {
                     avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_5.png",
                     content = PostContent.Text("Something about a cat? Or was it a hat?"),
                     createdAt = System.currentTimeMillis() - 300_000,
+                    updatedAt = System.currentTimeMillis() - 300_000,
                     status = PostStatus.AVAILABLE,
-                    lockedBy = null,
                 ),
             ),
             Post(
@@ -273,6 +309,7 @@ class MockPostRepository : PostRepository {
                 authorName = "Frank",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_6.png",
                 createdAt = System.currentTimeMillis() - 600_000,
+                updatedAt = System.currentTimeMillis() - 600_000,
                 generation = 4,
                 maxGenerations = 5,
                 textTimeLimit = 15,
@@ -284,8 +321,8 @@ class MockPostRepository : PostRepository {
                     avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_6.png",
                     content = PostContent.Drawing(imageUrl = "https://example.com/drawing2.png"),
                     createdAt = System.currentTimeMillis() - 600_000,
+                    updatedAt = System.currentTimeMillis() - 600_000,
                     status = PostStatus.COMPLETED,
-                    lockedBy = null,
                 ),
             ),
         )

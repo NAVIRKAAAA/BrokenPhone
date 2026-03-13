@@ -18,7 +18,16 @@ interface PostRepository {
 
     suspend fun updatePost(post: Post)
 
-    suspend fun createPost(post: Post)
+
+    suspend fun createPost(
+        authorId: String,
+        authorName: String,
+        avatarUrl: String?,
+        text: String,
+        maxGenerations: Int,
+        textTimeLimit: Int,
+        drawingTimeLimit: Int,
+    )
 
     suspend fun deletePost(postId: String)
 

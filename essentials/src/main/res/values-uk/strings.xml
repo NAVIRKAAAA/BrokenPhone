@@ -11,4 +11,5 @@
     <string name="error_auth_unknown">Щось пішло не так. Спробуй ще раз.</string>
     <string name="error_cancelled">Час на запит вичерпано. Спробуй ще раз.</string>
     <string name="error_session_data">Не вдалося завантажити дані акаунту. Перевір з\'єднання та спробуй ще раз.</string>
+    <string name="error_unauthorized">Щоб виконати цю дію, потрібно увійти в акаунт.</string>
 </resources>

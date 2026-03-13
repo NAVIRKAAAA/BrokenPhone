@@ -2,6 +2,9 @@ package com.brokentelephone.game.features.create_post
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.brokentelephone.game.domain.handler.onError
+import com.brokentelephone.game.domain.handler.onSuccess
+import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.create_post.model.CreatePostState
 import com.brokentelephone.game.features.create_post.use_case.CreatePostUseCase
 import com.brokentelephone.game.features.profile.use_case.GetCurrentUserUseCase
@@ -22,6 +25,7 @@ sealed interface CreatePostSideEffect {
 class CreatePostViewModel(
     private val createPostUseCase: CreatePostUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CreatePostState())
@@ -34,6 +38,10 @@ class CreatePostViewModel(
         getCurrentUserUseCase()
             .onEach { user -> _state.update { it.copy(user = user) } }
             .launchIn(viewModelScope)
+    }
+
+    fun onGlobalErrorDismissed() {
+        _state.update { it.copy(globalError = null) }
     }
 
     fun onBackClick() {
@@ -75,21 +83,39 @@ class CreatePostViewModel(
     }
 
     fun onChainSettingsConfirmed(maxGenerations: Int, textTimeLimit: Int, drawingTimeLimit: Int) {
-        _state.update { it.copy(maxGenerations = maxGenerations, textTimeLimit = textTimeLimit, drawingTimeLimit = drawingTimeLimit, showChainSettings = false) }
+        _state.update {
+            it.copy(
+                maxGenerations = maxGenerations,
+                textTimeLimit = textTimeLimit,
+                drawingTimeLimit = drawingTimeLimit,
+                showChainSettings = false
+            )
+        }
     }
 
     fun onStartChain() {
         val current = _state.value
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
-            createPostUseCase(
+
+            createPostUseCase.execute(
                 text = current.text,
                 maxGenerations = current.maxGenerations,
                 textTimeLimit = current.textTimeLimit,
                 drawingTimeLimit = current.drawingTimeLimit,
-            )
-            _state.update { it.copy(isLoading = false, showStartNewChain = false) }
-            _sideEffect.send(CreatePostSideEffect.PostCreated)
+            ).onSuccess {
+                _state.update { it.copy(isLoading = false, showStartNewChain = false) }
+                _sideEffect.send(CreatePostSideEffect.PostCreated)
+            }.onError { error ->
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        showStartNewChain = false,
+                        globalError = exceptionToMessageMapper.map(error)
+                    )
+                }
+            }
+
         }
     }
 

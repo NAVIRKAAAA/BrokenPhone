@@ -12,6 +12,6 @@ data class PostChainEntry(
     val avatarUrl: String?,
     val content: PostContent,
     val createdAt: Long,
+    val updatedAt: Long,
     val status: PostStatus,
-    val lockedBy: String?,
 )

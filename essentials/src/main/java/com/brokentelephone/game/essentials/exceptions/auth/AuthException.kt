@@ -53,3 +53,8 @@ class SessionDataException : AppException("Session found but user data could not
     override fun getLocalizedMessage(stringProvider: StringProvider): String =
         stringProvider.getString(R.string.error_session_data)
 }
+
+class UnauthorizedException : AppException("User is not authorized") {
+    override fun getLocalizedMessage(stringProvider: StringProvider): String =
+        stringProvider.getString(R.string.error_unauthorized)
+}

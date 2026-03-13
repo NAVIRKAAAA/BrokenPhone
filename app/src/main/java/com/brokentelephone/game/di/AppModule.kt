@@ -7,9 +7,9 @@ import com.brokentelephone.game.data.repository.AuthRepositoryImpl
 import com.brokentelephone.game.data.repository.MockAppInfoRepositoryImpl
 import com.brokentelephone.game.data.repository.MockGamesRepositoryImpl
 import com.brokentelephone.game.data.repository.MockNotInterestedRepositoryImpl
-import com.brokentelephone.game.data.repository.MockPostRepository
 import com.brokentelephone.game.data.repository.MockReportRepositoryImpl
 import com.brokentelephone.game.data.repository.MockUserSettingsRepositoryImpl
+import com.brokentelephone.game.data.repository.PostsRepositoryImpl
 import com.brokentelephone.game.data.repository.UsersRepositoryImpl
 import com.brokentelephone.game.data.session.UserSessionImpl
 import com.brokentelephone.game.domain.handler.ApiHandler
@@ -100,7 +100,7 @@ import org.koin.dsl.module
 val appModule = module {
     single<LinkProvider> { MockLinkProviderImpl() }
     single<AppInfoRepository> { MockAppInfoRepositoryImpl() }
-    single<PostRepository> { MockPostRepository() }
+    single<PostRepository> { PostsRepositoryImpl(get()) }
     single<AuthRepository> { AuthRepositoryImpl(get()) }
     single { FirebaseAuth.getInstance() }
     single {

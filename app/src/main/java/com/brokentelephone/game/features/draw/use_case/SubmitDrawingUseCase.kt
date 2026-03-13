@@ -21,17 +21,19 @@ class SubmitDrawingUseCase(
 
         delay(1500)
 
+        val now = System.currentTimeMillis()
         val updatedPost = post.copy(
             generation = post.generation + 1,
+            updatedAt = now,
             currentEntry = PostChainEntry(
                 parentId = postId,
                 authorId = user.id,
                 authorName = user.username,
                 avatarUrl = user.avatarUrl,
                 content = PostContent.Drawing(localPath = localPath),
-                createdAt = System.currentTimeMillis(),
+                createdAt = now,
+                updatedAt = now,
                 status = PostStatus.AVAILABLE,
-                lockedBy = null,
             )
         )
         repository.updatePost(updatedPost)

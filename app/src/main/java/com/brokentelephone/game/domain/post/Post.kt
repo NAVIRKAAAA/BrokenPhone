@@ -6,6 +6,7 @@ data class Post(
     val authorName: String,
     val avatarUrl: String?,
     val createdAt: Long,
+    val updatedAt: Long,
 
     // Chain info
     val generation: Int,

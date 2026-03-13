@@ -9,6 +9,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.brokentelephone.game.R
 import com.brokentelephone.game.core.dialog.ConfirmDialog
+import com.brokentelephone.game.core.dialog.ErrorDialog
 import com.brokentelephone.game.features.create_post.content.CreatePostContent
 import com.brokentelephone.game.features.create_post.dialog.chain_settings.ChainSettingsDialog
 import com.brokentelephone.game.features.create_post.dialog.start_new_chain.StartNewChainDialog
@@ -45,6 +46,13 @@ fun CreatePostScreen(
         onBackClick = viewModel::onBackClick,
         modifier = modifier
     )
+
+    state.globalError?.let { message ->
+        ErrorDialog(
+            body = message,
+            onOkClick = viewModel::onGlobalErrorDismissed,
+        )
+    }
 
     if (state.showDiscardDialog) {
         ConfirmDialog(
