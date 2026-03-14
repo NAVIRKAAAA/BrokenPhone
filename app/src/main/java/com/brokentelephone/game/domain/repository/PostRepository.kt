@@ -11,9 +11,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface PostRepository {
 
-    suspend fun loadInitialPosts(pageSize: Int, sort: DashboardSort): PostsPage
+    suspend fun loadInitialPosts(pageSize: Int, sort: DashboardSort, userId: String): PostsPage
 
-    suspend fun loadNextPosts(afterDoc: DocumentSnapshot, pageSize: Int, sort: DashboardSort): PostsPage
+    suspend fun loadNextPosts(afterDoc: DocumentSnapshot, pageSize: Int, sort: DashboardSort, userId: String): PostsPage
 
     fun getPostById(id: String): Flow<Post>
 

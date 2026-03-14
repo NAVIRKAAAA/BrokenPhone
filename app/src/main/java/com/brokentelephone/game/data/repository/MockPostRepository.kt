@@ -15,14 +15,19 @@ import kotlinx.coroutines.flow.flowOf
 
 class MockPostRepository : PostRepository {
 
-    override suspend fun loadInitialPosts(pageSize: Int, sort: DashboardSort): PostsPage {
+    override suspend fun loadInitialPosts(
+        pageSize: Int,
+        sort: DashboardSort,
+        userId: String
+    ): PostsPage {
         return PostsPage(listOf(), null)
     }
 
     override suspend fun loadNextPosts(
         afterDoc: DocumentSnapshot,
         pageSize: Int,
-        sort: DashboardSort
+        sort: DashboardSort,
+        userId: String
     ): PostsPage {
         return PostsPage(listOf(), null)
     }

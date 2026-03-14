@@ -66,6 +66,7 @@ class ProfileViewModel(
 
         viewModelScope.launch {
             _state.update { it.copy(isPostsLoading = true, isContributionsLoading = true) }
+
             val posts = async { fetchMyPosts() }
             val contributions = async { fetchContributions() }
             posts.await()

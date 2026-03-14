@@ -35,10 +35,11 @@ class PostsRepositoryImpl(
     override suspend fun loadInitialPosts(
         pageSize: Int,
         sort: DashboardSort,
+        userId: String
     ): PostsPage {
         try {
             val snapshot = collection
-                .whereIn(FIELD_STATUS, ACTIVE_STATUSES)
+                .whereNotEqualTo(FIELD_AUTHOR_ID, userId)
                 .applySorting(sort)
                 .limit(pageSize.toLong())
                 .get()
@@ -60,9 +61,11 @@ class PostsRepositoryImpl(
         afterDoc: DocumentSnapshot,
         pageSize: Int,
         sort: DashboardSort,
+        userId: String
     ): PostsPage {
         try {
             val snapshot = collection
+                .whereNotEqualTo(FIELD_AUTHOR_ID, userId)
                 .applySorting(sort)
                 .startAfter(afterDoc)
                 .limit(pageSize.toLong())
@@ -183,6 +186,7 @@ class PostsRepositoryImpl(
             content = uploadedContent,
             generation = post.generation + 1,
             updatedAt = now,
+            status = PostStatus.AVAILABLE
         )
         val contributionRef = collection.firestore
             .collection(USERS_COLLECTION)
@@ -274,6 +278,7 @@ class PostsRepositoryImpl(
     }
 
     private companion object {
+        const val FIELD_AUTHOR_ID = "authorId"
         const val FIELD_CREATED_AT = "createdAt"
         const val FIELD_UPDATED_AT = "updatedAt"
         const val FIELD_GENERATION = "generation"
