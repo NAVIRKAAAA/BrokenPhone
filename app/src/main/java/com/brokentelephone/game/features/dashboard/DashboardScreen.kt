@@ -10,10 +10,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.brokentelephone.game.R
 import com.brokentelephone.game.core.bottom_sheet.post_bottom_sheet.PostBottomSheet
@@ -23,6 +26,7 @@ import com.brokentelephone.game.core.dialog.ConfirmDialog
 import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBarViewModel
 import com.brokentelephone.game.features.dashboard.content.DashboardContent
 import com.brokentelephone.game.features.dashboard.model.DashboardSideEffect
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -39,8 +43,9 @@ fun DashboardScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) {
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.loadInitialPosts()
     }
 
@@ -56,7 +61,9 @@ fun DashboardScreen(
                     clipboard.setPrimaryClip(ClipData.newPlainText("post_link", effect.link))
                     Toast.makeText(context, context.getString(R.string.common_toast_link_copied), Toast.LENGTH_SHORT).show()
                 }
-                DashboardSideEffect.ScrollToTop -> listState.scrollToItem(0)
+                DashboardSideEffect.ScrollToTop -> {
+                    scope.launch { listState.scrollToItem(0) }
+                }
             }
         }
     }
@@ -88,6 +95,7 @@ fun DashboardScreen(
         },
         onRefresh = viewModel::onRefresh,
         onLoadMore = viewModel::loadNextPosts,
+        onTitleClick = { scope.launch { listState.animateScrollToItem(0) } },
         modifier = modifier,
         onSortSelected = viewModel::onSortSelected
     )

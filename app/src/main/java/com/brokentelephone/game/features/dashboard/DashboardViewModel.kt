@@ -61,7 +61,7 @@ class DashboardViewModel(
         viewModelScope.launch {
             Log.d("LOG_TAG", "loadInitialPosts()")
             _state.update { it.copy(isInitialLoading = true) }
-            loadInitialPostsUseCase.execute(INITIAL_PAGE_SIZE)
+            loadInitialPostsUseCase.execute(INITIAL_PAGE_SIZE, state.value.selectedSort)
                 .onSuccess { page ->
                     Log.d("LOG_TAG", "loadInitialPosts: onSuccess (${page.posts.size})")
                     lastLoadedAt = System.currentTimeMillis()
@@ -73,6 +73,9 @@ class DashboardViewModel(
                             hasMore = page.posts.size >= INITIAL_PAGE_SIZE,
                         )
                     }
+
+                    delay(150)
+
                     _sideEffects.send(DashboardSideEffect.ScrollToTop)
                 }
                 .onError {
@@ -91,7 +94,7 @@ class DashboardViewModel(
 
             delay(150)
 
-            loadNextPostsUseCase.execute(docRef, DEFAULT_PAGE_SIZE)
+            loadNextPostsUseCase.execute(docRef, DEFAULT_PAGE_SIZE, state.value.selectedSort)
                 .onSuccess { page ->
                     Log.d("LOG_TAG", "loadNextPosts: onSuccess (${page.posts.size})")
                     lastDocRef = page.lastDocRef
@@ -116,7 +119,7 @@ class DashboardViewModel(
 
             delay(150)
 
-            loadInitialPostsUseCase.execute(INITIAL_PAGE_SIZE)
+            loadInitialPostsUseCase.execute(INITIAL_PAGE_SIZE, state.value.selectedSort)
                 .onSuccess { page ->
                     Log.d("LOG_TAG", "onRefresh: onSuccess (${page.posts.size})")
                     lastLoadedAt = System.currentTimeMillis()
@@ -128,6 +131,9 @@ class DashboardViewModel(
                             hasMore = page.posts.size >= INITIAL_PAGE_SIZE,
                         )
                     }
+
+                    delay(150)
+
                     _sideEffects.send(DashboardSideEffect.ScrollToTop)
                 }
                 .onError {
@@ -143,6 +149,8 @@ class DashboardViewModel(
 
     fun onSortSelected(sort: DashboardSort) {
         _state.update { it.copy(selectedSort = sort) }
+        lastLoadedAt = 0L
+        loadInitialPosts()
     }
 
     fun onCopyLinkClick() {

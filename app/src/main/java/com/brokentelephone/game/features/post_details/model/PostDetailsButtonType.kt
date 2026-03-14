@@ -34,7 +34,8 @@ enum class PostDetailsButtonType(
 
     OWN_POST(
         buttonTextResId = R.string.post_details_button_continue,
-        isEnabled = false,
+//        isEnabled = false,
+        isEnabled = true,
         descriptionResId = R.string.post_details_description_own_post,
     ),
 

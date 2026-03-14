@@ -11,6 +11,7 @@ data class DescribeDrawingState(
     val remainingSeconds: Int = 0,
     val isTimerExpired: Boolean = false,
     val showTimesUpDialog: Boolean = false,
+    val globalError: String? = null,
 ) {
     val isTextOverLimit: Boolean get() = text.length > MAX_TEXT_LENGTH
     val hasChanges: Boolean get() = text.isNotEmpty()

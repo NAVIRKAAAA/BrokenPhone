@@ -1,41 +1,31 @@
 package com.brokentelephone.game.features.draw.use_case
 
-import com.brokentelephone.game.domain.post.PostChainEntry
+import com.brokentelephone.game.domain.handler.ApiHandler
+import com.brokentelephone.game.domain.handler.AppResult
 import com.brokentelephone.game.domain.post.PostContent
-import com.brokentelephone.game.domain.post.PostStatus
 import com.brokentelephone.game.domain.repository.PostRepository
-import com.brokentelephone.game.domain.user.AuthState
 import com.brokentelephone.game.domain.user.UserSession
-import kotlinx.coroutines.delay
+import com.brokentelephone.game.essentials.exceptions.auth.UnauthorizedException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 
 class SubmitDrawingUseCase(
     private val repository: PostRepository,
     private val userSession: UserSession,
+    private val apiHandler: ApiHandler
 ) {
 
-    suspend operator fun invoke(postId: String, localPath: String) {
-        val authState = userSession.authState.first()
-        val user = (authState as? AuthState.Auth)?.user ?: return
-        val post = repository.getPostById(postId).first() ?: return
+    suspend fun execute(postId: String, localPath: String) : AppResult<Unit> {
+        return apiHandler.handle(Dispatchers.IO) {
+            val user = userSession.authState.first().getUserOrNull() ?: throw UnauthorizedException()
 
-        delay(1500)
-
-        val now = System.currentTimeMillis()
-        val updatedPost = post.copy(
-            generation = post.generation + 1,
-            updatedAt = now,
-            currentEntry = PostChainEntry(
-                parentId = postId,
+            repository.submitContinuation(
+                postId = postId,
                 authorId = user.id,
                 authorName = user.username,
                 avatarUrl = user.avatarUrl,
                 content = PostContent.Drawing(localPath = localPath),
-                createdAt = now,
-                updatedAt = now,
-                status = PostStatus.AVAILABLE,
             )
-        )
-        repository.updatePost(updatedPost)
+        }
     }
 }

@@ -3,14 +3,19 @@ package com.brokentelephone.game.features.describe_drawing
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.core.timer.CountdownTimer
+import com.brokentelephone.game.domain.handler.onError
+import com.brokentelephone.game.domain.handler.onSuccess
+import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.describe_drawing.model.DescribeDrawingSideEffect
 import com.brokentelephone.game.features.describe_drawing.model.DescribeDrawingState
 import com.brokentelephone.game.features.describe_drawing.use_case.SubmitDescriptionUseCase
 import com.brokentelephone.game.features.post_details.use_case.GetPostByIdUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -22,6 +27,7 @@ class DescribeDrawingViewModel(
     private val getPostByIdUseCase: GetPostByIdUseCase,
     private val submitDescriptionUseCase: SubmitDescriptionUseCase,
     private val countdownTimer: CountdownTimer,
+    private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(DescribeDrawingState())
@@ -33,14 +39,13 @@ class DescribeDrawingViewModel(
     private var timerJob: Job? = null
 
     init {
-        getPostByIdUseCase(postId)
-            .onEach { postUi ->
-                _state.update { it.copy(postUi = postUi) }
-                if (postUi != null && timerJob == null) {
-                    startTimer(postUi.nextTimeLimit)
-                }
-            }
-            .launchIn(viewModelScope)
+        viewModelScope.launch { loadPost() }
+    }
+
+    private suspend fun loadPost() {
+        val postUi = getPostByIdUseCase(postId).firstOrNull() ?: return
+        _state.update { it.copy(postUi = postUi) }
+        startTimer(postUi.nextTimeLimit)
     }
 
     private fun startTimer(timeLimit: Int) {
@@ -104,15 +109,32 @@ class DescribeDrawingViewModel(
         timerJob?.cancel()
         _state.update { it.copy(showPostConfirmDialog = false, isPosting = true) }
         viewModelScope.launch {
-            submitDescriptionUseCase(postId, text)
+            submitDescriptionUseCase.execute(postId, text)
+                .onSuccess {
+                    _state.update { it.copy(isPosting = false) }
 
-            _state.update { it.copy(isPosting = false) }
+                    delay(150)
 
-            _sideEffects.send(DescribeDrawingSideEffect.PostCreated)
+                    _sideEffects.send(DescribeDrawingSideEffect.PostCreated)
+                }
+                .onError { error ->
+                    val remaining = state.value.remainingSeconds
+                    _state.update {
+                        it.copy(
+                            isPosting = false,
+                            globalError = exceptionToMessageMapper.map(error),
+                        )
+                    }
+                    startTimer(remaining)
+                }
         }
     }
 
     fun onPostDismiss() {
         _state.update { it.copy(showPostConfirmDialog = false) }
+    }
+
+    fun onGlobalErrorDismiss() {
+        _state.update { it.copy(globalError = null) }
     }
 }

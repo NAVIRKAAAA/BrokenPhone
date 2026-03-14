@@ -44,6 +44,7 @@ fun DashboardContent(
     onPostClick: (postId: String) -> Unit,
     onMoreClick: (postId: String) -> Unit,
     onSortSelected: (DashboardSort) -> Unit,
+    onTitleClick: () -> Unit,
     onRefresh: () -> Unit,
     onLoadMore: () -> Unit,
     modifier: Modifier = Modifier,
@@ -59,6 +60,7 @@ fun DashboardContent(
             name = state.user?.username ?: "",
             selectedSort = state.selectedSort,
             onSortSelected = onSortSelected,
+            onTitleClick = onTitleClick,
         )
 
         if (state.isInitialLoading && state.posts.isEmpty()) {
@@ -162,6 +164,7 @@ fun DashboardContentPreview() {
             onPostClick = {},
             onMoreClick = {},
             onSortSelected = {},
+            onTitleClick = {},
             onRefresh = {},
             onLoadMore = {},
             listState = rememberLazyListState()

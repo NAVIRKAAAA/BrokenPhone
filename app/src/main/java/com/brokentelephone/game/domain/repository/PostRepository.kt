@@ -3,14 +3,16 @@ package com.brokentelephone.game.domain.repository
 import com.brokentelephone.game.data.model.PostsPage
 import com.brokentelephone.game.domain.post.Post
 import com.brokentelephone.game.domain.post.PostChainEntry
+import com.brokentelephone.game.domain.post.PostContent
+import com.brokentelephone.game.features.dashboard.model.DashboardSort
 import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.flow.Flow
 
 interface PostRepository {
 
-    suspend fun loadInitialPosts(pageSize: Int): PostsPage
+    suspend fun loadInitialPosts(pageSize: Int, sort: DashboardSort): PostsPage
 
-    suspend fun loadNextPosts(afterDoc: DocumentSnapshot, pageSize: Int): PostsPage
+    suspend fun loadNextPosts(afterDoc: DocumentSnapshot, pageSize: Int, sort: DashboardSort): PostsPage
 
     fun getPostById(id: String): Flow<Post?>
 
@@ -21,6 +23,14 @@ interface PostRepository {
     fun getUserContributions(userId: String): Flow<List<Post>>
 
     suspend fun updatePost(post: Post)
+
+    suspend fun submitContinuation(
+        postId: String,
+        authorId: String,
+        authorName: String,
+        avatarUrl: String?,
+        content: PostContent,
+    )
 
     suspend fun createPost(
         authorId: String,

@@ -1,6 +1,8 @@
 package com.brokentelephone.game.features.dashboard.content
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -21,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -37,6 +40,7 @@ fun DashboardTopBar(
     name: String,
     selectedSort: DashboardSort,
     onSortSelected: (DashboardSort) -> Unit,
+    onTitleClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var isSortMenuVisible by remember { mutableStateOf(false) }
@@ -57,7 +61,14 @@ fun DashboardTopBar(
             color = MaterialTheme.colorScheme.primary,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    role = Role.Button,
+                    onClick = onTitleClick,
+                )
         )
 
         Box {
@@ -114,6 +125,7 @@ fun DashboardTopBarPreview() {
                 name = "Alex",
                 selectedSort = DashboardSort.JUST_STARTED,
                 onSortSelected = {},
+                onTitleClick = {},
             )
         }
     }

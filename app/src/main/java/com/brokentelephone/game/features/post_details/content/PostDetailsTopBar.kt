@@ -22,12 +22,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.R
+import com.brokentelephone.game.core.shimmer.shimmer
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 
 @Composable
 fun PostDetailsTopBar(
     onBackClick: () -> Unit = {},
     onMoreClick: () -> Unit = {},
+    isLoading: Boolean = false,
     modifier: Modifier = Modifier
 ) {
 
@@ -59,13 +61,15 @@ fun PostDetailsTopBar(
         )
 
         IconButton(
-            onClick = onMoreClick
+            onClick = onMoreClick,
+            enabled = !isLoading,
         ) {
 
             Icon(
                 painter = painterResource(R.drawable.ic_more_vert),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onBackground,
+                modifier = if (isLoading) Modifier.shimmer(cornerRadius = 4.dp) else Modifier,
             )
 
         }

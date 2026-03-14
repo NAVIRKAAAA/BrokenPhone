@@ -58,3 +58,13 @@ class UnauthorizedException : AppException("User is not authorized") {
     override fun getLocalizedMessage(stringProvider: StringProvider): String =
         stringProvider.getString(R.string.error_unauthorized)
 }
+
+class ImageUploadException : AppException("Failed to upload image") {
+    override fun getLocalizedMessage(stringProvider: StringProvider): String =
+        stringProvider.getString(R.string.error_image_upload)
+}
+
+class PostNotFoundException : AppException("Post not found") {
+    override fun getLocalizedMessage(stringProvider: StringProvider): String =
+        stringProvider.getString(R.string.error_post_not_found)
+}

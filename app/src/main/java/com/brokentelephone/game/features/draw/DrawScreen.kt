@@ -10,6 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.brokentelephone.game.R
 import com.brokentelephone.game.core.dialog.ConfirmDialog
+import com.brokentelephone.game.core.dialog.ErrorDialog
 import com.brokentelephone.game.core.dialog.TimesUpDialog
 import com.brokentelephone.game.features.draw.content.DrawContent
 import com.brokentelephone.game.features.draw.model.DrawSideEffect
@@ -75,6 +76,13 @@ fun DrawScreen(
         TimesUpDialog(
             message = stringResource(R.string.draw_times_up_message),
             onGotItClick = { viewModel.onDrawAction(DrawingAction.OnTimesUpGotIt) },
+        )
+    }
+
+    state.globalError?.let { message ->
+        ErrorDialog(
+            body = message,
+            onOkClick = { viewModel.onDrawAction(DrawingAction.OnGlobalErrorDismiss) },
         )
     }
 }

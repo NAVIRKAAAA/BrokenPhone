@@ -6,6 +6,7 @@ import com.brokentelephone.game.domain.post.PostChainEntry
 import com.brokentelephone.game.domain.post.PostContent
 import com.brokentelephone.game.domain.post.PostStatus
 import com.brokentelephone.game.domain.repository.PostRepository
+import com.brokentelephone.game.features.dashboard.model.DashboardSort
 import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -14,13 +15,14 @@ import kotlinx.coroutines.flow.flowOf
 
 class MockPostRepository : PostRepository {
 
-    override suspend fun loadInitialPosts(pageSize: Int): PostsPage {
+    override suspend fun loadInitialPosts(pageSize: Int, sort: DashboardSort): PostsPage {
         return PostsPage(listOf(), null)
     }
 
     override suspend fun loadNextPosts(
         afterDoc: DocumentSnapshot,
-        pageSize: Int
+        pageSize: Int,
+        sort: DashboardSort
     ): PostsPage {
         return PostsPage(listOf(), null)
     }
@@ -47,6 +49,16 @@ class MockPostRepository : PostRepository {
 
     override suspend fun updatePost(post: Post) {
 //        _posts.update { list -> list.map { if (it.id == post.id) post else it } }
+    }
+
+    override suspend fun submitContinuation(
+        postId: String,
+        authorId: String,
+        authorName: String,
+        avatarUrl: String?,
+        content: PostContent
+    ) {
+        return
     }
 
     override suspend fun createPost(

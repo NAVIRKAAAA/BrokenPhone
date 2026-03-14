@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,11 +21,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.R
+import com.brokentelephone.game.core.shimmer.shimmer
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.data.repository.MockPostRepository
 import com.brokentelephone.game.domain.post.PostContent
 import com.brokentelephone.game.domain.post.PostStatus
-import com.brokentelephone.game.features.dashboard.model.toUi
 import com.brokentelephone.game.features.post_details.model.PostDetailsButtonType
 import com.brokentelephone.game.features.post_details.model.PostDetailsState
 
@@ -51,11 +49,36 @@ fun PostDetailsContent(
         PostDetailsTopBar(
             onBackClick = onBackClick,
             onMoreClick = onMoreClick,
+            isLoading = post == null,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (post != null) {
+        if (post == null) {
+            PostDetailsElementShimmer(
+                content = PostContent.Text(""),
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            PostDetailsButtonShimmer()
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(
+                text = "You have 60 seconds to draw!",
+                fontFamily = FontFamily(Font(R.font.nunito_regular)),
+                fontSize = 12.sp,
+                lineHeight = 16.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                modifier = Modifier.shimmer(cornerRadius = 4.dp)
+            )
+
+        } else {
             PostDetailsElement(
                 post = post,
                 isUsersPost = state.isCurrentUserPost,
@@ -91,9 +114,9 @@ fun PostDetailsContent(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
             )
-
-            Spacer(modifier = Modifier.height(32.dp).navigationBarsPadding())
         }
+
+        Spacer(modifier = Modifier.height(32.dp).navigationBarsPadding())
     }
 
 }
@@ -109,11 +132,11 @@ fun PostDetailsContentPreview() {
         ) {
             PostDetailsContent(
                 state = PostDetailsState(
-                    MockPostRepository.mockList.first().toUi().copy(
-                        status = PostStatus.AVAILABLE,
-                        generation = 4,
-                        maxGenerations = 10
-                    ),
+//                    MockPostRepository.mockList[2].toUi().copy(
+//                        status = PostStatus.AVAILABLE,
+//                        generation = 4,
+//                        maxGenerations = 10
+//                    ),
                     isContinueLoading = false
                 ),
                 onContinueClick = {},

@@ -19,4 +19,5 @@ sealed interface DrawingAction {
     data object OnDiscardConfirm: DrawingAction
     data object OnDiscardDismiss: DrawingAction
     data object OnTimesUpGotIt: DrawingAction
+    data object OnGlobalErrorDismiss: DrawingAction
 }

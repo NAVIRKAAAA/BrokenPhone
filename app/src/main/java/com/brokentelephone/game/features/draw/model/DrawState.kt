@@ -18,6 +18,7 @@ data class DrawState(
     val remainingSeconds: Int = 0,
     val isTimerExpired: Boolean = false,
     val showTimesUpDialog: Boolean = false,
+    val globalError: String? = null,
 ) {
     val canUndo: Boolean get() = paths.isNotEmpty()
     val canRedo: Boolean get() = redoPaths.isNotEmpty()

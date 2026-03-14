@@ -12,4 +12,6 @@
     <string name="error_cancelled">Request timed out. Please try again.</string>
     <string name="error_session_data">Couldn\'t load your account data. Please check your connection and try again.</string>
     <string name="error_unauthorized">You need to be signed in to perform this action.</string>
+    <string name="error_image_upload">Failed to upload image. Please try again.</string>
+    <string name="error_post_not_found">Post not found.</string>
 </resources>

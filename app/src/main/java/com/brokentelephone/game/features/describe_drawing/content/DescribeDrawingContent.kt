@@ -153,6 +153,7 @@ fun DescribeDrawingContent(
                         keyboardActions = KeyboardActions(
                             onDone = {
                                 focusManager.clearFocus()
+                                onPostClick()
                             }
                         ),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),

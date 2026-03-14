@@ -1,6 +1,8 @@
 package com.brokentelephone.game.features.post_details.content
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,9 +23,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.R
+import com.brokentelephone.game.core.modifier.hidden
+import com.brokentelephone.game.core.shimmer.shimmer
+import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.features.post_details.model.PostDetailsButtonType
 
@@ -74,6 +80,44 @@ fun PostDetailsButton(
                     lineHeight = 24.sp,
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun PostDetailsButtonShimmer(
+    modifier: Modifier = Modifier,
+) {
+    Button(
+        onClick = {},
+        modifier = modifier
+            .fillMaxWidth(0.6f)
+            .height(48.dp)
+            .padding(horizontal = 16.dp)
+            .shimmer(cornerRadius = 32.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+        ),
+        enabled = false,
+        shape = RoundedCornerShape(32.dp),
+        contentPadding = PaddingValues(),
+    ) {
+        Text(
+            text = "Continue",
+            fontFamily = FontFamily(Font(R.font.nunito_bold)),
+            fontSize = 16.sp,
+            lineHeight = 24.sp,
+            modifier = Modifier.hidden()
+        )
+    }
+}
+
+@Preview
+@Composable
+fun PostDetailsButtonShimmerPreview() {
+    BrokenTelephoneTheme(darkTheme = true) {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            PostDetailsButtonShimmer()
         }
     }
 }

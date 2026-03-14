@@ -15,6 +15,7 @@ import com.brokentelephone.game.features.post_details.use_case.NotInterestedUseC
 import com.brokentelephone.game.features.post_details.use_case.ReportPostUseCase
 import com.brokentelephone.game.features.profile.use_case.GetCurrentUserUseCase
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -41,22 +42,31 @@ class PostDetailsViewModel(
     private val _sideEffects = Channel<PostDetailsSideEffect>(Channel.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
 
-    private var currentUserId: String? = null
-
     init {
         getCurrentUserUseCase()
-            .onEach { user -> currentUserId = user?.id }
+            .onEach { user ->
+                _state.update { it.copy(userUi = user,) }
+            }
             .launchIn(viewModelScope)
 
         getPostByIdUseCase(postId)
-            .onEach { postUi -> _state.update { it.copy(postUi = postUi, isCurrentUserPost = postUi?.authorId == currentUserId) } }
+            .onEach { postUi ->
+                delay(150)
+                _state.update { it.copy(postUi = postUi) }
+            }
             .launchIn(viewModelScope)
     }
 
     fun onCopyLinkClick() {
         val link = getPostLinkByIdUseCase(postId)
         _state.update { it.copy(isBottomSheetVisible = false) }
-        viewModelScope.launch { _sideEffects.send(PostDetailsSideEffect.ShowCopyLinkSuccessToast(link)) }
+        viewModelScope.launch {
+            _sideEffects.send(
+                PostDetailsSideEffect.ShowCopyLinkSuccessToast(
+                    link
+                )
+            )
+        }
     }
 
     fun onMoreClick() {

@@ -12,6 +12,7 @@ import com.brokentelephone.game.data.repository.MockUserSettingsRepositoryImpl
 import com.brokentelephone.game.data.repository.PostsRepositoryImpl
 import com.brokentelephone.game.data.repository.UsersRepositoryImpl
 import com.brokentelephone.game.data.session.UserSessionImpl
+import com.brokentelephone.game.data.storage.FirebaseImageStorage
 import com.brokentelephone.game.domain.handler.ApiHandler
 import com.brokentelephone.game.domain.link.LinkProvider
 import com.brokentelephone.game.domain.repository.AppInfoRepository
@@ -22,6 +23,7 @@ import com.brokentelephone.game.domain.repository.PostRepository
 import com.brokentelephone.game.domain.repository.ReportRepository
 import com.brokentelephone.game.domain.repository.UserSettingsRepository
 import com.brokentelephone.game.domain.repository.UsersRepository
+import com.brokentelephone.game.domain.storage.ImageStorage
 import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.features.account_settings.AccountSettingsViewModel
 import com.brokentelephone.game.features.account_settings.use_case.DeleteAccountUseCase
@@ -93,6 +95,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestoreSettings
 import com.google.firebase.firestore.memoryCacheSettings
+import com.google.firebase.storage.FirebaseStorage
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModelOf
@@ -101,7 +104,9 @@ import org.koin.dsl.module
 val appModule = module {
     single<LinkProvider> { MockLinkProviderImpl() }
     single<AppInfoRepository> { MockAppInfoRepositoryImpl() }
-    single<PostRepository> { PostsRepositoryImpl(get()) }
+    single { FirebaseStorage.getInstance() }
+    single<ImageStorage> { FirebaseImageStorage(get()) }
+    single<PostRepository> { PostsRepositoryImpl(get(), get()) }
     single<AuthRepository> { AuthRepositoryImpl(get()) }
     single { FirebaseAuth.getInstance() }
     single {
