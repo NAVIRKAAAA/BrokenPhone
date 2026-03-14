@@ -33,9 +33,11 @@ class UserSessionImpl(
         val currentUser = firebaseAuth.currentUser
         if (currentUser != null) {
             try {
-                val snapshot = firestore.collection(COLLECTION_USERS).document(currentUser.uid).get().await()
+                val snapshot =
+                    firestore.collection(COLLECTION_USERS).document(currentUser.uid).get().await()
                 val user = snapshot.data?.let { User.fromMap(it) } ?: throw SessionDataException()
-                _authState.value = if (currentUser.isAnonymous) AuthState.Guest(user) else AuthState.Auth(user)
+                _authState.value =
+                    if (currentUser.isAnonymous) AuthState.Guest(user) else AuthState.Auth(user)
             } catch (e: SessionDataException) {
                 throw e
             } catch (_: Exception) {
@@ -74,7 +76,12 @@ class UserSessionImpl(
         try {
             firestore.collection(COLLECTION_USERS)
                 .document(uid)
-                .update(User.FIELD_USERNAME, username, User.FIELD_UPDATED_AT, System.currentTimeMillis())
+                .update(
+                    User.FIELD_USERNAME,
+                    username,
+                    User.FIELD_UPDATED_AT,
+                    System.currentTimeMillis()
+                )
                 .await()
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
@@ -82,12 +89,18 @@ class UserSessionImpl(
             throw UnknownAuthException()
         }
     }
+
     override suspend fun updateAvatar(avatarUrl: String) {
         val uid = firebaseAuth.currentUser?.uid ?: return
         try {
             firestore.collection(COLLECTION_USERS)
                 .document(uid)
-                .update(User.FIELD_AVATAR_URL, avatarUrl, User.FIELD_UPDATED_AT, System.currentTimeMillis())
+                .update(
+                    User.FIELD_AVATAR_URL,
+                    avatarUrl,
+                    User.FIELD_UPDATED_AT,
+                    System.currentTimeMillis()
+                )
                 .await()
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
@@ -95,6 +108,7 @@ class UserSessionImpl(
             throw UnknownAuthException()
         }
     }
+
     override suspend fun completeAvatarStep(avatarUrl: String) {
         val uid = firebaseAuth.currentUser?.uid ?: return
         try {

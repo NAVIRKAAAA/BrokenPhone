@@ -54,6 +54,10 @@ class MainActivity : ComponentActivity() {
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
+//        lifecycleScope.launch(Dispatchers.IO) {
+//            FirestoreTestDataSeeder(FirebaseFirestore.getInstance()).seedPosts(100)
+//        }
+
         setContent {
             val state by mainViewModel.state.collectAsStateWithLifecycle()
             val navController = rememberNavController()

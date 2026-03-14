@@ -2,8 +2,8 @@ package com.brokentelephone.game.features.profile.content
 
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -55,8 +55,7 @@ fun ProfilePostsPage(
 
     LazyColumn(
         state = listState,
-        modifier = modifier,
-        contentPadding = PaddingValues(vertical = 16.dp),
+        modifier = modifier.fillMaxSize(),
     ) {
         itemsIndexed(
             items = posts,

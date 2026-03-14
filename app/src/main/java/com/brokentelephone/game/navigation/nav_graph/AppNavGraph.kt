@@ -10,6 +10,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -24,6 +25,7 @@ import com.brokentelephone.game.features.choose_avatar.ChooseAvatarScreen
 import com.brokentelephone.game.features.choose_username.ChooseUsernameScreen
 import com.brokentelephone.game.features.create_post.CreatePostScreen
 import com.brokentelephone.game.features.dashboard.DashboardScreen
+import com.brokentelephone.game.features.dashboard.DashboardViewModel
 import com.brokentelephone.game.features.describe_drawing.DescribeDrawingScreen
 import com.brokentelephone.game.features.draw.DrawScreen
 import com.brokentelephone.game.features.edit_avatar.EditAvatarScreen
@@ -44,6 +46,8 @@ import com.brokentelephone.game.navigation.utils.navigateSingle
 import com.brokentelephone.game.navigation.utils.safePopBackStack
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+
+private const val KEY_FORCE_REFRESH = "force_refresh"
 
 @Composable
 fun AppNavGraph(
@@ -121,7 +125,20 @@ fun AppNavGraph(
             },
             popExitTransition = { ExitTransition.None }
         ) {
+
+            val viewModel: DashboardViewModel = koinViewModel()
+            val savedStateHandle = it.savedStateHandle
+
+            LaunchedEffect(Unit) {
+                val isForceRefresh = savedStateHandle.remove<Boolean>(KEY_FORCE_REFRESH) == true
+
+                if(isForceRefresh) {
+                    viewModel.onRefresh()
+                }
+            }
+
             DashboardScreen(
+                viewModel = viewModel,
                 onPostClick = { postId ->
                     navController.navigateSingle(Routes.PostDetails(postId = postId))
                 }
@@ -200,6 +217,9 @@ fun AppNavGraph(
                 postId = route.postId,
                 onBackClick = navController::safePopBackStack,
                 onPostSubmitted = {
+                    navController.getBackStackEntry(Routes.Dashboard)
+                        .savedStateHandle[KEY_FORCE_REFRESH] = true
+
                     navController.popBackStack(Routes.Dashboard, inclusive = false)
                 }
             )
@@ -224,6 +244,9 @@ fun AppNavGraph(
                 postId = route.postId,
                 onBackClick = navController::safePopBackStack,
                 onPostSubmitted = {
+                    navController.getBackStackEntry(Routes.Dashboard)
+                        .savedStateHandle[KEY_FORCE_REFRESH] = true
+
                     navController.popBackStack(Routes.Dashboard, inclusive = false)
                 }
             )
@@ -349,7 +372,10 @@ fun AppNavGraph(
             enterTransition = { EnterTransition.None },
             exitTransition = {
                 val route = targetState.destination.route
-                if (route?.contains("PostDetails") == true || route?.contains("EditProfile") == true || route?.contains("Settings") == true) {
+                if (route?.contains("PostDetails") == true || route?.contains("EditProfile") == true || route?.contains(
+                        "Settings"
+                    ) == true
+                ) {
                     slideOutHorizontally(
                         targetOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -360,7 +386,10 @@ fun AppNavGraph(
             },
             popEnterTransition = {
                 val route = initialState.destination.route
-                if (route?.contains("PostDetails") == true || route?.contains("EditProfile") == true || route?.contains("Settings") == true) {
+                if (route?.contains("PostDetails") == true || route?.contains("EditProfile") == true || route?.contains(
+                        "Settings"
+                    ) == true
+                ) {
                     slideInHorizontally(
                         initialOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -535,7 +564,10 @@ fun AppNavGraph(
             },
             exitTransition = {
                 val route = targetState.destination.route
-                if (route?.contains("AccountSettings") == true || route?.contains("Notifications") == true || route?.contains("Language") == true || route?.contains("Theme") == true) {
+                if (route?.contains("AccountSettings") == true || route?.contains("Notifications") == true || route?.contains(
+                        "Language"
+                    ) == true || route?.contains("Theme") == true
+                ) {
                     slideOutHorizontally(
                         targetOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -546,7 +578,10 @@ fun AppNavGraph(
             },
             popEnterTransition = {
                 val route = initialState.destination.route
-                if (route?.contains("AccountSettings") == true || route?.contains("Notifications") == true || route?.contains("Language") == true || route?.contains("Theme") == true) {
+                if (route?.contains("AccountSettings") == true || route?.contains("Notifications") == true || route?.contains(
+                        "Language"
+                    ) == true || route?.contains("Theme") == true
+                ) {
                     slideInHorizontally(
                         initialOffsetX = { -it / 3 },
                         animationSpec = tween(250)

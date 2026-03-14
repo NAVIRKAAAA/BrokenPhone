@@ -34,7 +34,9 @@ fun ErrorDialog(
     modifier: Modifier = Modifier,
     onOkClick: () -> Unit = {},
 ) {
-    Dialog(onDismissRequest = {}) {
+    Dialog(
+        onDismissRequest = {},
+    ) {
         Column(
             modifier = modifier
                 .fillMaxWidth()

@@ -63,7 +63,7 @@ fun DashboardContent(
             onTitleClick = onTitleClick,
         )
 
-        if (state.isInitialLoading && state.posts.isEmpty()) {
+        if (state.posts.isEmpty()) {
             DashboardShimmerList()
             return@Column
         }
@@ -141,7 +141,7 @@ fun DashboardContent(
 
 }
 
-private const val LOAD_MORE_THRESHOLD = 3
+const val LOAD_MORE_THRESHOLD = 3
 
 @Preview
 @Composable

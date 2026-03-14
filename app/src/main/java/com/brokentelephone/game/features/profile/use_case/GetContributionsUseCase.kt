@@ -9,7 +9,7 @@ import com.brokentelephone.game.essentials.exceptions.auth.UnauthorizedException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 
-class GetMyPostsUseCase(
+class GetContributionsUseCase(
     private val repository: PostRepository,
     private val handler: ApiHandler,
     private val userSession: UserSession,
@@ -17,7 +17,7 @@ class GetMyPostsUseCase(
     suspend fun execute(): AppResult<List<Post>> {
         return handler.handle(Dispatchers.IO) {
             val userId = userSession.authState.first().getUserOrNull()?.id ?: throw UnauthorizedException()
-            repository.loadUserPosts(userId)
+            repository.loadContributions(userId)
         }
     }
 }

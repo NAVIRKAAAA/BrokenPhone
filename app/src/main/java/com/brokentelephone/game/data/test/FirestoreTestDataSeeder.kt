@@ -2,7 +2,6 @@ package com.brokentelephone.game.data.test
 
 import com.brokentelephone.game.data.mapper.toMap
 import com.brokentelephone.game.domain.post.Post
-import com.brokentelephone.game.domain.post.PostChainEntry
 import com.brokentelephone.game.domain.post.PostContent
 import com.brokentelephone.game.domain.post.PostStatus
 import com.brokentelephone.game.features.edit_avatar.model.Avatars
@@ -24,27 +23,32 @@ class FirestoreTestDataSeeder(
 
             val post = Post(
                 id = docRef.id,
+                parentId = null,
                 authorId = author.first,
                 authorName = author.second,
                 avatarUrl = avatarUrl,
+                content = PostContent.Text(text = text),
                 createdAt = now,
                 updatedAt = now,
+                status = PostStatus.AVAILABLE,
                 generation = 1,
                 maxGenerations = (3..6).random(),
                 textTimeLimit = 120,
                 drawingTimeLimit = 180,
-                currentEntry = PostChainEntry(
-                    parentId = docRef.id,
-                    authorId = author.first,
-                    authorName = author.second,
-                    avatarUrl = avatarUrl,
-                    content = PostContent.Text(text = text),
-                    createdAt = now,
-                    updatedAt = now,
-                    status = PostStatus.AVAILABLE,
-                ),
             )
-            docRef.set(post.toMap()).await()
+            val chainEntryRef = docRef.collection("chain").document()
+            val chainEntry = post.copy(id = chainEntryRef.id, parentId = docRef.id)
+            val userPostRef = firestore
+                .collection("users")
+                .document(author.first)
+                .collection("posts")
+                .document(docRef.id)
+
+            firestore.runBatch { batch ->
+                batch.set(docRef, post.toMap())
+                batch.set(chainEntryRef, chainEntry.toMap())
+                batch.set(userPostRef, post.toMap())
+            }.await()
         }
     }
 

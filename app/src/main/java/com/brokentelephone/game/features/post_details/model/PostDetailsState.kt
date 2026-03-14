@@ -12,7 +12,9 @@ data class PostDetailsState(
     val isBlockLoading: Boolean = false,
     val isDeleteDialogVisible: Boolean = false,
     val isDeleteLoading: Boolean = false,
-    val isContinueLoading: Boolean = false
+    val isContinueLoading: Boolean = false,
+    val globalError: String? = null,
+    val globalException: Exception? = null
 ) {
     val isCurrentUserPost: Boolean
         get() = postUi?.authorId == userUi?.id

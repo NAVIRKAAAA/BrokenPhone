@@ -6,9 +6,12 @@ data class ProfileState(
     val selectedTab: ProfileTab = ProfileTab.POSTS,
     val isAuth: Boolean = false,
     val user: UserUi? = null,
-    val isLoading: Boolean = true,
+    val isPostsLoading: Boolean = true,
     val myPosts: List<PostUi> = emptyList(),
     val myContributions: List<PostUi> = emptyList(),
+    val isContributionsLoading: Boolean = false,
+    val isRefreshing: Boolean = false,
+    // Bottom sheets / dialogs
     val selectedPost: PostUi? = null,
     val isPostBottomSheetVisible: Boolean = false,
     val isReportBottomSheetVisible: Boolean = false,

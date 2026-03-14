@@ -70,8 +70,8 @@ import com.brokentelephone.game.features.post_details.use_case.MockStartGameUseC
 import com.brokentelephone.game.features.post_details.use_case.NotInterestedUseCase
 import com.brokentelephone.game.features.post_details.use_case.ReportPostUseCase
 import com.brokentelephone.game.features.profile.ProfileViewModel
+import com.brokentelephone.game.features.profile.use_case.GetContributionsUseCase
 import com.brokentelephone.game.features.profile.use_case.GetCurrentUserUseCase
-import com.brokentelephone.game.features.profile.use_case.GetMyContributionsUseCase
 import com.brokentelephone.game.features.profile.use_case.GetMyPostsUseCase
 import com.brokentelephone.game.features.settings.SettingsViewModel
 import com.brokentelephone.game.features.settings.use_case.GetAuthStateUseCase
@@ -148,7 +148,7 @@ val appModule = module {
     factoryOf(::UpdateUsernameUseCase)
     factoryOf(::UpdateAvatarUseCase)
     factoryOf(::GetMyPostsUseCase)
-    factoryOf(::GetMyContributionsUseCase)
+    factoryOf(::GetContributionsUseCase)
 
     viewModelOf(::CreatePostViewModel)
     factoryOf(::LoadInitialPostsUseCase)

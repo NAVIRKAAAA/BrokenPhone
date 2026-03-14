@@ -12,8 +12,8 @@ class GetPostByIdUseCase(
     private val repository: PostRepository,
 ) {
 
-    operator fun invoke(id: String): Flow<PostUi?> {
-        return repository.getPostById(id).map { it?.toUi() }.flowOn(Dispatchers.IO)
+    operator fun invoke(id: String): Flow<PostUi> {
+        return repository.getPostById(id).map { it.toUi() }.flowOn(Dispatchers.IO)
     }
 
 

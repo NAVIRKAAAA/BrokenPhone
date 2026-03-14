@@ -184,7 +184,7 @@
 
     <string name="dashboard_title">Привіт, %1$s!</string>
     <string name="dashboard_sort_almost_done">Майже готово</string>
-    <string name="dashboard_sort_just_started">Тільки почалось</string>
+    <string name="dashboard_sort_latest">Останні</string>
     <string name="dashboard_sort_longest_chain">Найдовший ланцюг</string>
     <string name="dashboard_badge_complete">Завершено!</string>
     <string name="dashboard_badge_you">Ти!</string>

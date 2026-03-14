@@ -123,7 +123,7 @@ fun DashboardTopBarPreview() {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
             DashboardTopBar(
                 name = "Alex",
-                selectedSort = DashboardSort.JUST_STARTED,
+                selectedSort = DashboardSort.LATEST,
                 onSortSelected = {},
                 onTitleClick = {},
             )

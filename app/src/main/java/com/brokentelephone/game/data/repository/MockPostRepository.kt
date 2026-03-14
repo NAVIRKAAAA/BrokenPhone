@@ -6,9 +6,9 @@ import com.brokentelephone.game.domain.post.PostChainEntry
 import com.brokentelephone.game.domain.post.PostContent
 import com.brokentelephone.game.domain.post.PostStatus
 import com.brokentelephone.game.domain.repository.PostRepository
+import com.brokentelephone.game.essentials.exceptions.auth.PostNotFoundException
 import com.brokentelephone.game.features.dashboard.model.DashboardSort
 import com.google.firebase.firestore.DocumentSnapshot
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -27,29 +27,16 @@ class MockPostRepository : PostRepository {
         return PostsPage(listOf(), null)
     }
 
-    override fun getPostById(id: String): Flow<Post?> = flowOf(null)
-//        _posts.map { list -> list.find { it.id == id } }
+    override fun getPostById(id: String): Flow<Post> = flow { throw PostNotFoundException() }
 
     override fun getChainByPostId(postId: String): Flow<List<PostChainEntry>> =
         flowOf(chainsMockList)
 
-    override fun getUserPosts(userId: String): Flow<List<Post>> = flow {
-        delay(2000)
-//        emitAll(_posts.map { list -> list.filter { it.authorId == userId } })
-    }
+    override suspend fun loadUserPosts(userId: String): List<Post> = listOf()
 
-    override fun getUserContributions(userId: String): Flow<List<Post>> = flow {
-        delay(2000)
-//        emitAll(_posts.map { list ->
-//            list.filter { post ->
-//                post.currentEntry.authorId == userId && post.generation > 1
-//            }
-//        })
-    }
+    override suspend fun loadContributions(userId: String): List<Post> = listOf()
 
-    override suspend fun updatePost(post: Post) {
-//        _posts.update { list -> list.map { if (it.id == post.id) post else it } }
-    }
+    override suspend fun updatePost(post: Post) {}
 
     override suspend fun submitContinuation(
         postId: String,
@@ -57,9 +44,7 @@ class MockPostRepository : PostRepository {
         authorName: String,
         avatarUrl: String?,
         content: PostContent
-    ) {
-        return
-    }
+    ) = Unit
 
     override suspend fun createPost(
         authorId: String,
@@ -72,34 +57,25 @@ class MockPostRepository : PostRepository {
     ) {
         val now = System.currentTimeMillis()
         val postId = now.toString()
-        val post = Post(
+        Post(
             id = postId,
+            parentId = null,
             authorId = authorId,
             authorName = authorName,
             avatarUrl = avatarUrl,
+            content = PostContent.Text(text = text),
             createdAt = now,
             updatedAt = now,
+            status = PostStatus.AVAILABLE,
             generation = 1,
             maxGenerations = maxGenerations,
             textTimeLimit = textTimeLimit,
             drawingTimeLimit = drawingTimeLimit,
-            currentEntry = PostChainEntry(
-                parentId = postId,
-                authorId = authorId,
-                authorName = authorName,
-                avatarUrl = avatarUrl,
-                content = PostContent.Text(text = text),
-                createdAt = now,
-                updatedAt = now,
-                status = PostStatus.AVAILABLE,
-            ),
         )
-//        _posts.update { list -> listOf(post) + list }
     }
 
     override suspend fun deletePost(postId: String) {
-        delay(1500)
-//        _posts.update { list -> list.filter { it.id != postId } }
+       return
     }
 
     companion object {
@@ -209,135 +185,93 @@ class MockPostRepository : PostRepository {
         val mockList = listOf(
             Post(
                 id = "1",
+                parentId = null,
                 authorId = "user_1",
                 authorName = "Alice",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
+                content = PostContent.Text("Once upon a time there was a broken telephone..."),
                 createdAt = System.currentTimeMillis(),
                 updatedAt = System.currentTimeMillis(),
+                status = PostStatus.AVAILABLE,
                 generation = 1,
                 maxGenerations = 10,
                 textTimeLimit = 30,
                 drawingTimeLimit = 60,
-                currentEntry = PostChainEntry(
-                    parentId = "1",
-                    authorId = "user_1",
-                    authorName = "Alice",
-                    avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png",
-                    content = PostContent.Text("Once upon a time there was a broken telephone..."),
-                    createdAt = System.currentTimeMillis(),
-                    updatedAt = System.currentTimeMillis(),
-                    status = PostStatus.AVAILABLE,
-                ),
             ),
             Post(
                 id = "2",
+                parentId = null,
                 authorId = "user_2",
                 authorName = "Bob",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_2.png",
+                content = PostContent.Text("The message got twisted somewhere along the way."),
                 createdAt = System.currentTimeMillis() - 60_000,
                 updatedAt = System.currentTimeMillis() - 60_000,
+                status = PostStatus.AVAILABLE,
                 generation = 10,
                 maxGenerations = 10,
                 textTimeLimit = 30,
                 drawingTimeLimit = 60,
-                currentEntry = PostChainEntry(
-                    parentId = "2",
-                    authorId = "user_2",
-                    authorName = "Bob",
-                    avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_2.png",
-                    content = PostContent.Text("The message got twisted somewhere along the way."),
-                    createdAt = System.currentTimeMillis() - 60_000,
-                    updatedAt = System.currentTimeMillis() - 60_000,
-                    status = PostStatus.AVAILABLE,
-                ),
             ),
             Post(
                 id = "3",
+                parentId = null,
                 authorId = "user_3",
                 authorName = "Charlie",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_3.png",
+                content = PostContent.Drawing(imageUrl = "https://example.com/drawing1.png"),
                 createdAt = System.currentTimeMillis() - 120_000,
                 updatedAt = System.currentTimeMillis() - 120_000,
+                status = PostStatus.AVAILABLE,
                 generation = 2,
                 maxGenerations = 10,
                 textTimeLimit = 30,
                 drawingTimeLimit = 60,
-                currentEntry = PostChainEntry(
-                    parentId = "3",
-                    authorId = "user_3",
-                    authorName = "Charlie",
-                    avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_3.png",
-                    content = PostContent.Drawing(imageUrl = "https://example.com/drawing1.png"),
-                    createdAt = System.currentTimeMillis() - 120_000,
-                    updatedAt = System.currentTimeMillis() - 120_000,
-                    status = PostStatus.AVAILABLE,
-                ),
             ),
             Post(
                 id = "4",
+                parentId = null,
                 authorId = "user_4",
                 authorName = "Diana",
                 avatarUrl = "",
+                content = PostContent.Text("Nobody remembered what the original message was."),
                 createdAt = System.currentTimeMillis() - 180_000,
                 updatedAt = System.currentTimeMillis() - 180_000,
+                status = PostStatus.IN_PROGRESS,
                 generation = 3,
                 maxGenerations = 10,
                 textTimeLimit = 45,
                 drawingTimeLimit = 90,
-                currentEntry = PostChainEntry(
-                    parentId = "4",
-                    authorId = "user_4",
-                    authorName = "Diana",
-                    avatarUrl = "",
-                    content = PostContent.Text("Nobody remembered what the original message was."),
-                    createdAt = System.currentTimeMillis() - 180_000,
-                    updatedAt = System.currentTimeMillis() - 180_000,
-                    status = PostStatus.IN_PROGRESS,
-                ),
             ),
             Post(
                 id = "5",
+                parentId = null,
                 authorId = "user_6",
                 authorName = "Eve",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_5.png",
+                content = PostContent.Text("Something about a cat? Or was it a hat?"),
                 createdAt = System.currentTimeMillis() - 300_000,
                 updatedAt = System.currentTimeMillis() - 300_000,
+                status = PostStatus.AVAILABLE,
                 generation = 1,
                 maxGenerations = 5,
                 textTimeLimit = 15,
                 drawingTimeLimit = 30,
-                currentEntry = PostChainEntry(
-                    parentId = "5",
-                    authorId = "user_6",
-                    authorName = "Eve",
-                    avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_5.png",
-                    content = PostContent.Text("Something about a cat? Or was it a hat?"),
-                    createdAt = System.currentTimeMillis() - 300_000,
-                    updatedAt = System.currentTimeMillis() - 300_000,
-                    status = PostStatus.AVAILABLE,
-                ),
             ),
             Post(
                 id = "6",
+                parentId = null,
                 authorId = "user_7",
                 authorName = "Frank",
                 avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_6.png",
+                content = PostContent.Drawing(imageUrl = "https://example.com/drawing2.png"),
                 createdAt = System.currentTimeMillis() - 600_000,
                 updatedAt = System.currentTimeMillis() - 600_000,
+                status = PostStatus.COMPLETED,
                 generation = 4,
                 maxGenerations = 5,
                 textTimeLimit = 15,
                 drawingTimeLimit = 30,
-                currentEntry = PostChainEntry(
-                    parentId = "6",
-                    authorId = "user_7",
-                    authorName = "Frank",
-                    avatarUrl = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_6.png",
-                    content = PostContent.Drawing(imageUrl = "https://example.com/drawing2.png"),
-                    createdAt = System.currentTimeMillis() - 600_000,
-                    updatedAt = System.currentTimeMillis() - 600_000,
-                    status = PostStatus.COMPLETED,
-                ),
             ),
         )
     }

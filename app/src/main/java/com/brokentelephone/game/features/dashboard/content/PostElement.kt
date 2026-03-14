@@ -141,7 +141,7 @@ fun PostElement(
             Spacer(modifier = Modifier.height(16.dp))
 
             FlowRow(
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 itemVerticalAlignment = Alignment.CenterVertically
             ) {
@@ -185,8 +185,8 @@ fun PostElementPreview() {
                     authorId = "user-1",
                     authorName = "Alex".repeat(55),
                     avatarUrl = null,
-//                    content = PostContent.Drawing(),
-            content = PostContent.Text("Once upon a time there was a broken telephone..."),
+                    content = PostContent.Drawing(),
+//            content = PostContent.Text("Once upon a time there was a broken telephone..."),
                     createdAt = System.currentTimeMillis() - 300000,
                     generation = 7,
                     maxGenerations = 10,

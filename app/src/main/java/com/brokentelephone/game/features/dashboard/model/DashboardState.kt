@@ -9,7 +9,7 @@ data class DashboardState(
     val isLoadingMore: Boolean = false,
     val hasMore: Boolean = true,
     val user: UserUi? = null,
-    val selectedSort: DashboardSort = DashboardSort.JUST_STARTED,
+    val selectedSort: DashboardSort = DashboardSort.LATEST,
     val selectedPost: PostUi? = null,
     val isPostBottomSheetVisible: Boolean = false,
     val isReportBottomSheetVisible: Boolean = false,

@@ -159,7 +159,7 @@
     <!-- Dashboard -->
     <string name="dashboard_title">Hey, %1$s!</string>
     <string name="dashboard_sort_almost_done">Almost Done</string>
-    <string name="dashboard_sort_just_started">Just Started</string>
+    <string name="dashboard_sort_latest">Latest</string>
     <string name="dashboard_sort_longest_chain">Longest Chain</string>
     <string name="dashboard_badge_complete">Finished!</string>
     <string name="dashboard_badge_you">You!</string>

@@ -12,6 +12,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.brokentelephone.game.R
 import com.brokentelephone.game.core.bottom_sheet.post_bottom_sheet.PostBottomSheet
@@ -47,17 +49,36 @@ fun ProfileScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        viewModel.onResume()
+    }
+
     LaunchedEffect(Unit) {
         viewModel.sideEffects.collect { effect ->
             when (effect) {
                 ProfileSideEffect.ShowReportSuccessToast ->
-                    Toast.makeText(context, context.getString(R.string.common_toast_report_success), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.common_toast_report_success),
+                        Toast.LENGTH_SHORT
+                    ).show()
+
                 ProfileSideEffect.ShowNotInterestedToast ->
-                    Toast.makeText(context, context.getString(R.string.common_toast_not_interested), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.common_toast_not_interested),
+                        Toast.LENGTH_SHORT
+                    ).show()
+
                 is ProfileSideEffect.ShowCopyLinkSuccessToast -> {
-                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clipboard =
+                        context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     clipboard.setPrimaryClip(ClipData.newPlainText("post_link", effect.link))
-                    Toast.makeText(context, context.getString(R.string.common_toast_link_copied), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.common_toast_link_copied),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -73,10 +94,12 @@ fun ProfileScreen(
         onScrollDirectionChange = navBarViewModel::onScrollDirectionChange,
         onPostClick = onPostClick,
         onMoreClick = { postId ->
-            val post = (state.myPosts + state.myContributions).find { it.id == postId } ?: return@ProfileContent
+            val post = (state.myPosts + state.myContributions).find { it.id == postId }
+                ?: return@ProfileContent
             viewModel.onMoreClick(post)
         },
         modifier = modifier,
+        onRefresh = viewModel::onRefresh
     )
 
     if (state.isPostBottomSheetVisible) {

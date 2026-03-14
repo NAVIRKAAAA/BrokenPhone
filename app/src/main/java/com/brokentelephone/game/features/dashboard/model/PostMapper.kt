@@ -5,16 +5,16 @@ import com.brokentelephone.game.domain.post.PostContent
 
 fun Post.toUi() = PostUi(
     id = id,
-    parentId = currentEntry.parentId,
-    authorId = currentEntry.authorId,
+    parentId = parentId ?: id,
+    authorId = authorId,
     authorName = authorName,
     avatarUrl = avatarUrl,
-    content = currentEntry.content,
+    content = content,
     createdAt = createdAt,
     generation = generation,
     maxGenerations = maxGenerations,
-    status = currentEntry.status,
-    nextTimeLimit = when (currentEntry.content) {
+    status = status,
+    nextTimeLimit = when (content) {
         is PostContent.Text -> drawingTimeLimit
         is PostContent.Drawing -> textTimeLimit
     },

@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.core.bottom_sheet.report_post_bottom_sheet.model.ReportPostType
 import com.brokentelephone.game.domain.post.PostContent
+import com.brokentelephone.game.essentials.exceptions.auth.PostNotFoundException
+import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.post_details.model.PostDetailsSideEffect
 import com.brokentelephone.game.features.post_details.model.PostDetailsState
 import com.brokentelephone.game.features.post_details.use_case.BlockUserUseCase
@@ -18,6 +20,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -34,6 +37,7 @@ class PostDetailsViewModel(
     private val notInterestedUseCase: NotInterestedUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val mockStartGameUseCase: MockStartGameUseCase,
+    private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PostDetailsState())
@@ -54,7 +58,26 @@ class PostDetailsViewModel(
                 delay(150)
                 _state.update { it.copy(postUi = postUi) }
             }
+            .catch { e ->
+                _state.update {
+                    it.copy(
+                        globalError = exceptionToMessageMapper.map(e as Exception),
+                        globalException = e
+                    )
+                }
+            }
             .launchIn(viewModelScope)
+    }
+
+    fun onGlobalErrorDismiss() {
+        val exception = state.value.globalException
+        _state.update { it.copy(globalError = null, globalException = null) }
+
+        if (exception is PostNotFoundException) {
+            viewModelScope.launch {
+                _sideEffects.send(PostDetailsSideEffect.NavigateBack)
+            }
+        }
     }
 
     fun onCopyLinkClick() {

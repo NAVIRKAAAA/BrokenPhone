@@ -8,19 +8,20 @@ import com.brokentelephone.game.features.dashboard.model.DashboardSort
 import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.flow.Flow
 
+
 interface PostRepository {
 
     suspend fun loadInitialPosts(pageSize: Int, sort: DashboardSort): PostsPage
 
     suspend fun loadNextPosts(afterDoc: DocumentSnapshot, pageSize: Int, sort: DashboardSort): PostsPage
 
-    fun getPostById(id: String): Flow<Post?>
+    fun getPostById(id: String): Flow<Post>
 
     fun getChainByPostId(postId: String): Flow<List<PostChainEntry>>
 
-    fun getUserPosts(userId: String): Flow<List<Post>>
+    suspend fun loadUserPosts(userId: String): List<Post>
 
-    fun getUserContributions(userId: String): Flow<List<Post>>
+    suspend fun loadContributions(userId: String): List<Post>
 
     suspend fun updatePost(post: Post)
 
