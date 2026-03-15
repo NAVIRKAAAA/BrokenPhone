@@ -26,6 +26,7 @@ import com.brokentelephone.game.core.bottom_sheet.post_bottom_sheet.PostBottomSh
 import com.brokentelephone.game.core.bottom_sheet.post_bottom_sheet.model.PostBottomSheetAction
 import com.brokentelephone.game.core.bottom_sheet.report_post_bottom_sheet.ReportPostBottomSheet
 import com.brokentelephone.game.core.dialog.ConfirmDialog
+import com.brokentelephone.game.core.dialog.ErrorDialog
 import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBarViewModel
 import com.brokentelephone.game.features.dashboard.content.DashboardContent
 import com.brokentelephone.game.features.dashboard.model.DashboardSideEffect
@@ -171,6 +172,13 @@ fun DashboardScreen(
             onDismiss = viewModel::onDeleteDialogDismiss,
             onConfirm = viewModel::onDeleteConfirm,
             isLoading = state.isDeleteLoading,
+        )
+    }
+
+    state.globalError?.let { error ->
+        ErrorDialog(
+            body = error,
+            onOkClick = viewModel::onGlobalErrorDismiss,
         )
     }
 }

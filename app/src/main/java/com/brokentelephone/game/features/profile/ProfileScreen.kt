@@ -18,7 +18,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.brokentelephone.game.R
 import com.brokentelephone.game.core.bottom_sheet.post_bottom_sheet.PostBottomSheet
 import com.brokentelephone.game.core.bottom_sheet.post_bottom_sheet.model.PostBottomSheetAction
-import com.brokentelephone.game.core.bottom_sheet.report_post_bottom_sheet.ReportPostBottomSheet
 import com.brokentelephone.game.core.dialog.ConfirmDialog
 import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBarViewModel
 import com.brokentelephone.game.features.profile.content.ProfileContent
@@ -103,42 +102,16 @@ fun ProfileScreen(
     )
 
     if (state.isPostBottomSheetVisible) {
-        val actions = if (state.isCurrentUserPost) {
-            listOf(PostBottomSheetAction.COPY_LINK, PostBottomSheetAction.DELETE)
-        } else {
-            PostBottomSheetAction.entries.filter { it != PostBottomSheetAction.DELETE }
-        }
         PostBottomSheet(
             onDismissRequest = viewModel::onPostBottomSheetDismiss,
-            actions = actions,
+            actions = listOf(PostBottomSheetAction.COPY_LINK, PostBottomSheetAction.DELETE),
             onActionClick = { action ->
                 when (action) {
-                    PostBottomSheetAction.NOT_INTERESTED -> viewModel.onNotInterestedClick()
                     PostBottomSheetAction.COPY_LINK -> viewModel.onCopyLinkClick()
-                    PostBottomSheetAction.BLOCK -> viewModel.onBlockClick()
-                    PostBottomSheetAction.REPORT -> viewModel.onReportClick()
                     PostBottomSheetAction.DELETE -> viewModel.onDeleteClick()
+                    else -> return@PostBottomSheet
                 }
             },
-        )
-    }
-
-    if (state.isReportBottomSheetVisible) {
-        ReportPostBottomSheet(
-            onDismissRequest = viewModel::onReportBottomSheetDismiss,
-            onReportClick = viewModel::onReportTypeSelected,
-        )
-    }
-
-    if (state.isBlockDialogVisible) {
-        ConfirmDialog(
-            title = stringResource(R.string.common_dialog_block_title),
-            body = stringResource(R.string.common_dialog_block_body),
-            cancelText = stringResource(R.string.common_cancel),
-            confirmText = stringResource(R.string.common_block),
-            onDismiss = viewModel::onBlockDialogDismiss,
-            onConfirm = viewModel::onBlockConfirm,
-            isLoading = state.isBlockLoading,
         )
     }
 

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.core.bottom_sheet.report_post_bottom_sheet.model.ReportPostType
 import com.brokentelephone.game.domain.handler.onError
 import com.brokentelephone.game.domain.handler.onSuccess
+import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.dashboard.model.DashboardSideEffect
 import com.brokentelephone.game.features.dashboard.model.DashboardSort
 import com.brokentelephone.game.features.dashboard.model.DashboardState
@@ -39,6 +40,7 @@ class DashboardViewModel(
     private val blockUserUseCase: BlockUserUseCase,
     private val notInterestedUseCase: NotInterestedUseCase,
     private val reportPostUseCase: ReportPostUseCase,
+    private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(DashboardState())
@@ -212,16 +214,22 @@ class DashboardViewModel(
     }
 
     fun onBlockConfirm() {
-        val blockedUserId = state.value.selectedPost?.authorId ?: return
+        val userId = state.value.selectedPost?.authorId ?: return
         _state.update { it.copy(isBlockLoading = true) }
+
         viewModelScope.launch {
-            blockUserUseCase(blockedUserId)
-            _state.update {
-                it.copy(
-                    isBlockLoading = false,
-                    isBlockDialogVisible = false,
-                    selectedPost = null
-                )
+            blockUserUseCase.execute(userId).onSuccess {
+                _state.update { it.copy(isBlockLoading = false, isBlockDialogVisible = false, selectedPost = null) }
+                onRefresh()
+            }.onError { exception ->
+                _state.update {
+                    it.copy(
+                        isBlockLoading = false,
+                        isBlockDialogVisible = false,
+                        globalError = exceptionToMessageMapper.map(exception),
+                        selectedPost = null
+                    )
+                }
             }
         }
     }
@@ -244,6 +252,10 @@ class DashboardViewModel(
         _state.update { it.copy(isReportBottomSheetVisible = false, selectedPost = null) }
         viewModelScope.launch { reportPostUseCase(postId, type) }
         viewModelScope.launch { _sideEffects.send(DashboardSideEffect.ShowReportSuccessToast) }
+    }
+
+    fun onGlobalErrorDismiss() {
+        _state.update { it.copy(globalError = null) }
     }
 
     private companion object {

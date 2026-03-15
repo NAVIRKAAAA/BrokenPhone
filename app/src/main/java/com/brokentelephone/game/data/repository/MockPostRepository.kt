@@ -17,7 +17,8 @@ class MockPostRepository : PostRepository {
     override suspend fun loadInitialPosts(
         pageSize: Int,
         sort: DashboardSort,
-        userId: String
+        userId: String,
+        blockedUsersIds: List<String>
     ): PostsPage {
         return PostsPage(listOf(), null)
     }
@@ -26,7 +27,8 @@ class MockPostRepository : PostRepository {
         afterDoc: DocumentSnapshot,
         pageSize: Int,
         sort: DashboardSort,
-        userId: String
+        userId: String,
+        blockedUsersIds: List<String>
     ): PostsPage {
         return PostsPage(listOf(), null)
     }

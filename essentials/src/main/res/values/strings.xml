@@ -14,4 +14,5 @@
     <string name="error_unauthorized">You need to be signed in to perform this action.</string>
     <string name="error_image_upload">Failed to upload image. Please try again.</string>
     <string name="error_post_not_found">Couldn\'t load the post. It may have been deleted or you might have a poor internet connection.</string>
+    <string name="error_user_not_found">This user no longer exists. They may have deleted their account.</string>
 </resources>

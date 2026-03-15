@@ -27,6 +27,7 @@ fun SettingsScreen(
     onThemeClick: () -> Unit,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
+    onBlockedUsersClick: () -> Unit,
     viewModel: SettingsViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -55,6 +56,7 @@ fun SettingsScreen(
         onThemeClick = onThemeClick,
         onTermsOfServiceClick = viewModel::onTermsOfServiceClick,
         onPrivacyPolicyClick = viewModel::onPrivacyPolicyClick,
+        onBlockedUsersClick = onBlockedUsersClick,
         modifier = modifier,
     )
 

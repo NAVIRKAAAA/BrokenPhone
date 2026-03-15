@@ -14,4 +14,5 @@
     <string name="error_unauthorized">Щоб виконати цю дію, потрібно увійти в акаунт.</string>
     <string name="error_image_upload">Не вдалося завантажити зображення. Спробуй ще раз.</string>
     <string name="error_post_not_found">Не вдалося завантажити пост. Можливо, він був видалений або виникли проблеми з інтернетом.</string>
+    <string name="error_user_not_found">Цього користувача більше не існує. Можливо, він видалив свій акаунт.</string>
 </resources>

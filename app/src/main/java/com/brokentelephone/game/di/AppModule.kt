@@ -27,7 +27,6 @@ import com.brokentelephone.game.domain.storage.ImageStorage
 import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.features.account_settings.AccountSettingsViewModel
 import com.brokentelephone.game.features.account_settings.use_case.DeleteAccountUseCase
-import com.brokentelephone.game.features.account_settings.use_case.GetBlockedUsersCountUseCase
 import com.brokentelephone.game.features.app_preferences.use_case.GetLanguageUseCase
 import com.brokentelephone.game.features.app_preferences.use_case.GetThemeUseCase
 import com.brokentelephone.game.features.blocked_users.BlockedUsersViewModel
@@ -75,6 +74,7 @@ import com.brokentelephone.game.features.profile.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.features.profile.use_case.GetMyPostsUseCase
 import com.brokentelephone.game.features.settings.SettingsViewModel
 import com.brokentelephone.game.features.settings.use_case.GetAuthStateUseCase
+import com.brokentelephone.game.features.settings.use_case.GetBlockedUsersCountUseCase
 import com.brokentelephone.game.features.settings.use_case.GetPrivacyPolicyLinkUseCase
 import com.brokentelephone.game.features.settings.use_case.GetTermsOfServiceLinkUseCase
 import com.brokentelephone.game.features.settings.use_case.GetVersionInfoUseCase

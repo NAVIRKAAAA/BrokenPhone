@@ -66,8 +66,8 @@ class MockUsersRepositoryImpl : UsersRepository {
         ),
     )
 
-    override suspend fun getUsersById(ids: List<String>): List<User> {
-        return users.filter { it.id in ids }
+    override suspend fun getUserById(id: String): User? {
+        return null
     }
 
     override suspend fun createUser(id: String, email: String, authProvider: AuthProvider) = Unit

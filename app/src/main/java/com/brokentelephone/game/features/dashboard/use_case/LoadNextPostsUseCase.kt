@@ -22,10 +22,10 @@ class LoadNextPostsUseCase(
         sort: DashboardSort
     ): AppResult<PostsPage> {
         return handler.handle(Dispatchers.IO) {
-            val userId = userSession.authState.firstOrNull()?.getUserOrNull()?.id
+            val user = userSession.authState.firstOrNull()?.getUserOrNull()
                 ?: throw UnauthorizedException()
 
-            repository.loadNextPosts(afterDoc, pageSize, sort, userId)
+            repository.loadNextPosts(afterDoc, pageSize, sort, user.id, user.blockedUserIds)
         }
     }
 }

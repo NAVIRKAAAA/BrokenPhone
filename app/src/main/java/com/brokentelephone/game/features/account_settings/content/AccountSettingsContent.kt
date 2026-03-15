@@ -1,7 +1,6 @@
 package com.brokentelephone.game.features.account_settings.content
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,7 +31,6 @@ fun AccountSettingsContent(
     state: AccountSettingsState,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
-    onBlockedUsersClick: () -> Unit = {},
     onDeleteAccountClick: () -> Unit = {},
 ) {
 
@@ -70,16 +68,6 @@ fun AccountSettingsContent(
 
         HorizontalDivider(color = MaterialTheme.appColors.divider)
 
-        AccountTextInfoItem(
-            name = stringResource(R.string.account_settings_blocked_users),
-            value = state.blockedUsersCount.toString(),
-            modifier = Modifier
-                .clickable(onClick = onBlockedUsersClick)
-                .padding(horizontal = 16.dp),
-        )
-
-        HorizontalDivider(color = MaterialTheme.appColors.divider)
-
         SettingsLogoutButton(
             text = stringResource(R.string.account_settings_delete_account),
             onClick = onDeleteAccountClick,
@@ -103,7 +91,6 @@ fun AccountSettingsContentPreview() {
                     authProvider = AuthProvider.EMAIL,
                     createdAt = 1_700_000_000_000L,
                 ),
-                blockedUsersCount = 3,
             )
         )
     }

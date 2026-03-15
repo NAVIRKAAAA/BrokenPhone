@@ -186,6 +186,12 @@ fun AppNavGraph(
             PostDetailsScreen(
                 viewModel = viewModel,
                 onBackClick = navController::safePopBackStack,
+                navigateBackWithForceUpdate = {
+                    navController.getBackStackEntry(Routes.Dashboard)
+                        .savedStateHandle[KEY_FORCE_REFRESH] = true
+
+                    navController.safePopBackStack()
+                },
                 onDrawContinue = { postId ->
                     navController.navigateSingle(Routes.Draw(postId = postId))
                 },
@@ -566,7 +572,7 @@ fun AppNavGraph(
                 val route = targetState.destination.route
                 if (route?.contains("AccountSettings") == true || route?.contains("Notifications") == true || route?.contains(
                         "Language"
-                    ) == true || route?.contains("Theme") == true
+                    ) == true || route?.contains("Theme") == true || route?.contains("BlockedUsers") == true
                 ) {
                     slideOutHorizontally(
                         targetOffsetX = { -it / 3 },
@@ -580,7 +586,7 @@ fun AppNavGraph(
                 val route = initialState.destination.route
                 if (route?.contains("AccountSettings") == true || route?.contains("Notifications") == true || route?.contains(
                         "Language"
-                    ) == true || route?.contains("Theme") == true
+                    ) == true || route?.contains("Theme") == true || route?.contains("BlockedUsers") == true
                 ) {
                     slideInHorizontally(
                         initialOffsetX = { -it / 3 },
@@ -615,6 +621,9 @@ fun AppNavGraph(
                 },
                 onThemeClick = {
                     navController.navigateSingle(Routes.Theme)
+                },
+                onBlockedUsersClick = {
+                    navController.navigateSingle(Routes.BlockedUsers)
                 },
             )
         }
@@ -659,10 +668,7 @@ fun AppNavGraph(
                     navController.navigate(Routes.Welcome) {
                         popUpTo(0) { inclusive = true }
                     }
-                },
-                onBlockedUsersClick = {
-                    navController.navigateSingle(Routes.BlockedUsers)
-                },
+                }
             )
         }
 

@@ -11,6 +11,7 @@ import com.brokentelephone.game.features.app_preferences.use_case.GetThemeUseCas
 import com.brokentelephone.game.features.settings.model.SettingsSideEffect
 import com.brokentelephone.game.features.settings.model.SettingsState
 import com.brokentelephone.game.features.settings.use_case.GetAuthStateUseCase
+import com.brokentelephone.game.features.settings.use_case.GetBlockedUsersCountUseCase
 import com.brokentelephone.game.features.settings.use_case.GetPrivacyPolicyLinkUseCase
 import com.brokentelephone.game.features.settings.use_case.GetTermsOfServiceLinkUseCase
 import com.brokentelephone.game.features.settings.use_case.GetVersionInfoUseCase
@@ -33,6 +34,7 @@ class SettingsViewModel(
     private val getThemeUseCase: GetThemeUseCase,
     private val getTermsOfServiceLinkUseCase: GetTermsOfServiceLinkUseCase,
     private val getPrivacyPolicyLinkUseCase: GetPrivacyPolicyLinkUseCase,
+    private val getBlockedUsersCountUseCase: GetBlockedUsersCountUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SettingsState())
@@ -42,6 +44,10 @@ class SettingsViewModel(
     val sideEffects = _sideEffects.receiveAsFlow()
 
     init {
+        getBlockedUsersCountUseCase()
+            .onEach { count -> _state.update { it.copy(blockedUsersCount = count) } }
+            .launchIn(viewModelScope)
+
         _state.update { it.copy(versionInfo = getVersionInfoUseCase()) }
 
         getAuthStateUseCase()

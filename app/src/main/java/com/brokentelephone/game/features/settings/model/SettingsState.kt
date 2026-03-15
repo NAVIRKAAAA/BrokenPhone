@@ -12,4 +12,5 @@ data class SettingsState(
     val theme: AppTheme = AppTheme.LIGHT,
     val notificationsEnabled: Boolean = false,
     val globalError: String? = null,
+    val blockedUsersCount: Int = 0,
 )

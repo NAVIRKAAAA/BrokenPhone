@@ -4,6 +4,10 @@ import com.brokentelephone.game.data.mapper.toMap
 import com.brokentelephone.game.domain.post.Post
 import com.brokentelephone.game.domain.post.PostContent
 import com.brokentelephone.game.domain.post.PostStatus
+import com.brokentelephone.game.domain.settings.NotificationType
+import com.brokentelephone.game.domain.user.AuthProvider
+import com.brokentelephone.game.domain.user.OnboardingStep
+import com.brokentelephone.game.domain.user.User
 import com.brokentelephone.game.features.edit_avatar.model.Avatars
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -11,11 +15,30 @@ import kotlinx.coroutines.tasks.await
 class FirestoreTestDataSeeder(
     private val firestore: FirebaseFirestore,
 ) {
-    private val collection get() = firestore.collection("posts")
+    private val postsCollection get() = firestore.collection("posts")
+    private val usersCollection get() = firestore.collection("users")
+
+    suspend fun seedUsers() {
+        FAKE_AUTHORS.forEach { (id, username) ->
+            val now = System.currentTimeMillis()
+            val user = User(
+                id = id,
+                username = username,
+                email = "$username@test.com".lowercase(),
+                avatarUrl = Avatars.all.random().url,
+                authProvider = AuthProvider.EMAIL,
+                createdAt = now,
+                updatedAt = now,
+                notifications = NotificationType.entries,
+                onboardingStep = OnboardingStep.COMPLETED,
+            )
+            usersCollection.document(id).set(user.toMap()).await()
+        }
+    }
 
     suspend fun seedPosts(count: Int = 100) {
         repeat(count) {
-            val docRef = collection.document()
+            val docRef = postsCollection.document()
             val now = System.currentTimeMillis() - (0..30L * 24 * 60 * 60 * 1000).random()
             val author = FAKE_AUTHORS.random()
             val text = FAKE_TEXTS.random()
@@ -38,8 +61,7 @@ class FirestoreTestDataSeeder(
             )
             val chainEntryRef = docRef.collection("chain").document()
             val chainEntry = post.copy(id = chainEntryRef.id, parentId = docRef.id)
-            val userPostRef = firestore
-                .collection("users")
+            val userPostRef = usersCollection
                 .document(author.first)
                 .collection("posts")
                 .document(docRef.id)

@@ -17,8 +17,15 @@ class UsersRepositoryImpl(
 
     override val collectionName = "users"
 
-    override suspend fun getUsersById(ids: List<String>): List<User> {
-        return emptyList()
+    override suspend fun getUserById(id: String): User? {
+        try {
+            val snapshot = collection.document(id).get().await()
+            return snapshot.data?.let { User.fromMap(it) }
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
     }
 
     override suspend fun createUser(

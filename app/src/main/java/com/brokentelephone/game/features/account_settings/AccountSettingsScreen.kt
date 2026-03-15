@@ -15,7 +15,6 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun AccountSettingsScreen(
     onNavigateToWelcome: () -> Unit,
-    onBlockedUsersClick: () -> Unit,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
     viewModel: AccountSettingsViewModel = koinViewModel(),
@@ -33,7 +32,6 @@ fun AccountSettingsScreen(
     AccountSettingsContent(
         state = state,
         onBackClick = onBackClick,
-        onBlockedUsersClick = onBlockedUsersClick,
         onDeleteAccountClick = viewModel::onDeleteAccountClick,
         modifier = modifier,
     )

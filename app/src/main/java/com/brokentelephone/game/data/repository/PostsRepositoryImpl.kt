@@ -33,11 +33,13 @@ class PostsRepositoryImpl(
     override suspend fun loadInitialPosts(
         pageSize: Int,
         sort: DashboardSort,
-        userId: String
+        userId: String,
+        blockedUsersIds: List<String>
     ): PostsPage {
         try {
+            // The array of values provided to not-in can contain a maximum of 10 items.
             val snapshot = collection
-                .whereNotEqualTo(FIELD_AUTHOR_ID, userId)
+                .whereNotIn(FIELD_AUTHOR_ID,  blockedUsersIds.take(9) + userId)
                 .applySorting(sort)
                 .limit(pageSize.toLong())
                 .get()
@@ -59,11 +61,12 @@ class PostsRepositoryImpl(
         afterDoc: DocumentSnapshot,
         pageSize: Int,
         sort: DashboardSort,
-        userId: String
+        userId: String,
+        blockedUsersIds: List<String>
     ): PostsPage {
         try {
             val snapshot = collection
-                .whereNotEqualTo(FIELD_AUTHOR_ID, userId)
+                .whereNotIn(FIELD_AUTHOR_ID,  blockedUsersIds.take(9) + userId)
                 .applySorting(sort)
                 .startAfter(afterDoc)
                 .limit(pageSize.toLong())

@@ -34,6 +34,7 @@ fun PostDetailsScreen(
     onViewHistoryClick: (postId: String) -> Unit,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
+    navigateBackWithForceUpdate: () -> Unit = {},
     viewModel: PostDetailsViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -55,6 +56,7 @@ fun PostDetailsScreen(
                 PostDetailsSideEffect.NavigateBack -> onBackClick()
                 is PostDetailsSideEffect.NavigateToDraw -> onDrawContinue(effect.postId)
                 is PostDetailsSideEffect.NavigateToDescribeDrawing -> onDescribeDrawingContinue(effect.postId)
+                PostDetailsSideEffect.NavigateBackWithForceUpdate -> navigateBackWithForceUpdate()
             }
         }
     }

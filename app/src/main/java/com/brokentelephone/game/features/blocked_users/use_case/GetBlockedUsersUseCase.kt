@@ -1,26 +1,30 @@
 package com.brokentelephone.game.features.blocked_users.use_case
 
+import com.brokentelephone.game.domain.handler.ApiHandler
+import com.brokentelephone.game.domain.handler.AppResult
 import com.brokentelephone.game.domain.repository.UsersRepository
 import com.brokentelephone.game.domain.user.UserSession
+import com.brokentelephone.game.essentials.exceptions.auth.UnauthorizedException
 import com.brokentelephone.game.features.blocked_users.model.BlockedUserUi
-import com.brokentelephone.game.features.blocked_users.model.toUi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import com.brokentelephone.game.features.blocked_users.model.toBlockedUserUi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 
 class GetBlockedUsersUseCase(
     private val userSession: UserSession,
     private val usersRepository: UsersRepository,
+    private val handler: ApiHandler
 ) {
-    operator fun invoke(): Flow<List<BlockedUserUi>> = userSession.getBlockedUsers()
-        .map { blockedUsers ->
-            val ids = blockedUsers.map { it.userId }
-            val users = usersRepository.getUsersById(ids)
-            blockedUsers.map { blockedUser ->
-                val user = users.find { it.id == blockedUser.userId }
-                blockedUser.toUi(
-                    name = user?.username.orEmpty(),
-                    avatarUrl = user?.avatarUrl,
-                )
+    suspend fun execute(): AppResult<List<BlockedUserUi>> {
+        return handler.handle(Dispatchers.IO) {
+            val user = userSession.authState.firstOrNull()?.getUserOrNull()
+                ?: throw UnauthorizedException()
+
+            val blockedUsersIds = user.blockedUserIds
+
+            blockedUsersIds.mapNotNull { userId ->
+                usersRepository.getUserById(userId)?.toBlockedUserUi()
             }
         }
+    }
 }

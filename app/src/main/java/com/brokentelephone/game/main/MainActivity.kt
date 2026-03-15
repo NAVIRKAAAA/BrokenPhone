@@ -55,7 +55,7 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
 //        lifecycleScope.launch(Dispatchers.IO) {
-//            FirestoreTestDataSeeder(FirebaseFirestore.getInstance()).seedPosts(100)
+//            FirestoreTestDataSeeder(FirebaseFirestore.getInstance()).seedUsers()
 //        }
 
         setContent {

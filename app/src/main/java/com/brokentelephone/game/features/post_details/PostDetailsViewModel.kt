@@ -3,6 +3,8 @@ package com.brokentelephone.game.features.post_details
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.core.bottom_sheet.report_post_bottom_sheet.model.ReportPostType
+import com.brokentelephone.game.domain.handler.onError
+import com.brokentelephone.game.domain.handler.onSuccess
 import com.brokentelephone.game.domain.post.PostContent
 import com.brokentelephone.game.essentials.exceptions.auth.PostNotFoundException
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
@@ -159,12 +161,22 @@ class PostDetailsViewModel(
     }
 
     fun onBlockConfirm() {
-        val blockedUserId = state.value.postUi?.authorId ?: return
+        val userId = state.value.postUi?.authorId ?: return
         _state.update { it.copy(isBlockLoading = true) }
+
         viewModelScope.launch {
-            blockUserUseCase(blockedUserId)
-            _state.update { it.copy(isBlockLoading = false, isBlockDialogVisible = false) }
-            _sideEffects.send(PostDetailsSideEffect.NavigateBack)
+            blockUserUseCase.execute(userId).onSuccess {
+                _state.update { it.copy(isBlockLoading = false, isBlockDialogVisible = false) }
+                _sideEffects.send(PostDetailsSideEffect.NavigateBackWithForceUpdate)
+            }.onError { exception ->
+                _state.update {
+                    it.copy(
+                        isBlockLoading = false,
+                        isBlockDialogVisible = false,
+                        globalError = exceptionToMessageMapper.map(exception)
+                    )
+                }
+            }
         }
     }
 

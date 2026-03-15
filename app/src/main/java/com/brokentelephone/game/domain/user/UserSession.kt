@@ -10,9 +10,8 @@ interface UserSession {
     suspend fun updateAvatar(avatarUrl: String)
     suspend fun completeAvatarStep(avatarUrl: String)
     suspend fun completeUsernameStep(username: String)
-    fun getBlockedUsers(): Flow<List<BlockedUser>>
-    suspend fun blockUser(blockedUserId: String)
-    suspend fun unblockUser(blockId: String)
+    suspend fun blockUser(userId: String)
+    suspend fun unblockUser(userId: String)
     suspend fun updateNotifications(notifications: List<NotificationType>)
     suspend fun signOut()
     suspend fun deleteAccount()

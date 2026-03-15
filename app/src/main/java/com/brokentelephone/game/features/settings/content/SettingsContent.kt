@@ -41,6 +41,7 @@ fun SettingsContent(
     onThemeClick: () -> Unit = {},
     onTermsOfServiceClick: () -> Unit = {},
     onPrivacyPolicyClick: () -> Unit = {},
+    onBlockedUsersClick: () -> Unit = {},
 ) {
 
     Column(
@@ -63,9 +64,17 @@ fun SettingsContent(
                 onClick = onAccountSettingsClick,
                 modifier = Modifier
             )
-
-            HorizontalDivider(color = MaterialTheme.appColors.divider)
         }
+
+        AccountTextInfoItem(
+            name = stringResource(R.string.account_settings_blocked_users),
+            value = state.blockedUsersCount.toString(),
+            modifier = Modifier
+                .clickable(onClick = onBlockedUsersClick)
+                .padding(horizontal = 16.dp),
+        )
+
+        HorizontalDivider(color = MaterialTheme.appColors.divider)
 
         AccountTextInfoItem(
             name = stringResource(R.string.app_preferences_notifications),

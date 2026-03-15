@@ -18,9 +18,10 @@ class LoadInitialPostsUseCase(
 ) {
     suspend fun execute(pageSize: Int, sort: DashboardSort): AppResult<PostsPage> {
         return handler.handle(Dispatchers.IO) {
-            val userId = userSession.authState.firstOrNull()?.getUserOrNull()?.id
+            val user = userSession.authState.firstOrNull()?.getUserOrNull()
                 ?: throw UnauthorizedException()
-            repository.loadInitialPosts(pageSize, sort, userId)
+
+            repository.loadInitialPosts(pageSize, sort, user.id, user.blockedUserIds)
         }
     }
 }

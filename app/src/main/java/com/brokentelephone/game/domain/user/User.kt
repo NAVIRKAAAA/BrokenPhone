@@ -12,6 +12,7 @@ data class User(
     val notifications: List<NotificationType>,
     val authProvider: AuthProvider,
     val onboardingStep: OnboardingStep,
+    val blockedUserIds: List<String> = emptyList(),
 ) {
 
     fun toMap(): Map<String, Any?> = mapOf(
@@ -24,6 +25,7 @@ data class User(
         FIELD_ONBOARDING_STEP to onboardingStep.name,
         FIELD_CREATED_AT to createdAt,
         FIELD_UPDATED_AT to updatedAt,
+        FIELD_BLOCKED_USER_IDS to blockedUserIds,
     )
 
     companion object {
@@ -36,6 +38,7 @@ data class User(
         const val FIELD_ONBOARDING_STEP = "onboardingStep"
         const val FIELD_CREATED_AT = "createdAt"
         const val FIELD_UPDATED_AT = "updatedAt"
+        const val FIELD_BLOCKED_USER_IDS = "blockedUserIds"
 
         @Suppress("UNCHECKED_CAST")
         fun fromMap(map: Map<String, Any?>): User? {
@@ -54,6 +57,7 @@ data class User(
                     }.getOrDefault(OnboardingStep.CHOOSE_USERNAME),
                     createdAt = map[FIELD_CREATED_AT] as? Long ?: 0L,
                     updatedAt = map[FIELD_UPDATED_AT] as? Long ?: 0L,
+                    blockedUserIds = (map[FIELD_BLOCKED_USER_IDS] as? List<String>) ?: emptyList(),
                 )
             } catch (_: Exception) {
                 null

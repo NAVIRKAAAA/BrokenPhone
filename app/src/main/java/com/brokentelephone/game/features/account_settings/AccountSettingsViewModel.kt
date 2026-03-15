@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.features.account_settings.model.AccountSettingsSideEffect
 import com.brokentelephone.game.features.account_settings.model.AccountSettingsState
 import com.brokentelephone.game.features.account_settings.use_case.DeleteAccountUseCase
-import com.brokentelephone.game.features.account_settings.use_case.GetBlockedUsersCountUseCase
 import com.brokentelephone.game.features.profile.use_case.GetCurrentUserUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +17,6 @@ import kotlinx.coroutines.launch
 
 class AccountSettingsViewModel(
     private val deleteAccountUseCase: DeleteAccountUseCase,
-    private val getBlockedUsersCountUseCase: GetBlockedUsersCountUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
 ) : ViewModel() {
 
@@ -29,9 +27,6 @@ class AccountSettingsViewModel(
     val sideEffects = _sideEffects.receiveAsFlow()
 
     init {
-        getBlockedUsersCountUseCase()
-            .onEach { count -> _state.update { it.copy(blockedUsersCount = count) } }
-            .launchIn(viewModelScope)
 
         getCurrentUserUseCase()
             .onEach { user -> _state.update { it.copy(user = user) } }

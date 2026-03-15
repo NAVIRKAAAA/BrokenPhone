@@ -107,21 +107,19 @@ class MockUserSessionImpl : UserSession {
         )
     )
 
-    override fun getBlockedUsers(): Flow<List<BlockedUser>> = _blockedUsers.asStateFlow()
-
-    override suspend fun blockUser(blockedUserId: String) {
+    override suspend fun blockUser(userId: String) {
         delay(1500)
         val newBlock = BlockedUser(
             id = "block_${System.currentTimeMillis()}",
-            userId = blockedUserId,
+            userId = userId,
             createdAt = System.currentTimeMillis(),
         )
         _blockedUsers.update { list -> list + newBlock }
     }
 
-    override suspend fun unblockUser(blockId: String) {
+    override suspend fun unblockUser(userId: String) {
         delay(1500)
-        _blockedUsers.update { list -> list.filter { it.id != blockId } }
+        _blockedUsers.update { list -> list.filter { it.id != userId } }
     }
 
     override suspend fun updateNotifications(notifications: List<NotificationType>) {

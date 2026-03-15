@@ -43,7 +43,6 @@ class ChainDetailsViewModel(
             .launchIn(viewModelScope)
 
         loadPost()
-        loadChain()
     }
 
     fun onResume() {
