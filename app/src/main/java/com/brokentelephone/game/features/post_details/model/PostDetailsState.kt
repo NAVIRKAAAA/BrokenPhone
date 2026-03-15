@@ -14,7 +14,8 @@ data class PostDetailsState(
     val isDeleteLoading: Boolean = false,
     val isContinueLoading: Boolean = false,
     val globalError: String? = null,
-    val globalException: Exception? = null
+    val globalException: Exception? = null,
+    val isLoadRetrying: Boolean = false,
 ) {
     val isCurrentUserPost: Boolean
         get() = postUi?.authorId == userUi?.id

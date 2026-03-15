@@ -10,7 +10,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -44,6 +47,7 @@ fun DashboardScreen(
     val listState = rememberLazyListState()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    var isScrollingUpValue by remember { mutableStateOf(true) }
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.loadInitialPosts()
@@ -53,14 +57,30 @@ fun DashboardScreen(
         viewModel.sideEffects.collect { effect ->
             when (effect) {
                 DashboardSideEffect.ShowReportSuccessToast ->
-                    Toast.makeText(context, context.getString(R.string.common_toast_report_success), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.common_toast_report_success),
+                        Toast.LENGTH_SHORT
+                    ).show()
+
                 DashboardSideEffect.ShowNotInterestedToast ->
-                    Toast.makeText(context, context.getString(R.string.common_toast_not_interested), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.common_toast_not_interested),
+                        Toast.LENGTH_SHORT
+                    ).show()
+
                 is DashboardSideEffect.ShowCopyLinkSuccessToast -> {
-                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clipboard =
+                        context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     clipboard.setPrimaryClip(ClipData.newPlainText("post_link", effect.link))
-                    Toast.makeText(context, context.getString(R.string.common_toast_link_copied), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.common_toast_link_copied),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
+
                 DashboardSideEffect.ScrollToTop -> {
                     scope.launch { listState.scrollToItem(0) }
                 }
@@ -82,6 +102,7 @@ fun DashboardScreen(
                 previousScrollOffset = offset
 
                 navBarViewModel.onScrollDirectionChange(isScrollingUp)
+                isScrollingUpValue = isScrollingUp
             }
     }
 
@@ -89,6 +110,7 @@ fun DashboardScreen(
         state = state,
         listState = listState,
         onPostClick = onPostClick,
+        isScrollingUp = isScrollingUpValue,
         onMoreClick = { postId ->
             val post = state.posts.find { it.id == postId } ?: return@DashboardContent
             viewModel.onMoreClick(post)

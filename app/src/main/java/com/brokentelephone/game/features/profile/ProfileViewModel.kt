@@ -82,6 +82,9 @@ class ProfileViewModel(
             val contributions = async { fetchContributions() }
             posts.await()
             contributions.await()
+
+            lastLoadedAt = System.currentTimeMillis()
+
             _state.update { it.copy(isRefreshing = false) }
         }
     }

@@ -49,24 +49,44 @@ class PostDetailsViewModel(
     init {
         getCurrentUserUseCase()
             .onEach { user ->
-                _state.update { it.copy(userUi = user,) }
+                _state.update { it.copy(userUi = user) }
             }
             .launchIn(viewModelScope)
 
+        loadPost()
+    }
+
+    private fun loadPost() {
         getPostByIdUseCase(postId)
             .onEach { postUi ->
                 delay(150)
-                _state.update { it.copy(postUi = postUi) }
+                _state.update {
+                    it.copy(
+                        postUi = postUi,
+                        globalError = null,
+                        globalException = null,
+                        isLoadRetrying = false
+                    )
+                }
             }
             .catch { e ->
+
+                delay(150)
+
                 _state.update {
                     it.copy(
                         globalError = exceptionToMessageMapper.map(e as Exception),
-                        globalException = e
+                        globalException = e,
+                        isLoadRetrying = false,
                     )
                 }
             }
             .launchIn(viewModelScope)
+    }
+
+    fun onLoadErrorRetry() {
+        _state.update { it.copy(isLoadRetrying = true) }
+        loadPost()
     }
 
     fun onGlobalErrorDismiss() {
@@ -152,7 +172,7 @@ class PostDetailsViewModel(
         val post = state.value.postUi ?: return
         _state.update { it.copy(isContinueLoading = true) }
         viewModelScope.launch {
-            mockStartGameUseCase(postId)
+//            mockStartGameUseCase(postId)
             _state.update { it.copy(isContinueLoading = false) }
             val effect = when (post.content) {
                 is PostContent.Text -> PostDetailsSideEffect.NavigateToDraw(postId)

@@ -36,7 +36,7 @@ fun DashboardShimmerList(
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 16.dp),
-        userScrollEnabled = false,
+        userScrollEnabled = true,
     ) {
         itemsIndexed(items) { index, content ->
             if (index != 0) {

@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.R
+import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.shimmer.shimmer
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.domain.post.PostContent
@@ -54,69 +55,91 @@ fun PostDetailsContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (post == null) {
-            PostDetailsElementShimmer(
-                content = PostContent.Text(""),
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
+        ShimmerContent(
+            isLoading = post == null,
+            shimmerContent = {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    PostDetailsElementShimmer(
+                        content = PostContent.Text(""),
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.weight(1f))
+                    Spacer(modifier = Modifier.weight(1f))
 
-            PostDetailsButtonShimmer()
+                    PostDetailsButtonShimmer()
 
-            Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
-            Text(
-                text = "You have 60 seconds to draw!",
-                fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                fontSize = 12.sp,
-                lineHeight = 16.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                modifier = Modifier.shimmer(cornerRadius = 4.dp)
-            )
+                    Text(
+                        text = "You have 60 seconds to draw!",
+                        fontFamily = FontFamily(Font(R.font.nunito_regular)),
+                        fontSize = 12.sp,
+                        lineHeight = 16.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        modifier = Modifier.shimmer(cornerRadius = 4.dp)
+                    )
 
-        } else {
-            PostDetailsElement(
-                post = post,
-                isUsersPost = state.isCurrentUserPost,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
+                    Spacer(modifier = Modifier
+                        .height(32.dp)
+                        .navigationBarsPadding())
+                }
+            },
+            content = {
+                if(post != null) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        PostDetailsElement(
+                            post = post,
+                            isUsersPost = state.isCurrentUserPost,
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.weight(1f))
+                        Spacer(modifier = Modifier.weight(1f))
 
-            val buttonType = when {
-                post.isCompleted -> PostDetailsButtonType.COMPLETED
-                state.isCurrentUserPost -> PostDetailsButtonType.OWN_POST
-                post.status != PostStatus.AVAILABLE -> PostDetailsButtonType.UNAVAILABLE
-                post.content is PostContent.Text -> PostDetailsButtonType.DRAW
-                else -> PostDetailsButtonType.DESCRIBE
+                        val buttonType = when {
+                            post.isCompleted -> PostDetailsButtonType.COMPLETED
+                            state.isCurrentUserPost -> PostDetailsButtonType.OWN_POST
+                            post.status != PostStatus.AVAILABLE -> PostDetailsButtonType.UNAVAILABLE
+                            post.content is PostContent.Text -> PostDetailsButtonType.DRAW
+                            else -> PostDetailsButtonType.DESCRIBE
+                        }
+
+                        PostDetailsButton(
+                            buttonType = buttonType,
+                            isLoading = state.isContinueLoading,
+                            onContinueClick = onContinueClick,
+                            onViewHistoryClick = onViewHistoryClick,
+                        )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Text(
+                            text = stringResource(buttonType.descriptionResId, post.nextTimeLimit),
+                            fontFamily = FontFamily(Font(R.font.nunito_regular)),
+                            fontSize = 12.sp,
+                            lineHeight = 16.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                        )
+
+                        Spacer(modifier = Modifier
+                            .height(32.dp)
+                            .navigationBarsPadding())
+                    }
+                }
             }
+        )
 
-            PostDetailsButton(
-                buttonType = buttonType,
-                isLoading = state.isContinueLoading,
-                onContinueClick = onContinueClick,
-                onViewHistoryClick = onViewHistoryClick,
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Text(
-                text = stringResource(buttonType.descriptionResId, post.nextTimeLimit),
-                fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                fontSize = 12.sp,
-                lineHeight = 16.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-            )
-        }
-
-        Spacer(modifier = Modifier.height(32.dp).navigationBarsPadding())
     }
 
 }

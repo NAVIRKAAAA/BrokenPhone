@@ -15,6 +15,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -43,7 +44,15 @@ class DescribeDrawingViewModel(
     }
 
     private suspend fun loadPost() {
-        val postUi = getPostByIdUseCase(postId).firstOrNull() ?: return
+        val postUi = getPostByIdUseCase(postId)
+            .catch { e ->
+                _state.update {
+                    it.copy(
+                        globalError = exceptionToMessageMapper.map(e as Exception),
+                    )
+                }
+            }.firstOrNull() ?: return
+
         _state.update { it.copy(postUi = postUi) }
         startTimer(postUi.nextTimeLimit)
     }

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -42,6 +41,7 @@ import com.brokentelephone.game.features.profile.model.UserUi
 fun DashboardContent(
     state: DashboardState,
     listState: LazyListState,
+    isScrollingUp: Boolean,
     onPostClick: (postId: String) -> Unit,
     onMoreClick: (postId: String) -> Unit,
     onSortSelected: (DashboardSort) -> Unit,
@@ -50,53 +50,54 @@ fun DashboardContent(
     onLoadMore: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .statusBarsPadding()
     ) {
         DashboardTopBar(
             name = state.user?.username ?: "",
+            avatarUrl = state.user?.avatarUrl,
             selectedSort = state.selectedSort,
             onSortSelected = onSortSelected,
             onTitleClick = onTitleClick,
+            isScrolled = !isScrollingUp,
         )
 
-        ShimmerContent(
-            isLoading = state.posts.isEmpty(),
-            shimmerContent = {
-                DashboardShimmerList()
-            },
-            content = {
-                val reachedEnd = remember {
-                    derivedStateOf {
-                        val layoutInfo = listState.layoutInfo
-                        val lastVisible = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: return@derivedStateOf false
-                        lastVisible >= layoutInfo.totalItemsCount - LOAD_MORE_THRESHOLD
-                    }
-                }
-                LaunchedEffect(reachedEnd.value) {
-                    if (reachedEnd.value) onLoadMore()
-                }
+        val pullToRefreshState = rememberPullToRefreshState()
+        val isRefreshing = state.isRefreshing || (state.isInitialLoading && state.posts.isNotEmpty())
 
-                val pullToRefreshState = rememberPullToRefreshState()
-                val isRefreshing = state.isRefreshing || state.isInitialLoading
-
-                PullToRefreshBox(
-                    isRefreshing = isRefreshing,
-                    onRefresh = onRefresh,
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = onRefresh,
+            state = pullToRefreshState,
+            modifier = Modifier.fillMaxSize(),
+            indicator = {
+                AppPullToRefreshIndicator(
                     state = pullToRefreshState,
-                    modifier = Modifier.fillMaxSize(),
-                    indicator = {
-                        AppPullToRefreshIndicator(
-                            state = pullToRefreshState,
-                            isRefreshing = isRefreshing,
-                            modifier = Modifier.align(Alignment.TopCenter),
-                        )
-                    },
-                ) {
+                    isRefreshing = isRefreshing,
+                    modifier = Modifier.align(Alignment.TopCenter),
+                )
+            },
+        ) {
+            ShimmerContent(
+                isLoading = state.posts.isEmpty(),
+                shimmerContent = {
+                    DashboardShimmerList()
+                },
+                content = {
+                    val reachedEnd = remember {
+                        derivedStateOf {
+                            val layoutInfo = listState.layoutInfo
+                            val lastVisible = layoutInfo.visibleItemsInfo.lastOrNull()?.index
+                                ?: return@derivedStateOf false
+                            lastVisible >= layoutInfo.totalItemsCount - LOAD_MORE_THRESHOLD
+                        }
+                    }
+                    LaunchedEffect(reachedEnd.value) {
+                        if (reachedEnd.value) onLoadMore()
+                    }
+
                     LazyColumn(
                         state = listState,
                         modifier = Modifier.fillMaxSize(),
@@ -139,10 +140,9 @@ fun DashboardContent(
                         }
                     }
                 }
-            },
-        )
+            )
+        }
     }
-
 }
 
 const val LOAD_MORE_THRESHOLD = 3
@@ -150,12 +150,9 @@ const val LOAD_MORE_THRESHOLD = 3
 @Preview
 @Composable
 fun DashboardContentPreview() {
-    BrokenTelephoneTheme(
-        darkTheme = false
-    ) {
+    BrokenTelephoneTheme(darkTheme = false) {
         DashboardContent(
             state = DashboardState(
-//                posts = MockPostRepository.mockList.map { it.toUi() },
                 user = UserUi(
                     id = "user_1",
                     username = "Alex",
@@ -171,7 +168,8 @@ fun DashboardContentPreview() {
             onTitleClick = {},
             onRefresh = {},
             onLoadMore = {},
-            listState = rememberLazyListState()
+            listState = rememberLazyListState(),
+            isScrollingUp = true,
         )
     }
 }

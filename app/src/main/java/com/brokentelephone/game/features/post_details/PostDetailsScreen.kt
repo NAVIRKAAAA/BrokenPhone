@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,6 +20,7 @@ import com.brokentelephone.game.core.bottom_sheet.post_bottom_sheet.model.PostBo
 import com.brokentelephone.game.core.bottom_sheet.report_post_bottom_sheet.ReportPostBottomSheet
 import com.brokentelephone.game.core.dialog.ConfirmDialog
 import com.brokentelephone.game.core.dialog.ErrorDialog
+import com.brokentelephone.game.essentials.exceptions.auth.PostNotFoundException
 import com.brokentelephone.game.features.post_details.content.PostDetailsContent
 import com.brokentelephone.game.features.post_details.model.PostDetailsSideEffect
 import org.koin.compose.viewmodel.koinViewModel
@@ -121,9 +123,24 @@ fun PostDetailsScreen(
     }
 
     state.globalError?.let { error ->
-        ErrorDialog(
-            body = error,
-            onOkClick = viewModel::onGlobalErrorDismiss,
-        )
+        if (state.globalException is PostNotFoundException) {
+            ConfirmDialog(
+                title = stringResource(R.string.error_session_data_title),
+                body = error,
+                confirmText = stringResource(R.string.error_session_data_retry),
+                cancelText = stringResource(R.string.common_cancel),
+                onDismiss = {
+                    viewModel.onGlobalErrorDismiss()
+                },
+                onConfirm = viewModel::onLoadErrorRetry,
+                confirmButtonColor = MaterialTheme.colorScheme.primary,
+                isLoading = state.isLoadRetrying,
+            )
+        } else {
+            ErrorDialog(
+                body = error,
+                onOkClick = viewModel::onGlobalErrorDismiss,
+            )
+        }
     }
 }

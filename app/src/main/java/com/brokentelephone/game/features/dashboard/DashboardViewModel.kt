@@ -78,7 +78,8 @@ class DashboardViewModel(
 
                     _sideEffects.send(DashboardSideEffect.ScrollToTop)
                 }
-                .onError {
+                .onError { exception ->
+                    Log.d("LOG_TAG", "Error: $exception")
                     _state.update { it.copy(isInitialLoading = false) }
                 }
         }
@@ -196,7 +197,13 @@ class DashboardViewModel(
         _state.update { it.copy(isDeleteLoading = true) }
         viewModelScope.launch {
             deletePostUseCase(postId)
-            _state.update { it.copy(isDeleteLoading = false, isDeleteDialogVisible = false, selectedPost = null) }
+            _state.update {
+                it.copy(
+                    isDeleteLoading = false,
+                    isDeleteDialogVisible = false,
+                    selectedPost = null
+                )
+            }
         }
     }
 
@@ -209,12 +216,23 @@ class DashboardViewModel(
         _state.update { it.copy(isBlockLoading = true) }
         viewModelScope.launch {
             blockUserUseCase(blockedUserId)
-            _state.update { it.copy(isBlockLoading = false, isBlockDialogVisible = false, selectedPost = null) }
+            _state.update {
+                it.copy(
+                    isBlockLoading = false,
+                    isBlockDialogVisible = false,
+                    selectedPost = null
+                )
+            }
         }
     }
 
     fun onReportClick() {
-        _state.update { it.copy(isPostBottomSheetVisible = false, isReportBottomSheetVisible = true) }
+        _state.update {
+            it.copy(
+                isPostBottomSheetVisible = false,
+                isReportBottomSheetVisible = true
+            )
+        }
     }
 
     fun onReportBottomSheetDismiss() {

@@ -1,8 +1,5 @@
 package com.brokentelephone.game.features.profile.content
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -54,7 +50,6 @@ import com.brokentelephone.game.features.profile.model.ProfileState
 import com.brokentelephone.game.features.profile.model.ProfileTab
 import com.brokentelephone.game.features.profile.model.UserUi
 import com.brokentelephone.game.features.welcome.content.WelcomeButton
-import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileContent(
@@ -116,8 +111,7 @@ fun ProfileContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .statusBarsPadding(),
+                .background(MaterialTheme.colorScheme.background),
         ) {
 
             val pullToRefreshState = rememberPullToRefreshState()
@@ -130,8 +124,11 @@ fun ProfileContent(
 
             ProfileTopBar(
                 title = stringResource(R.string.profile_title),
+                username = state.user?.username.orEmpty(),
+                avatarUrl = state.user?.avatarUrl,
                 onEditClick = onEditClick,
                 onSettingsClick = onSettingsClick,
+                isScrolled = isScrolledPastAccountInfo,
                 showEditButton = state.isAuth,
             )
 
@@ -293,22 +290,6 @@ fun ProfileContent(
             }
         }
 
-        AnimatedVisibility(
-            visible = isScrolledPastAccountInfo,
-            enter = slideInVertically { -it },
-            exit = slideOutVertically { -it },
-            modifier = Modifier.align(Alignment.TopCenter),
-        ) {
-            ProfileScrolledTopBar(
-                username = state.user?.username.orEmpty(),
-                avatarUrl = state.user?.avatarUrl,
-                showEditButton = state.isAuth,
-                onEditClick = onEditClick,
-                onSettingsClick = onSettingsClick,
-                onBarClick = { coroutineScope.launch { listState.animateScrollToItem(0) } },
-                modifier = Modifier.statusBarsPadding(),
-            )
-        }
     }
 }
 
