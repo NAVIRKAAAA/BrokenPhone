@@ -12,21 +12,20 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.features.dashboard.content.DashboardShimmerList
-import com.brokentelephone.game.features.dashboard.content.PostElement
 import com.brokentelephone.game.features.dashboard.model.PostUi
 
 @Composable
 fun ProfilePostsPage(
     posts: List<PostUi>,
     isLoading: Boolean,
-    onScrollDirectionChange: (isScrollingUp: Boolean) -> Unit,
+    nestedScrollConnection: NestedScrollConnection,
     onPostClick: (postId: String) -> Unit,
     onMoreClick: (postId: String) -> Unit,
     modifier: Modifier = Modifier,
@@ -37,25 +36,11 @@ fun ProfilePostsPage(
     }
     val listState = rememberLazyListState()
 
-    LaunchedEffect(listState) {
-        var previousIndex = listState.firstVisibleItemIndex
-        var previousScrollOffset = listState.firstVisibleItemScrollOffset
-        snapshotFlow { listState.firstVisibleItemIndex to listState.firstVisibleItemScrollOffset }
-            .collect { (index, offset) ->
-                val isScrollingUp = if (index != previousIndex) {
-                    index < previousIndex
-                } else {
-                    offset <= previousScrollOffset
-                }
-                previousIndex = index
-                previousScrollOffset = offset
-                onScrollDirectionChange(isScrollingUp)
-            }
-    }
-
     LazyColumn(
         state = listState,
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .nestedScroll(nestedScrollConnection),
     ) {
         itemsIndexed(
             items = posts,
@@ -65,9 +50,8 @@ fun ProfilePostsPage(
                 HorizontalDivider(color = MaterialTheme.appColors.divider)
             }
 
-            PostElement(
+            ProfilePostElement(
                 post = post,
-                isUsersPost = false,
                 onMoreClick = { onMoreClick(post.id) },
                 modifier = Modifier
                     .combinedClickable(
