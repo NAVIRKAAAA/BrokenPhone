@@ -30,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,6 +54,7 @@ import com.brokentelephone.game.features.profile.model.ProfileState
 import com.brokentelephone.game.features.profile.model.ProfileTab
 import com.brokentelephone.game.features.profile.model.UserUi
 import com.brokentelephone.game.features.welcome.content.WelcomeButton
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileContent(
@@ -63,7 +65,7 @@ fun ProfileContent(
     onGetStartedClick: () -> Unit,
     onTabSelect: (ProfileTab) -> Unit,
     onScrollDirectionChange: (Boolean) -> Unit,
-    onPostClick: (postId: String) -> Unit,
+    onPostClick: (parentId: String) -> Unit,
     onMoreClick: (postId: String) -> Unit,
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
@@ -73,6 +75,7 @@ fun ProfileContent(
         pageCount = { ProfileTab.entries.size }
     )
     val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
     val isScrolledPastAccountInfo by remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
     val nestedScrollConnection = remember(listState) {
         object : NestedScrollConnection {
@@ -302,6 +305,7 @@ fun ProfileContent(
                 showEditButton = state.isAuth,
                 onEditClick = onEditClick,
                 onSettingsClick = onSettingsClick,
+                onBarClick = { coroutineScope.launch { listState.animateScrollToItem(0) } },
                 modifier = Modifier.statusBarsPadding(),
             )
         }

@@ -2,7 +2,6 @@ package com.brokentelephone.game.domain.repository
 
 import com.brokentelephone.game.data.model.PostsPage
 import com.brokentelephone.game.domain.post.Post
-import com.brokentelephone.game.domain.post.PostChainEntry
 import com.brokentelephone.game.domain.post.PostContent
 import com.brokentelephone.game.features.dashboard.model.DashboardSort
 import com.google.firebase.firestore.DocumentSnapshot
@@ -17,7 +16,7 @@ interface PostRepository {
 
     fun getPostById(id: String): Flow<Post>
 
-    fun getChainByPostId(postId: String): Flow<List<PostChainEntry>>
+    suspend fun getChainByPostId(postId: String): List<Post>
 
     suspend fun loadUserPosts(userId: String): List<Post>
 

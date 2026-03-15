@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.pagination.LoadMoreIndicator
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
+import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.features.dashboard.model.DashboardSort
@@ -63,80 +64,83 @@ fun DashboardContent(
             onTitleClick = onTitleClick,
         )
 
-        if (state.posts.isEmpty()) {
-            DashboardShimmerList()
-            return@Column
-        }
-
-        val reachedEnd = remember {
-            derivedStateOf {
-                val layoutInfo = listState.layoutInfo
-                val lastVisible = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: return@derivedStateOf false
-                lastVisible >= layoutInfo.totalItemsCount - LOAD_MORE_THRESHOLD
-            }
-        }
-        LaunchedEffect(reachedEnd.value) {
-            if (reachedEnd.value) onLoadMore()
-        }
-
-        val pullToRefreshState = rememberPullToRefreshState()
-        val isRefreshing = state.isRefreshing || state.isInitialLoading
-
-        PullToRefreshBox(
-            isRefreshing = isRefreshing,
-            onRefresh = onRefresh,
-            state = pullToRefreshState,
-            modifier = Modifier.fillMaxSize(),
-            indicator = {
-                AppPullToRefreshIndicator(
-                    state = pullToRefreshState,
-                    isRefreshing = isRefreshing,
-                    modifier = Modifier.align(Alignment.TopCenter),
-                )
+        ShimmerContent(
+            isLoading = state.posts.isEmpty(),
+            shimmerContent = {
+                DashboardShimmerList()
             },
-        ) {
-            LazyColumn(
-                state = listState,
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(vertical = 16.dp),
-            ) {
-                itemsIndexed(
-                    items = state.posts,
-                    key = { _, item -> item.id }
-                ) { index, postUi ->
-                    Column {
-                        Column(
-                            modifier = Modifier.combinedClickable(
-                                onClick = { onPostClick(postUi.id) },
-                                onLongClick = { onMoreClick(postUi.id) },
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() }
-                            )
-                        ) {
-                            if (index != 0) {
-                                Spacer(modifier = Modifier.height(16.dp))
+            content = {
+                val reachedEnd = remember {
+                    derivedStateOf {
+                        val layoutInfo = listState.layoutInfo
+                        val lastVisible = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: return@derivedStateOf false
+                        lastVisible >= layoutInfo.totalItemsCount - LOAD_MORE_THRESHOLD
+                    }
+                }
+                LaunchedEffect(reachedEnd.value) {
+                    if (reachedEnd.value) onLoadMore()
+                }
+
+                val pullToRefreshState = rememberPullToRefreshState()
+                val isRefreshing = state.isRefreshing || state.isInitialLoading
+
+                PullToRefreshBox(
+                    isRefreshing = isRefreshing,
+                    onRefresh = onRefresh,
+                    state = pullToRefreshState,
+                    modifier = Modifier.fillMaxSize(),
+                    indicator = {
+                        AppPullToRefreshIndicator(
+                            state = pullToRefreshState,
+                            isRefreshing = isRefreshing,
+                            modifier = Modifier.align(Alignment.TopCenter),
+                        )
+                    },
+                ) {
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(vertical = 16.dp),
+                    ) {
+                        itemsIndexed(
+                            items = state.posts,
+                            key = { _, item -> item.id }
+                        ) { index, postUi ->
+                            Column {
+                                Column(
+                                    modifier = Modifier.combinedClickable(
+                                        onClick = { onPostClick(postUi.id) },
+                                        onLongClick = { onMoreClick(postUi.id) },
+                                        indication = null,
+                                        interactionSource = remember { MutableInteractionSource() }
+                                    )
+                                ) {
+                                    if (index != 0) {
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                    }
+                                    PostElement(
+                                        post = postUi,
+                                        isUsersPost = postUi.authorId == state.user?.id,
+                                        onMoreClick = { onMoreClick(postUi.id) },
+                                        modifier = Modifier.padding(horizontal = 16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                    if (index != state.posts.lastIndex) {
+                                        HorizontalDivider(color = MaterialTheme.appColors.divider)
+                                    }
+                                }
                             }
-                            PostElement(
-                                post = postUi,
-                                isUsersPost = postUi.authorId == state.user?.id,
-                                onMoreClick = { onMoreClick(postUi.id) },
-                                modifier = Modifier.padding(horizontal = 16.dp)
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            if (index != state.posts.lastIndex) {
-                                HorizontalDivider(color = MaterialTheme.appColors.divider)
-                            }
+                        }
+                        if (state.hasMore) {
+                            item { LoadMoreIndicator() }
+                        }
+                        item {
+                            Spacer(modifier = Modifier.navigationBarsPadding())
                         }
                     }
                 }
-                if (state.hasMore) {
-                    item { LoadMoreIndicator() }
-                }
-                item {
-                    Spacer(modifier = Modifier.navigationBarsPadding())
-                }
-            }
-        }
+            },
+        )
     }
 
 }

@@ -11,7 +11,6 @@ import com.brokentelephone.game.features.dashboard.model.DashboardSort
 import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 
 class MockPostRepository : PostRepository {
 
@@ -34,8 +33,7 @@ class MockPostRepository : PostRepository {
 
     override fun getPostById(id: String): Flow<Post> = flow { throw PostNotFoundException() }
 
-    override fun getChainByPostId(postId: String): Flow<List<PostChainEntry>> =
-        flowOf(chainsMockList)
+    override suspend fun getChainByPostId(postId: String): List<Post> = listOf()
 
     override suspend fun loadUserPosts(userId: String): List<Post> = listOf()
 

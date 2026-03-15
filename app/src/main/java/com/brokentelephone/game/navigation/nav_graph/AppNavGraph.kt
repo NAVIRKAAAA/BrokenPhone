@@ -401,8 +401,8 @@ fun AppNavGraph(
             popExitTransition = { ExitTransition.None }
         ) {
             ProfileScreen(
-                onPostClick = { postId ->
-                    navController.navigateSingle(Routes.ChainDetails(postId = postId))
+                onPostClick = { parentId ->
+                    navController.navigateSingle(Routes.ChainDetails(postId = parentId))
                 },
                 onSignInClick = {
                     navController.navigateSingle(Routes.SignIn)

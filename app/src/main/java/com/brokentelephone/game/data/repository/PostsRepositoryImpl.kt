@@ -5,7 +5,6 @@ import com.brokentelephone.game.data.mapper.toMap
 import com.brokentelephone.game.data.mapper.toPost
 import com.brokentelephone.game.data.model.PostsPage
 import com.brokentelephone.game.domain.post.Post
-import com.brokentelephone.game.domain.post.PostChainEntry
 import com.brokentelephone.game.domain.post.PostContent
 import com.brokentelephone.game.domain.post.PostStatus
 import com.brokentelephone.game.domain.repository.PostRepository
@@ -22,7 +21,6 @@ import com.google.firebase.firestore.Query
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.tasks.await
 
 class PostsRepositoryImpl(
@@ -96,7 +94,21 @@ class PostsRepositoryImpl(
         awaitClose { listener.remove() }
     }
 
-    override fun getChainByPostId(postId: String): Flow<List<PostChainEntry>> = flowOf(emptyList())
+    override suspend fun getChainByPostId(postId: String): List<Post> {
+        return try {
+            val snapshot = collection.document(postId)
+                .collection(CHAIN_COLLECTION)
+                .orderBy(FIELD_CREATED_AT, Query.Direction.ASCENDING)
+                .get()
+                .await()
+
+            snapshot.documents.mapNotNull { it.data?.toPost() }
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
 
     override suspend fun loadUserPosts(userId: String): List<Post> {
         try {

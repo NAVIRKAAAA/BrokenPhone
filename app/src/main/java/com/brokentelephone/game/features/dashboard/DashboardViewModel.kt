@@ -230,7 +230,7 @@ class DashboardViewModel(
 
     private companion object {
         const val REFRESH_COOLDOWN_MS = 30_000L
-        const val INITIAL_PAGE_SIZE = 30
+        const val INITIAL_PAGE_SIZE = 20
         const val DEFAULT_PAGE_SIZE = 10
     }
 }

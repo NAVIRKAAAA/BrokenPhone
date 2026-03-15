@@ -17,8 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.appColors
-import com.brokentelephone.game.features.dashboard.content.DashboardShimmerList
 import com.brokentelephone.game.features.dashboard.model.PostUi
 
 @Composable
@@ -26,50 +26,55 @@ fun ProfilePostsPage(
     posts: List<PostUi>,
     isLoading: Boolean,
     nestedScrollConnection: NestedScrollConnection,
-    onPostClick: (postId: String) -> Unit,
+    onPostClick: (parentId: String) -> Unit,
     onMoreClick: (postId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    if (isLoading) {
-        DashboardShimmerList(modifier = modifier)
-        return
-    }
-    val listState = rememberLazyListState()
 
-    LazyColumn(
-        state = listState,
-        modifier = modifier
-            .fillMaxSize()
-            .nestedScroll(nestedScrollConnection),
-    ) {
-        itemsIndexed(
-            items = posts,
-            key = { _, item -> item.id },
-        ) { index, post ->
-            if (index != 0) {
-                HorizontalDivider(color = MaterialTheme.appColors.divider)
-            }
+    ShimmerContent(
+        isLoading = isLoading,
+        shimmerContent = {
+            ProfilePageShimmerList(modifier = modifier)
+        },
+        content = {
+            val listState = rememberLazyListState()
 
-            ProfilePostElement(
-                post = post,
-                onMoreClick = { onMoreClick(post.id) },
-                modifier = Modifier
-                    .combinedClickable(
-                        onClick = {
-                            onPostClick(post.id)
-                        },
-                        onLongClick = {
-                            onMoreClick(post.id)
-                        },
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
+            LazyColumn(
+                state = listState,
+                modifier = modifier
+                    .fillMaxSize()
+                    .nestedScroll(nestedScrollConnection),
+            ) {
+                itemsIndexed(
+                    items = posts,
+                    key = { _, item -> item.id },
+                ) { index, post ->
+                    if (index != 0) {
+                        HorizontalDivider(color = MaterialTheme.appColors.divider)
+                    }
+
+                    ProfilePostElement(
+                        post = post,
+                        onMoreClick = { onMoreClick(post.id) },
+                        modifier = Modifier
+                            .combinedClickable(
+                                onClick = {
+                                    onPostClick(post.parentId)
+                                },
+                                onLongClick = {
+                                    onMoreClick(post.id)
+                                },
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            )
+                            .padding(horizontal = 16.dp, vertical = 16.dp),
                     )
-                    .padding(horizontal = 16.dp, vertical = 16.dp),
-            )
-        }
+                }
 
-        item {
-            Spacer(modifier = Modifier.navigationBarsPadding())
-        }
-    }
+                item {
+                    Spacer(modifier = Modifier.navigationBarsPadding())
+                }
+            }
+        },
+    )
 }
