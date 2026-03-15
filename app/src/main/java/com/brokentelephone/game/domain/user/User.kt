@@ -13,6 +13,7 @@ data class User(
     val authProvider: AuthProvider,
     val onboardingStep: OnboardingStep,
     val blockedUserIds: List<String> = emptyList(),
+    // blockedBy: List<String>
 ) {
 
     fun toMap(): Map<String, Any?> = mapOf(

@@ -15,4 +15,18 @@
     <string name="error_image_upload">Не вдалося завантажити зображення. Спробуй ще раз.</string>
     <string name="error_post_not_found">Не вдалося завантажити пост. Можливо, він був видалений або виникли проблеми з інтернетом.</string>
     <string name="error_user_not_found">Цього користувача більше не існує. Можливо, він видалив свій акаунт.</string>
+
+    <!-- Firestore errors -->
+    <string name="error_firestore_cancelled">Запит було скасовано. Спробуй ще раз.</string>
+    <string name="error_firestore_invalid_argument">Щось переплуталось ще до відправки. Перевір дані та спробуй знову.</string>
+    <string name="error_firestore_deadline_exceeded">Сервер надто довго не відповідав. Перевір з\'єднання та спробуй ще раз.</string>
+    <string name="error_firestore_not_found">Не вдалося знайти те, що ти шукаєш. Можливо, це вже видалили.</string>
+    <string name="error_firestore_already_exists">Це вже існує. Не потрібно робити двічі.</string>
+    <string name="error_firestore_permission_denied">У тебе немає дозволу на цю дію.</string>
+    <string name="error_firestore_resource_exhausted">Наші сервери зараз трохи перевантажені. Зачекай трохи та спробуй знову.</string>
+    <string name="error_firestore_failed_precondition">Щось пішло не так з нашого боку. Спробуй пізніше.</string>
+    <string name="error_firestore_aborted">Запит було перервано. Спробуй ще раз.</string>
+    <string name="error_firestore_unauthenticated">Щоб зробити це, потрібно увійти в акаунт.</string>
+    <string name="error_firestore_unavailable">Не вдалося з\'єднатися з нашими серверами. Перевір інтернет та спробуй знову.</string>
+    <string name="error_firestore_internal">Щось пішло не так з нашого боку. Ми вже розбираємось — спробуй пізніше.</string>
 </resources>

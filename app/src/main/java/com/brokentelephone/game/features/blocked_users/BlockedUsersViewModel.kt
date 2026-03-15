@@ -7,11 +7,15 @@ import com.brokentelephone.game.domain.handler.onError
 import com.brokentelephone.game.domain.handler.onSuccess
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.blocked_users.model.BlockedUserUi
+import com.brokentelephone.game.features.blocked_users.model.BlockedUsersSideEffect
 import com.brokentelephone.game.features.blocked_users.model.BlockedUsersState
 import com.brokentelephone.game.features.blocked_users.use_case.GetBlockedUsersUseCase
 import com.brokentelephone.game.features.blocked_users.use_case.UnblockUserUseCase
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -24,37 +28,60 @@ class BlockedUsersViewModel(
     private val _state = MutableStateFlow(BlockedUsersState())
     val state = _state.asStateFlow()
 
-    private var lastLoadedAt: Long = 0L
+    private val _sideEffects = Channel<BlockedUsersSideEffect>(Channel.BUFFERED)
+    val sideEffects = _sideEffects.receiveAsFlow()
 
     fun onResume() {
         loadBlockedUsers()
     }
 
     private fun loadBlockedUsers() {
-        if (!isInitialLoadAllowed()) return
         Log.d("LOG_TAG", "loadBlockedUsers()")
 
         viewModelScope.launch {
+
+            _state.update { it.copy(isLoading = true) }
+
             getBlockedUsersUseCase.execute().onSuccess { users ->
                 Log.d("LOG_TAG", "loadBlockedUsers: onSuccess (${users.size})")
-                lastLoadedAt = System.currentTimeMillis()
-                _state.update { it.copy(blockedUsers = users, isLoading = false) }
-            }.onError { e ->
-                Log.d("LOG_TAG", "loadBlockedUsers: onError ($e)")
+                _state.update {
+                    it.copy(
+                        blockedUsers = users,
+                        isLoading = false,
+                        isLoadRetrying = false,
+                        loadError = null
+                    )
+                }
+            }.onError { exception ->
+                Log.d("LOG_TAG", "loadBlockedUsers: onError ($exception)")
                 _state.update {
                     it.copy(
                         isLoading = false,
-                        globalError = exceptionToMessageMapper.map(e),
-                        globalException = e,
+                        isLoadRetrying = false,
+                        loadError = exceptionToMessageMapper.map(exception),
                     )
                 }
             }
         }
     }
 
-    private fun isInitialLoadAllowed(): Boolean {
-        if (lastLoadedAt == 0L) return true
-        return System.currentTimeMillis() - lastLoadedAt >= REFRESH_COOLDOWN_MS
+    fun onRefresh() {
+        viewModelScope.launch {
+            _state.update { it.copy(isRefreshing = true) }
+
+            delay(150)
+
+            getBlockedUsersUseCase.execute().onSuccess { users ->
+                _state.update { it.copy(blockedUsers = users, isRefreshing = false) }
+            }.onError { e ->
+                _state.update {
+                    it.copy(
+                        isRefreshing = false,
+                        globalError = exceptionToMessageMapper.map(e),
+                    )
+                }
+            }
+        }
     }
 
     fun onUnblockClick(user: BlockedUserUi) {
@@ -69,16 +96,34 @@ class BlockedUsersViewModel(
         val blockId = _state.value.unblockDialogUser?.id ?: return
         _state.update { it.copy(isUnblockLoading = true) }
         viewModelScope.launch {
-            unblockUserUseCase(blockId)
-            _state.update { it.copy(unblockDialogUser = null, isUnblockLoading = false) }
+            unblockUserUseCase.execute(blockId).onSuccess {
+                _state.update { it.copy(unblockDialogUser = null, isUnblockLoading = false) }
+                loadBlockedUsers()
+            }.onError { exception ->
+                _state.update {
+                    it.copy(
+                        isUnblockLoading = false,
+                        unblockDialogUser = null,
+                        globalError = exceptionToMessageMapper.map(exception)
+                    )
+                }
+            }
+        }
+    }
+
+    fun onLoadErrorRetry() {
+        _state.update { it.copy(isLoadRetrying = true) }
+        loadBlockedUsers()
+    }
+
+    fun onLoadErrorDismiss() {
+        _state.update { it.copy(loadError = null) }
+        viewModelScope.launch {
+            _sideEffects.send(BlockedUsersSideEffect.NavigateBack)
         }
     }
 
     fun onGlobalErrorDismiss() {
-        _state.update { it.copy(globalError = null, globalException = null) }
-    }
-
-    private companion object {
-        const val REFRESH_COOLDOWN_MS = 30_000L
+        _state.update { it.copy(globalError = null) }
     }
 }

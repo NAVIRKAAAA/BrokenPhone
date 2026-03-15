@@ -1,6 +1,7 @@
 package com.brokentelephone.game.data.repository
 
 import android.util.Log
+import com.brokentelephone.game.data.mapper.toAppException
 import com.brokentelephone.game.data.mapper.toMap
 import com.brokentelephone.game.data.mapper.toPost
 import com.brokentelephone.game.data.model.PostsPage
@@ -17,6 +18,7 @@ import com.brokentelephone.game.features.dashboard.model.DashboardSort
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -30,6 +32,10 @@ class PostsRepositoryImpl(
 
     override val collectionName = "posts"
 
+    init {
+        Log.d("LOG_TAG", "Settings: ${firestore.firestoreSettings.cacheSettings}")
+    }
+
     override suspend fun loadInitialPosts(
         pageSize: Int,
         sort: DashboardSort,
@@ -39,11 +45,13 @@ class PostsRepositoryImpl(
         try {
             // The array of values provided to not-in can contain a maximum of 10 items.
             val snapshot = collection
-                .whereNotIn(FIELD_AUTHOR_ID,  blockedUsersIds.take(9) + userId)
+                .whereNotIn(FIELD_AUTHOR_ID, blockedUsersIds.take(9) + userId)
                 .applySorting(sort)
                 .limit(pageSize.toLong())
                 .get()
                 .await()
+
+            // filter here on client!
 
             val posts = snapshot.documents.mapNotNull { it.data?.toPost() }
             val lastDocRef = snapshot.documents.lastOrNull()
@@ -51,6 +59,9 @@ class PostsRepositoryImpl(
             return PostsPage(posts = posts, lastDocRef = lastDocRef)
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
+        } catch (e: FirebaseFirestoreException) {
+            Log.d("LOG_TAG", "Error: $e")
+            throw e.toAppException()
         } catch (e: Exception) {
             Log.d("LOG_TAG", "Error: $e")
             throw UnknownAuthException()
@@ -65,13 +76,16 @@ class PostsRepositoryImpl(
         blockedUsersIds: List<String>
     ): PostsPage {
         try {
+            // The array of values provided to not-in can contain a maximum of 10 items.
             val snapshot = collection
-                .whereNotIn(FIELD_AUTHOR_ID,  blockedUsersIds.take(9) + userId)
+                .whereNotIn(FIELD_AUTHOR_ID, blockedUsersIds.take(9) + userId)
                 .applySorting(sort)
                 .startAfter(afterDoc)
                 .limit(pageSize.toLong())
                 .get()
                 .await()
+
+            // filter here on client!
 
             val posts = snapshot.documents.mapNotNull { it.data?.toPost() }
             val lastDocRef = snapshot.documents.lastOrNull()
@@ -79,7 +93,11 @@ class PostsRepositoryImpl(
             return PostsPage(posts = posts, lastDocRef = lastDocRef)
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
-        } catch (_: Exception) {
+        } catch (e: FirebaseFirestoreException) {
+            Log.d("LOG_TAG", "Error: $e")
+            throw e.toAppException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "Error: $e")
             throw UnknownAuthException()
         }
     }
@@ -108,7 +126,11 @@ class PostsRepositoryImpl(
             snapshot.documents.mapNotNull { it.data?.toPost() }
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
-        } catch (_: Exception) {
+        } catch (e: FirebaseFirestoreException) {
+            Log.d("LOG_TAG", "Error: $e")
+            throw e.toAppException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "Error: $e")
             throw UnknownAuthException()
         }
     }
@@ -125,7 +147,11 @@ class PostsRepositoryImpl(
             return snapshot.documents.mapNotNull { it.data?.toPost() }
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
-        } catch (_: Exception) {
+        } catch (e: FirebaseFirestoreException) {
+            Log.d("LOG_TAG", "Error: $e")
+            throw e.toAppException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "Error: $e")
             throw UnknownAuthException()
         }
     }
@@ -139,12 +165,14 @@ class PostsRepositoryImpl(
             return snapshot.documents.mapNotNull { it.data?.toPost() }
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
-        } catch (_: Exception) {
+        } catch (e: FirebaseFirestoreException) {
+            Log.d("LOG_TAG", "Error: $e")
+            throw e.toAppException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "Error: $e")
             throw UnknownAuthException()
         }
     }
-
-    override suspend fun updatePost(post: Post) = Unit
 
     override suspend fun submitContinuation(
         postId: String,
@@ -170,7 +198,11 @@ class PostsRepositoryImpl(
             collection.document(postId).get().await()
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
-        } catch (_: Exception) {
+        } catch (e: FirebaseFirestoreException) {
+            Log.d("LOG_TAG", "Error: $e")
+            throw e.toAppException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "Error: $e")
             throw UnknownAuthException()
         }
 
@@ -217,7 +249,11 @@ class PostsRepositoryImpl(
             }.await()
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
-        } catch (_: Exception) {
+        } catch (e: FirebaseFirestoreException) {
+            Log.d("LOG_TAG", "Error: $e")
+            throw e.toAppException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "Error: $e")
             throw UnknownAuthException()
         }
     }
@@ -265,7 +301,11 @@ class PostsRepositoryImpl(
             }.await()
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
-        } catch (_: Exception) {
+        } catch (e: FirebaseFirestoreException) {
+            Log.d("LOG_TAG", "Error: $e")
+            throw e.toAppException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "Error: $e")
             throw UnknownAuthException()
         }
     }

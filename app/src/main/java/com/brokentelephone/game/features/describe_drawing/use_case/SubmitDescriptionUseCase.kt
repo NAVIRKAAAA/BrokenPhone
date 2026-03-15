@@ -16,7 +16,7 @@ class SubmitDescriptionUseCase(
 ) {
 
     suspend fun execute(postId: String, text: String): AppResult<Unit> {
-        return apiHandler.handle(Dispatchers.IO) {
+        return apiHandler.handle(dispatcher = Dispatchers.IO, maxRetries = 0) {
             val user = userSession.authState.first().getUserOrNull() ?: throw UnauthorizedException()
 
             repository.submitContinuation(

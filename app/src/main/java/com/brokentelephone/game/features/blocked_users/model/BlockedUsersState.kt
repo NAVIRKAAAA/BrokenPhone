@@ -6,5 +6,7 @@ data class BlockedUsersState(
     val unblockDialogUser: BlockedUserUi? = null,
     val isUnblockLoading: Boolean = false,
     val globalError: String? = null,
-    val globalException: Throwable? = null,
+    val loadError: String? = null,
+    val isLoadRetrying: Boolean = false,
+    val isRefreshing: Boolean = false
 )

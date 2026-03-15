@@ -1,5 +1,7 @@
 package com.brokentelephone.game.data.repository
 
+import android.util.Log
+import com.brokentelephone.game.data.mapper.toAppException
 import com.brokentelephone.game.domain.repository.UsersRepository
 import com.brokentelephone.game.domain.settings.NotificationType
 import com.brokentelephone.game.domain.user.AuthProvider
@@ -9,6 +11,7 @@ import com.brokentelephone.game.essentials.exceptions.auth.NetworkException
 import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.tasks.await
 
 class UsersRepositoryImpl(
@@ -23,7 +26,11 @@ class UsersRepositoryImpl(
             return snapshot.data?.let { User.fromMap(it) }
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
-        } catch (_: Exception) {
+        } catch (e: FirebaseFirestoreException) {
+            Log.d("LOG_TAG", "Error: $e")
+            throw e.toAppException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "Error: $e")
             throw UnknownAuthException()
         }
     }
@@ -54,7 +61,11 @@ class UsersRepositoryImpl(
                 .await()
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
-        } catch (_: Exception) {
+        } catch (e: FirebaseFirestoreException) {
+            Log.d("LOG_TAG", "Error: $e")
+            throw e.toAppException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "Error: $e")
             throw UnknownAuthException()
         }
     }

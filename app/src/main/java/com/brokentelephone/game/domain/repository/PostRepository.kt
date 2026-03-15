@@ -33,8 +33,6 @@ interface PostRepository {
 
     suspend fun loadContributions(userId: String): List<Post>
 
-    suspend fun updatePost(post: Post)
-
     suspend fun submitContinuation(
         postId: String,
         authorId: String,

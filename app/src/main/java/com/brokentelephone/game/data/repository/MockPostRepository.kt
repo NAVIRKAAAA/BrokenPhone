@@ -41,8 +41,6 @@ class MockPostRepository : PostRepository {
 
     override suspend fun loadContributions(userId: String): List<Post> = listOf()
 
-    override suspend fun updatePost(post: Post) {}
-
     override suspend fun submitContinuation(
         postId: String,
         authorId: String,

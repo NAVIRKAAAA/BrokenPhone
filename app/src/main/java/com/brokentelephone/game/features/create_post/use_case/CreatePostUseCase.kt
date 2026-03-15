@@ -20,7 +20,7 @@ class CreatePostUseCase(
         textTimeLimit: Int,
         drawingTimeLimit: Int,
     ) : AppResult<Unit> {
-        return handler.handle(Dispatchers.IO) {
+        return handler.handle(dispatcher = Dispatchers.IO, maxRetries = 0) {
             val authState = userSession.authState.first()
 
             val user = authState.getUserOrNull() ?: throw UnauthorizedException()
