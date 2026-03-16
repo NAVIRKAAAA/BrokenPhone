@@ -15,4 +15,5 @@ interface UserSession {
     suspend fun updateNotifications(notifications: List<NotificationType>)
     suspend fun signOut()
     suspend fun deleteAccount()
+    suspend fun getBlockedUsers(): List<BlockedUser>
 }

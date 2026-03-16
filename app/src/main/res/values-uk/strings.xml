@@ -89,6 +89,7 @@
     <string name="blocked_users_dialog_title">Розблокувати?</string>
     <string name="blocked_users_dialog_body">%1$s знову зможе бачити твої пости та взаємодіяти з тобою.</string>
     <string name="blocked_users_dialog_confirm">Розблокувати</string>
+    <string name="blocked_users_unknown_name">Цей користувач</string>
 
     <string name="account_settings_title">Акаунт</string>
     <string name="account_settings_email">Ел. пошта</string>

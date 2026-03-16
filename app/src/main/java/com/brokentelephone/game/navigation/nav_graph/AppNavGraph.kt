@@ -103,26 +103,8 @@ fun AppNavGraph(
 
         composable<Routes.Dashboard>(
             enterTransition = { EnterTransition.None },
-            exitTransition = {
-                if (targetState.destination.route?.contains("PostDetails") == true) {
-                    slideOutHorizontally(
-                        targetOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                } else {
-                    ExitTransition.None
-                }
-            },
-            popEnterTransition = {
-                if (initialState.destination.route?.contains("PostDetails") == true) {
-                    slideInHorizontally(
-                        initialOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                } else {
-                    EnterTransition.None
-                }
-            },
+            exitTransition = { ExitTransition.None },
+            popEnterTransition = { EnterTransition.None },
             popExitTransition = { ExitTransition.None }
         ) {
 

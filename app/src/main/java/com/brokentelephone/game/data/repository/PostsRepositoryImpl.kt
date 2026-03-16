@@ -32,10 +32,6 @@ class PostsRepositoryImpl(
 
     override val collectionName = "posts"
 
-    init {
-        Log.d("LOG_TAG", "Settings: ${firestore.firestoreSettings.cacheSettings}")
-    }
-
     override suspend fun loadInitialPosts(
         pageSize: Int,
         sort: DashboardSort,

@@ -2,6 +2,7 @@ package com.brokentelephone.game.data.session
 
 import com.brokentelephone.game.domain.settings.NotificationType
 import com.brokentelephone.game.domain.user.AuthState
+import com.brokentelephone.game.domain.user.BlockedUser
 import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.domain.user.User
 import com.brokentelephone.game.domain.user.UserSession
@@ -148,10 +149,17 @@ class UserSessionImpl(
     override suspend fun blockUser(userId: String) {
         val uid = firebaseAuth.currentUser?.uid ?: throw UnauthorizedException()
         try {
-            firestore.collection(COLLECTION_USERS)
-                .document(uid)
-                .update(User.FIELD_BLOCKED_USER_IDS, FieldValue.arrayUnion(userId))
-                .await()
+            val userDoc = firestore.collection(COLLECTION_USERS).document(uid)
+            val blockedUserDoc = userDoc.collection(COLLECTION_BLOCKED_USERS).document(userId)
+            val blockedUser = BlockedUser(
+                id = userId,
+                userId = userId,
+                createdAt = System.currentTimeMillis(),
+            )
+            firestore.runBatch { batch ->
+                batch.update(userDoc, User.FIELD_BLOCKED_USER_IDS, FieldValue.arrayUnion(userId))
+                batch.set(blockedUserDoc, blockedUser.toMap())
+            }.await()
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
         } catch (_: Exception) {
@@ -162,10 +170,12 @@ class UserSessionImpl(
     override suspend fun unblockUser(userId: String) {
         val uid = firebaseAuth.currentUser?.uid ?: throw UnauthorizedException()
         try {
-            firestore.collection(COLLECTION_USERS)
-                .document(uid)
-                .update(User.FIELD_BLOCKED_USER_IDS, FieldValue.arrayRemove(userId))
-                .await()
+            val userDoc = firestore.collection(COLLECTION_USERS).document(uid)
+            val blockedUserDoc = userDoc.collection(COLLECTION_BLOCKED_USERS).document(userId)
+            firestore.runBatch { batch ->
+                batch.update(userDoc, User.FIELD_BLOCKED_USER_IDS, FieldValue.arrayRemove(userId))
+                batch.delete(blockedUserDoc)
+            }.await()
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
         } catch (_: Exception) {
@@ -176,7 +186,25 @@ class UserSessionImpl(
     override suspend fun signOut() = firebaseAuth.signOut()
     override suspend fun deleteAccount() = Unit
 
+    override suspend fun getBlockedUsers(): List<BlockedUser> {
+        val uid = firebaseAuth.currentUser?.uid ?: throw UnauthorizedException()
+        return try {
+            firestore.collection(COLLECTION_USERS)
+                .document(uid)
+                .collection(COLLECTION_BLOCKED_USERS)
+                .get()
+                .await()
+                .documents
+                .mapNotNull { it.data?.let(BlockedUser::fromMap) }
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
+
     companion object {
         private const val COLLECTION_USERS = "users"
+        private const val COLLECTION_BLOCKED_USERS = "blockedUsers"
     }
 }

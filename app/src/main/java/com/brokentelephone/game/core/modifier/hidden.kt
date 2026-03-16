@@ -11,10 +11,12 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun Modifier.hidden(cornerRadius: Dp = 8.dp): Modifier {
-    val surfaceVariant = MaterialTheme.colorScheme.surfaceVariant
-    val surface = MaterialTheme.colorScheme.surface
+    val baseColor = MaterialTheme.colorScheme.surfaceContainerHighest
+    val highlightColor = MaterialTheme.colorScheme.surfaceVariant
+    val shimmerColors = listOf(baseColor, highlightColor, baseColor)
+
     return drawWithCache {
-        val brush = Brush.linearGradient(colors = listOf(surfaceVariant, surface, surfaceVariant))
+        val brush = Brush.linearGradient(colors = shimmerColors)
         val cornerPx = cornerRadius.toPx()
         onDrawWithContent {
             drawRoundRect(

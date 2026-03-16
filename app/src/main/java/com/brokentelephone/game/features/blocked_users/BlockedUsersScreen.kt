@@ -65,9 +65,10 @@ fun BlockedUsersScreen(
     }
 
     state.unblockDialogUser?.let { user ->
+        val userName = user.name
         ConfirmDialog(
             title = stringResource(R.string.blocked_users_dialog_title),
-            body = stringResource(R.string.blocked_users_dialog_body, user.name),
+            body = stringResource(R.string.blocked_users_dialog_body, userName),
             cancelText = stringResource(R.string.common_cancel),
             confirmText = stringResource(R.string.blocked_users_dialog_confirm),
             onDismiss = viewModel::onUnblockDialogDismiss,

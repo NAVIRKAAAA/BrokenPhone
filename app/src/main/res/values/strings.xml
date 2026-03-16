@@ -102,6 +102,7 @@
     <string name="blocked_users_dialog_title">Unblock user?</string>
     <string name="blocked_users_dialog_body">%1$s will be able to see your posts and interact with you again.</string>
     <string name="blocked_users_dialog_confirm">Unblock</string>
+    <string name="blocked_users_unknown_name">This user</string>
 
     <!-- Account Settings -->
     <string name="account_settings_title">Account Settings</string>

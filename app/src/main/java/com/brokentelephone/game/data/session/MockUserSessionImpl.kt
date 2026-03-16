@@ -138,4 +138,8 @@ class MockUserSessionImpl : UserSession {
         delay(1500)
         _authState.value = AuthState.NotAuth
     }
+
+    override suspend fun getBlockedUsers(): List<BlockedUser> {
+        return emptyList()
+    }
 }

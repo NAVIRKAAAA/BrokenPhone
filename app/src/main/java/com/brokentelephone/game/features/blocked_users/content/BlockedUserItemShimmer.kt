@@ -78,7 +78,7 @@ fun BlockedUserItemShimmer(
 @Preview
 @Composable
 private fun BlockedUserItemShimmerPreview() {
-    BrokenTelephoneTheme(darkTheme = true) {
+    BrokenTelephoneTheme(darkTheme = false) {
         Box(
             modifier = Modifier.background(MaterialTheme.colorScheme.background)
         ) {

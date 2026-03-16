@@ -85,6 +85,8 @@ fun BlockedUserItem(
                 )
             }
 
+            Spacer(modifier = Modifier.width(8.dp))
+
             Button(
                 onClick = onUnblockClick,
                 modifier = Modifier,
@@ -125,7 +127,7 @@ fun BlockedUserItemPreview() {
                 blockedUserUi = BlockedUserUi(
                     id = "",
                     name = "Alex",
-                    avatarUrl = "",
+                    avatarUrl = null,
                     createdAt = System.currentTimeMillis(),
                 ),
                 onUnblockClick = {},
