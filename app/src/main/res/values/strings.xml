@@ -238,8 +238,7 @@
     <!-- Report Post Bottom Sheet -->
     <string name="report_post_bottom_sheet_title">Why are you reporting this?</string>
     <string name="report_post_bottom_sheet_spam">Spam</string>
-    <string name="report_post_bottom_sheet_inappropriate_content">Inappropriate content</string>
-    <string name="report_post_bottom_sheet_harassment">Harassment</string>
+    <string name="report_post_bottom_sheet_offensive_content">Offensive content</string>
     <string name="report_post_bottom_sheet_other">Other</string>
 
     <!-- Welcome -->

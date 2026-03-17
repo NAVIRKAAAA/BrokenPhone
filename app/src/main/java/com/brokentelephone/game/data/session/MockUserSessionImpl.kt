@@ -87,6 +87,10 @@ class MockUserSessionImpl : UserSession {
         return
     }
 
+    override suspend fun markPostAsNotInterested(postId: String) {
+        return
+    }
+
     private val _blockedUsers = MutableStateFlow(
         listOf(
             BlockedUser(

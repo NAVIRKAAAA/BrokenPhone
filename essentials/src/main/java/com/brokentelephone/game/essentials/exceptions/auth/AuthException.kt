@@ -73,3 +73,8 @@ class UserNotFoundException : AppException("User not found") {
     override fun getLocalizedMessage(stringProvider: StringProvider): String =
         stringProvider.getString(R.string.error_user_not_found)
 }
+
+class AlreadyReportedException : AppException("Post already reported") {
+    override fun getLocalizedMessage(stringProvider: StringProvider): String =
+        stringProvider.getString(R.string.error_already_reported)
+}

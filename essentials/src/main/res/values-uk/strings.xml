@@ -15,6 +15,7 @@
     <string name="error_image_upload">Не вдалося завантажити зображення. Спробуй ще раз.</string>
     <string name="error_post_not_found">Не вдалося завантажити пост. Можливо, він був видалений або виникли проблеми з інтернетом.</string>
     <string name="error_user_not_found">Цього користувача більше не існує. Можливо, він видалив свій акаунт.</string>
+    <string name="error_already_reported">Ти вже скаржився на цей пост.</string>
 
     <!-- Firestore errors -->
     <string name="error_firestore_cancelled">Запит було скасовано. Спробуй ще раз.</string>

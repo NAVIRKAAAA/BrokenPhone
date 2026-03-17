@@ -1,5 +1,6 @@
 package com.brokentelephone.game.features.blocked_users.use_case
 
+import android.util.Log
 import com.brokentelephone.game.domain.handler.ApiHandler
 import com.brokentelephone.game.domain.handler.AppResult
 import com.brokentelephone.game.domain.repository.UsersRepository
@@ -19,6 +20,9 @@ class GetBlockedUsersUseCase(
     suspend fun execute(): AppResult<List<BlockedUserUi>> {
         return handler.handle(Dispatchers.IO) {
             val blockedUsers = userSession.getBlockedUsers()
+
+            Log.d("LOG_TAG", "getBlockedUsers: ${blockedUsers.size}")
+
             coroutineScope {
                 blockedUsers.map { blocked ->
                     async {

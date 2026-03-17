@@ -15,6 +15,7 @@
     <string name="error_image_upload">Failed to upload image. Please try again.</string>
     <string name="error_post_not_found">Couldn\'t load the post. It may have been deleted or you might have a poor internet connection.</string>
     <string name="error_user_not_found">This user no longer exists. They may have deleted their account.</string>
+    <string name="error_already_reported">You\'ve already reported this post.</string>
 
     <!-- Firestore errors -->
     <string name="error_firestore_cancelled">The request was cancelled. Try again.</string>

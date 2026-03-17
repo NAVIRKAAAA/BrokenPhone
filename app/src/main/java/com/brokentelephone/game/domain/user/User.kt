@@ -13,7 +13,8 @@ data class User(
     val authProvider: AuthProvider,
     val onboardingStep: OnboardingStep,
     val blockedUserIds: List<String> = emptyList(),
-    // val blockedBy: List<String> = emptyList()
+    val blockedBy: List<String> = emptyList(),
+    val notInterestedPostIds: List<String> = emptyList()
 ) {
 
     fun toMap(): Map<String, Any?> = mapOf(
@@ -27,6 +28,8 @@ data class User(
         FIELD_CREATED_AT to createdAt,
         FIELD_UPDATED_AT to updatedAt,
         FIELD_BLOCKED_USER_IDS to blockedUserIds,
+        FIELD_BLOCKED_BY to blockedBy,
+        FIELD_NOT_INTERESTED_POST_IDS to notInterestedPostIds,
     )
 
     companion object {
@@ -40,6 +43,8 @@ data class User(
         const val FIELD_CREATED_AT = "createdAt"
         const val FIELD_UPDATED_AT = "updatedAt"
         const val FIELD_BLOCKED_USER_IDS = "blockedUserIds"
+        const val FIELD_BLOCKED_BY = "blockedBy"
+        const val FIELD_NOT_INTERESTED_POST_IDS = "notInterestedPostIds"
 
         @Suppress("UNCHECKED_CAST")
         fun fromMap(map: Map<String, Any?>): User? {
@@ -59,6 +64,8 @@ data class User(
                     createdAt = map[FIELD_CREATED_AT] as? Long ?: 0L,
                     updatedAt = map[FIELD_UPDATED_AT] as? Long ?: 0L,
                     blockedUserIds = (map[FIELD_BLOCKED_USER_IDS] as? List<String>) ?: emptyList(),
+                    blockedBy = (map[FIELD_BLOCKED_BY] as? List<String>) ?: emptyList(),
+                    notInterestedPostIds = (map[FIELD_NOT_INTERESTED_POST_IDS] as? List<String>) ?: emptyList(),
                 )
             } catch (_: Exception) {
                 null

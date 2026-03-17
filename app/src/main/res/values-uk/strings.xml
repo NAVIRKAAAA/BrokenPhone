@@ -67,8 +67,7 @@
 
     <string name="report_post_bottom_sheet_title">Чому ти скаржишся?</string>
     <string name="report_post_bottom_sheet_spam">Спам</string>
-    <string name="report_post_bottom_sheet_inappropriate_content">Неприйнятний контент</string>
-    <string name="report_post_bottom_sheet_harassment">Переслідування</string>
+    <string name="report_post_bottom_sheet_offensive_content">Образливий контент</string>
     <string name="report_post_bottom_sheet_other">Інше</string>
 
     <string name="theme_title">Тема</string>

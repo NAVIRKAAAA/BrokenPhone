@@ -5,7 +5,6 @@ import com.brokentelephone.game.R
 
 enum class ReportPostType(@param:StringRes val labelResId: Int) {
     SPAM(R.string.report_post_bottom_sheet_spam),
-    INAPPROPRIATE_CONTENT(R.string.report_post_bottom_sheet_inappropriate_content),
-    HARASSMENT(R.string.report_post_bottom_sheet_harassment),
+    OFFENSIVE_CONTENT(R.string.report_post_bottom_sheet_offensive_content),
     OTHER(R.string.report_post_bottom_sheet_other),
 }

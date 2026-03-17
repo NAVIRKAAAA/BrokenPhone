@@ -1,85 +1,11 @@
 package com.brokentelephone.game.data.repository
 
-import com.brokentelephone.game.data.model.PostsPage
 import com.brokentelephone.game.domain.post.Post
 import com.brokentelephone.game.domain.post.PostChainEntry
 import com.brokentelephone.game.domain.post.PostContent
 import com.brokentelephone.game.domain.post.PostStatus
-import com.brokentelephone.game.domain.repository.PostRepository
-import com.brokentelephone.game.essentials.exceptions.auth.PostNotFoundException
-import com.brokentelephone.game.features.dashboard.model.DashboardSort
-import com.google.firebase.firestore.DocumentSnapshot
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
-class MockPostRepository : PostRepository {
-
-    override suspend fun loadInitialPosts(
-        pageSize: Int,
-        sort: DashboardSort,
-        userId: String,
-        blockedUsersIds: List<String>
-    ): PostsPage {
-        return PostsPage(listOf(), null)
-    }
-
-    override suspend fun loadNextPosts(
-        afterDoc: DocumentSnapshot,
-        pageSize: Int,
-        sort: DashboardSort,
-        userId: String,
-        blockedUsersIds: List<String>
-    ): PostsPage {
-        return PostsPage(listOf(), null)
-    }
-
-    override fun getPostById(id: String): Flow<Post> = flow { throw PostNotFoundException() }
-
-    override suspend fun getChainByPostId(postId: String): List<Post> = listOf()
-
-    override suspend fun loadUserPosts(userId: String): List<Post> = listOf()
-
-    override suspend fun loadContributions(userId: String): List<Post> = listOf()
-
-    override suspend fun submitContinuation(
-        postId: String,
-        authorId: String,
-        authorName: String,
-        avatarUrl: String?,
-        content: PostContent
-    ) = Unit
-
-    override suspend fun createPost(
-        authorId: String,
-        authorName: String,
-        avatarUrl: String?,
-        text: String,
-        maxGenerations: Int,
-        textTimeLimit: Int,
-        drawingTimeLimit: Int,
-    ) {
-        val now = System.currentTimeMillis()
-        val postId = now.toString()
-        Post(
-            id = postId,
-            parentId = null,
-            authorId = authorId,
-            authorName = authorName,
-            avatarUrl = avatarUrl,
-            content = PostContent.Text(text = text),
-            createdAt = now,
-            updatedAt = now,
-            status = PostStatus.AVAILABLE,
-            generation = 1,
-            maxGenerations = maxGenerations,
-            textTimeLimit = textTimeLimit,
-            drawingTimeLimit = drawingTimeLimit,
-        )
-    }
-
-    override suspend fun deletePost(postId: String) {
-       return
-    }
+class MockPostRepository {
 
     companion object {
         val chainsMockList = listOf(

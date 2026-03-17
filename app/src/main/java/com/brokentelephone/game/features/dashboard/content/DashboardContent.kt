@@ -41,7 +41,6 @@ import com.brokentelephone.game.features.profile.model.UserUi
 fun DashboardContent(
     state: DashboardState,
     listState: LazyListState,
-    isScrollingUp: Boolean,
     onPostClick: (postId: String) -> Unit,
     onMoreClick: (postId: String) -> Unit,
     onSortSelected: (DashboardSort) -> Unit,
@@ -57,11 +56,9 @@ fun DashboardContent(
     ) {
         DashboardTopBar(
             name = state.user?.username ?: "",
-            avatarUrl = state.user?.avatarUrl,
             selectedSort = state.selectedSort,
             onSortSelected = onSortSelected,
             onTitleClick = onTitleClick,
-            isScrolled = !isScrollingUp,
         )
 
         val pullToRefreshState = rememberPullToRefreshState()
@@ -107,7 +104,7 @@ fun DashboardContent(
                             items = state.posts,
                             key = { _, item -> item.id }
                         ) { index, postUi ->
-                            Column {
+                            Column(modifier = Modifier.animateItem()) {
                                 Column(
                                     modifier = Modifier.combinedClickable(
                                         onClick = { onPostClick(postUi.id) },
@@ -169,7 +166,6 @@ fun DashboardContentPreview() {
             onRefresh = {},
             onLoadMore = {},
             listState = rememberLazyListState(),
-            isScrollingUp = true,
         )
     }
 }

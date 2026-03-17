@@ -15,9 +15,8 @@ import com.brokentelephone.game.features.dashboard.model.toUi
 import com.brokentelephone.game.features.dashboard.use_case.LoadInitialPostsUseCase
 import com.brokentelephone.game.features.dashboard.use_case.LoadNextPostsUseCase
 import com.brokentelephone.game.features.post_details.use_case.BlockUserUseCase
-import com.brokentelephone.game.features.post_details.use_case.DeletePostUseCase
 import com.brokentelephone.game.features.post_details.use_case.GetPostLinkByIdUseCase
-import com.brokentelephone.game.features.post_details.use_case.NotInterestedUseCase
+import com.brokentelephone.game.features.post_details.use_case.MarkPostAsNotInterestedUseCase
 import com.brokentelephone.game.features.post_details.use_case.ReportPostUseCase
 import com.brokentelephone.game.features.profile.use_case.GetCurrentUserUseCase
 import com.google.firebase.firestore.DocumentSnapshot
@@ -36,9 +35,8 @@ class DashboardViewModel(
     private val loadNextPostsUseCase: LoadNextPostsUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getPostLinkByIdUseCase: GetPostLinkByIdUseCase,
-    private val deletePostUseCase: DeletePostUseCase,
     private val blockUserUseCase: BlockUserUseCase,
-    private val notInterestedUseCase: NotInterestedUseCase,
+    private val markPostAsNotInterestedUseCase: MarkPostAsNotInterestedUseCase,
     private val reportPostUseCase: ReportPostUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
@@ -72,11 +70,11 @@ class DashboardViewModel(
                         state.copy(
                             isInitialLoading = false,
                             posts = page.posts.map { it.toUi() },
-                            hasMore = page.posts.size >= INITIAL_PAGE_SIZE,
+                            hasMore = page.hasMore,
                         )
                     }
 
-                    delay(150)
+                    delay(500)
 
                     _sideEffects.send(DashboardSideEffect.ScrollToTop)
                 }
@@ -89,6 +87,7 @@ class DashboardViewModel(
 
     fun loadNextPosts() {
         val docRef = lastDocRef ?: return
+
         if (state.value.isInitialLoading || state.value.isLoadingMore || !state.value.hasMore) return
 
         viewModelScope.launch {
@@ -105,7 +104,7 @@ class DashboardViewModel(
                         state.copy(
                             isLoadingMore = false,
                             posts = state.posts + page.posts.map { it.toUi() },
-                            hasMore = page.posts.size >= DEFAULT_PAGE_SIZE,
+                            hasMore = page.hasMore,
                         )
                     }
                 }
@@ -131,11 +130,11 @@ class DashboardViewModel(
                         state.copy(
                             isRefreshing = false,
                             posts = page.posts.map { it.toUi() },
-                            hasMore = page.posts.size >= INITIAL_PAGE_SIZE,
+                            hasMore = page.hasMore,
                         )
                     }
 
-                    delay(150)
+                    delay(500)
 
                     _sideEffects.send(DashboardSideEffect.ScrollToTop)
                 }
@@ -174,39 +173,20 @@ class DashboardViewModel(
     fun onNotInterestedClick() {
         val postParentId = state.value.selectedPost?.parentId ?: return
         _state.update { it.copy(isPostBottomSheetVisible = false, selectedPost = null) }
+
         viewModelScope.launch {
-            notInterestedUseCase(postParentId)
-        }
-        viewModelScope.launch {
-            _sideEffects.send(DashboardSideEffect.ShowNotInterestedToast)
+            markPostAsNotInterestedUseCase.execute(postParentId).onSuccess {
+                onRefresh()
+            }.onError { exception ->
+                _state.update {
+                    it.copy(globalError = exceptionToMessageMapper.map(exception))
+                }
+            }
         }
     }
 
     fun onBlockClick() {
         _state.update { it.copy(isPostBottomSheetVisible = false, isBlockDialogVisible = true) }
-    }
-
-    fun onDeleteClick() {
-        _state.update { it.copy(isPostBottomSheetVisible = false, isDeleteDialogVisible = true) }
-    }
-
-    fun onDeleteDialogDismiss() {
-        _state.update { it.copy(isDeleteDialogVisible = false) }
-    }
-
-    fun onDeleteConfirm() {
-        val postId = state.value.selectedPost?.id ?: return
-        _state.update { it.copy(isDeleteLoading = true) }
-        viewModelScope.launch {
-            deletePostUseCase(postId)
-            _state.update {
-                it.copy(
-                    isDeleteLoading = false,
-                    isDeleteDialogVisible = false,
-                    selectedPost = null
-                )
-            }
-        }
     }
 
     fun onBlockDialogDismiss() {
@@ -219,7 +199,13 @@ class DashboardViewModel(
 
         viewModelScope.launch {
             blockUserUseCase.execute(userId).onSuccess {
-                _state.update { it.copy(isBlockLoading = false, isBlockDialogVisible = false, selectedPost = null) }
+                _state.update {
+                    it.copy(
+                        isBlockLoading = false,
+                        isBlockDialogVisible = false,
+                        selectedPost = null
+                    )
+                }
                 onRefresh()
             }.onError { exception ->
                 _state.update {
@@ -250,8 +236,14 @@ class DashboardViewModel(
     fun onReportTypeSelected(type: ReportPostType) {
         val postId = state.value.selectedPost?.id ?: return
         _state.update { it.copy(isReportBottomSheetVisible = false, selectedPost = null) }
-        viewModelScope.launch { reportPostUseCase(postId, type) }
-        viewModelScope.launch { _sideEffects.send(DashboardSideEffect.ShowReportSuccessToast) }
+        viewModelScope.launch {
+            reportPostUseCase.execute(postId, type)
+                .onSuccess {
+                    _sideEffects.send(DashboardSideEffect.ShowReportSuccessToast)
+                }.onError { exception ->
+                    _state.update { it.copy(globalError = exceptionToMessageMapper.map(exception)) }
+                }
+        }
     }
 
     fun onGlobalErrorDismiss() {
@@ -260,7 +252,7 @@ class DashboardViewModel(
 
     private companion object {
         const val REFRESH_COOLDOWN_MS = 30_000L
-        const val INITIAL_PAGE_SIZE = 20
-        const val DEFAULT_PAGE_SIZE = 10
+        const val INITIAL_PAGE_SIZE = 30
+        const val DEFAULT_PAGE_SIZE = 20
     }
 }

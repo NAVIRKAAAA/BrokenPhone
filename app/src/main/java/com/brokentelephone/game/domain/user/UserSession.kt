@@ -10,6 +10,7 @@ interface UserSession {
     suspend fun updateAvatar(avatarUrl: String)
     suspend fun completeAvatarStep(avatarUrl: String)
     suspend fun completeUsernameStep(username: String)
+    suspend fun markPostAsNotInterested(postId: String)
     suspend fun blockUser(userId: String)
     suspend fun unblockUser(userId: String)
     suspend fun updateNotifications(notifications: List<NotificationType>)

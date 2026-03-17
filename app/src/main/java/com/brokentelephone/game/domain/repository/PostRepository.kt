@@ -14,7 +14,9 @@ interface PostRepository {
         pageSize: Int,
         sort: DashboardSort,
         userId: String,
-        blockedUsersIds: List<String>
+        blockedUsersIds: List<String>,
+        blockedBy: List<String>,
+        notInterestedPostIds: List<String>
     ): PostsPage
 
     suspend fun loadNextPosts(
@@ -22,7 +24,9 @@ interface PostRepository {
         pageSize: Int,
         sort: DashboardSort,
         userId: String,
-        blockedUsersIds: List<String>
+        blockedUsersIds: List<String>,
+        blockedBy: List<String>,
+        notInterestedPostIds: List<String>
     ): PostsPage
 
     fun getPostById(id: String): Flow<Post>

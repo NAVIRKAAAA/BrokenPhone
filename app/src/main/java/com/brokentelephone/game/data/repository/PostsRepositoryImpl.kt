@@ -36,23 +36,29 @@ class PostsRepositoryImpl(
         pageSize: Int,
         sort: DashboardSort,
         userId: String,
-        blockedUsersIds: List<String>
+        blockedUsersIds: List<String>,
+        blockedBy: List<String>,
+        notInterestedPostIds: List<String>
     ): PostsPage {
         try {
-            // The array of values provided to not-in can contain a maximum of 10 items.
             val snapshot = collection
-                .whereNotIn(FIELD_AUTHOR_ID, blockedUsersIds.take(9) + userId)
                 .applySorting(sort)
                 .limit(pageSize.toLong())
                 .get()
                 .await()
 
-            // filter here on client!
-
             val posts = snapshot.documents.mapNotNull { it.data?.toPost() }
-            val lastDocRef = snapshot.documents.lastOrNull()
 
-            return PostsPage(posts = posts, lastDocRef = lastDocRef)
+            val hasMore = posts.size >= pageSize
+            val excludedAuthorIds = (blockedUsersIds + blockedBy + userId).toSet()
+            val filteredPosts = posts.filter {
+                it.authorId !in excludedAuthorIds &&
+                        it.id !in notInterestedPostIds &&
+                        it.parentId !in notInterestedPostIds
+            }
+
+            val lastDocRef = snapshot.documents.lastOrNull()
+            return PostsPage(posts = filteredPosts, lastDocRef = lastDocRef, hasMore = hasMore)
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
         } catch (e: FirebaseFirestoreException) {
@@ -69,24 +75,30 @@ class PostsRepositoryImpl(
         pageSize: Int,
         sort: DashboardSort,
         userId: String,
-        blockedUsersIds: List<String>
+        blockedUsersIds: List<String>,
+        blockedBy: List<String>,
+        notInterestedPostIds: List<String>
     ): PostsPage {
         try {
-            // The array of values provided to not-in can contain a maximum of 10 items.
+            val excludedAuthorIds = (blockedUsersIds + blockedBy + userId).toSet()
             val snapshot = collection
-                .whereNotIn(FIELD_AUTHOR_ID, blockedUsersIds.take(9) + userId)
                 .applySorting(sort)
                 .startAfter(afterDoc)
                 .limit(pageSize.toLong())
                 .get()
                 .await()
 
-            // filter here on client!
-
             val posts = snapshot.documents.mapNotNull { it.data?.toPost() }
-            val lastDocRef = snapshot.documents.lastOrNull()
+            val filteredPosts = posts.filter {
+                it.authorId !in excludedAuthorIds &&
+                        it.id !in notInterestedPostIds &&
+                        it.parentId !in notInterestedPostIds
+            }
 
-            return PostsPage(posts = posts, lastDocRef = lastDocRef)
+            val hasMore = posts.size >= pageSize
+
+            val lastDocRef = snapshot.documents.lastOrNull()
+            return PostsPage(posts = filteredPosts, lastDocRef = lastDocRef, hasMore = hasMore)
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
         } catch (e: FirebaseFirestoreException) {
@@ -329,7 +341,6 @@ class PostsRepositoryImpl(
     }
 
     private companion object {
-        const val FIELD_AUTHOR_ID = "authorId"
         const val FIELD_CREATED_AT = "createdAt"
         const val FIELD_UPDATED_AT = "updatedAt"
         const val FIELD_GENERATION = "generation"

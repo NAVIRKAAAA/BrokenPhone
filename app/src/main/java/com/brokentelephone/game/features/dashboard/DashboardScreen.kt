@@ -10,10 +10,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -48,7 +45,6 @@ fun DashboardScreen(
     val listState = rememberLazyListState()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    var isScrollingUpValue by remember { mutableStateOf(true) }
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.loadInitialPosts()
@@ -103,7 +99,6 @@ fun DashboardScreen(
                 previousScrollOffset = offset
 
                 navBarViewModel.onScrollDirectionChange(isScrollingUp)
-                isScrollingUpValue = isScrollingUp
             }
     }
 
@@ -111,7 +106,6 @@ fun DashboardScreen(
         state = state,
         listState = listState,
         onPostClick = onPostClick,
-        isScrollingUp = isScrollingUpValue,
         onMoreClick = { postId ->
             val post = state.posts.find { it.id == postId } ?: return@DashboardContent
             viewModel.onMoreClick(post)
@@ -124,21 +118,16 @@ fun DashboardScreen(
     )
 
     if (state.isPostBottomSheetVisible) {
-        val actions = if (state.isCurrentUserPost) {
-            listOf(PostBottomSheetAction.COPY_LINK, PostBottomSheetAction.DELETE)
-        } else {
-            PostBottomSheetAction.entries.filter { it != PostBottomSheetAction.DELETE }
-        }
         PostBottomSheet(
             onDismissRequest = viewModel::onPostBottomSheetDismiss,
-            actions = actions,
+            actions = PostBottomSheetAction.entries.filter { it != PostBottomSheetAction.DELETE },
             onActionClick = { action ->
                 when (action) {
                     PostBottomSheetAction.NOT_INTERESTED -> viewModel.onNotInterestedClick()
                     PostBottomSheetAction.COPY_LINK -> viewModel.onCopyLinkClick()
                     PostBottomSheetAction.BLOCK -> viewModel.onBlockClick()
                     PostBottomSheetAction.REPORT -> viewModel.onReportClick()
-                    PostBottomSheetAction.DELETE -> viewModel.onDeleteClick()
+                    else -> return@PostBottomSheet
                 }
             },
         )
@@ -160,18 +149,6 @@ fun DashboardScreen(
             onDismiss = viewModel::onBlockDialogDismiss,
             onConfirm = viewModel::onBlockConfirm,
             isLoading = state.isBlockLoading,
-        )
-    }
-
-    if (state.isDeleteDialogVisible) {
-        ConfirmDialog(
-            title = stringResource(R.string.common_dialog_delete_post_title),
-            body = stringResource(R.string.common_dialog_delete_post_body),
-            cancelText = stringResource(R.string.common_cancel),
-            confirmText = stringResource(R.string.common_delete),
-            onDismiss = viewModel::onDeleteDialogDismiss,
-            onConfirm = viewModel::onDeleteConfirm,
-            isLoading = state.isDeleteLoading,
         )
     }
 

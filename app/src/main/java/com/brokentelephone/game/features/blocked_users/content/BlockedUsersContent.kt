@@ -1,5 +1,6 @@
 package com.brokentelephone.game.features.blocked_users.content
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -69,8 +72,9 @@ fun BlockedUsersContent(
                 )
             },
         ) {
+            Log.d("LOG_TAG", "ShowShimmer: ${state.isLoading && !state.isLoadRetrying}")
             ShimmerContent(
-                isLoading = state.isLoading && !state.isLoadRetrying,
+                isLoading = state.isLoading && state.blockedUsers.isEmpty(),
                 isEmpty = !state.isLoading && state.blockedUsers.isEmpty() && state.loadError == null,
                 shimmerContent = {
                     BlockedUsersShimmerList()
@@ -84,7 +88,9 @@ fun BlockedUsersContent(
                             items = state.blockedUsers,
                             key = { _, item -> item.id },
                         ) { index, user ->
-                            Column {
+                            Column(
+                                modifier = Modifier.animateItem()
+                            ) {
                                 if (index != 0) {
                                     Spacer(modifier = Modifier.height(16.dp))
                                 }
@@ -111,7 +117,9 @@ fun BlockedUsersContent(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .fillMaxHeight(0.5f),
+                            .fillMaxHeight(0.5f)
+                            .verticalScroll(rememberScrollState())
+                        ,
                         contentAlignment = Alignment.Center
                     ) {
                         BlockedUsersEmptyContent(modifier = Modifier)

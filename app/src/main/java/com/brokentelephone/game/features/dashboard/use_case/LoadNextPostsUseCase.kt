@@ -25,7 +25,15 @@ class LoadNextPostsUseCase(
             val user = userSession.authState.firstOrNull()?.getUserOrNull()
                 ?: throw UnauthorizedException()
 
-            repository.loadNextPosts(afterDoc, pageSize, sort, user.id, user.blockedUserIds)
+            repository.loadNextPosts(
+                afterDoc,
+                pageSize,
+                sort,
+                user.id,
+                user.blockedUserIds,
+                user.blockedBy,
+                user.notInterestedPostIds
+            )
         }
     }
 }

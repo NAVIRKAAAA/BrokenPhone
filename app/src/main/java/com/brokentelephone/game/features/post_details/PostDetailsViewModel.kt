@@ -14,8 +14,8 @@ import com.brokentelephone.game.features.post_details.use_case.BlockUserUseCase
 import com.brokentelephone.game.features.post_details.use_case.DeletePostUseCase
 import com.brokentelephone.game.features.post_details.use_case.GetPostByIdUseCase
 import com.brokentelephone.game.features.post_details.use_case.GetPostLinkByIdUseCase
+import com.brokentelephone.game.features.post_details.use_case.MarkPostAsNotInterestedUseCase
 import com.brokentelephone.game.features.post_details.use_case.MockStartGameUseCase
-import com.brokentelephone.game.features.post_details.use_case.NotInterestedUseCase
 import com.brokentelephone.game.features.post_details.use_case.ReportPostUseCase
 import com.brokentelephone.game.features.profile.use_case.GetCurrentUserUseCase
 import kotlinx.coroutines.channels.Channel
@@ -36,7 +36,7 @@ class PostDetailsViewModel(
     private val deletePostUseCase: DeletePostUseCase,
     private val reportPostUseCase: ReportPostUseCase,
     private val blockUserUseCase: BlockUserUseCase,
-    private val notInterestedUseCase: NotInterestedUseCase,
+    private val markPostAsNotInterestedUseCase: MarkPostAsNotInterestedUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val mockStartGameUseCase: MockStartGameUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
@@ -152,11 +152,18 @@ class PostDetailsViewModel(
     }
 
     fun onNotInterestedClick() {
-        val postParentId = state.value.postUi?.parentId ?: return
+        val post = state.value.postUi ?: return
+        val postParentId = post.parentId
         _state.update { it.copy(isBottomSheetVisible = false) }
+
         viewModelScope.launch {
-            notInterestedUseCase(postParentId)
-            _sideEffects.send(PostDetailsSideEffect.NavigateBack)
+            markPostAsNotInterestedUseCase.execute(postParentId).onSuccess {
+                _sideEffects.send(PostDetailsSideEffect.NavigateBackWithForceUpdate)
+            }.onError { exception ->
+                _state.update {
+                    it.copy(globalError = exceptionToMessageMapper.map(exception))
+                }
+            }
         }
     }
 
@@ -200,7 +207,13 @@ class PostDetailsViewModel(
 
     fun onReportTypeSelected(type: ReportPostType) {
         _state.update { it.copy(isReportBottomSheetVisible = false) }
-        viewModelScope.launch { reportPostUseCase(postId, type) }
-        viewModelScope.launch { _sideEffects.send(PostDetailsSideEffect.ShowReportSuccessToast) }
+        viewModelScope.launch {
+            reportPostUseCase.execute(postId, type)
+                .onSuccess {
+                    _sideEffects.send(PostDetailsSideEffect.ShowReportSuccessToast)
+                }.onError { exception ->
+                    _state.update { it.copy(globalError = exceptionToMessageMapper.map(exception)) }
+                }
+        }
     }
 }
