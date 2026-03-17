@@ -11,7 +11,6 @@ import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMap
 import com.brokentelephone.game.features.post_details.model.PostDetailsSideEffect
 import com.brokentelephone.game.features.post_details.model.PostDetailsState
 import com.brokentelephone.game.features.post_details.use_case.BlockUserUseCase
-import com.brokentelephone.game.features.post_details.use_case.DeletePostUseCase
 import com.brokentelephone.game.features.post_details.use_case.GetPostByIdUseCase
 import com.brokentelephone.game.features.post_details.use_case.GetPostLinkByIdUseCase
 import com.brokentelephone.game.features.post_details.use_case.MarkPostAsNotInterestedUseCase
@@ -33,7 +32,6 @@ class PostDetailsViewModel(
     private val postId: String,
     private val getPostByIdUseCase: GetPostByIdUseCase,
     private val getPostLinkByIdUseCase: GetPostLinkByIdUseCase,
-    private val deletePostUseCase: DeletePostUseCase,
     private val reportPostUseCase: ReportPostUseCase,
     private val blockUserUseCase: BlockUserUseCase,
     private val markPostAsNotInterestedUseCase: MarkPostAsNotInterestedUseCase,
@@ -128,23 +126,6 @@ class PostDetailsViewModel(
 
     fun onBlockClick() {
         _state.update { it.copy(isBottomSheetVisible = false, isBlockDialogVisible = true) }
-    }
-
-    fun onDeleteClick() {
-        _state.update { it.copy(isBottomSheetVisible = false, isDeleteDialogVisible = true) }
-    }
-
-    fun onDeleteDialogDismiss() {
-        _state.update { it.copy(isDeleteDialogVisible = false) }
-    }
-
-    fun onDeleteConfirm() {
-        _state.update { it.copy(isDeleteLoading = true) }
-        viewModelScope.launch {
-            deletePostUseCase(postId)
-            _state.update { it.copy(isDeleteLoading = false, isDeleteDialogVisible = false) }
-            _sideEffects.send(PostDetailsSideEffect.NavigateBack)
-        }
     }
 
     fun onBlockDialogDismiss() {

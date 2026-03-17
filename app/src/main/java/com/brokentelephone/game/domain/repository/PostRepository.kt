@@ -55,7 +55,7 @@ interface PostRepository {
         drawingTimeLimit: Int,
     )
 
-    suspend fun deletePost(postId: String)
+    suspend fun deletePost(postId: String, parentId: String)
 
 
 }

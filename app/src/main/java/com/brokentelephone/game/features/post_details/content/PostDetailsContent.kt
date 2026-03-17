@@ -98,7 +98,6 @@ fun PostDetailsContent(
                     ) {
                         PostDetailsElement(
                             post = post,
-                            isUsersPost = state.isCurrentUserPost,
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
 
@@ -108,7 +107,6 @@ fun PostDetailsContent(
 
                         val buttonType = when {
                             post.isCompleted -> PostDetailsButtonType.COMPLETED
-                            state.isCurrentUserPost -> PostDetailsButtonType.OWN_POST
                             post.status != PostStatus.AVAILABLE -> PostDetailsButtonType.UNAVAILABLE
                             post.content is PostContent.Text -> PostDetailsButtonType.DRAW
                             else -> PostDetailsButtonType.DESCRIBE

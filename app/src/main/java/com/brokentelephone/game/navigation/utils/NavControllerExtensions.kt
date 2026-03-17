@@ -2,6 +2,7 @@ package com.brokentelephone.game.navigation.utils
 
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavOptionsBuilder
 import com.brokentelephone.game.navigation.routes.Routes
 
@@ -22,7 +23,7 @@ fun NavController.safePopBackStack() {
 
 fun NavController.navigateSaved(route: Routes) {
     this.navigate(route) {
-        popUpTo(Routes.Dashboard) {
+        popUpTo(graph.findStartDestination().id) {
             saveState = true
         }
         launchSingleTop = true

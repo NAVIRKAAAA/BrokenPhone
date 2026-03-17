@@ -6,6 +6,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +21,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -41,12 +44,18 @@ fun ProfileTopBar(
     onEditClick: () -> Unit,
     onSettingsClick: () -> Unit,
     isScrolled: Boolean,
-    showEditButton: Boolean = true,
     modifier: Modifier = Modifier,
+    showEditButton: Boolean = true,
+    onTitleClick: () -> Unit = {},
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onTitleClick,
+            )
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -92,12 +101,16 @@ fun ProfileTopBar(
                     fontSize = 20.sp,
                     lineHeight = 24.sp,
                     color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.statusBarsPadding().padding(vertical = 8.dp),
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .padding(vertical = 8.dp),
                 )
             }
         }
 
-        Row(modifier = Modifier.statusBarsPadding().padding(vertical = 8.dp)) {
+        Row(modifier = Modifier
+            .statusBarsPadding()
+            .padding(vertical = 8.dp)) {
             if (showEditButton) {
                 IconButton(onClick = onEditClick) {
                     Icon(

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.domain.handler.onError
 import com.brokentelephone.game.domain.handler.onSuccess
+import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.dashboard.model.PostUi
 import com.brokentelephone.game.features.dashboard.model.toUi
 import com.brokentelephone.game.features.post_details.use_case.DeletePostUseCase
@@ -18,6 +19,7 @@ import com.brokentelephone.game.features.settings.use_case.GetAuthStateUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -34,6 +36,7 @@ class ProfileViewModel(
     private val getPostLinkByIdUseCase: GetPostLinkByIdUseCase,
     private val deletePostUseCase: DeletePostUseCase,
     private val getAuthStateUseCase: GetAuthStateUseCase,
+    private val exceptionToMessageMapper: ExceptionToMessageMapper
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProfileState())
@@ -71,6 +74,9 @@ class ProfileViewModel(
     fun onRefresh() {
         viewModelScope.launch {
             _state.update { it.copy(isRefreshing = true) }
+
+            delay(150)
+
             val posts = async { fetchMyPosts() }
             val contributions = async { fetchContributions() }
             posts.await()
@@ -85,7 +91,11 @@ class ProfileViewModel(
     private suspend fun fetchMyPosts() {
         getMyPostsUseCase.execute()
             .onSuccess { posts ->
-                _state.update { it.copy(isPostsLoading = false, myPosts = posts.map { p -> p.toUi() }) }
+                _state.update {
+                    it.copy(
+                        isPostsLoading = false,
+                        myPosts = posts.map { p -> p.toUi() })
+                }
             }
             .onError {
                 _state.update { it.copy(isPostsLoading = false) }
@@ -95,7 +105,11 @@ class ProfileViewModel(
     private suspend fun fetchContributions() {
         getContributionsUseCase.execute()
             .onSuccess { posts ->
-                _state.update { it.copy(isContributionsLoading = false, myContributions = posts.map { p -> p.toUi() }) }
+                _state.update {
+                    it.copy(
+                        isContributionsLoading = false,
+                        myContributions = posts.map { p -> p.toUi() })
+                }
             }
             .onError {
                 _state.update { it.copy(isContributionsLoading = false) }
@@ -134,18 +148,36 @@ class ProfileViewModel(
         _state.update { it.copy(isDeleteDialogVisible = false) }
     }
 
+    fun onGlobalErrorDismissed() {
+        _state.update { it.copy(globalError = null) }
+    }
+
     fun onDeleteConfirm() {
-        val postId = state.value.selectedPost?.id ?: return
+        val post = state.value.selectedPost ?: return
         _state.update { it.copy(isDeleteLoading = true) }
+
         viewModelScope.launch {
-            deletePostUseCase(postId)
-            _state.update {
-                it.copy(
-                    isDeleteLoading = false,
-                    isDeleteDialogVisible = false,
-                    selectedPost = null
-                )
+            deletePostUseCase.execute(post.id, post.parentId).onSuccess {
+                _state.update {
+                    it.copy(
+                        isDeleteLoading = false,
+                        isDeleteDialogVisible = false,
+                        selectedPost = null
+                    )
+                }
+
+                onRefresh()
+            }.onError { exception ->
+                _state.update {
+                    it.copy(
+                        isDeleteLoading = false,
+                        isDeleteDialogVisible = false,
+                        selectedPost = null,
+                        globalError = exceptionToMessageMapper.map(exception)
+                    )
+                }
             }
+
         }
     }
 

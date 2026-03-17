@@ -73,21 +73,16 @@ fun PostDetailsScreen(
     )
 
     if (state.isBottomSheetVisible) {
-        val actions = if (state.isCurrentUserPost) {
-            listOf(PostBottomSheetAction.COPY_LINK, PostBottomSheetAction.DELETE)
-        } else {
-            PostBottomSheetAction.entries.filter { it != PostBottomSheetAction.DELETE }
-        }
         PostBottomSheet(
             onDismissRequest = viewModel::onBottomSheetDismiss,
-            actions = actions,
+            actions = PostBottomSheetAction.entries.filter { it != PostBottomSheetAction.DELETE },
             onActionClick = { action ->
                 when (action) {
                     PostBottomSheetAction.NOT_INTERESTED -> viewModel.onNotInterestedClick()
                     PostBottomSheetAction.COPY_LINK -> viewModel.onCopyLinkClick()
                     PostBottomSheetAction.BLOCK -> viewModel.onBlockClick()
                     PostBottomSheetAction.REPORT -> viewModel.onReportClick()
-                    PostBottomSheetAction.DELETE -> viewModel.onDeleteClick()
+                    else -> return@PostBottomSheet
                 }
             },
         )
@@ -102,18 +97,6 @@ fun PostDetailsScreen(
             onDismiss = viewModel::onBlockDialogDismiss,
             onConfirm = viewModel::onBlockConfirm,
             isLoading = state.isBlockLoading,
-        )
-    }
-
-    if (state.isDeleteDialogVisible) {
-        ConfirmDialog(
-            title = stringResource(R.string.common_dialog_delete_post_title),
-            body = stringResource(R.string.common_dialog_delete_post_body),
-            cancelText = stringResource(R.string.common_cancel),
-            confirmText = stringResource(R.string.common_delete),
-            onDismiss = viewModel::onDeleteDialogDismiss,
-            onConfirm = viewModel::onDeleteConfirm,
-            isLoading = state.isDeleteLoading,
         )
     }
 

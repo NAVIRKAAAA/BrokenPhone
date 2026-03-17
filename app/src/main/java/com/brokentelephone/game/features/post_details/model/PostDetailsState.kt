@@ -10,14 +10,8 @@ data class PostDetailsState(
     val isReportBottomSheetVisible: Boolean = false,
     val isBlockDialogVisible: Boolean = false,
     val isBlockLoading: Boolean = false,
-    val isDeleteDialogVisible: Boolean = false,
-    val isDeleteLoading: Boolean = false,
     val isContinueLoading: Boolean = false,
     val globalError: String? = null,
     val globalException: Exception? = null,
     val isLoadRetrying: Boolean = false,
-) {
-    val isCurrentUserPost: Boolean
-        get() = postUi?.authorId == userUi?.id
-
-}
+)

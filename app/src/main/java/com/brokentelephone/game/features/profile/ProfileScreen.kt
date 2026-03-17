@@ -21,6 +21,7 @@ import com.brokentelephone.game.R
 import com.brokentelephone.game.core.bottom_sheet.post_bottom_sheet.PostBottomSheet
 import com.brokentelephone.game.core.bottom_sheet.post_bottom_sheet.model.PostBottomSheetAction
 import com.brokentelephone.game.core.dialog.ConfirmDialog
+import com.brokentelephone.game.core.dialog.ErrorDialog
 import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBarViewModel
 import com.brokentelephone.game.features.bottom_nav_bar.model.BottomNavBarEvent
 import com.brokentelephone.game.features.profile.content.ProfileContent
@@ -40,7 +41,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    onPostClick: (postId: String) -> Unit,
+    onPostClick: (parentId: String, postId: String) -> Unit,
     onSignInClick: () -> Unit,
     onGetStartedClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -139,6 +140,13 @@ fun ProfileScreen(
             onDismiss = viewModel::onDeleteDialogDismiss,
             onConfirm = viewModel::onDeleteConfirm,
             isLoading = state.isDeleteLoading,
+        )
+    }
+
+    state.globalError?.let { message ->
+        ErrorDialog(
+            body = message,
+            onOkClick = viewModel::onGlobalErrorDismissed,
         )
     }
 }

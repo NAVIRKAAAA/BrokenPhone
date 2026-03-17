@@ -2,6 +2,7 @@ package com.brokentelephone.game.features.profile.content
 
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -26,7 +27,7 @@ fun ProfilePostsPage(
     posts: List<PostUi>,
     isLoading: Boolean,
     nestedScrollConnection: NestedScrollConnection,
-    onPostClick: (parentId: String) -> Unit,
+    onPostClick: (parentId: String, postId: String) -> Unit,
     onMoreClick: (postId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -49,26 +50,30 @@ fun ProfilePostsPage(
                     items = posts,
                     key = { _, item -> item.id },
                 ) { index, post ->
-                    if (index != 0) {
-                        HorizontalDivider(color = MaterialTheme.appColors.divider)
-                    }
+                    Column(
+                        modifier = Modifier.animateItem()
+                    ) {
+                        if (index != 0) {
+                            HorizontalDivider(color = MaterialTheme.appColors.divider)
+                        }
 
-                    ProfilePostElement(
-                        post = post,
-                        onMoreClick = { onMoreClick(post.id) },
-                        modifier = Modifier
-                            .combinedClickable(
-                                onClick = {
-                                    onPostClick(post.parentId)
-                                },
-                                onLongClick = {
-                                    onMoreClick(post.id)
-                                },
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() }
-                            )
-                            .padding(horizontal = 16.dp, vertical = 16.dp),
-                    )
+                        ProfilePostElement(
+                            post = post,
+                            onMoreClick = { onMoreClick(post.id) },
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        onPostClick(post.parentId, post.id)
+                                    },
+                                    onLongClick = {
+                                        onMoreClick(post.id)
+                                    },
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                                )
+                                .padding(horizontal = 16.dp, vertical = 16.dp),
+                        )
+                    }
                 }
 
                 item {

@@ -78,3 +78,13 @@ class AlreadyReportedException : AppException("Post already reported") {
     override fun getLocalizedMessage(stringProvider: StringProvider): String =
         stringProvider.getString(R.string.error_already_reported)
 }
+
+class PostInProgressException : AppException("Post is currently in progress") {
+    override fun getLocalizedMessage(stringProvider: StringProvider): String =
+        stringProvider.getString(R.string.error_post_in_progress)
+}
+
+class CannotDeletePostException : AppException("Post cannot be deleted") {
+    override fun getLocalizedMessage(stringProvider: StringProvider): String =
+        stringProvider.getString(R.string.error_cannot_delete_post)
+}

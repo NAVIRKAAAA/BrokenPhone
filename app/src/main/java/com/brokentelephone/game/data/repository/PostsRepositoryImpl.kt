@@ -10,10 +10,13 @@ import com.brokentelephone.game.domain.post.PostContent
 import com.brokentelephone.game.domain.post.PostStatus
 import com.brokentelephone.game.domain.repository.PostRepository
 import com.brokentelephone.game.domain.storage.ImageStorage
+import com.brokentelephone.game.essentials.exceptions.auth.CannotDeletePostException
 import com.brokentelephone.game.essentials.exceptions.auth.ImageUploadException
 import com.brokentelephone.game.essentials.exceptions.auth.NetworkException
+import com.brokentelephone.game.essentials.exceptions.auth.PostInProgressException
 import com.brokentelephone.game.essentials.exceptions.auth.PostNotFoundException
 import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
+import com.brokentelephone.game.essentials.exceptions.main.AppException
 import com.brokentelephone.game.features.dashboard.model.DashboardSort
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.firestore.DocumentSnapshot
@@ -318,7 +321,105 @@ class PostsRepositoryImpl(
         }
     }
 
-    override suspend fun deletePost(postId: String) = Unit
+    override suspend fun deletePost(postId: String, parentId: String) {
+        try {
+            if (postId == parentId) {
+                val postDoc = collection.document(postId).get().await()
+                deleteRootPost(postId, postDoc)
+            } else {
+                deleteContinuation(postId, rootPostId = parentId)
+            }
+        } catch (e: AppException) {
+            throw e
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (e: FirebaseFirestoreException) {
+            throw e.toAppException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
+
+    private suspend fun deleteRootPost(postId: String, postDoc: DocumentSnapshot) {
+        val post = postDoc.data?.toPost() ?: throw PostNotFoundException()
+
+        if (post.status == PostStatus.IN_PROGRESS) throw PostInProgressException()
+
+        val chainSnapshot = collection.document(postId).collection(CHAIN_COLLECTION).get().await()
+        val chainCount = chainSnapshot.size()
+        val canDelete = chainCount == 1 || post.generation != post.maxGenerations
+        if (!canDelete) throw CannotDeletePostException()
+
+        val userPostRef = collection.firestore
+            .collection(USERS_COLLECTION)
+            .document(post.authorId)
+            .collection(USER_POSTS_COLLECTION)
+            .document(postId)
+
+        collection.firestore.runBatch { batch ->
+            batch.delete(collection.document(postId))
+            batch.delete(userPostRef)
+            chainSnapshot.documents.forEach { batch.delete(it.reference) }
+        }.await()
+    }
+
+    private suspend fun deleteContinuation(postId: String, rootPostId: String) {
+
+        val chainEntryDoc = collection.document(rootPostId)
+            .collection(CHAIN_COLLECTION)
+            .whereEqualTo(FIELD_ID, postId)
+            .limit(1)
+            .get()
+            .await()
+            .documents
+            .firstOrNull() ?: throw PostNotFoundException()
+
+        val chainEntry = chainEntryDoc.data?.toPost() ?: throw PostNotFoundException()
+
+        val rootPost = collection.document(rootPostId).get().await()
+            .data?.toPost() ?: throw PostNotFoundException()
+
+        if (rootPost.status == PostStatus.IN_PROGRESS) {
+            throw PostInProgressException()
+        }
+        if (chainEntry.generation != rootPost.generation) {
+            throw CannotDeletePostException()
+        }
+        if (chainEntry.generation == rootPost.maxGenerations) {
+            throw CannotDeletePostException()
+        }
+
+        val prevEntry = collection.document(rootPostId)
+            .collection(CHAIN_COLLECTION)
+            .whereEqualTo(FIELD_GENERATION, chainEntry.generation - 1)
+            .limit(1)
+            .get()
+            .await()
+            .documents
+            .firstOrNull()?.data?.toPost() ?: throw PostNotFoundException()
+
+        val rolledBackPost = rootPost.copy(
+            authorId = prevEntry.authorId,
+            authorName = prevEntry.authorName,
+            avatarUrl = prevEntry.avatarUrl,
+            content = prevEntry.content,
+            generation = prevEntry.generation,
+            updatedAt = prevEntry.updatedAt,
+            status = PostStatus.AVAILABLE,
+        )
+
+        val contributionRef = collection.firestore
+            .collection(USERS_COLLECTION)
+            .document(chainEntry.authorId)
+            .collection(CONTRIBUTIONS_COLLECTION)
+            .document(postId)
+
+        collection.firestore.runBatch { batch ->
+            batch.set(collection.document(rootPostId), rolledBackPost.toMap())
+            batch.delete(chainEntryDoc.reference)
+            batch.delete(contributionRef)
+        }.await()
+    }
 
     private fun contributionsCollection(userId: String) = collection.firestore
         .collection(USERS_COLLECTION)
@@ -328,7 +429,7 @@ class PostsRepositoryImpl(
     private fun Query.applySorting(sort: DashboardSort): Query {
         return when (sort) {
             DashboardSort.LATEST -> orderBy(
-                FIELD_CREATED_AT,
+                FIELD_UPDATED_AT,
                 Query.Direction.DESCENDING
             )
 
@@ -341,6 +442,7 @@ class PostsRepositoryImpl(
     }
 
     private companion object {
+        const val FIELD_ID = "id"
         const val FIELD_CREATED_AT = "createdAt"
         const val FIELD_UPDATED_AT = "updatedAt"
         const val FIELD_GENERATION = "generation"

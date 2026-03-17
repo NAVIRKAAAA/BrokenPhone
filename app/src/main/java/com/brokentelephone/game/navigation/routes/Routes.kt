@@ -23,7 +23,7 @@ sealed class Routes {
     data class DescribeDrawing(val postId: String) : Routes()
 
     @Serializable
-    data class ChainDetails(val postId: String) : Routes()
+    data class ChainDetails(val postParentId: String, val postId: String) : Routes()
 
     @Serializable
     data object SignUp : Routes()

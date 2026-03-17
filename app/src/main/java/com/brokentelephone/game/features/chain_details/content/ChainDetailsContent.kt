@@ -1,5 +1,6 @@
 package com.brokentelephone.game.features.chain_details.content
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -112,7 +113,10 @@ fun ChainDetailsContent(
                             items = state.chain,
                             key = { _, item -> item.id }
                         ) { index, postUi ->
-
+                            Log.d(
+                                "LOG_TAG",
+                                "CLicked post id: ${state.postId}. Current post id: ${postUi.id}"
+                            )
                             Column {
 
                                 if (index != 0) {
@@ -121,7 +125,7 @@ fun ChainDetailsContent(
 
                                 ChainDetailsElement(
                                     post = postUi,
-                                    isHidden = chainSize != maxGenerations && postUi.authorId != state.userUi?.id
+                                    isHidden = chainSize != maxGenerations && (postUi.authorId != state.userUi?.id || postUi.id != state.postId)
                                 )
 
                                 if (index < maxGenerations) {
@@ -236,7 +240,7 @@ fun ChainDetailsContentPreview() {
         ChainDetailsContent(
             state = ChainDetailsState(
                 isLoading = true,
-                postId = "1",
+                postParentId = "1",
                 chain = MockPostRepository.chainsMockList.mapIndexed { index, entry ->
                     entry.toUi(
                         id = Uuid.random().toString(),

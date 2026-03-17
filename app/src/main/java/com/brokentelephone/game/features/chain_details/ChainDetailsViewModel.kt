@@ -22,14 +22,16 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ChainDetailsViewModel(
-    private val postId: String,
+    private val postParentId: String,
+    val postId: String,
     private val getChainByPostIdUseCase: GetChainByPostIdUseCase,
     private val getPostByIdUseCase: GetPostByIdUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(ChainDetailsState(postId = postId))
+    private val _state =
+        MutableStateFlow(ChainDetailsState(postParentId = postParentId, postId = postId))
     val state = _state.asStateFlow()
 
     private val _sideEffects = Channel<ChainDetailsSideEffect>(Channel.BUFFERED)
@@ -55,7 +57,7 @@ class ChainDetailsViewModel(
 
             delay(150)
 
-            getChainByPostIdUseCase.execute(postId).onSuccess { chain ->
+            getChainByPostIdUseCase.execute(postParentId).onSuccess { chain ->
                 lastLoadedAt = System.currentTimeMillis()
                 _state.update { it.copy(chain = chain, isRefreshing = false) }
             }.onError { e ->
@@ -73,7 +75,7 @@ class ChainDetailsViewModel(
 
     private fun loadPost() {
         viewModelScope.launch {
-            val post = getPostByIdUseCase.invoke(postId).firstOrNull() ?: return@launch
+            val post = getPostByIdUseCase.invoke(postParentId).firstOrNull() ?: return@launch
             _state.update { it.copy(post = post) }
         }
     }
@@ -81,7 +83,7 @@ class ChainDetailsViewModel(
     private fun loadChain() {
         if (!isInitialLoadAllowed()) return
         viewModelScope.launch {
-            getChainByPostIdUseCase.execute(postId).onSuccess { chain ->
+            getChainByPostIdUseCase.execute(postParentId).onSuccess { chain ->
                 lastLoadedAt = System.currentTimeMillis()
                 _state.update { it.copy(chain = chain, isLoading = false) }
             }.onError { e ->

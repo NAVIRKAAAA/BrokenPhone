@@ -41,7 +41,6 @@ import com.brokentelephone.game.features.dashboard.model.toUi
 fun PostDetailsElement(
     post: PostUi,
     modifier: Modifier = Modifier,
-    isUsersPost: Boolean = false,
 ) {
 
     val relativeTime = rememberRelativeTime(post.createdAt)
@@ -118,10 +117,6 @@ fun PostDetailsElement(
 
             if(post.isCompleted) {
                 StrongBadgeElement(type = StrongBadgeElementType.COMPLETE)
-            }
-
-            if(isUsersPost) {
-                StrongBadgeElement(type = StrongBadgeElementType.YOU)
             }
 
             BadgeElement(
