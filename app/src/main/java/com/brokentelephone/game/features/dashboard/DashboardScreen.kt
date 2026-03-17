@@ -25,6 +25,7 @@ import com.brokentelephone.game.core.bottom_sheet.report_post_bottom_sheet.Repor
 import com.brokentelephone.game.core.dialog.ConfirmDialog
 import com.brokentelephone.game.core.dialog.ErrorDialog
 import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBarViewModel
+import com.brokentelephone.game.features.bottom_nav_bar.model.BottomNavBarEvent
 import com.brokentelephone.game.features.dashboard.content.DashboardContent
 import com.brokentelephone.game.features.dashboard.model.DashboardSideEffect
 import kotlinx.coroutines.launch
@@ -48,6 +49,14 @@ fun DashboardScreen(
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.loadInitialPosts()
+    }
+
+    LaunchedEffect(Unit) {
+        navBarViewModel.event.collect { event ->
+            if (event is BottomNavBarEvent.ScrollToTopDashboard) {
+                listState.animateScrollToItem(0)
+            }
+        }
     }
 
     LaunchedEffect(Unit) {

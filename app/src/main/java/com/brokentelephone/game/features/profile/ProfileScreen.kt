@@ -5,10 +5,12 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -20,8 +22,10 @@ import com.brokentelephone.game.core.bottom_sheet.post_bottom_sheet.PostBottomSh
 import com.brokentelephone.game.core.bottom_sheet.post_bottom_sheet.model.PostBottomSheetAction
 import com.brokentelephone.game.core.dialog.ConfirmDialog
 import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBarViewModel
+import com.brokentelephone.game.features.bottom_nav_bar.model.BottomNavBarEvent
 import com.brokentelephone.game.features.profile.content.ProfileContent
 import com.brokentelephone.game.features.profile.model.ProfileSideEffect
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -47,9 +51,19 @@ fun ProfileScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val listState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.onResume()
+    }
+
+    LaunchedEffect(Unit) {
+        navBarViewModel.event.collect { event ->
+            if (event is BottomNavBarEvent.ScrollToTopProfile) {
+                scope.launch { listState.animateScrollToItem(0) }
+            }
+        }
     }
 
     LaunchedEffect(Unit) {
@@ -98,7 +112,8 @@ fun ProfileScreen(
             viewModel.onMoreClick(post)
         },
         modifier = modifier,
-        onRefresh = viewModel::onRefresh
+        onRefresh = viewModel::onRefresh,
+        listState = listState,
     )
 
     if (state.isPostBottomSheetVisible) {

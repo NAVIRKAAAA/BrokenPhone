@@ -92,6 +92,8 @@ fun AppNavBottomBar(
                 BottomNavBarEvent.NavigateToProfile -> {
                     navController.navigateSaved(Routes.Profile)
                 }
+
+                else -> return@collect
             }
         }
     }

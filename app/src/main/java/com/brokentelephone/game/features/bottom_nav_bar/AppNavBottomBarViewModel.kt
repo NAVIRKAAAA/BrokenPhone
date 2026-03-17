@@ -63,10 +63,18 @@ class AppNavBottomBarViewModel(
 
     fun onItemClick(bottomNavBar: BottomNavBar) {
         viewModelScope.launch {
-            val event = when(bottomNavBar) {
-                BottomNavBar.DASHBOARD -> BottomNavBarEvent.NavigateToDashboard
+            val event = when (bottomNavBar) {
+                BottomNavBar.DASHBOARD -> if (_state.value.selectedItem == BottomNavBar.DASHBOARD) {
+                    BottomNavBarEvent.ScrollToTopDashboard
+                } else {
+                    BottomNavBarEvent.NavigateToDashboard
+                }
                 BottomNavBar.CREATE -> BottomNavBarEvent.NavigateToCreate
-                BottomNavBar.PROFILE -> BottomNavBarEvent.NavigateToProfile
+                BottomNavBar.PROFILE -> if (_state.value.selectedItem == BottomNavBar.PROFILE) {
+                    BottomNavBarEvent.ScrollToTopProfile
+                } else {
+                    BottomNavBarEvent.NavigateToProfile
+                }
             }
 
             _event.emit(event)

@@ -8,4 +8,8 @@ sealed class BottomNavBarEvent {
 
     data object NavigateToProfile : BottomNavBarEvent()
 
+    data object ScrollToTopDashboard : BottomNavBarEvent()
+
+    data object ScrollToTopProfile : BottomNavBarEvent()
+
 }
