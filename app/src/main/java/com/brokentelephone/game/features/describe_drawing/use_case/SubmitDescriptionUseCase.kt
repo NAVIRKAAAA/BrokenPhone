@@ -1,8 +1,8 @@
 package com.brokentelephone.game.features.describe_drawing.use_case
 
-import com.brokentelephone.game.domain.handler.ApiHandler
-import com.brokentelephone.game.domain.handler.AppResult
-import com.brokentelephone.game.domain.post.PostContent
+import com.brokentelephone.game.domain.api_handler.ApiHandler
+import com.brokentelephone.game.domain.api_handler.AppResult
+import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.repository.PostRepository
 import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.essentials.exceptions.auth.UnauthorizedException

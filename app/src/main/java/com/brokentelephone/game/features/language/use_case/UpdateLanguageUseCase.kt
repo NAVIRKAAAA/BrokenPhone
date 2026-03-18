@@ -1,7 +1,7 @@
 package com.brokentelephone.game.features.language.use_case
 
+import com.brokentelephone.game.domain.model.settings.Language
 import com.brokentelephone.game.domain.repository.UserSettingsRepository
-import com.brokentelephone.game.domain.settings.Language
 
 class UpdateLanguageUseCase(
     private val repository: UserSettingsRepository,

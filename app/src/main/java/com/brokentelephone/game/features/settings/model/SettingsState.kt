@@ -1,7 +1,7 @@
 package com.brokentelephone.game.features.settings.model
 
-import com.brokentelephone.game.domain.settings.AppTheme
-import com.brokentelephone.game.domain.settings.Language
+import com.brokentelephone.game.domain.model.settings.AppTheme
+import com.brokentelephone.game.domain.model.settings.Language
 
 data class SettingsState(
     val versionInfo: String = "",

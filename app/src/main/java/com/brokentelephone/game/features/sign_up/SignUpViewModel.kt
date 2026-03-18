@@ -2,8 +2,8 @@ package com.brokentelephone.game.features.sign_up
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.brokentelephone.game.domain.handler.onError
-import com.brokentelephone.game.domain.handler.onSuccess
+import com.brokentelephone.game.domain.api_handler.onError
+import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.essentials.exceptions.auth.InvalidEmailException
 import com.brokentelephone.game.essentials.exceptions.auth.PasswordsDoNotMatchException
 import com.brokentelephone.game.essentials.exceptions.auth.WeakPasswordException

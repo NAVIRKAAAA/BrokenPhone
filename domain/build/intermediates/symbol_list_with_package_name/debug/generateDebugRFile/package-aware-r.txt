@@ -1,0 +1,17 @@
+com.brokentelephone.game.domain
+string account_settings_provider_email
+string account_settings_provider_google
+string account_settings_provider_guest
+string dashboard_sort_almost_done
+string dashboard_sort_latest
+string dashboard_sort_longest_chain
+string language_english
+string language_ukrainian
+string notifications_type_chain_completed
+string notifications_type_news
+string report_post_bottom_sheet_offensive_content
+string report_post_bottom_sheet_other
+string report_post_bottom_sheet_spam
+string theme_dark
+string theme_light
+string theme_system

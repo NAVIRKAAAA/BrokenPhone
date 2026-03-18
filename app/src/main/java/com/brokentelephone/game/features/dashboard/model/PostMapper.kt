@@ -1,7 +1,7 @@
 package com.brokentelephone.game.features.dashboard.model
 
-import com.brokentelephone.game.domain.post.Post
-import com.brokentelephone.game.domain.post.PostContent
+import com.brokentelephone.game.domain.model.post.Post
+import com.brokentelephone.game.domain.model.post.PostContent
 
 fun Post.toUi() = PostUi(
     id = id,

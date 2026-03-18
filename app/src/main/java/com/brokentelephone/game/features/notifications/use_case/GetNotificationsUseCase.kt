@@ -1,6 +1,6 @@
 package com.brokentelephone.game.features.notifications.use_case
 
-import com.brokentelephone.game.domain.settings.NotificationType
+import com.brokentelephone.game.domain.model.settings.NotificationType
 import com.brokentelephone.game.domain.user.UserSession
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

@@ -1,7 +1,7 @@
 package com.brokentelephone.game.features.dashboard.model
 
-import com.brokentelephone.game.domain.post.PostContent
-import com.brokentelephone.game.domain.post.PostStatus
+import com.brokentelephone.game.domain.model.post.PostContent
+import com.brokentelephone.game.domain.model.post.PostStatus
 
 data class PostUi(
     val id: String,

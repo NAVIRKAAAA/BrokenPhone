@@ -52,7 +52,7 @@ import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.core.top_bar.PostTopBar
 import com.brokentelephone.game.data.repository.MockPostRepository
-import com.brokentelephone.game.domain.post.PostContent
+import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.features.create_post.model.CreatePostState
 import com.brokentelephone.game.features.dashboard.model.toUi
 import com.brokentelephone.game.features.describe_drawing.model.DescribeDrawingState

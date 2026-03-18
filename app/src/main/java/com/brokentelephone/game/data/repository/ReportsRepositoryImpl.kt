@@ -1,9 +1,9 @@
 package com.brokentelephone.game.data.repository
 
 import android.util.Log
-import com.brokentelephone.game.core.bottom_sheet.report_post_bottom_sheet.model.ReportPostType
 import com.brokentelephone.game.data.ext.toTimestamp
 import com.brokentelephone.game.data.mapper.toAppException
+import com.brokentelephone.game.domain.model.report.ReportPostType
 import com.brokentelephone.game.domain.repository.ReportsRepository
 import com.brokentelephone.game.essentials.exceptions.auth.AlreadyReportedException
 import com.brokentelephone.game.essentials.exceptions.auth.NetworkException

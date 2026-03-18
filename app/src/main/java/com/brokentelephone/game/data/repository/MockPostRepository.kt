@@ -1,9 +1,9 @@
 package com.brokentelephone.game.data.repository
 
-import com.brokentelephone.game.domain.post.Post
-import com.brokentelephone.game.domain.post.PostChainEntry
-import com.brokentelephone.game.domain.post.PostContent
-import com.brokentelephone.game.domain.post.PostStatus
+import com.brokentelephone.game.domain.model.post.Post
+import com.brokentelephone.game.domain.model.post.PostChainEntry
+import com.brokentelephone.game.domain.model.post.PostContent
+import com.brokentelephone.game.domain.model.post.PostStatus
 
 class MockPostRepository {
 

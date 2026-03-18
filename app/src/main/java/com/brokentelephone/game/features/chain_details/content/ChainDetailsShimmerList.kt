@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.R
 import com.brokentelephone.game.core.shimmer.shimmer
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.domain.post.PostContent
+import com.brokentelephone.game.domain.model.post.PostContent
 
 private val shimmerItems = listOf(
     PostContent.Text(""),

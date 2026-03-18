@@ -1,7 +1,7 @@
 package com.brokentelephone.game.data.session
 
 import android.util.Log
-import com.brokentelephone.game.domain.settings.NotificationType
+import com.brokentelephone.game.domain.model.settings.NotificationType
 import com.brokentelephone.game.domain.user.AuthState
 import com.brokentelephone.game.domain.user.BlockedUser
 import com.brokentelephone.game.domain.user.OnboardingStep

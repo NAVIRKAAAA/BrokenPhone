@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.R
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
-import com.brokentelephone.game.domain.settings.NotificationType
+import com.brokentelephone.game.domain.model.settings.NotificationType
 import com.brokentelephone.game.features.edit_profile.content.AccountTextInfoItem
 import com.brokentelephone.game.features.edit_profile.content.EditProfileTopBar
 import com.brokentelephone.game.features.notifications.model.NotificationsState

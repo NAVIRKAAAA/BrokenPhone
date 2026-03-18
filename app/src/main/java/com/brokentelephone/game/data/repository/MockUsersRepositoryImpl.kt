@@ -1,7 +1,7 @@
 package com.brokentelephone.game.data.repository
 
+import com.brokentelephone.game.domain.model.settings.NotificationType
 import com.brokentelephone.game.domain.repository.UsersRepository
-import com.brokentelephone.game.domain.settings.NotificationType
 import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.domain.user.User

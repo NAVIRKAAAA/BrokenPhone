@@ -1,8 +1,8 @@
 package com.brokentelephone.game.data.repository
 
+import com.brokentelephone.game.domain.model.settings.AppTheme
+import com.brokentelephone.game.domain.model.settings.Language
 import com.brokentelephone.game.domain.repository.UserSettingsRepository
-import com.brokentelephone.game.domain.settings.AppTheme
-import com.brokentelephone.game.domain.settings.Language
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

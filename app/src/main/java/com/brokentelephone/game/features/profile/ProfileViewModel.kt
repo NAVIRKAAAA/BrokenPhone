@@ -2,8 +2,8 @@ package com.brokentelephone.game.features.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.brokentelephone.game.domain.handler.onError
-import com.brokentelephone.game.domain.handler.onSuccess
+import com.brokentelephone.game.domain.api_handler.onError
+import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.dashboard.model.PostUi
 import com.brokentelephone.game.features.dashboard.model.toUi

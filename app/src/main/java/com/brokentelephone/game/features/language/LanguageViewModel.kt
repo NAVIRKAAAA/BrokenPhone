@@ -2,7 +2,7 @@ package com.brokentelephone.game.features.language
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.brokentelephone.game.domain.settings.Language
+import com.brokentelephone.game.domain.model.settings.Language
 import com.brokentelephone.game.features.app_preferences.use_case.GetLanguageUseCase
 import com.brokentelephone.game.features.language.model.LanguageState
 import com.brokentelephone.game.features.language.use_case.UpdateLanguageUseCase

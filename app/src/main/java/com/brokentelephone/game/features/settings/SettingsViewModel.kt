@@ -2,8 +2,8 @@ package com.brokentelephone.game.features.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.brokentelephone.game.domain.handler.onError
-import com.brokentelephone.game.domain.handler.onSuccess
+import com.brokentelephone.game.domain.api_handler.onError
+import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.user.AuthState
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.app_preferences.use_case.GetLanguageUseCase

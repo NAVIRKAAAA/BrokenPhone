@@ -4,10 +4,11 @@ import android.util.Log
 import com.brokentelephone.game.data.mapper.toAppException
 import com.brokentelephone.game.data.mapper.toMap
 import com.brokentelephone.game.data.mapper.toPost
-import com.brokentelephone.game.data.model.PostsPage
-import com.brokentelephone.game.domain.post.Post
-import com.brokentelephone.game.domain.post.PostContent
-import com.brokentelephone.game.domain.post.PostStatus
+import com.brokentelephone.game.domain.model.pagination.PostsPage
+import com.brokentelephone.game.domain.model.post.Post
+import com.brokentelephone.game.domain.model.post.PostContent
+import com.brokentelephone.game.domain.model.post.PostStatus
+import com.brokentelephone.game.domain.model.sort.DashboardSort
 import com.brokentelephone.game.domain.repository.PostRepository
 import com.brokentelephone.game.domain.storage.ImageStorage
 import com.brokentelephone.game.essentials.exceptions.auth.CannotDeletePostException
@@ -17,7 +18,6 @@ import com.brokentelephone.game.essentials.exceptions.auth.PostInProgressExcepti
 import com.brokentelephone.game.essentials.exceptions.auth.PostNotFoundException
 import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
 import com.brokentelephone.game.essentials.exceptions.main.AppException
-import com.brokentelephone.game.features.dashboard.model.DashboardSort
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -194,8 +194,9 @@ class PostsRepositoryImpl(
     ) {
         val uploadedContent = when {
             content is PostContent.Drawing && content.localPath != null -> {
+                val localPath = content.localPath ?: throw ImageUploadException()
                 val imageUrl = try {
-                    imageStorage.uploadImage(content.localPath)
+                    imageStorage.uploadImage(localPath)
                 } catch (_: Exception) {
                     throw ImageUploadException()
                 }

@@ -1,10 +1,10 @@
 package com.brokentelephone.game.data.test
 
 import com.brokentelephone.game.data.mapper.toMap
-import com.brokentelephone.game.domain.post.Post
-import com.brokentelephone.game.domain.post.PostContent
-import com.brokentelephone.game.domain.post.PostStatus
-import com.brokentelephone.game.domain.settings.NotificationType
+import com.brokentelephone.game.domain.model.post.Post
+import com.brokentelephone.game.domain.model.post.PostContent
+import com.brokentelephone.game.domain.model.post.PostStatus
+import com.brokentelephone.game.domain.model.settings.NotificationType
 import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.domain.user.User

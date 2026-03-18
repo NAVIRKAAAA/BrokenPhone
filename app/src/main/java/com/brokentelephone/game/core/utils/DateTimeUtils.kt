@@ -6,7 +6,7 @@ import android.text.format.DateUtils
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.brokentelephone.game.core.theme.LocalAppLanguage
-import com.brokentelephone.game.domain.settings.Language
+import com.brokentelephone.game.domain.model.settings.Language
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

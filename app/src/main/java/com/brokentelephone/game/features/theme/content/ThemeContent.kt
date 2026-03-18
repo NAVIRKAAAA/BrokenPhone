@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.R
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
-import com.brokentelephone.game.domain.settings.AppTheme
+import com.brokentelephone.game.domain.model.settings.AppTheme
 import com.brokentelephone.game.features.edit_profile.content.EditProfileTopBar
 import com.brokentelephone.game.features.language.content.LanguageRadioItem
 import com.brokentelephone.game.features.theme.model.ThemeState

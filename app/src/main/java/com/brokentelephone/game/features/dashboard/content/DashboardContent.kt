@@ -32,7 +32,7 @@ import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
-import com.brokentelephone.game.features.dashboard.model.DashboardSort
+import com.brokentelephone.game.domain.model.sort.DashboardSort
 import com.brokentelephone.game.features.dashboard.model.DashboardState
 import com.brokentelephone.game.features.profile.model.UserUi
 

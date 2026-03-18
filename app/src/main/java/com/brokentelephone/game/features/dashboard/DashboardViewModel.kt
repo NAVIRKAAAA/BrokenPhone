@@ -3,12 +3,12 @@ package com.brokentelephone.game.features.dashboard
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.brokentelephone.game.core.bottom_sheet.report_post_bottom_sheet.model.ReportPostType
-import com.brokentelephone.game.domain.handler.onError
-import com.brokentelephone.game.domain.handler.onSuccess
+import com.brokentelephone.game.domain.api_handler.onError
+import com.brokentelephone.game.domain.api_handler.onSuccess
+import com.brokentelephone.game.domain.model.report.ReportPostType
+import com.brokentelephone.game.domain.model.sort.DashboardSort
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.dashboard.model.DashboardSideEffect
-import com.brokentelephone.game.features.dashboard.model.DashboardSort
 import com.brokentelephone.game.features.dashboard.model.DashboardState
 import com.brokentelephone.game.features.dashboard.model.PostUi
 import com.brokentelephone.game.features.dashboard.model.toUi

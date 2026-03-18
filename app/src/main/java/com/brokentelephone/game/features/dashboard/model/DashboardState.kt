@@ -1,5 +1,6 @@
 package com.brokentelephone.game.features.dashboard.model
 
+import com.brokentelephone.game.domain.model.sort.DashboardSort
 import com.brokentelephone.game.features.profile.model.UserUi
 
 data class DashboardState(

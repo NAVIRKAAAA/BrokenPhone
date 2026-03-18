@@ -2,10 +2,10 @@ package com.brokentelephone.game.features.post_details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.brokentelephone.game.core.bottom_sheet.report_post_bottom_sheet.model.ReportPostType
-import com.brokentelephone.game.domain.handler.onError
-import com.brokentelephone.game.domain.handler.onSuccess
-import com.brokentelephone.game.domain.post.PostContent
+import com.brokentelephone.game.domain.api_handler.onError
+import com.brokentelephone.game.domain.api_handler.onSuccess
+import com.brokentelephone.game.domain.model.post.PostContent
+import com.brokentelephone.game.domain.model.report.ReportPostType
 import com.brokentelephone.game.essentials.exceptions.auth.PostNotFoundException
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.post_details.model.PostDetailsSideEffect

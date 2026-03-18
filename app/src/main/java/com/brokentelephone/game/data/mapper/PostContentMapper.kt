@@ -1,6 +1,6 @@
 package com.brokentelephone.game.data.mapper
 
-import com.brokentelephone.game.domain.post.PostContent
+import com.brokentelephone.game.domain.model.post.PostContent
 
 private object PostContentFields {
     const val TYPE = "type"

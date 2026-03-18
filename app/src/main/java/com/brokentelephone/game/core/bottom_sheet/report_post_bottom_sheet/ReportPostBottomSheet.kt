@@ -25,9 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.R
 import com.brokentelephone.game.core.bottom_sheet.report_post_bottom_sheet.content.ReportPostBottomSheetButton
-import com.brokentelephone.game.core.bottom_sheet.report_post_bottom_sheet.model.ReportPostType
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
+import com.brokentelephone.game.domain.model.report.ReportPostType
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

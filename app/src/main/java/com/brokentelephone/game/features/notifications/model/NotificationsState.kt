@@ -1,6 +1,6 @@
 package com.brokentelephone.game.features.notifications.model
 
-import com.brokentelephone.game.domain.settings.NotificationType
+import com.brokentelephone.game.domain.model.settings.NotificationType
 
 data class NotificationsState(
     val notifications: List<NotificationType> = NotificationType.entries,

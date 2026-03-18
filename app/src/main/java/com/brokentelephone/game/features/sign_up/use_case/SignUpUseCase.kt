@@ -1,7 +1,7 @@
 package com.brokentelephone.game.features.sign_up.use_case
 
-import com.brokentelephone.game.domain.handler.ApiHandler
-import com.brokentelephone.game.domain.handler.AppResult
+import com.brokentelephone.game.domain.api_handler.ApiHandler
+import com.brokentelephone.game.domain.api_handler.AppResult
 import com.brokentelephone.game.domain.repository.AuthRepository
 import com.brokentelephone.game.domain.repository.UsersRepository
 import com.brokentelephone.game.domain.user.AuthProvider

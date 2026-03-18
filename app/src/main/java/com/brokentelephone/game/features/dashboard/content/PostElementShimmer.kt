@@ -30,7 +30,7 @@ import com.brokentelephone.game.R
 import com.brokentelephone.game.core.badge.BadgeElement
 import com.brokentelephone.game.core.shimmer.shimmer
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.domain.post.PostContent
+import com.brokentelephone.game.domain.model.post.PostContent
 
 @Composable
 fun PostElementShimmer(

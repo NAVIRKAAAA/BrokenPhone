@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.R
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.features.dashboard.model.DashboardSort
+import com.brokentelephone.game.domain.model.sort.DashboardSort
 
 @Composable
 fun DashboardTopBar(

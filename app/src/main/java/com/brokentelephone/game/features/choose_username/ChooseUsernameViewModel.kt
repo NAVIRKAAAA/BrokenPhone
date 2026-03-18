@@ -2,8 +2,8 @@ package com.brokentelephone.game.features.choose_username
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.brokentelephone.game.domain.handler.onError
-import com.brokentelephone.game.domain.handler.onSuccess
+import com.brokentelephone.game.domain.api_handler.onError
+import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.choose_username.model.ChooseUsernameEvent
 import com.brokentelephone.game.features.choose_username.model.ChooseUsernameState

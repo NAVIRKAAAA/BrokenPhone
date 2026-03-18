@@ -1,7 +1,7 @@
 package com.brokentelephone.game.data.handler
 
-import com.brokentelephone.game.domain.handler.ApiHandler
-import com.brokentelephone.game.domain.handler.AppResult
+import com.brokentelephone.game.domain.api_handler.ApiHandler
+import com.brokentelephone.game.domain.api_handler.AppResult
 import com.brokentelephone.game.essentials.exceptions.auth.OperationCancelledException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher

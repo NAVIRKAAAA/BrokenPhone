@@ -41,8 +41,8 @@ import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.data.repository.MockPostRepository
-import com.brokentelephone.game.domain.post.PostContent
-import com.brokentelephone.game.domain.post.PostStatus
+import com.brokentelephone.game.domain.model.post.PostContent
+import com.brokentelephone.game.domain.model.post.PostStatus
 import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.features.chain_details.model.ChainDetailsState
 import com.brokentelephone.game.features.chain_details.model.toUi

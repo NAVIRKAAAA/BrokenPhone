@@ -1,8 +1,8 @@
 package com.brokentelephone.game.features.blocked_users.use_case
 
 import android.util.Log
-import com.brokentelephone.game.domain.handler.ApiHandler
-import com.brokentelephone.game.domain.handler.AppResult
+import com.brokentelephone.game.domain.api_handler.ApiHandler
+import com.brokentelephone.game.domain.api_handler.AppResult
 import com.brokentelephone.game.domain.repository.UsersRepository
 import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.features.blocked_users.model.BlockedUserUi

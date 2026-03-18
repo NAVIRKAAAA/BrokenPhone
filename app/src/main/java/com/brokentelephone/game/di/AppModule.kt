@@ -12,7 +12,7 @@ import com.brokentelephone.game.data.repository.ReportsRepositoryImpl
 import com.brokentelephone.game.data.repository.UsersRepositoryImpl
 import com.brokentelephone.game.data.session.UserSessionImpl
 import com.brokentelephone.game.data.storage.FirebaseImageStorage
-import com.brokentelephone.game.domain.handler.ApiHandler
+import com.brokentelephone.game.domain.api_handler.ApiHandler
 import com.brokentelephone.game.domain.link.LinkProvider
 import com.brokentelephone.game.domain.repository.AppInfoRepository
 import com.brokentelephone.game.domain.repository.AuthRepository

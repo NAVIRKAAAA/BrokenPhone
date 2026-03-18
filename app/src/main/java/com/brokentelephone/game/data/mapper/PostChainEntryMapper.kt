@@ -2,8 +2,8 @@ package com.brokentelephone.game.data.mapper
 
 import com.brokentelephone.game.data.ext.toMillis
 import com.brokentelephone.game.data.ext.toTimestamp
-import com.brokentelephone.game.domain.post.PostChainEntry
-import com.brokentelephone.game.domain.post.PostStatus
+import com.brokentelephone.game.domain.model.post.PostChainEntry
+import com.brokentelephone.game.domain.model.post.PostStatus
 import com.google.firebase.Timestamp
 
 private object PostChainEntryFields {

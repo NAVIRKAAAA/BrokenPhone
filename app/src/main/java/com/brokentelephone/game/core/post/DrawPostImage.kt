@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.brokentelephone.game.domain.post.PostContent
+import com.brokentelephone.game.domain.model.post.PostContent
 import java.io.File
 
 @Composable

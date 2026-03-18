@@ -2,7 +2,7 @@ package com.brokentelephone.game.features.notifications
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.brokentelephone.game.domain.settings.NotificationType
+import com.brokentelephone.game.domain.model.settings.NotificationType
 import com.brokentelephone.game.features.notifications.model.NotificationsSideEffect
 import com.brokentelephone.game.features.notifications.model.NotificationsState
 import com.brokentelephone.game.features.notifications.use_case.GetNotificationsUseCase
