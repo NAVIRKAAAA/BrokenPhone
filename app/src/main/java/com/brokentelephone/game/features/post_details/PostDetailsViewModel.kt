@@ -2,12 +2,15 @@ package com.brokentelephone.game.features.post_details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.brokentelephone.game.core.timer.CountdownTimer
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.report.ReportPostType
+import com.brokentelephone.game.domain.model.session.cooldownRemainingMs
 import com.brokentelephone.game.essentials.exceptions.auth.PostNotFoundException
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
+import com.brokentelephone.game.features.dashboard.model.PostUi
 import com.brokentelephone.game.features.post_details.model.PostDetailsSideEffect
 import com.brokentelephone.game.features.post_details.model.PostDetailsState
 import com.brokentelephone.game.features.post_details.use_case.BlockUserUseCase
@@ -17,6 +20,7 @@ import com.brokentelephone.game.features.post_details.use_case.JoinSessionUseCas
 import com.brokentelephone.game.features.post_details.use_case.MarkPostAsNotInterestedUseCase
 import com.brokentelephone.game.features.post_details.use_case.ReportPostUseCase
 import com.brokentelephone.game.features.profile.use_case.GetCurrentUserUseCase
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,11 +41,14 @@ class PostDetailsViewModel(
     private val markPostAsNotInterestedUseCase: MarkPostAsNotInterestedUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
-    private val joinSessionUseCase: JoinSessionUseCase
+    private val joinSessionUseCase: JoinSessionUseCase,
+    private val countdownTimer: CountdownTimer,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PostDetailsState())
     val state = _state.asStateFlow()
+
+    private var cooldownTimerJob: Job? = null
 
     private val _sideEffects = Channel<PostDetailsSideEffect>(Channel.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
@@ -56,6 +63,26 @@ class PostDetailsViewModel(
         loadPost()
     }
 
+    private fun startCooldownTimer(remainingSeconds: Int) {
+        cooldownTimerJob?.cancel()
+        cooldownTimerJob = countdownTimer.start(remainingSeconds)
+            .onEach { remaining ->
+                _state.update { it.copy(cooldownRemainingSeconds = remaining) }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun updateCooldown(postUi: PostUi) {
+        val userId = _state.value.userUi?.id ?: return
+        val remaining = (postUi.sessionsHistory.cooldownRemainingMs(userId) / 1000).toInt()
+        if (remaining > 0) {
+            startCooldownTimer(remaining)
+        } else {
+            cooldownTimerJob?.cancel()
+            _state.update { it.copy(cooldownRemainingSeconds = 0) }
+        }
+    }
+
     private fun loadPost() {
         getPostByIdUseCase(postId)
             .onEach { postUi ->
@@ -68,6 +95,7 @@ class PostDetailsViewModel(
                         isLoadRetrying = false
                     )
                 }
+                updateCooldown(postUi)
             }
             .catch { e ->
 
@@ -205,4 +233,5 @@ class PostDetailsViewModel(
                 }
         }
     }
+
 }

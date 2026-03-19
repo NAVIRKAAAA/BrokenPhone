@@ -52,6 +52,7 @@ class PostsRepositoryImpl(
             val hasMore = posts.size >= pageSize
             val excludedAuthorIds = (blockedUsersIds + blockedBy + userId).toSet()
             val filteredPosts = posts
+                .filter { !(it.status == PostStatus.COMPLETED && it.generation < it.maxGenerations) }
 //                .filter {
 //                it.authorId !in excludedAuthorIds &&
 //                        it.id !in notInterestedPostIds
@@ -90,6 +91,7 @@ class PostsRepositoryImpl(
 
             val posts = snapshot.documents.mapNotNull { it.data?.toPost() }
             val filteredPosts = posts
+                .filter { !(it.status == PostStatus.COMPLETED && it.generation < it.maxGenerations) }
 //                .filter {
 //                it.authorId !in excludedAuthorIds &&
 //                        it.id !in notInterestedPostIds

@@ -5,6 +5,7 @@
     <string name="common_cancel">Cancel</string>
     <string name="common_post">Submit</string>
     <string name="common_discard">Discard</string>
+    <string name="common_leave">Leave</string>
     <string name="common_keep_writing">Keep going!</string>
     <string name="common_block">Block</string>
     <string name="common_delete">Delete</string>
@@ -26,18 +27,16 @@
     <string name="describe_drawing_placeholder">What do you see here?</string>
     <string name="describe_drawing_dialog_post_title">Ready to submit?</string>
     <string name="describe_drawing_dialog_post_body">Once submitted, the next player will draw based on your words.</string>
-    <string name="describe_drawing_dialog_discard_title">Give up?</string>
-    <string name="describe_drawing_dialog_discard_body">Your description will be gone forever. No take-backs!</string>
-    <string name="describe_drawing_times_up_message">Time\'s up! You can try again in 10 minutes.</string>
+    <string name="describe_drawing_dialog_discard_title">Leave the round?</string>
+    <string name="describe_drawing_times_up_message">Time\'s up!</string>
 
     <!-- Draw -->
     <string name="draw_title">Draw</string>
     <string name="draw_dialog_post_title">Ready to submit?</string>
     <string name="draw_dialog_post_body">Once submitted, everyone in the chain will see your masterpiece.</string>
-    <string name="draw_dialog_discard_title">Give up?</string>
-    <string name="draw_dialog_discard_body">Your drawing will be gone forever. No take-backs!</string>
-    <string name="draw_dialog_discard_cancel">Keep going!</string>
-    <string name="draw_times_up_message">Time\'s up! You can try again in 10 minutes.</string>
+    <string name="draw_dialog_discard_title">Leave the round?</string>
+    <string name="draw_dialog_discard_cancel">Keep playing</string>
+    <string name="draw_times_up_message">Time\'s up!</string>
 
     <!-- Post Details -->
     <string name="post_details_title">Chain</string>
@@ -48,6 +47,8 @@
     <string name="post_details_description_unavailable">Someone is working on this right now</string>
     <string name="post_details_description_completed">This chain is complete!</string>
     <string name="post_details_description_own_post">You started this one — wait for others!</string>
+    <string name="post_details_button_cooldown">Not Yet</string>
+    <string name="post_details_description_cooldown">You left this one recently — try again in %1$s</string>
 
     <!-- Times Up Dialog -->
     <string name="times_up_dialog_title">Time\'s up!</string>
@@ -233,4 +234,24 @@
     <string name="welcome_terms">Terms</string>
     <string name="welcome_terms_and">&amp;</string>
     <string name="welcome_privacy_policy">Privacy Policy</string>
+
+    <plurals name="draw_dialog_discard_body">
+        <item quantity="one">The post heads back to the queue — no worries, you can give it another shot in %d minute.</item>
+        <item quantity="other">The post heads back to the queue — no worries, you can give it another shot in %d minutes.</item>
+    </plurals>
+
+    <plurals name="describe_drawing_dialog_discard_body">
+        <item quantity="one">The post heads back to the queue — no worries, you can give it another shot in %d minute.</item>
+        <item quantity="other">The post heads back to the queue — no worries, you can give it another shot in %d minutes.</item>
+    </plurals>
+
+    <plurals name="draw_times_up_message">
+        <item quantity="one">Time\'s up! You can give it another shot in %d minute.</item>
+        <item quantity="other">Time\'s up! You can give it another shot in %d minutes.</item>
+    </plurals>
+
+    <plurals name="describe_drawing_times_up_message">
+        <item quantity="one">Time\'s up! You can give it another shot in %d minute.</item>
+        <item quantity="other">Time\'s up! You can give it another shot in %d minutes.</item>
+    </plurals>
 </resources>

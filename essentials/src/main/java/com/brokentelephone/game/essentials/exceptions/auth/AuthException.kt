@@ -108,3 +108,8 @@ class SessionValidationException : AppException("Session validation failed — m
     override fun getLocalizedMessage(stringProvider: StringProvider): String =
         stringProvider.getString(R.string.error_session_validation)
 }
+
+class SessionCooldownException : AppException("Session cooldown active — user recently cancelled this post") {
+    override fun getLocalizedMessage(stringProvider: StringProvider): String =
+        stringProvider.getString(R.string.error_session_cooldown)
+}

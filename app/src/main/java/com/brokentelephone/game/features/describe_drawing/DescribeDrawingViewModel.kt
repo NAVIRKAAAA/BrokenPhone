@@ -9,6 +9,7 @@ import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMap
 import com.brokentelephone.game.features.describe_drawing.model.DescribeDrawingSideEffect
 import com.brokentelephone.game.features.describe_drawing.model.DescribeDrawingState
 import com.brokentelephone.game.features.describe_drawing.use_case.SubmitDescriptionUseCase
+import com.brokentelephone.game.features.draw.use_case.CancelSessionUseCase
 import com.brokentelephone.game.features.post_details.use_case.GetPostByIdUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -27,6 +28,7 @@ class DescribeDrawingViewModel(
     private val postId: String,
     private val getPostByIdUseCase: GetPostByIdUseCase,
     private val submitDescriptionUseCase: SubmitDescriptionUseCase,
+    private val cancelSessionUseCase: CancelSessionUseCase,
     private val countdownTimer: CountdownTimer,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
@@ -85,16 +87,21 @@ class DescribeDrawingViewModel(
     }
 
     fun onBackClick() {
-        if (state.value.hasChanges) {
-            _state.update { it.copy(showDiscardDialog = true) }
-        } else {
-            viewModelScope.launch { _sideEffects.send(DescribeDrawingSideEffect.NavigateBack) }
-        }
+        _state.update { it.copy(showDiscardDialog = true) }
     }
 
     fun onDiscardConfirm() {
-        _state.update { it.copy(showDiscardDialog = false) }
-        viewModelScope.launch { _sideEffects.send(DescribeDrawingSideEffect.NavigateBack) }
+        timerJob?.cancel()
+        _state.update { it.copy(isCancelling = true) }
+        viewModelScope.launch {
+
+            cancelSessionUseCase.execute(postId).onSuccess {
+                _state.update { it.copy(isCancelling = false, showDiscardDialog = false) }
+                _sideEffects.send(DescribeDrawingSideEffect.NavigateBack)
+            }.onError {
+                _state.update { it.copy(isCancelling = false) }
+            }
+        }
     }
 
     fun onDiscardDismiss() {
@@ -102,8 +109,15 @@ class DescribeDrawingViewModel(
     }
 
     fun onTimesUpGotIt() {
-        _state.update { it.copy(showTimesUpDialog = false) }
-        viewModelScope.launch { _sideEffects.send(DescribeDrawingSideEffect.NavigateBack) }
+        _state.update { it.copy(isCancelling = true) }
+        viewModelScope.launch {
+            cancelSessionUseCase.execute(postId).onSuccess {
+                _state.update { it.copy(isCancelling = false, showTimesUpDialog = false) }
+                _sideEffects.send(DescribeDrawingSideEffect.NavigateBack)
+            }.onError {
+                _state.update { it.copy(isCancelling = false) }
+            }
+        }
     }
 
     fun onPostClick() {

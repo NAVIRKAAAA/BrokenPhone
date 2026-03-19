@@ -48,8 +48,8 @@ fun ConfirmDialog(
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
-            dismissOnBackPress = true,
-            dismissOnClickOutside = true,
+            dismissOnBackPress = !isLoading,
+            dismissOnClickOutside = !isLoading,
         )
     ) {
         Column(
@@ -86,13 +86,15 @@ fun ConfirmDialog(
             ) {
                 Button(
                     onClick = onDismiss,
+                    enabled = !isLoading,
                     modifier = Modifier
                         .weight(1f)
                         .height(48.dp)
                         .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp)),
                     colors = ButtonDefaults.buttonColors(
                         contentColor = MaterialTheme.colorScheme.onSurface,
-                        containerColor = Color.Transparent
+                        containerColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent,
                     ),
                     shape = RoundedCornerShape(14.dp),
                     contentPadding = PaddingValues()

@@ -45,6 +45,7 @@ import com.brokentelephone.game.features.dashboard.use_case.LoadNextPostsUseCase
 import com.brokentelephone.game.features.describe_drawing.DescribeDrawingViewModel
 import com.brokentelephone.game.features.describe_drawing.use_case.SubmitDescriptionUseCase
 import com.brokentelephone.game.features.draw.DrawViewModel
+import com.brokentelephone.game.features.draw.use_case.CancelSessionUseCase
 import com.brokentelephone.game.features.draw.use_case.SubmitDrawingUseCase
 import com.brokentelephone.game.features.draw.utils.DrawingBitmapSaver
 import com.brokentelephone.game.features.edit_avatar.EditAvatarViewModel
@@ -134,6 +135,7 @@ val appModule = module {
     factoryOf(::CreatePostUseCase)
     factoryOf(::SubmitDrawingUseCase)
     factoryOf(::SubmitDescriptionUseCase)
+    factoryOf(::CancelSessionUseCase)
     factoryOf(::GetChainByPostIdUseCase)
     factoryOf(::SignInAnonymouslyUseCase)
     viewModelOf(::WelcomeViewModel)

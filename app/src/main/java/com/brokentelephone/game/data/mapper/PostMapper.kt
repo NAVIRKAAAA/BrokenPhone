@@ -21,6 +21,7 @@ private object PostFields {
     const val TEXT_TIME_LIMIT = "textTimeLimit"
     const val DRAWING_TIME_LIMIT = "drawingTimeLimit"
     const val SESSION_ID = "sessionId"
+    const val SESSIONS_HISTORY = "sessionsHistory"
 }
 
 fun Post.toMap(): Map<String, Any?> = mapOf(
@@ -34,6 +35,7 @@ fun Post.toMap(): Map<String, Any?> = mapOf(
     PostFields.UPDATED_AT to updatedAt.toTimestamp(),
     PostFields.STATUS to status.name,
     PostFields.SESSION_ID to sessionId,
+    PostFields.SESSIONS_HISTORY to sessionsHistory.map { it.toMap() },
     PostFields.GENERATION to generation,
     PostFields.MAX_GENERATIONS to maxGenerations,
     PostFields.TEXT_TIME_LIMIT to textTimeLimit,
@@ -49,15 +51,21 @@ fun Map<String, Any?>.toPost(): Post? {
             authorId = this[PostFields.AUTHOR_ID] as? String ?: return null,
             authorName = this[PostFields.AUTHOR_NAME] as? String ?: return null,
             avatarUrl = this[PostFields.AVATAR_URL] as? String,
-            content = (this[PostFields.CONTENT] as? Map<String, Any?>)?.toPostContent() ?: return null,
+            content = (this[PostFields.CONTENT] as? Map<String, Any?>)?.toPostContent()
+                ?: return null,
             createdAt = (this[PostFields.CREATED_AT] as? Timestamp)?.toMillis() ?: 0L,
             updatedAt = (this[PostFields.UPDATED_AT] as? Timestamp)?.toMillis() ?: 0L,
-            status = (this[PostFields.STATUS] as? String)?.let { runCatching { PostStatus.valueOf(it) }.getOrNull() } ?: PostStatus.AVAILABLE,
+            status = (this[PostFields.STATUS] as? String)?.let { runCatching { PostStatus.valueOf(it) }.getOrNull() }
+                ?: PostStatus.AVAILABLE,
             sessionId = this[PostFields.SESSION_ID] as? String,
+            sessionsHistory = (this[PostFields.SESSIONS_HISTORY] as? List<Map<String, Any?>>)
+                ?.mapNotNull { it.toPostSessionHistoryItem() }
+                ?: emptyList(),
             generation = (this[PostFields.GENERATION] as? Long)?.toInt() ?: return null,
             maxGenerations = (this[PostFields.MAX_GENERATIONS] as? Long)?.toInt() ?: return null,
             textTimeLimit = (this[PostFields.TEXT_TIME_LIMIT] as? Long)?.toInt() ?: return null,
-            drawingTimeLimit = (this[PostFields.DRAWING_TIME_LIMIT] as? Long)?.toInt() ?: return null,
+            drawingTimeLimit = (this[PostFields.DRAWING_TIME_LIMIT] as? Long)?.toInt()
+                ?: return null,
         )
     } catch (_: Exception) {
         null

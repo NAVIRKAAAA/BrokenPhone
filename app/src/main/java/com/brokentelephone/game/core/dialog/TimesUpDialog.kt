@@ -3,6 +3,7 @@ package com.brokentelephone.game.core.dialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,7 +13,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,6 +39,7 @@ import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 fun TimesUpDialog(
     message: String,
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
     onGotItClick: () -> Unit = {},
 ) {
 
@@ -91,6 +95,7 @@ fun TimesUpDialog(
 
             Button(
                 onClick = onGotItClick,
+                enabled = !isLoading,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -99,14 +104,23 @@ fun TimesUpDialog(
                     containerColor = MaterialTheme.colorScheme.primary
                 ),
                 shape = RoundedCornerShape(14.dp),
+                contentPadding = PaddingValues()
             ) {
-                Text(
-                    text = stringResource(R.string.times_up_dialog_got_it),
-                    textAlign = TextAlign.Center,
-                    fontFamily = FontFamily(Font(R.font.nunito_bold)),
-                    fontSize = 18.sp,
-                    lineHeight = 28.sp
-                )
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = LocalContentColor.current,
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text(
+                        text = stringResource(R.string.times_up_dialog_got_it),
+                        textAlign = TextAlign.Center,
+                        fontFamily = FontFamily(Font(R.font.nunito_bold)),
+                        fontSize = 18.sp,
+                        lineHeight = 28.sp
+                    )
+                }
             }
         }
 
@@ -123,10 +137,13 @@ fun TimesUpDialogPreview() {
     ) {
         Box(
             modifier = Modifier
-            .fillMaxSize()
+                .fillMaxSize()
 //            .background(MaterialTheme.colorScheme.background)
         ) {
-            TimesUpDialog(message = "Your drawing time has ended. You can try again in 10 minutes.")
+            TimesUpDialog(
+                message = "Your drawing time has ended. You can try again in 10 minutes.",
+                isLoading = true
+            )
         }
     }
 }

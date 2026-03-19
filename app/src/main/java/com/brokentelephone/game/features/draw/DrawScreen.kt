@@ -6,12 +6,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.brokentelephone.game.R
 import com.brokentelephone.game.core.dialog.ConfirmDialog
 import com.brokentelephone.game.core.dialog.ErrorDialog
 import com.brokentelephone.game.core.dialog.TimesUpDialog
+import com.brokentelephone.game.domain.model.session.SessionConstants
 import com.brokentelephone.game.features.draw.content.DrawContent
 import com.brokentelephone.game.features.draw.model.DrawSideEffect
 import com.brokentelephone.game.features.draw.model.DrawingAction
@@ -64,17 +66,27 @@ fun DrawScreen(
     if (state.showDiscardDialog) {
         ConfirmDialog(
             title = stringResource(R.string.draw_dialog_discard_title),
-            body = stringResource(R.string.draw_dialog_discard_body),
+            body = pluralStringResource(
+                R.plurals.draw_dialog_discard_body,
+                SessionConstants.CANCEL_COOLDOWN_MINUTES,
+                SessionConstants.CANCEL_COOLDOWN_MINUTES
+            ),
             cancelText = stringResource(R.string.draw_dialog_discard_cancel),
-            confirmText = stringResource(R.string.common_discard),
+            confirmText = stringResource(R.string.common_leave),
             onDismiss = { viewModel.onDrawAction(DrawingAction.OnDiscardDismiss) },
             onConfirm = { viewModel.onDrawAction(DrawingAction.OnDiscardConfirm) },
+            isLoading = state.isCancelling,
         )
     }
 
     if (state.showTimesUpDialog) {
         TimesUpDialog(
-            message = stringResource(R.string.draw_times_up_message),
+            message = pluralStringResource(
+                R.plurals.draw_times_up_message,
+                SessionConstants.CANCEL_COOLDOWN_MINUTES,
+                SessionConstants.CANCEL_COOLDOWN_MINUTES
+            ),
+            isLoading = state.isCancelling,
             onGotItClick = { viewModel.onDrawAction(DrawingAction.OnTimesUpGotIt) },
         )
     }

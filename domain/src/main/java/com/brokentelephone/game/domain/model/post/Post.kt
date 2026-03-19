@@ -1,5 +1,7 @@
 package com.brokentelephone.game.domain.model.post
 
+import com.brokentelephone.game.domain.model.session.PostSessionHistoryItem
+
 data class Post(
     val id: String,
     val chainId: String,
@@ -11,6 +13,7 @@ data class Post(
     val updatedAt: Long,
     val status: PostStatus,
     val sessionId: String?,
+    val sessionsHistory: List<PostSessionHistoryItem> = emptyList(),
 
     // Chain info
     val generation: Int,

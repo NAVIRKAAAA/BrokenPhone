@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,7 +26,6 @@ import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.shimmer.shimmer
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.domain.model.post.PostContent
-import com.brokentelephone.game.domain.model.post.PostStatus
 import com.brokentelephone.game.features.post_details.model.PostDetailsButtonType
 import com.brokentelephone.game.features.post_details.model.PostDetailsState
 
@@ -105,15 +105,8 @@ fun PostDetailsContent(
 
                         Spacer(modifier = Modifier.weight(1f))
 
-                        val buttonType = when {
-                            post.isCompleted -> PostDetailsButtonType.COMPLETED
-                            post.status != PostStatus.AVAILABLE -> PostDetailsButtonType.UNAVAILABLE
-                            post.content is PostContent.Text -> PostDetailsButtonType.DRAW
-                            else -> PostDetailsButtonType.DESCRIBE
-                        }
-
                         PostDetailsButton(
-                            buttonType = buttonType,
+                            buttonType = state.buttonType,
                             isLoading = state.isContinueLoading,
                             onContinueClick = onContinueClick,
                             onViewHistoryClick = onViewHistoryClick,
@@ -121,13 +114,20 @@ fun PostDetailsContent(
 
                         Spacer(modifier = Modifier.height(12.dp))
 
+                        val descriptionText = if (state.buttonType == PostDetailsButtonType.COOLDOWN) {
+                            stringResource(state.buttonType.descriptionResId, state.formattedCooldown)
+                        } else {
+                            stringResource(state.buttonType.descriptionResId, post.nextTimeLimit)
+                        }
+
                         Text(
-                            text = stringResource(buttonType.descriptionResId, post.nextTimeLimit),
+                            text = descriptionText,
                             fontFamily = FontFamily(Font(R.font.nunito_regular)),
                             fontSize = 12.sp,
                             lineHeight = 16.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 1,
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            textAlign = TextAlign.Center
                         )
 
                         Spacer(modifier = Modifier

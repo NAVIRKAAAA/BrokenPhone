@@ -39,4 +39,10 @@ enum class PostDetailsButtonType(
         descriptionResId = R.string.post_details_description_own_post,
     ),
 
+    COOLDOWN(
+        buttonTextResId = R.string.post_details_button_cooldown,
+        isEnabled = false,
+        descriptionResId = R.string.post_details_description_cooldown,
+    ),
+
 }

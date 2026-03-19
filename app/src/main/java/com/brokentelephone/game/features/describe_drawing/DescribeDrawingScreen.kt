@@ -6,12 +6,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.brokentelephone.game.R
 import com.brokentelephone.game.core.dialog.ConfirmDialog
 import com.brokentelephone.game.core.dialog.ErrorDialog
 import com.brokentelephone.game.core.dialog.TimesUpDialog
+import com.brokentelephone.game.domain.model.session.SessionConstants
 import com.brokentelephone.game.features.describe_drawing.content.DescribeDrawingContent
 import com.brokentelephone.game.features.describe_drawing.model.DescribeDrawingSideEffect
 import org.koin.compose.viewmodel.koinViewModel
@@ -64,17 +66,27 @@ fun DescribeDrawingScreen(
     if (state.showDiscardDialog) {
         ConfirmDialog(
             title = stringResource(R.string.describe_drawing_dialog_discard_title),
-            body = stringResource(R.string.describe_drawing_dialog_discard_body),
+            body = pluralStringResource(
+                R.plurals.describe_drawing_dialog_discard_body,
+                SessionConstants.CANCEL_COOLDOWN_MINUTES,
+                SessionConstants.CANCEL_COOLDOWN_MINUTES
+            ),
             cancelText = stringResource(R.string.common_keep_writing),
-            confirmText = stringResource(R.string.common_discard),
-            onDismiss = viewModel::onDiscardDismiss,
+            confirmText = stringResource(R.string.common_leave),
+            onDismiss = { if (!state.isCancelling) viewModel.onDiscardDismiss() },
             onConfirm = viewModel::onDiscardConfirm,
+            isLoading = state.isCancelling,
         )
     }
 
     if (state.showTimesUpDialog) {
         TimesUpDialog(
-            message = stringResource(R.string.describe_drawing_times_up_message),
+            message = pluralStringResource(
+                R.plurals.describe_drawing_times_up_message,
+                SessionConstants.CANCEL_COOLDOWN_MINUTES,
+                SessionConstants.CANCEL_COOLDOWN_MINUTES
+            ),
+            isLoading = state.isCancelling,
             onGotItClick = viewModel::onTimesUpGotIt,
         )
     }

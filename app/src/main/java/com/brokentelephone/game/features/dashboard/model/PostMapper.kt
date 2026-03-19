@@ -17,4 +17,5 @@ fun Post.toUi() = PostUi(
         is PostContent.Text -> drawingTimeLimit
         is PostContent.Drawing -> textTimeLimit
     },
+    sessionsHistory = sessionsHistory,
 )

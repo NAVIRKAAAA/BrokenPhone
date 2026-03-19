@@ -13,6 +13,7 @@ data class DrawState(
     val redoPaths: List<PathData> = emptyList(),
     val canvasSize: IntSize? = null,
     val showDiscardDialog: Boolean = false,
+    val isCancelling: Boolean = false,
     val showPostConfirmDialog: Boolean = false,
     val isPosting: Boolean = false,
     val remainingSeconds: Int = 0,
@@ -22,7 +23,6 @@ data class DrawState(
 ) {
     val canUndo: Boolean get() = paths.isNotEmpty()
     val canRedo: Boolean get() = redoPaths.isNotEmpty()
-    val hasChanges: Boolean get() = paths.isNotEmpty()
 
     val formattedTime: String get() {
         val minutes = remainingSeconds / 60

@@ -15,6 +15,7 @@ import com.brokentelephone.game.features.draw.model.DrawSideEffect
 import com.brokentelephone.game.features.draw.model.DrawState
 import com.brokentelephone.game.features.draw.model.DrawingAction
 import com.brokentelephone.game.features.draw.model.PathData
+import com.brokentelephone.game.features.draw.use_case.CancelSessionUseCase
 import com.brokentelephone.game.features.draw.use_case.SubmitDrawingUseCase
 import com.brokentelephone.game.features.draw.utils.DrawingBitmapSaver
 import com.brokentelephone.game.features.post_details.use_case.GetPostByIdUseCase
@@ -37,6 +38,7 @@ class DrawViewModel(
     private val getPostByIdUseCase: GetPostByIdUseCase,
     private val drawingBitmapSaver: DrawingBitmapSaver,
     private val submitDrawingUseCase: SubmitDrawingUseCase,
+    private val cancelSessionUseCase: CancelSessionUseCase,
     private val countdownTimer: CountdownTimer,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
@@ -106,10 +108,7 @@ class DrawViewModel(
             DrawingAction.OnBackClick -> onBackClick()
             DrawingAction.OnDiscardConfirm -> onDiscardConfirm()
             DrawingAction.OnDiscardDismiss -> _state.update { it.copy(showDiscardDialog = false) }
-            DrawingAction.OnTimesUpGotIt -> {
-                _state.update { it.copy(showTimesUpDialog = false) }
-                viewModelScope.launch { _sideEffects.send(DrawSideEffect.NavigateBack) }
-            }
+            DrawingAction.OnTimesUpGotIt -> onTimesUpGotIt()
 
             DrawingAction.OnGlobalErrorDismiss -> _state.update { it.copy(globalError = null) }
         }
@@ -179,17 +178,34 @@ class DrawViewModel(
         }
     }
 
-    private fun onBackClick() {
-        if (state.value.hasChanges) {
-            _state.update { it.copy(showDiscardDialog = true) }
-        } else {
-            viewModelScope.launch { _sideEffects.send(DrawSideEffect.NavigateBack) }
+    private fun onTimesUpGotIt() {
+        _state.update { it.copy(isCancelling = true) }
+        viewModelScope.launch {
+            cancelSessionUseCase.execute(postId).onSuccess {
+                _state.update { it.copy(isCancelling = false, showTimesUpDialog = false) }
+                _sideEffects.send(DrawSideEffect.NavigateBack)
+            }.onError {
+                _state.update { it.copy(isCancelling = false) }
+            }
         }
     }
 
+    private fun onBackClick() {
+        _state.update { it.copy(showDiscardDialog = true) }
+    }
+
     private fun onDiscardConfirm() {
-        _state.update { it.copy(showDiscardDialog = false) }
-        viewModelScope.launch { _sideEffects.send(DrawSideEffect.NavigateBack) }
+        timerJob?.cancel()
+        _state.update { it.copy(isCancelling = true) }
+        viewModelScope.launch {
+
+            cancelSessionUseCase.execute(postId).onSuccess {
+                _state.update { it.copy(isCancelling = false, showDiscardDialog = false) }
+                _sideEffects.send(DrawSideEffect.NavigateBack)
+            }.onError {
+                _state.update { it.copy(isCancelling = false) }
+            }
+        }
     }
 
     private fun onPostClick() {

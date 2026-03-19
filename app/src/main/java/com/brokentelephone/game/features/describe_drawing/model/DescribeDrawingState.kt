@@ -6,6 +6,7 @@ data class DescribeDrawingState(
     val postUi: PostUi? = null,
     val text: String = "",
     val showDiscardDialog: Boolean = false,
+    val isCancelling: Boolean = false,
     val showPostConfirmDialog: Boolean = false,
     val isPosting: Boolean = false,
     val remainingSeconds: Int = 0,
@@ -14,7 +15,6 @@ data class DescribeDrawingState(
     val globalError: String? = null,
 ) {
     val isTextOverLimit: Boolean get() = text.length > MAX_TEXT_LENGTH
-    val hasChanges: Boolean get() = text.isNotEmpty()
     val formattedTime: String get() {
         val minutes = remainingSeconds / 60
         val seconds = remainingSeconds % 60
