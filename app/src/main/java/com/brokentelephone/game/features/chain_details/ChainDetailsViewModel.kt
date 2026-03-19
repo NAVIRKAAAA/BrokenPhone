@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ChainDetailsViewModel(
-    private val postParentId: String,
     val postId: String,
     private val getChainByPostIdUseCase: GetChainByPostIdUseCase,
     private val getPostByIdUseCase: GetPostByIdUseCase,
@@ -31,7 +30,7 @@ class ChainDetailsViewModel(
 ) : ViewModel() {
 
     private val _state =
-        MutableStateFlow(ChainDetailsState(postParentId = postParentId, postId = postId))
+        MutableStateFlow(ChainDetailsState(postId = postId))
     val state = _state.asStateFlow()
 
     private val _sideEffects = Channel<ChainDetailsSideEffect>(Channel.BUFFERED)
@@ -57,7 +56,7 @@ class ChainDetailsViewModel(
 
             delay(150)
 
-            getChainByPostIdUseCase.execute(postParentId).onSuccess { chain ->
+            getChainByPostIdUseCase.execute(postId).onSuccess { chain ->
                 lastLoadedAt = System.currentTimeMillis()
                 _state.update { it.copy(chain = chain, isRefreshing = false) }
             }.onError { e ->
@@ -75,15 +74,16 @@ class ChainDetailsViewModel(
 
     private fun loadPost() {
         viewModelScope.launch {
-            val post = getPostByIdUseCase.invoke(postParentId).firstOrNull() ?: return@launch
+            val post = getPostByIdUseCase.invoke(postId).firstOrNull() ?: return@launch
             _state.update { it.copy(post = post) }
         }
     }
 
     private fun loadChain() {
         if (!isInitialLoadAllowed()) return
+
         viewModelScope.launch {
-            getChainByPostIdUseCase.execute(postParentId).onSuccess { chain ->
+            getChainByPostIdUseCase.execute(postId).onSuccess { chain ->
                 lastLoadedAt = System.currentTimeMillis()
                 _state.update { it.copy(chain = chain, isLoading = false) }
             }.onError { e ->

@@ -18,6 +18,10 @@
     <string name="error_already_reported">You\'ve already reported this post.</string>
     <string name="error_post_in_progress">This post is currently being worked on and can\'t be deleted right now.</string>
     <string name="error_cannot_delete_post">You can\'t delete this post because others have already built on it.</string>
+    <string name="error_post_unavailable_to_join">Someone else just started working on this post. Check back in a bit — it\'ll be available again soon.</string>
+    <string name="error_session_not_found">You don\'t have an active session for this post. Try starting over.</string>
+    <string name="error_session_expired">Time\'s up! Your session expired before you could submit.</string>
+    <string name="error_session_validation">Something went wrong — this session doesn\'t match your request.</string>
 
     <!-- Firestore errors -->
     <string name="error_firestore_cancelled">The request was cancelled. Try again.</string>

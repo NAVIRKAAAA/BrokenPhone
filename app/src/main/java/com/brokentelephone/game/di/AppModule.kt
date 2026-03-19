@@ -4,8 +4,8 @@ import com.brokentelephone.game.core.timer.CountdownTimer
 import com.brokentelephone.game.data.handler.ApiHandlerImpl
 import com.brokentelephone.game.data.link.MockLinkProviderImpl
 import com.brokentelephone.game.data.repository.AuthRepositoryImpl
+import com.brokentelephone.game.data.repository.GameSessionRepositoryImpl
 import com.brokentelephone.game.data.repository.MockAppInfoRepositoryImpl
-import com.brokentelephone.game.data.repository.MockGamesRepositoryImpl
 import com.brokentelephone.game.data.repository.MockUserSettingsRepositoryImpl
 import com.brokentelephone.game.data.repository.PostsRepositoryImpl
 import com.brokentelephone.game.data.repository.ReportsRepositoryImpl
@@ -16,7 +16,7 @@ import com.brokentelephone.game.domain.api_handler.ApiHandler
 import com.brokentelephone.game.domain.link.LinkProvider
 import com.brokentelephone.game.domain.repository.AppInfoRepository
 import com.brokentelephone.game.domain.repository.AuthRepository
-import com.brokentelephone.game.domain.repository.GamesRepository
+import com.brokentelephone.game.domain.repository.GameSessionRepository
 import com.brokentelephone.game.domain.repository.PostRepository
 import com.brokentelephone.game.domain.repository.ReportsRepository
 import com.brokentelephone.game.domain.repository.UserSettingsRepository
@@ -63,8 +63,8 @@ import com.brokentelephone.game.features.post_details.use_case.BlockUserUseCase
 import com.brokentelephone.game.features.post_details.use_case.DeletePostUseCase
 import com.brokentelephone.game.features.post_details.use_case.GetPostByIdUseCase
 import com.brokentelephone.game.features.post_details.use_case.GetPostLinkByIdUseCase
+import com.brokentelephone.game.features.post_details.use_case.JoinSessionUseCase
 import com.brokentelephone.game.features.post_details.use_case.MarkPostAsNotInterestedUseCase
-import com.brokentelephone.game.features.post_details.use_case.MockStartGameUseCase
 import com.brokentelephone.game.features.post_details.use_case.ReportPostUseCase
 import com.brokentelephone.game.features.profile.ProfileViewModel
 import com.brokentelephone.game.features.profile.use_case.GetContributionsUseCase
@@ -104,7 +104,8 @@ val appModule = module {
     single<AppInfoRepository> { MockAppInfoRepositoryImpl() }
     single { FirebaseStorage.getInstance() }
     single<ImageStorage> { FirebaseImageStorage(get()) }
-    single<PostRepository> { PostsRepositoryImpl(get(), get()) }
+    single<PostRepository> { PostsRepositoryImpl(get()) }
+    single<GameSessionRepository> { GameSessionRepositoryImpl(get()) }
     single<AuthRepository> { AuthRepositoryImpl(get()) }
     single { FirebaseAuth.getInstance() }
     single {
@@ -117,7 +118,6 @@ val appModule = module {
     single<ApiHandler> { ApiHandlerImpl() }
     single<UserSession> { UserSessionImpl(get(), get()) }
     single<ReportsRepository> { ReportsRepositoryImpl(get()) }
-    single<GamesRepository> { MockGamesRepositoryImpl() }
     single<UserSettingsRepository> { MockUserSettingsRepositoryImpl() }
     single<UsersRepository> { UsersRepositoryImpl(get()) }
 
@@ -129,7 +129,7 @@ val appModule = module {
     factoryOf(::DeletePostUseCase)
     factoryOf(::ReportPostUseCase)
     factoryOf(::BlockUserUseCase)
-    factoryOf(::MockStartGameUseCase)
+    factoryOf(::JoinSessionUseCase)
     factoryOf(::MarkPostAsNotInterestedUseCase)
     factoryOf(::CreatePostUseCase)
     factoryOf(::SubmitDrawingUseCase)

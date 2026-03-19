@@ -12,7 +12,6 @@ fun PostChainEntry.toUi(
     drawingTimeLimit: Int,
 ) = PostUi(
     id = id,
-    parentId = parentId,
     authorId = authorId,
     authorName = authorName,
     avatarUrl = avatarUrl,

@@ -88,3 +88,23 @@ class CannotDeletePostException : AppException("Post cannot be deleted") {
     override fun getLocalizedMessage(stringProvider: StringProvider): String =
         stringProvider.getString(R.string.error_cannot_delete_post)
 }
+
+class PostUnavailableToJoinException : AppException("Post is already in progress and cannot be joined") {
+    override fun getLocalizedMessage(stringProvider: StringProvider): String =
+        stringProvider.getString(R.string.error_post_unavailable_to_join)
+}
+
+class SessionNotFoundException : AppException("No active session found for this user") {
+    override fun getLocalizedMessage(stringProvider: StringProvider): String =
+        stringProvider.getString(R.string.error_session_not_found)
+}
+
+class SessionExpiredException : AppException("Session has expired — time limit exceeded") {
+    override fun getLocalizedMessage(stringProvider: StringProvider): String =
+        stringProvider.getString(R.string.error_session_expired)
+}
+
+class SessionValidationException : AppException("Session validation failed — mismatched user, post, or sessionId") {
+    override fun getLocalizedMessage(stringProvider: StringProvider): String =
+        stringProvider.getString(R.string.error_session_validation)
+}

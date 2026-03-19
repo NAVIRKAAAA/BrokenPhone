@@ -46,7 +46,7 @@ class FirestoreTestDataSeeder(
 
             val post = Post(
                 id = docRef.id,
-                parentId = null,
+                chainId = docRef.id,
                 authorId = author.first,
                 authorName = author.second,
                 avatarUrl = avatarUrl,
@@ -54,22 +54,23 @@ class FirestoreTestDataSeeder(
                 createdAt = now,
                 updatedAt = now,
                 status = PostStatus.AVAILABLE,
+                sessionId = null,
                 generation = 1,
                 maxGenerations = (3..6).random(),
                 textTimeLimit = 120,
                 drawingTimeLimit = 180,
             )
             val chainEntryRef = docRef.collection("chain").document()
-            val chainEntry = post.copy(id = chainEntryRef.id, parentId = docRef.id)
-            val userPostRef = usersCollection
-                .document(author.first)
-                .collection("posts")
-                .document(docRef.id)
+//            val chainEntry = post.copy(id = chainEntryRef.id, parentId = docRef.id)
+//            val userPostRef = usersCollection
+//                .document(author.first)
+//                .collection("posts")
+//                .document(docRef.id)
 
             firestore.runBatch { batch ->
                 batch.set(docRef, post.toMap())
-                batch.set(chainEntryRef, chainEntry.toMap())
-                batch.set(userPostRef, post.toMap())
+//                batch.set(chainEntryRef, chainEntry.toMap())
+//                batch.set(userPostRef, post.toMap())
             }.await()
         }
     }

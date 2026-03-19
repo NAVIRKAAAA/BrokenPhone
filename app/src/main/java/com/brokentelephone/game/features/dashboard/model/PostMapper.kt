@@ -5,7 +5,6 @@ import com.brokentelephone.game.domain.model.post.PostContent
 
 fun Post.toUi() = PostUi(
     id = id,
-    parentId = parentId ?: id,
     authorId = authorId,
     authorName = authorName,
     avatarUrl = avatarUrl,

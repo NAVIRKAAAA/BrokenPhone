@@ -181,7 +181,7 @@ fun AppNavGraph(
                     navController.navigateSingle(Routes.DescribeDrawing(postId = postId))
                 },
                 onViewHistoryClick = { postId ->
-                    navController.navigateSingle(Routes.ChainDetails(postParentId = postId, postId = postId))
+                    navController.navigateSingle(Routes.ChainDetails(postId = postId))
                 },
             )
         }
@@ -255,7 +255,7 @@ fun AppNavGraph(
             }
         ) { backStackEntry ->
             val route = backStackEntry.toRoute<Routes.ChainDetails>()
-            val viewModel: ChainDetailsViewModel = koinViewModel { parametersOf(route.postParentId, route.postId) }
+            val viewModel: ChainDetailsViewModel = koinViewModel { parametersOf(route.postId) }
             ChainDetailsScreen(
                 viewModel = viewModel,
                 onBackClick = navController::safePopBackStack,
@@ -389,8 +389,8 @@ fun AppNavGraph(
             popExitTransition = { ExitTransition.None }
         ) {
             ProfileScreen(
-                onPostClick = { parentId, postId  ->
-                    navController.navigateSingle(Routes.ChainDetails(postParentId = parentId, postId = postId))
+                onPostClick = { postId  ->
+                    navController.navigateSingle(Routes.ChainDetails(postId = postId))
                 },
                 onSignInClick = {
                     navController.navigateSingle(Routes.SignIn)

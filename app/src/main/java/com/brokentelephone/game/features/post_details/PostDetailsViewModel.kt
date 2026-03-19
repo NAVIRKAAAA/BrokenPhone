@@ -13,8 +13,8 @@ import com.brokentelephone.game.features.post_details.model.PostDetailsState
 import com.brokentelephone.game.features.post_details.use_case.BlockUserUseCase
 import com.brokentelephone.game.features.post_details.use_case.GetPostByIdUseCase
 import com.brokentelephone.game.features.post_details.use_case.GetPostLinkByIdUseCase
+import com.brokentelephone.game.features.post_details.use_case.JoinSessionUseCase
 import com.brokentelephone.game.features.post_details.use_case.MarkPostAsNotInterestedUseCase
-import com.brokentelephone.game.features.post_details.use_case.MockStartGameUseCase
 import com.brokentelephone.game.features.post_details.use_case.ReportPostUseCase
 import com.brokentelephone.game.features.profile.use_case.GetCurrentUserUseCase
 import kotlinx.coroutines.channels.Channel
@@ -36,8 +36,8 @@ class PostDetailsViewModel(
     private val blockUserUseCase: BlockUserUseCase,
     private val markPostAsNotInterestedUseCase: MarkPostAsNotInterestedUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val mockStartGameUseCase: MockStartGameUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
+    private val joinSessionUseCase: JoinSessionUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PostDetailsState())
@@ -133,19 +133,19 @@ class PostDetailsViewModel(
     }
 
     fun onNotInterestedClick() {
-        val post = state.value.postUi ?: return
-        val postParentId = post.parentId
-        _state.update { it.copy(isBottomSheetVisible = false) }
-
-        viewModelScope.launch {
-            markPostAsNotInterestedUseCase.execute(postParentId).onSuccess {
-                _sideEffects.send(PostDetailsSideEffect.NavigateBackWithForceUpdate)
-            }.onError { exception ->
-                _state.update {
-                    it.copy(globalError = exceptionToMessageMapper.map(exception))
-                }
-            }
-        }
+//        val post = state.value.postUi ?: return
+//        val postParentId = post.parentId
+//        _state.update { it.copy(isBottomSheetVisible = false) }
+//
+//        viewModelScope.launch {
+//            markPostAsNotInterestedUseCase.execute(postParentId).onSuccess {
+//                _sideEffects.send(PostDetailsSideEffect.NavigateBackWithForceUpdate)
+//            }.onError { exception ->
+//                _state.update {
+//                    it.copy(globalError = exceptionToMessageMapper.map(exception))
+//                }
+//            }
+//        }
     }
 
     fun onBlockConfirm() {
@@ -172,13 +172,21 @@ class PostDetailsViewModel(
         val post = state.value.postUi ?: return
         _state.update { it.copy(isContinueLoading = true) }
         viewModelScope.launch {
-//            mockStartGameUseCase(postId)
-            _state.update { it.copy(isContinueLoading = false) }
-            val effect = when (post.content) {
-                is PostContent.Text -> PostDetailsSideEffect.NavigateToDraw(postId)
-                is PostContent.Drawing -> PostDetailsSideEffect.NavigateToDescribeDrawing(postId)
+            joinSessionUseCase.execute(postId, post.nextTimeLimit).onSuccess {
+                _state.update { it.copy(isContinueLoading = false) }
+                val effect = when (post.content) {
+                    is PostContent.Text -> PostDetailsSideEffect.NavigateToDraw(postId)
+                    is PostContent.Drawing -> PostDetailsSideEffect.NavigateToDescribeDrawing(postId)
+                }
+                _sideEffects.send(effect)
+            }.onError { exception ->
+                _state.update {
+                    it.copy(
+                        isContinueLoading = false,
+                        globalError = exceptionToMessageMapper.map(exception)
+                    )
+                }
             }
-            _sideEffects.send(effect)
         }
     }
 

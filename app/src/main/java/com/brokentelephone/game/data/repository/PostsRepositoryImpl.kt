@@ -4,17 +4,15 @@ import android.util.Log
 import com.brokentelephone.game.data.mapper.toAppException
 import com.brokentelephone.game.data.mapper.toMap
 import com.brokentelephone.game.data.mapper.toPost
+import com.brokentelephone.game.domain.model.chain.Chain
+import com.brokentelephone.game.domain.model.chain.ChainStatus
 import com.brokentelephone.game.domain.model.pagination.PostsPage
 import com.brokentelephone.game.domain.model.post.Post
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
 import com.brokentelephone.game.domain.model.sort.DashboardSort
 import com.brokentelephone.game.domain.repository.PostRepository
-import com.brokentelephone.game.domain.storage.ImageStorage
-import com.brokentelephone.game.essentials.exceptions.auth.CannotDeletePostException
-import com.brokentelephone.game.essentials.exceptions.auth.ImageUploadException
 import com.brokentelephone.game.essentials.exceptions.auth.NetworkException
-import com.brokentelephone.game.essentials.exceptions.auth.PostInProgressException
 import com.brokentelephone.game.essentials.exceptions.auth.PostNotFoundException
 import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
 import com.brokentelephone.game.essentials.exceptions.main.AppException
@@ -30,7 +28,6 @@ import kotlinx.coroutines.tasks.await
 
 class PostsRepositoryImpl(
     firestore: FirebaseFirestore,
-    private val imageStorage: ImageStorage,
 ) : FirestoreRepository(firestore), PostRepository {
 
     override val collectionName = "posts"
@@ -54,11 +51,11 @@ class PostsRepositoryImpl(
 
             val hasMore = posts.size >= pageSize
             val excludedAuthorIds = (blockedUsersIds + blockedBy + userId).toSet()
-            val filteredPosts = posts.filter {
-                it.authorId !in excludedAuthorIds &&
-                        it.id !in notInterestedPostIds &&
-                        it.parentId !in notInterestedPostIds
-            }
+            val filteredPosts = posts
+//                .filter {
+//                it.authorId !in excludedAuthorIds &&
+//                        it.id !in notInterestedPostIds
+//            }
 
             val lastDocRef = snapshot.documents.lastOrNull()
             return PostsPage(posts = filteredPosts, lastDocRef = lastDocRef, hasMore = hasMore)
@@ -92,11 +89,11 @@ class PostsRepositoryImpl(
                 .await()
 
             val posts = snapshot.documents.mapNotNull { it.data?.toPost() }
-            val filteredPosts = posts.filter {
-                it.authorId !in excludedAuthorIds &&
-                        it.id !in notInterestedPostIds &&
-                        it.parentId !in notInterestedPostIds
-            }
+            val filteredPosts = posts
+//                .filter {
+//                it.authorId !in excludedAuthorIds &&
+//                        it.id !in notInterestedPostIds
+//            }
 
             val hasMore = posts.size >= pageSize
 
@@ -128,8 +125,11 @@ class PostsRepositoryImpl(
 
     override suspend fun getChainByPostId(postId: String): List<Post> {
         return try {
-            val snapshot = collection.document(postId)
-                .collection(CHAIN_COLLECTION)
+            val post = collection.document(postId).get().await()
+                .data?.toPost() ?: throw PostNotFoundException()
+
+            val snapshot = collection
+                .whereEqualTo(FIELD_CHAIN_ID, post.chainId)
                 .orderBy(FIELD_CREATED_AT, Query.Direction.ASCENDING)
                 .get()
                 .await()
@@ -185,91 +185,6 @@ class PostsRepositoryImpl(
         }
     }
 
-    override suspend fun submitContinuation(
-        postId: String,
-        authorId: String,
-        authorName: String,
-        avatarUrl: String?,
-        content: PostContent,
-    ) {
-        val uploadedContent = when {
-            content is PostContent.Drawing && content.localPath != null -> {
-                val localPath = content.localPath ?: throw ImageUploadException()
-                val imageUrl = try {
-                    imageStorage.uploadImage(localPath)
-                } catch (_: Exception) {
-                    throw ImageUploadException()
-                }
-                PostContent.Drawing(imageUrl = imageUrl)
-            }
-
-            else -> content
-        }
-
-        val postSnapshot = try {
-            collection.document(postId).get().await()
-        } catch (_: FirebaseNetworkException) {
-            throw NetworkException()
-        } catch (e: FirebaseFirestoreException) {
-            Log.d("LOG_TAG", "Error: $e")
-            throw e.toAppException()
-        } catch (e: Exception) {
-            Log.d("LOG_TAG", "Error: $e")
-            throw UnknownAuthException()
-        }
-
-        val post = postSnapshot.data?.toPost() ?: throw PostNotFoundException()
-
-        val now = System.currentTimeMillis()
-        val postRef = collection.document(postId)
-        val childPostRef = postRef.collection(CHAIN_COLLECTION).document()
-        val childPost = Post(
-            id = childPostRef.id,
-            parentId = postId,
-            authorId = authorId,
-            authorName = authorName,
-            avatarUrl = avatarUrl,
-            content = uploadedContent,
-            createdAt = now,
-            updatedAt = now,
-            status = PostStatus.AVAILABLE,
-            generation = post.generation + 1,
-            maxGenerations = post.maxGenerations,
-            textTimeLimit = post.textTimeLimit,
-            drawingTimeLimit = post.drawingTimeLimit,
-        )
-        val updatedPost = post.copy(
-            authorId = authorId,
-            authorName = authorName,
-            avatarUrl = avatarUrl,
-            content = uploadedContent,
-            generation = post.generation + 1,
-            updatedAt = now,
-            status = PostStatus.AVAILABLE
-        )
-        val contributionRef = collection.firestore
-            .collection(USERS_COLLECTION)
-            .document(authorId)
-            .collection(CONTRIBUTIONS_COLLECTION)
-            .document(childPost.id)
-
-        try {
-            collection.firestore.runBatch { batch ->
-                batch.set(postRef, updatedPost.toMap())
-                batch.set(childPostRef, childPost.toMap())
-                batch.set(contributionRef, childPost.toMap())
-            }.await()
-        } catch (_: FirebaseNetworkException) {
-            throw NetworkException()
-        } catch (e: FirebaseFirestoreException) {
-            Log.d("LOG_TAG", "Error: $e")
-            throw e.toAppException()
-        } catch (e: Exception) {
-            Log.d("LOG_TAG", "Error: $e")
-            throw UnknownAuthException()
-        }
-    }
-
     override suspend fun createPost(
         authorId: String,
         authorName: String,
@@ -280,11 +195,12 @@ class PostsRepositoryImpl(
         drawingTimeLimit: Int,
     ) {
         val docRef = collection.document()
+        val chainRef = collection.firestore.collection(CHAINS_COLLECTION).document()
         val now = System.currentTimeMillis()
 
         val post = Post(
             id = docRef.id,
-            parentId = null,
+            chainId = chainRef.id,
             authorId = authorId,
             authorName = authorName,
             avatarUrl = avatarUrl,
@@ -292,13 +208,21 @@ class PostsRepositoryImpl(
             createdAt = now,
             updatedAt = now,
             status = PostStatus.AVAILABLE,
+            sessionId = null,
             generation = 1,
             maxGenerations = maxGenerations,
             textTimeLimit = textTimeLimit,
             drawingTimeLimit = drawingTimeLimit,
         )
-        val chainEntryRef = docRef.collection(CHAIN_COLLECTION).document()
-        val chainEntry = post.copy(id = chainEntryRef.id, parentId = docRef.id)
+        val chain = Chain(
+            id = chainRef.id,
+            createdAt = now,
+            status = ChainStatus.ACTIVE,
+            generation = 1,
+            maxGenerations = maxGenerations,
+            textTimeLimit = textTimeLimit,
+            drawingTimeLimit = drawingTimeLimit,
+        )
         val userPostRef = collection.firestore
             .collection(USERS_COLLECTION)
             .document(authorId)
@@ -308,7 +232,7 @@ class PostsRepositoryImpl(
         try {
             collection.firestore.runBatch { batch ->
                 batch.set(docRef, post.toMap())
-                batch.set(chainEntryRef, chainEntry.toMap())
+                batch.set(chainRef, chain.toMap())
                 batch.set(userPostRef, post.toMap())
             }.await()
         } catch (_: FirebaseNetworkException) {
@@ -324,12 +248,12 @@ class PostsRepositoryImpl(
 
     override suspend fun deletePost(postId: String, parentId: String) {
         try {
-            if (postId == parentId) {
-                val postDoc = collection.document(postId).get().await()
-                deleteRootPost(postId, postDoc)
-            } else {
-                deleteContinuation(postId, rootPostId = parentId)
-            }
+//            if (postId == parentId) {
+//                val postDoc = collection.document(postId).get().await()
+//                deleteRootPost(postId, postDoc)
+//            } else {
+//                deleteContinuation(postId, rootPostId = parentId)
+//            }
         } catch (e: AppException) {
             throw e
         } catch (_: FirebaseNetworkException) {
@@ -342,84 +266,84 @@ class PostsRepositoryImpl(
     }
 
     private suspend fun deleteRootPost(postId: String, postDoc: DocumentSnapshot) {
-        val post = postDoc.data?.toPost() ?: throw PostNotFoundException()
-
-        if (post.status == PostStatus.IN_PROGRESS) throw PostInProgressException()
-
-        val chainSnapshot = collection.document(postId).collection(CHAIN_COLLECTION).get().await()
-        val chainCount = chainSnapshot.size()
-        val canDelete = chainCount == 1 || post.generation != post.maxGenerations
-        if (!canDelete) throw CannotDeletePostException()
-
-        val userPostRef = collection.firestore
-            .collection(USERS_COLLECTION)
-            .document(post.authorId)
-            .collection(USER_POSTS_COLLECTION)
-            .document(postId)
-
-        collection.firestore.runBatch { batch ->
-            batch.delete(collection.document(postId))
-            batch.delete(userPostRef)
-            chainSnapshot.documents.forEach { batch.delete(it.reference) }
-        }.await()
+//        val post = postDoc.data?.toPost() ?: throw PostNotFoundException()
+//
+//        if (post.status == PostStatus.IN_PROGRESS) throw PostInProgressException()
+//
+//        val chainSnapshot = collection.document(postId).collection(CHAIN_COLLECTION).get().await()
+//        val chainCount = chainSnapshot.size()
+//        val canDelete = chainCount == 1 || post.generation != post.maxGenerations
+//        if (!canDelete) throw CannotDeletePostException()
+//
+//        val userPostRef = collection.firestore
+//            .collection(USERS_COLLECTION)
+//            .document(post.authorId)
+//            .collection(USER_POSTS_COLLECTION)
+//            .document(postId)
+//
+//        collection.firestore.runBatch { batch ->
+//            batch.delete(collection.document(postId))
+//            batch.delete(userPostRef)
+//            chainSnapshot.documents.forEach { batch.delete(it.reference) }
+//        }.await()
     }
 
     private suspend fun deleteContinuation(postId: String, rootPostId: String) {
-
-        val chainEntryDoc = collection.document(rootPostId)
-            .collection(CHAIN_COLLECTION)
-            .whereEqualTo(FIELD_ID, postId)
-            .limit(1)
-            .get()
-            .await()
-            .documents
-            .firstOrNull() ?: throw PostNotFoundException()
-
-        val chainEntry = chainEntryDoc.data?.toPost() ?: throw PostNotFoundException()
-
-        val rootPost = collection.document(rootPostId).get().await()
-            .data?.toPost() ?: throw PostNotFoundException()
-
-        if (rootPost.status == PostStatus.IN_PROGRESS) {
-            throw PostInProgressException()
-        }
-        if (chainEntry.generation != rootPost.generation) {
-            throw CannotDeletePostException()
-        }
-        if (chainEntry.generation == rootPost.maxGenerations) {
-            throw CannotDeletePostException()
-        }
-
-        val prevEntry = collection.document(rootPostId)
-            .collection(CHAIN_COLLECTION)
-            .whereEqualTo(FIELD_GENERATION, chainEntry.generation - 1)
-            .limit(1)
-            .get()
-            .await()
-            .documents
-            .firstOrNull()?.data?.toPost() ?: throw PostNotFoundException()
-
-        val rolledBackPost = rootPost.copy(
-            authorId = prevEntry.authorId,
-            authorName = prevEntry.authorName,
-            avatarUrl = prevEntry.avatarUrl,
-            content = prevEntry.content,
-            generation = prevEntry.generation,
-            updatedAt = prevEntry.updatedAt,
-            status = PostStatus.AVAILABLE,
-        )
-
-        val contributionRef = collection.firestore
-            .collection(USERS_COLLECTION)
-            .document(chainEntry.authorId)
-            .collection(CONTRIBUTIONS_COLLECTION)
-            .document(postId)
-
-        collection.firestore.runBatch { batch ->
-            batch.set(collection.document(rootPostId), rolledBackPost.toMap())
-            batch.delete(chainEntryDoc.reference)
-            batch.delete(contributionRef)
-        }.await()
+//
+//        val chainEntryDoc = collection.document(rootPostId)
+//            .collection(CHAIN_COLLECTION)
+//            .whereEqualTo(FIELD_ID, postId)
+//            .limit(1)
+//            .get()
+//            .await()
+//            .documents
+//            .firstOrNull() ?: throw PostNotFoundException()
+//
+//        val chainEntry = chainEntryDoc.data?.toPost() ?: throw PostNotFoundException()
+//
+//        val rootPost = collection.document(rootPostId).get().await()
+//            .data?.toPost() ?: throw PostNotFoundException()
+//
+//        if (rootPost.status == PostStatus.IN_PROGRESS) {
+//            throw PostInProgressException()
+//        }
+//        if (chainEntry.generation != rootPost.generation) {
+//            throw CannotDeletePostException()
+//        }
+//        if (chainEntry.generation == rootPost.maxGenerations) {
+//            throw CannotDeletePostException()
+//        }
+//
+//        val prevEntry = collection.document(rootPostId)
+//            .collection(CHAIN_COLLECTION)
+//            .whereEqualTo(FIELD_GENERATION, chainEntry.generation - 1)
+//            .limit(1)
+//            .get()
+//            .await()
+//            .documents
+//            .firstOrNull()?.data?.toPost() ?: throw PostNotFoundException()
+//
+//        val rolledBackPost = rootPost.copy(
+//            authorId = prevEntry.authorId,
+//            authorName = prevEntry.authorName,
+//            avatarUrl = prevEntry.avatarUrl,
+//            content = prevEntry.content,
+//            generation = prevEntry.generation,
+//            updatedAt = prevEntry.updatedAt,
+//            status = PostStatus.AVAILABLE,
+//        )
+//
+//        val contributionRef = collection.firestore
+//            .collection(USERS_COLLECTION)
+//            .document(chainEntry.authorId)
+//            .collection(CONTRIBUTIONS_COLLECTION)
+//            .document(postId)
+//
+//        collection.firestore.runBatch { batch ->
+//            batch.set(collection.document(rootPostId), rolledBackPost.toMap())
+//            batch.delete(chainEntryDoc.reference)
+//            batch.delete(contributionRef)
+//        }.await()
     }
 
     private fun contributionsCollection(userId: String) = collection.firestore
@@ -444,12 +368,14 @@ class PostsRepositoryImpl(
 
     private companion object {
         const val FIELD_ID = "id"
+        const val FIELD_CHAIN_ID = "chainId"
         const val FIELD_CREATED_AT = "createdAt"
         const val FIELD_UPDATED_AT = "updatedAt"
         const val FIELD_GENERATION = "generation"
         const val FIELD_MAX_GENERATIONS = "maxGenerations"
         const val FIELD_STATUS = "status"
-        const val CHAIN_COLLECTION = "chain"
+        const val CHAINS_COLLECTION = "chains"
+        const val CHAIN_POSTS_COLLECTION = "posts"
         const val USERS_COLLECTION = "users"
         const val CONTRIBUTIONS_COLLECTION = "contributions"
         const val USER_POSTS_COLLECTION = "posts"

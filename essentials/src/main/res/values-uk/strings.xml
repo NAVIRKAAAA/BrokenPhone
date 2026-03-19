@@ -18,6 +18,10 @@
     <string name="error_already_reported">Ти вже скаржився на цей пост.</string>
     <string name="error_post_in_progress">Зараз хтось працює над цим постом — видалити неможливо.</string>
     <string name="error_cannot_delete_post">Не можна видалити цей пост, бо інші вже додали до нього свій внесок.</string>
+    <string name="error_post_unavailable_to_join">Хтось інший вже почав працювати над цим постом. Зачекай трохи — незабаром він знову стане доступним.</string>
+    <string name="error_session_not_found">У тебе немає активної сесії для цього поста. Спробуй почати спочатку.</string>
+    <string name="error_session_expired">Час вийшов! Сесія закінчилась до того, як ти встиг(ла) надіслати.</string>
+    <string name="error_session_validation">Щось пішло не так — ця сесія не відповідає твоєму запиту.</string>
 
     <!-- Firestore errors -->
     <string name="error_firestore_cancelled">Запит було скасовано. Спробуй ще раз.</string>

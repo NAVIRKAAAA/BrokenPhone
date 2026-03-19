@@ -133,7 +133,6 @@ private fun ProfilePostElementDrawingPreview() {
             ProfilePostElement(
                 post = PostUi(
                     id = "1",
-                    parentId = "",
                     authorId = "user-1",
                     authorName = "Alex",
                     avatarUrl = null,
@@ -161,7 +160,6 @@ private fun ProfilePostElementTextPreview() {
             ProfilePostElement(
                 post = PostUi(
                     id = "2",
-                    parentId = "",
                     authorId = "user-1",
                     authorName = "Alex",
                     avatarUrl = null,

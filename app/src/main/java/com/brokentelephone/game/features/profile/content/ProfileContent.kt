@@ -45,8 +45,6 @@ import com.brokentelephone.game.R
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
-import com.brokentelephone.game.data.repository.MockPostRepository
-import com.brokentelephone.game.features.dashboard.model.toUi
 import com.brokentelephone.game.features.profile.model.ProfileState
 import com.brokentelephone.game.features.profile.model.ProfileTab
 import com.brokentelephone.game.features.profile.model.UserUi
@@ -62,7 +60,7 @@ fun ProfileContent(
     onGetStartedClick: () -> Unit,
     onTabSelect: (ProfileTab) -> Unit,
     onScrollDirectionChange: (Boolean) -> Unit,
-    onPostClick: (parentId: String, postId: String) -> Unit,
+    onPostClick: (postId: String) -> Unit,
     onMoreClick: (postId: String) -> Unit,
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
@@ -311,8 +309,8 @@ fun ProfileContentPreview() {
                     email = "",
                     createdAt = 0
                 ),
-                myPosts = MockPostRepository.mockList.map { it.toUi() },
-                myContributions = MockPostRepository.mockList.map { it.toUi() },
+//                myPosts = MockPostRepository.mockList.map { it.toUi() },
+//                myContributions = MockPostRepository.mockList.map { it.toUi() },
                 isAuth = true
             ),
             onEditClick = {},
@@ -321,7 +319,7 @@ fun ProfileContentPreview() {
             onGetStartedClick = {},
             onTabSelect = {},
             onScrollDirectionChange = {},
-            onPostClick = { _, _ -> },
+            onPostClick = { },
             onMoreClick = {},
             onRefresh = {}
         )

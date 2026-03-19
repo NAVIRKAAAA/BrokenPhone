@@ -41,7 +41,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    onPostClick: (parentId: String, postId: String) -> Unit,
+    onPostClick: (postId: String) -> Unit,
     onSignInClick: () -> Unit,
     onGetStartedClick: () -> Unit,
     modifier: Modifier = Modifier,

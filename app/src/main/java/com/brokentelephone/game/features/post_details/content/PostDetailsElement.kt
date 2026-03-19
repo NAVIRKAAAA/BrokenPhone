@@ -32,10 +32,8 @@ import com.brokentelephone.game.core.badge.StrongBadgeElementType
 import com.brokentelephone.game.core.post.DrawPostImage
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.utils.rememberRelativeTime
-import com.brokentelephone.game.data.repository.MockPostRepository
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.features.dashboard.model.PostUi
-import com.brokentelephone.game.features.dashboard.model.toUi
 
 @Composable
 fun PostDetailsElement(
@@ -137,7 +135,7 @@ fun PostDetailsElement(
 @Preview
 @Composable
 fun PostDetailsElementPreview() {
-    val post = MockPostRepository.mockList[1].toUi()
+//    val post = MockPostRepository.mockList[1].toUi()
 
     BrokenTelephoneTheme(
         darkTheme = false
@@ -145,9 +143,9 @@ fun PostDetailsElementPreview() {
         Box(
             modifier = Modifier.background(MaterialTheme.colorScheme.background)
         ) {
-            PostDetailsElement(
-                post = post
-            )
+//            PostDetailsElement(
+//                post = post
+//            )
         }
     }
 }

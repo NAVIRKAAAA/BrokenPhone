@@ -40,17 +40,14 @@ import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
-import com.brokentelephone.game.data.repository.MockPostRepository
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
 import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.features.chain_details.model.ChainDetailsState
-import com.brokentelephone.game.features.chain_details.model.toUi
 import com.brokentelephone.game.features.dashboard.model.PostUi
 import com.brokentelephone.game.features.edit_profile.content.EditProfileTopBar
 import com.brokentelephone.game.features.profile.model.UserUi
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -240,18 +237,18 @@ fun ChainDetailsContentPreview() {
         ChainDetailsContent(
             state = ChainDetailsState(
                 isLoading = true,
-                postParentId = "1",
-                chain = MockPostRepository.chainsMockList.mapIndexed { index, entry ->
-                    entry.toUi(
-                        id = Uuid.random().toString(),
-                        generation = index,
-                        maxGenerations = MockPostRepository.chainsMockList.size,
-                        textTimeLimit = 0,
-                        drawingTimeLimit = 0
-                    ).copy(
-                        authorId = if (index == 1) userId else index.toString()
-                    )
-                }.subList(0, 1),
+//                postParentId = "1",
+//                chain = MockPostRepository.chainsMockList.mapIndexed { index, entry ->
+//                    entry.toUi(
+//                        id = Uuid.random().toString(),
+//                        generation = index,
+//                        maxGenerations = MockPostRepository.chainsMockList.size,
+//                        textTimeLimit = 0,
+//                        drawingTimeLimit = 0
+//                    ).copy(
+//                        authorId = if (index == 1) userId else index.toString()
+//                    )
+//                }.subList(0, 1),
                 userUi = UserUi(
                     id = "1",
                     username = "Alex",
@@ -262,7 +259,6 @@ fun ChainDetailsContentPreview() {
                 ),
                 post = PostUi(
                     id = "1",
-                    parentId = "",
                     authorId = "user-1",
                     authorName = "Alex",
                     avatarUrl = null,

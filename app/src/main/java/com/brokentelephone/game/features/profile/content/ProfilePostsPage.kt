@@ -27,7 +27,7 @@ fun ProfilePostsPage(
     posts: List<PostUi>,
     isLoading: Boolean,
     nestedScrollConnection: NestedScrollConnection,
-    onPostClick: (parentId: String, postId: String) -> Unit,
+    onPostClick: (postId: String) -> Unit,
     onMoreClick: (postId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -63,7 +63,7 @@ fun ProfilePostsPage(
                             modifier = Modifier
                                 .combinedClickable(
                                     onClick = {
-                                        onPostClick(post.parentId, post.id)
+                                        onPostClick(post.id)
                                     },
                                     onLongClick = {
                                         onMoreClick(post.id)

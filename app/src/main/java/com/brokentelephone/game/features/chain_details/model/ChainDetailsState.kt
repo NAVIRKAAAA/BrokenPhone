@@ -4,7 +4,6 @@ import com.brokentelephone.game.features.dashboard.model.PostUi
 import com.brokentelephone.game.features.profile.model.UserUi
 
 data class ChainDetailsState(
-    val postParentId: String = "",
     val postId: String = "",
     val post: PostUi? = null,
     val chain: List<PostUi> = listOf(),

@@ -2,7 +2,6 @@ package com.brokentelephone.game.domain.repository
 
 import com.brokentelephone.game.domain.model.pagination.PostsPage
 import com.brokentelephone.game.domain.model.post.Post
-import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.sort.DashboardSort
 import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.flow.Flow
@@ -36,14 +35,6 @@ interface PostRepository {
     suspend fun loadUserPosts(userId: String): List<Post>
 
     suspend fun loadContributions(userId: String): List<Post>
-
-    suspend fun submitContinuation(
-        postId: String,
-        authorId: String,
-        authorName: String,
-        avatarUrl: String?,
-        content: PostContent,
-    )
 
     suspend fun createPost(
         authorId: String,

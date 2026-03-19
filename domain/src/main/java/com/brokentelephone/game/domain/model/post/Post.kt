@@ -2,7 +2,7 @@ package com.brokentelephone.game.domain.model.post
 
 data class Post(
     val id: String,
-    val parentId: String?,
+    val chainId: String,
     val authorId: String,
     val authorName: String,
     val avatarUrl: String?,
@@ -10,6 +10,7 @@ data class Post(
     val createdAt: Long,
     val updatedAt: Long,
     val status: PostStatus,
+    val sessionId: String?,
 
     // Chain info
     val generation: Int,

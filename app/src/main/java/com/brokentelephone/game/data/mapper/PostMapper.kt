@@ -8,7 +8,7 @@ import com.google.firebase.Timestamp
 
 private object PostFields {
     const val ID = "id"
-    const val PARENT_ID = "parentId"
+    const val CHAIN_ID = "chainId"
     const val AUTHOR_ID = "authorId"
     const val AUTHOR_NAME = "authorName"
     const val AVATAR_URL = "avatarUrl"
@@ -20,11 +20,12 @@ private object PostFields {
     const val MAX_GENERATIONS = "maxGenerations"
     const val TEXT_TIME_LIMIT = "textTimeLimit"
     const val DRAWING_TIME_LIMIT = "drawingTimeLimit"
+    const val SESSION_ID = "sessionId"
 }
 
 fun Post.toMap(): Map<String, Any?> = mapOf(
     PostFields.ID to id,
-    PostFields.PARENT_ID to parentId,
+    PostFields.CHAIN_ID to chainId,
     PostFields.AUTHOR_ID to authorId,
     PostFields.AUTHOR_NAME to authorName,
     PostFields.AVATAR_URL to avatarUrl,
@@ -32,6 +33,7 @@ fun Post.toMap(): Map<String, Any?> = mapOf(
     PostFields.CREATED_AT to createdAt.toTimestamp(),
     PostFields.UPDATED_AT to updatedAt.toTimestamp(),
     PostFields.STATUS to status.name,
+    PostFields.SESSION_ID to sessionId,
     PostFields.GENERATION to generation,
     PostFields.MAX_GENERATIONS to maxGenerations,
     PostFields.TEXT_TIME_LIMIT to textTimeLimit,
@@ -43,7 +45,7 @@ fun Map<String, Any?>.toPost(): Post? {
     return try {
         Post(
             id = this[PostFields.ID] as? String ?: return null,
-            parentId = this[PostFields.PARENT_ID] as? String,
+            chainId = this[PostFields.CHAIN_ID] as? String ?: return null,
             authorId = this[PostFields.AUTHOR_ID] as? String ?: return null,
             authorName = this[PostFields.AUTHOR_NAME] as? String ?: return null,
             avatarUrl = this[PostFields.AVATAR_URL] as? String,
@@ -51,6 +53,7 @@ fun Map<String, Any?>.toPost(): Post? {
             createdAt = (this[PostFields.CREATED_AT] as? Timestamp)?.toMillis() ?: 0L,
             updatedAt = (this[PostFields.UPDATED_AT] as? Timestamp)?.toMillis() ?: 0L,
             status = (this[PostFields.STATUS] as? String)?.let { runCatching { PostStatus.valueOf(it) }.getOrNull() } ?: PostStatus.AVAILABLE,
+            sessionId = this[PostFields.SESSION_ID] as? String,
             generation = (this[PostFields.GENERATION] as? Long)?.toInt() ?: return null,
             maxGenerations = (this[PostFields.MAX_GENERATIONS] as? Long)?.toInt() ?: return null,
             textTimeLimit = (this[PostFields.TEXT_TIME_LIMIT] as? Long)?.toInt() ?: return null,
