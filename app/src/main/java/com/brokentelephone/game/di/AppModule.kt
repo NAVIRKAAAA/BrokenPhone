@@ -73,7 +73,6 @@ import com.brokentelephone.game.features.profile.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.features.profile.use_case.GetMyPostsUseCase
 import com.brokentelephone.game.features.settings.SettingsViewModel
 import com.brokentelephone.game.features.settings.use_case.GetAuthStateUseCase
-import com.brokentelephone.game.features.settings.use_case.GetBlockedUsersCountUseCase
 import com.brokentelephone.game.features.settings.use_case.GetPrivacyPolicyLinkUseCase
 import com.brokentelephone.game.features.settings.use_case.GetTermsOfServiceLinkUseCase
 import com.brokentelephone.game.features.settings.use_case.GetVersionInfoUseCase
@@ -174,7 +173,6 @@ val appModule = module {
     factoryOf(::GetAuthStateUseCase)
     viewModelOf(::SettingsViewModel)
     factoryOf(::DeleteAccountUseCase)
-    factoryOf(::GetBlockedUsersCountUseCase)
     factoryOf(::GetBlockedUsersUseCase)
     factoryOf(::UnblockUserUseCase)
     viewModelOf(::BlockedUsersViewModel)

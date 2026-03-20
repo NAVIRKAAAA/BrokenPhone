@@ -105,6 +105,7 @@
 
     <string name="settings_title">Налаштування</string>
     <string name="settings_item_account">Акаунт</string>
+    <string name="settings_item_active_session">Ігрова сесія</string>
     <string name="settings_item_app_preferences">Параметри додатку</string>
     <string name="settings_item_information_legal">Інформація &amp; Правові документи</string>
     <string name="settings_logout_button">Вийти</string>

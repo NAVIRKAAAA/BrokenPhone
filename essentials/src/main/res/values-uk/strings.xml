@@ -23,7 +23,7 @@
     <string name="error_session_expired">Час вийшов! Сесія закінчилась до того, як ти встиг(ла) надіслати.</string>
     <string name="error_session_validation">Щось пішло не так — ця сесія не відповідає твоєму запиту.</string>
     <string name="error_session_cooldown">Ти нещодавно покинув(ла) цей пост. Спробуй ще раз за кілька хвилин.</string>
-    <string name="error_session_already_active">У тебе вже є активна сесія. Заверши або скасуй її, перш ніж починати нову.</string>
+    <string name="error_session_already_active">У тебе вже є активна сесія. Щоб продовжити або скасувати її, перейди до Профіль → Налаштування → Ігрова сесія.</string>
 
     <!-- Firestore errors -->
     <string name="error_firestore_cancelled">Запит було скасовано. Спробуй ще раз.</string>

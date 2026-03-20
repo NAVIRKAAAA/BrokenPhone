@@ -10,6 +10,8 @@ data class UserUi(
     val avatarUrl: String?,
     val authProvider: AuthProvider = AuthProvider.EMAIL,
     val createdAt: Long,
+    val sessionId: String? = null,
+    val blockedUsersIds: List<String> = listOf()
 )
 
 fun User.toUi() = UserUi(
@@ -19,4 +21,6 @@ fun User.toUi() = UserUi(
     avatarUrl = avatarUrl,
     authProvider = authProvider,
     createdAt = createdAt,
+    sessionId = sessionId,
+    blockedUsersIds = blockedUserIds
 )

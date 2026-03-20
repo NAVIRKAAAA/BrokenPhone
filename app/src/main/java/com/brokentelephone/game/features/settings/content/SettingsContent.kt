@@ -42,6 +42,7 @@ fun SettingsContent(
     onTermsOfServiceClick: () -> Unit = {},
     onPrivacyPolicyClick: () -> Unit = {},
     onBlockedUsersClick: () -> Unit = {},
+    onActiveSessionClick: () -> Unit = {},
 ) {
 
     Column(
@@ -66,9 +67,21 @@ fun SettingsContent(
             )
         }
 
+        val isGameSessionEnabled = state.user?.sessionId != null
+
+        AccountTextInfoItem(
+            name = stringResource(R.string.settings_item_active_session),
+            value = state.sessionFormattedTime,
+            enabled = isGameSessionEnabled,
+            isLoading = state.isSessionLoading,
+            modifier = Modifier
+                .clickable(onClick = onActiveSessionClick, enabled = isGameSessionEnabled)
+                .padding(horizontal = 16.dp),
+        )
+
         AccountTextInfoItem(
             name = stringResource(R.string.account_settings_blocked_users),
-            value = state.blockedUsersCount.toString(),
+            value = "${state.user?.blockedUsersIds?.size ?: 0}",
             modifier = Modifier
                 .clickable(onClick = onBlockedUsersClick)
                 .padding(horizontal = 16.dp),
@@ -126,7 +139,11 @@ fun SettingsContent(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp).weight(1f))
+        Spacer(
+            modifier = Modifier
+                .height(16.dp)
+                .weight(1f)
+        )
 
         Text(
             text = state.versionInfo,
@@ -136,7 +153,7 @@ fun SettingsContent(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = modifier
         )
-        
+
         Spacer(modifier = Modifier.height(40.dp))
 
         Spacer(modifier = Modifier.navigationBarsPadding())
@@ -151,6 +168,7 @@ fun SettingsContentPreview() {
         darkTheme = false
     ) {
         SettingsContent(
-            state = SettingsState(versionInfo = "1.0.0 (1)", isAuth = true))
+            state = SettingsState(versionInfo = "1.0.0 (1)", isAuth = true)
+        )
     }
 }

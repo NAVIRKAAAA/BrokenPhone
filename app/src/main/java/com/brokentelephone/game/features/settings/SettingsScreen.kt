@@ -16,6 +16,7 @@ import com.brokentelephone.game.core.dialog.ErrorDialog
 import com.brokentelephone.game.core.utils.isPostNotificationsGranted
 import com.brokentelephone.game.features.settings.content.SettingsContent
 import com.brokentelephone.game.features.settings.model.SettingsSideEffect
+import com.brokentelephone.game.navigation.routes.Routes
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -25,6 +26,8 @@ fun SettingsScreen(
     onNotificationsClick: () -> Unit,
     onLanguageClick: () -> Unit,
     onThemeClick: () -> Unit,
+    onNavigateToDraw: (Routes.Draw) -> Unit,
+    onNavigateToDescribeDrawing: (Routes.DescribeDrawing) -> Unit,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
     onBlockedUsersClick: () -> Unit,
@@ -42,6 +45,8 @@ fun SettingsScreen(
             when (effect) {
                 SettingsSideEffect.NavigateToWelcome -> onNavigateToWelcome()
                 is SettingsSideEffect.OpenLink -> context.openCustomTab(effect.url)
+                is SettingsSideEffect.NavigateToDraw -> onNavigateToDraw(effect.route)
+                is SettingsSideEffect.NavigateToDescribeDrawing -> onNavigateToDescribeDrawing(effect.route)
             }
         }
     }
@@ -57,6 +62,7 @@ fun SettingsScreen(
         onTermsOfServiceClick = viewModel::onTermsOfServiceClick,
         onPrivacyPolicyClick = viewModel::onPrivacyPolicyClick,
         onBlockedUsersClick = onBlockedUsersClick,
+        onActiveSessionClick = viewModel::onActiveSessionClick,
         modifier = modifier,
     )
 

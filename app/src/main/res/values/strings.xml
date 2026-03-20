@@ -111,6 +111,7 @@
     <!-- Settings -->
     <string name="settings_title">Settings</string>
     <string name="settings_item_account">Account Settings</string>
+    <string name="settings_item_active_session">Game Session</string>
     <string name="settings_item_app_preferences">App Preferences</string>
     <string name="settings_item_information_legal">Information &amp; Legal</string>
     <string name="settings_logout_button">Log Out</string>

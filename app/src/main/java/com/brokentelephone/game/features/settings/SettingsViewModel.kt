@@ -4,25 +4,34 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
+import com.brokentelephone.game.domain.model.post.PostContent
+import com.brokentelephone.game.domain.model.session.GameSession
+import com.brokentelephone.game.domain.model.session.GameSessionStatus
 import com.brokentelephone.game.domain.user.AuthState
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.app_preferences.use_case.GetLanguageUseCase
 import com.brokentelephone.game.features.app_preferences.use_case.GetThemeUseCase
+import com.brokentelephone.game.features.post_details.use_case.GetPostByIdUseCase
+import com.brokentelephone.game.features.profile.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.features.settings.model.SettingsSideEffect
 import com.brokentelephone.game.features.settings.model.SettingsState
 import com.brokentelephone.game.features.settings.use_case.GetAuthStateUseCase
-import com.brokentelephone.game.features.settings.use_case.GetBlockedUsersCountUseCase
 import com.brokentelephone.game.features.settings.use_case.GetPrivacyPolicyLinkUseCase
 import com.brokentelephone.game.features.settings.use_case.GetTermsOfServiceLinkUseCase
 import com.brokentelephone.game.features.settings.use_case.GetVersionInfoUseCase
 import com.brokentelephone.game.features.settings.use_case.LogoutUseCase
+import com.brokentelephone.game.main.use_case.GetActiveSessionUseCase
+import com.brokentelephone.game.navigation.routes.Routes
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
@@ -34,7 +43,9 @@ class SettingsViewModel(
     private val getThemeUseCase: GetThemeUseCase,
     private val getTermsOfServiceLinkUseCase: GetTermsOfServiceLinkUseCase,
     private val getPrivacyPolicyLinkUseCase: GetPrivacyPolicyLinkUseCase,
-    private val getBlockedUsersCountUseCase: GetBlockedUsersCountUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val getActiveSessionUseCase: GetActiveSessionUseCase,
+    private val getPostByIdUseCase: GetPostByIdUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SettingsState())
@@ -43,24 +54,62 @@ class SettingsViewModel(
     private val _sideEffects = Channel<SettingsSideEffect>(Channel.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
 
+    private var sessionTimerJob: Job? = null
+
     init {
-        getBlockedUsersCountUseCase()
-            .onEach { count -> _state.update { it.copy(blockedUsersCount = count) } }
-            .launchIn(viewModelScope)
-
+        observeCurrentUser()
         _state.update { it.copy(versionInfo = getVersionInfoUseCase()) }
-
         getAuthStateUseCase()
             .onEach { authState -> _state.update { it.copy(isAuth = authState.isAuth() || authState is AuthState.Guest) } }
             .launchIn(viewModelScope)
-
         getLanguageUseCase()
             .onEach { language -> _state.update { it.copy(language = language) } }
             .launchIn(viewModelScope)
-
         getThemeUseCase()
             .onEach { theme -> _state.update { it.copy(theme = theme) } }
             .launchIn(viewModelScope)
+    }
+
+    private fun observeCurrentUser() {
+        getCurrentUserUseCase()
+            .onEach { user ->
+                _state.update { it.copy(user = user) }
+                val sessionId = user?.sessionId
+                if (sessionId != null) {
+                    loadActiveSession(sessionId)
+                } else {
+                    sessionTimerJob?.cancel()
+                    _state.update { it.copy(sessionRemainingSeconds = 0) }
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun loadActiveSession(sessionId: String) {
+        viewModelScope.launch {
+            getActiveSessionUseCase.execute(sessionId).onSuccess { session ->
+                _state.update { it.copy(session = session) }
+
+                if (session.status == GameSessionStatus.ACTIVE) {
+                    startSessionTimer(session)
+                } else {
+                    sessionTimerJob?.cancel()
+                    _state.update { it.copy(sessionRemainingSeconds = 0) }
+                }
+            }
+        }
+    }
+
+    private fun startSessionTimer(session: GameSession) {
+        sessionTimerJob?.cancel()
+        sessionTimerJob = viewModelScope.launch {
+            while (isActive) {
+                val remaining = ((session.expiresAt - System.currentTimeMillis()) / 1000).toInt()
+                _state.update { it.copy(sessionRemainingSeconds = remaining.coerceAtLeast(0)) }
+                if (remaining <= 0) break
+                delay(1000)
+            }
+        }
     }
 
     fun onTermsOfServiceClick() {
@@ -81,6 +130,23 @@ class SettingsViewModel(
 
     fun onGlobalErrorDismissed() {
         _state.update { it.copy(globalError = null) }
+    }
+
+    fun onActiveSessionClick() {
+        val session = state.value.session ?: return
+        _state.update { it.copy(isSessionLoading = true) }
+        viewModelScope.launch {
+            getPostByIdUseCase.executeWithResult(session.postId).onSuccess { post ->
+                val effect = when (post.content) {
+                    is PostContent.Text -> SettingsSideEffect.NavigateToDraw(Routes.Draw(session.id))
+                    is PostContent.Drawing -> SettingsSideEffect.NavigateToDescribeDrawing(Routes.DescribeDrawing(session.id))
+                }
+                _sideEffects.send(effect)
+            }.onError { error ->
+                _state.update { it.copy(globalError = exceptionToMessageMapper.map(error)) }
+            }
+            _state.update { it.copy(isSessionLoading = false) }
+        }
     }
 
     fun onLogoutClick() {

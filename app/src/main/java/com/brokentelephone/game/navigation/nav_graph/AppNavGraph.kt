@@ -607,6 +607,12 @@ fun AppNavGraph(
                 onBlockedUsersClick = {
                     navController.navigateSingle(Routes.BlockedUsers)
                 },
+                onNavigateToDraw = { route ->
+                    navController.navigateSingle(route)
+                },
+                onNavigateToDescribeDrawing = { route ->
+                    navController.navigateSingle(route)
+                },
             )
         }
 

@@ -106,7 +106,7 @@ fun DashboardContent(
                             items = state.posts,
                             key = { _, item -> item.id }
                         ) { index, postUi ->
-                            Column(modifier = Modifier.animateItem()) {
+                            Column(modifier = Modifier) {
                                 Column(
                                     modifier = Modifier.combinedClickable(
                                         onClick = { onPostClick(postUi.id) },
