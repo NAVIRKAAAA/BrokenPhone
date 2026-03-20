@@ -3,6 +3,7 @@ package com.brokentelephone.game.features.dashboard.content
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.brokentelephone.game.core.banner.ActiveSessionBanner
 import com.brokentelephone.game.core.pagination.LoadMoreIndicator
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.shimmer.ShimmerContent
@@ -147,25 +149,39 @@ const val LOAD_MORE_THRESHOLD = 3
 @Preview
 @Composable
 fun DashboardContentPreview() {
-    BrokenTelephoneTheme(darkTheme = false) {
-        DashboardContent(
-            state = DashboardState(
-                user = UserUi(
-                    id = "user_1",
-                    username = "Alex",
-                    email = "",
-                    avatarUrl = "",
-                    createdAt = 0
+    BrokenTelephoneTheme(darkTheme = true) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            DashboardContent(
+                state = DashboardState(
+                    user = UserUi(
+                        id = "user_1",
+                        username = "Alex",
+                        email = "",
+                        avatarUrl = "",
+                        createdAt = 0
+                    ),
+                    isInitialLoading = true
                 ),
-                isInitialLoading = true
-            ),
-            onPostClick = {},
-            onMoreClick = {},
-            onSortSelected = {},
-            onTitleClick = {},
-            onRefresh = {},
-            onLoadMore = {},
-            listState = rememberLazyListState(),
-        )
+                onPostClick = {},
+                onMoreClick = {},
+                onSortSelected = {},
+                onTitleClick = {},
+                onRefresh = {},
+                onLoadMore = {},
+                listState = rememberLazyListState(),
+            )
+
+            ActiveSessionBanner(
+                visible = true,
+                formattedTime = "00:29",
+                progress = 0.65f,
+                onContinueClick = {},
+                onDismiss = {},
+                isLoading = false,
+                modifier = Modifier.align(Alignment.TopCenter),
+            )
+        }
     }
 }

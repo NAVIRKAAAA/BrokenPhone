@@ -174,11 +174,11 @@ fun AppNavGraph(
 
                     navController.safePopBackStack()
                 },
-                onDrawContinue = { postId ->
-                    navController.navigateSingle(Routes.Draw(postId = postId))
+                onDrawContinue = { sessionId ->
+                    navController.navigateSingle(Routes.Draw(sessionId = sessionId))
                 },
-                onDescribeDrawingContinue = { postId ->
-                    navController.navigateSingle(Routes.DescribeDrawing(postId = postId))
+                onDescribeDrawingContinue = { sessionId ->
+                    navController.navigateSingle(Routes.DescribeDrawing(sessionId = sessionId))
                 },
                 onViewHistoryClick = { postId ->
                     navController.navigateSingle(Routes.ChainDetails(postId = postId))
@@ -202,7 +202,7 @@ fun AppNavGraph(
         ) { backStackEntry ->
             val route = backStackEntry.toRoute<Routes.Draw>()
             DrawScreen(
-                postId = route.postId,
+                sessionId = route.sessionId,
                 onBackClick = navController::safePopBackStack,
                 onPostSubmitted = {
                     navController.getBackStackEntry(Routes.Dashboard)
@@ -229,7 +229,7 @@ fun AppNavGraph(
         ) { backStackEntry ->
             val route = backStackEntry.toRoute<Routes.DescribeDrawing>()
             DescribeDrawingScreen(
-                postId = route.postId,
+                sessionId = route.sessionId,
                 onBackClick = navController::safePopBackStack,
                 onPostSubmitted = {
                     navController.getBackStackEntry(Routes.Dashboard)

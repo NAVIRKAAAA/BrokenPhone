@@ -26,6 +26,7 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.brokentelephone.game.R
+import com.brokentelephone.game.core.banner.ActiveSessionBanner
 import com.brokentelephone.game.core.dialog.ConfirmDialog
 import com.brokentelephone.game.core.locale.LocalizedContextWrapper
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
@@ -34,7 +35,9 @@ import com.brokentelephone.game.domain.model.settings.AppTheme
 import com.brokentelephone.game.domain.model.settings.Language
 import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBar
 import com.brokentelephone.game.navigation.nav_graph.AppNavGraph
+import com.brokentelephone.game.navigation.utils.navigateSingle
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
@@ -61,6 +64,19 @@ class MainActivity : ComponentActivity() {
         setContent {
             val state by mainViewModel.state.collectAsStateWithLifecycle()
             val navController = rememberNavController()
+
+            LaunchedEffect(Unit) {
+                mainViewModel.sideEffects.collectLatest { effect ->
+                    when (effect) {
+                        is MainSideEffect.NavigateToDraw -> {
+                            navController.navigateSingle(effect.route)
+                        }
+                        is MainSideEffect.NavigateToDescribeDrawing -> {
+                            navController.navigateSingle(effect.route)
+                        }
+                    }
+                }
+            }
 
             val isDarkTheme = when (state.theme) {
                 AppTheme.DARK -> true
@@ -116,6 +132,16 @@ class MainActivity : ComponentActivity() {
                                     .navigationBarsPadding()
                                     .padding(bottom = 16.dp)
                                     .fillMaxWidth(0.85f)
+                            )
+
+                            ActiveSessionBanner(
+                                visible = state.isBannerVisible,
+                                formattedTime = state.bannerFormattedTime,
+                                progress = state.bannerProgress,
+                                isLoading = state.isBannerLoading,
+                                onContinueClick = mainViewModel::onBannerContinueClick,
+                                onDismiss = mainViewModel::onBannerDismissed,
+                                modifier = Modifier.align(Alignment.TopCenter),
                             )
                         }
                     }

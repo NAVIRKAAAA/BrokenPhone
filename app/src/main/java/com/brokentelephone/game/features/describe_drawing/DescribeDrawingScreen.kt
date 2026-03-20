@@ -21,11 +21,11 @@ import org.koin.core.parameter.parametersOf
 
 @Composable
 fun DescribeDrawingScreen(
-    postId: String,
+    sessionId: String,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
     onPostSubmitted: () -> Unit = {},
-    viewModel: DescribeDrawingViewModel = koinViewModel { parametersOf(postId) },
+    viewModel: DescribeDrawingViewModel = koinViewModel { parametersOf(sessionId) },
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 

@@ -2,7 +2,6 @@ package com.brokentelephone.game.features.post_details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.brokentelephone.game.core.timer.CountdownTimer
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.model.post.PostContent
@@ -30,6 +29,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class PostDetailsViewModel(
@@ -42,7 +42,6 @@ class PostDetailsViewModel(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
     private val joinSessionUseCase: JoinSessionUseCase,
-    private val countdownTimer: CountdownTimer,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PostDetailsState())
@@ -63,23 +62,16 @@ class PostDetailsViewModel(
         loadPost()
     }
 
-    private fun startCooldownTimer(remainingSeconds: Int) {
-        cooldownTimerJob?.cancel()
-        cooldownTimerJob = countdownTimer.start(remainingSeconds)
-            .onEach { remaining ->
-                _state.update { it.copy(cooldownRemainingSeconds = remaining) }
-            }
-            .launchIn(viewModelScope)
-    }
-
     private fun updateCooldown(postUi: PostUi) {
         val userId = _state.value.userUi?.id ?: return
-        val remaining = (postUi.sessionsHistory.cooldownRemainingMs(userId) / 1000).toInt()
-        if (remaining > 0) {
-            startCooldownTimer(remaining)
-        } else {
-            cooldownTimerJob?.cancel()
-            _state.update { it.copy(cooldownRemainingSeconds = 0) }
+        cooldownTimerJob?.cancel()
+        cooldownTimerJob = viewModelScope.launch {
+            while (isActive) {
+                val remaining = (postUi.sessionsHistory.cooldownRemainingMs(userId) / 1000).toInt()
+                _state.update { it.copy(cooldownRemainingSeconds = remaining) }
+                if (remaining <= 0) break
+                delay(1000)
+            }
         }
     }
 
@@ -200,11 +192,11 @@ class PostDetailsViewModel(
         val post = state.value.postUi ?: return
         _state.update { it.copy(isContinueLoading = true) }
         viewModelScope.launch {
-            joinSessionUseCase.execute(postId, post.nextTimeLimit).onSuccess {
+            joinSessionUseCase.execute(postId, post.nextTimeLimit).onSuccess { session ->
                 _state.update { it.copy(isContinueLoading = false) }
                 val effect = when (post.content) {
-                    is PostContent.Text -> PostDetailsSideEffect.NavigateToDraw(postId)
-                    is PostContent.Drawing -> PostDetailsSideEffect.NavigateToDescribeDrawing(postId)
+                    is PostContent.Text -> PostDetailsSideEffect.NavigateToDraw(session.id)
+                    is PostContent.Drawing -> PostDetailsSideEffect.NavigateToDescribeDrawing(session.id)
                 }
                 _sideEffects.send(effect)
             }.onError { exception ->

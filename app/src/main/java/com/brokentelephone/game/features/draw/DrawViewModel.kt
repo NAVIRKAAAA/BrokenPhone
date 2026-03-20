@@ -7,7 +7,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.createBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.brokentelephone.game.core.timer.CountdownTimer
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
@@ -19,27 +18,25 @@ import com.brokentelephone.game.features.draw.use_case.CancelSessionUseCase
 import com.brokentelephone.game.features.draw.use_case.SubmitDrawingUseCase
 import com.brokentelephone.game.features.draw.utils.DrawingBitmapSaver
 import com.brokentelephone.game.features.post_details.use_case.GetPostByIdUseCase
+import com.brokentelephone.game.main.use_case.GetActiveSessionUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 class DrawViewModel(
-    private val postId: String,
+    private val sessionId: String,
     private val getPostByIdUseCase: GetPostByIdUseCase,
     private val drawingBitmapSaver: DrawingBitmapSaver,
     private val submitDrawingUseCase: SubmitDrawingUseCase,
     private val cancelSessionUseCase: CancelSessionUseCase,
-    private val countdownTimer: CountdownTimer,
+    private val getActiveSessionUseCase: GetActiveSessionUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
 
@@ -52,26 +49,39 @@ class DrawViewModel(
     private var timerJob: Job? = null
 
     init {
-        viewModelScope.launch { loadPost() }
+        loadinInitialData()
     }
 
-    private suspend fun loadPost() {
-        val postUi = getPostByIdUseCase(postId)
-            .catch { e ->
-                _state.update {
-                    it.copy(
-                        globalError = exceptionToMessageMapper.map(e as Exception),
-                    )
+    private fun loadinInitialData() {
+        viewModelScope.launch {
+            getActiveSessionUseCase.execute().onSuccess { session ->
+                _state.update { it.copy(session = session) }
+
+                getPostByIdUseCase.executeWithResult(session.postId).onSuccess { postUi ->
+                    _state.update { it.copy(postUi = postUi) }
+                    startTimer()
+                }.onError { e ->
+                    _state.update {
+                        it.copy(globalError = exceptionToMessageMapper.map(e))
+                    }
                 }
-            }.firstOrNull() ?: return
 
-        _state.update { it.copy(postUi = postUi) }
-        startTimer(postUi.nextTimeLimit)
+            }.onError { e ->
+                _state.update {
+                    it.copy(globalError = exceptionToMessageMapper.map(e))
+                }
+            }
+        }
     }
 
-    private fun startTimer(timeLimit: Int) {
-        timerJob = countdownTimer.start(timeLimit)
-            .onEach { remaining ->
+    private fun startTimer() {
+        val sessionExpiresAt = state.value.session?.expiresAt ?: 0L
+
+        timerJob?.cancel()
+        timerJob = viewModelScope.launch {
+            while (isActive) {
+                val remaining = ((sessionExpiresAt - System.currentTimeMillis()) / 1000).toInt()
+                    .coerceAtLeast(0)
                 _state.update { it.copy(remainingSeconds = remaining) }
                 if (remaining == 0) {
                     _state.update {
@@ -82,9 +92,11 @@ class DrawViewModel(
                             showPostConfirmDialog = false
                         )
                     }
+                    break
                 }
+                delay(1000)
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     override fun onCleared() {
@@ -181,7 +193,9 @@ class DrawViewModel(
     private fun onTimesUpGotIt() {
         _state.update { it.copy(isCancelling = true) }
         viewModelScope.launch {
-            cancelSessionUseCase.execute(postId).onSuccess {
+            val postId = state.value.postUi?.id ?: return@launch
+
+            cancelSessionUseCase.execute(sessionId, postId).onSuccess {
                 _state.update { it.copy(isCancelling = false, showTimesUpDialog = false) }
                 _sideEffects.send(DrawSideEffect.NavigateBack)
             }.onError {
@@ -198,8 +212,9 @@ class DrawViewModel(
         timerJob?.cancel()
         _state.update { it.copy(isCancelling = true) }
         viewModelScope.launch {
+            val postId = state.value.postUi?.id ?: return@launch
 
-            cancelSessionUseCase.execute(postId).onSuccess {
+            cancelSessionUseCase.execute(sessionId, postId).onSuccess {
                 _state.update { it.copy(isCancelling = false, showDiscardDialog = false) }
                 _sideEffects.send(DrawSideEffect.NavigateBack)
             }.onError {
@@ -215,27 +230,22 @@ class DrawViewModel(
     private fun onPostConfirm() {
         val currentState = state.value
         val canvasSize = currentState.canvasSize ?: return
+        val session = currentState.session ?: return
+
         timerJob?.cancel()
         _state.update { it.copy(showPostConfirmDialog = false, isPosting = true) }
 
         viewModelScope.launch {
             val bitmap = renderToBitmap(currentState.paths, canvasSize.width, canvasSize.height)
             val localPath = drawingBitmapSaver.save(bitmap)
-            submitDrawingUseCase.execute(postId, localPath).onSuccess {
+            submitDrawingUseCase.execute(session.postId, localPath).onSuccess {
                 _state.update { it.copy(isPosting = false) }
 
                 delay(150)
 
                 _sideEffects.send(DrawSideEffect.PostCreated(localPath))
-            }.onError { error ->
-                val remaining = state.value.remainingSeconds
-                _state.update {
-                    it.copy(
-                        isPosting = false,
-                        globalError = exceptionToMessageMapper.map(error),
-                    )
-                }
-                startTimer(remaining)
+            }.onError { _ ->
+                // HANDLE
             }
         }
     }

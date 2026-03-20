@@ -1,9 +1,11 @@
 package com.brokentelephone.game.features.describe_drawing.model
 
+import com.brokentelephone.game.domain.model.session.GameSession
 import com.brokentelephone.game.features.dashboard.model.PostUi
 
 data class DescribeDrawingState(
     val postUi: PostUi? = null,
+    val session: GameSession? = null,
     val text: String = "",
     val showDiscardDialog: Boolean = false,
     val isCancelling: Boolean = false,

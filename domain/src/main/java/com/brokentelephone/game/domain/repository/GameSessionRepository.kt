@@ -21,4 +21,6 @@ interface GameSessionRepository {
         content: PostContent,
     )
 
+    // continueSession(sessionId: String)
+
 }

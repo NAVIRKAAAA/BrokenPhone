@@ -113,3 +113,8 @@ class SessionCooldownException : AppException("Session cooldown active — user 
     override fun getLocalizedMessage(stringProvider: StringProvider): String =
         stringProvider.getString(R.string.error_session_cooldown)
 }
+
+class UserAlreadyInSessionException : AppException("User already has an active session") {
+    override fun getLocalizedMessage(stringProvider: StringProvider): String =
+        stringProvider.getString(R.string.error_session_already_active)
+}

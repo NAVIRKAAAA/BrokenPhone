@@ -29,8 +29,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostDetailsScreen(
-    onDrawContinue: (postId: String) -> Unit,
-    onDescribeDrawingContinue: (postId: String) -> Unit,
+    onDrawContinue: (sessionId: String) -> Unit,
+    onDescribeDrawingContinue: (sessionId: String) -> Unit,
     onViewHistoryClick: (postId: String) -> Unit,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
@@ -54,8 +54,8 @@ fun PostDetailsScreen(
                     Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
                 }
                 PostDetailsSideEffect.NavigateBack -> onBackClick()
-                is PostDetailsSideEffect.NavigateToDraw -> onDrawContinue(effect.postId)
-                is PostDetailsSideEffect.NavigateToDescribeDrawing -> onDescribeDrawingContinue(effect.postId)
+                is PostDetailsSideEffect.NavigateToDraw -> onDrawContinue(effect.sessionId)
+                is PostDetailsSideEffect.NavigateToDescribeDrawing -> onDescribeDrawingContinue(effect.sessionId)
                 PostDetailsSideEffect.NavigateBackWithForceUpdate -> navigateBackWithForceUpdate()
             }
         }

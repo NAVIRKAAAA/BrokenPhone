@@ -2,10 +2,12 @@ package com.brokentelephone.game.features.draw.model
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntSize
+import com.brokentelephone.game.domain.model.session.GameSession
 import com.brokentelephone.game.features.dashboard.model.PostUi
 
 data class DrawState(
     val postUi: PostUi? = null,
+    val session: GameSession? = null,
     val selectedColor: Color = Color.Black,
     val selectedBrushSize: BrushSize = BrushSize.MEDIUM,
     val currentPath: PathData? = null,

@@ -1,5 +1,6 @@
 package com.brokentelephone.game.data.repository
 
+import android.util.Log
 import com.brokentelephone.game.data.mapper.toAppException
 import com.brokentelephone.game.data.mapper.toGameSession
 import com.brokentelephone.game.data.mapper.toMap
@@ -22,6 +23,8 @@ import com.brokentelephone.game.essentials.exceptions.auth.SessionExpiredExcepti
 import com.brokentelephone.game.essentials.exceptions.auth.SessionNotFoundException
 import com.brokentelephone.game.essentials.exceptions.auth.SessionValidationException
 import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
+import com.brokentelephone.game.essentials.exceptions.auth.UserAlreadyInSessionException
+import com.brokentelephone.game.essentials.exceptions.main.AppException
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -62,6 +65,9 @@ class GameSessionRepositoryImpl(
 
             val session = collection.firestore.runTransaction { transaction ->
                 val post = transaction.get(postRef).data?.toPost() ?: throw PostNotFoundException()
+                val user = transaction.get(userRef).data ?: throw PostNotFoundException()
+
+                if (user[FIELD_SESSION_ID] != null) throw UserAlreadyInSessionException()
 
                 if (post.status != PostStatus.AVAILABLE) throw PostUnavailableToJoinException()
 
@@ -100,11 +106,14 @@ class GameSessionRepositoryImpl(
             }.await()
 
             return session
+        } catch (e: AppException) {
+            throw e
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
         } catch (e: FirebaseFirestoreException) {
             throw e.toAppException()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "joinSession: $e")
             throw UnknownAuthException()
         }
     }
@@ -139,6 +148,8 @@ class GameSessionRepositoryImpl(
                 )
                 transaction.update(userRef, FIELD_SESSION_ID, null)
             }.await()
+        } catch (e: AppException) {
+            throw e
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
         } catch (e: FirebaseFirestoreException) {
@@ -221,7 +232,9 @@ class GameSessionRepositoryImpl(
                 transaction.set(newPostRef, newPost.toMap())
                 transaction.set(contributionRef, newPost.toMap())
             }.await()
-        } catch (_: FirebaseNetworkException) {
+        } catch (e: AppException) {
+            throw e
+        }  catch (_: FirebaseNetworkException) {
             throw NetworkException()
         } catch (e: FirebaseFirestoreException) {
             throw e.toAppException()

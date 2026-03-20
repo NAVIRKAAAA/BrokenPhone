@@ -4,20 +4,29 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
+import com.brokentelephone.game.domain.model.post.PostContent
+import com.brokentelephone.game.domain.model.session.GameSession
+import com.brokentelephone.game.domain.model.session.GameSessionStatus
 import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.essentials.exceptions.auth.SessionDataException
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.app_preferences.use_case.GetLanguageUseCase
 import com.brokentelephone.game.features.app_preferences.use_case.GetThemeUseCase
 import com.brokentelephone.game.features.language.use_case.InitializeLanguageUseCase
+import com.brokentelephone.game.features.post_details.use_case.GetPostByIdUseCase
+import com.brokentelephone.game.main.use_case.GetActiveSessionUseCase
 import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
 import com.brokentelephone.game.navigation.routes.Routes
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class MainViewModel(
@@ -25,11 +34,18 @@ class MainViewModel(
     private val getLanguageUseCase: GetLanguageUseCase,
     private val initializeLanguageUseCase: InitializeLanguageUseCase,
     private val initializeSessionUseCase: InitializeSessionUseCase,
+    private val getActiveSessionUseCase: GetActiveSessionUseCase,
+    private val getPostByIdUseCase: GetPostByIdUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MainState())
     val state = _state.asStateFlow()
+
+    private val _sideEffects = Channel<MainSideEffect>(Channel.BUFFERED)
+    val sideEffects = _sideEffects.receiveAsFlow()
+
+    private var bannerTimerJob: Job? = null
 
     init {
         observeTheme()
@@ -53,12 +69,15 @@ class MainViewModel(
         _state.update { it.copy(isSessionLoading = true) }
         viewModelScope.launch {
             initializeSessionUseCase.execute().onSuccess { authState ->
-                val (destination, pendingRoutes) = when (authState.getUserOrNull()?.onboardingStep) {
+                val user = authState.getUserOrNull()
+
+                val (destination, pendingRoutes) = when (user?.onboardingStep) {
                     null -> Routes.Welcome to emptyList()
                     OnboardingStep.CHOOSE_AVATAR -> Routes.ChooseAvatar to emptyList()
                     OnboardingStep.CHOOSE_USERNAME -> Routes.ChooseAvatar to listOf(Routes.ChooseUsername)
                     OnboardingStep.COMPLETED -> Routes.Dashboard to emptyList()
                 }
+
                 _state.update {
                     it.copy(
                         sessionDataError = null,
@@ -66,6 +85,12 @@ class MainViewModel(
                         startDestination = destination,
                         pendingRoutes = pendingRoutes
                     )
+                }
+
+                val sessionId = user?.sessionId
+
+                if (user != null && user.onboardingStep == OnboardingStep.COMPLETED && sessionId != null) {
+                    setActiveSession(sessionId)
                 }
             }.onError { error ->
                 _state.update {
@@ -84,6 +109,65 @@ class MainViewModel(
                         )
                     }
                 }
+            }
+        }
+    }
+
+    private suspend fun setActiveSession(sessionId: String) {
+        getActiveSessionUseCase.execute(sessionId).onSuccess { session ->
+
+            delay(300)
+
+            _state.update { it.copy(activeSession = session) }
+            if (session.status == GameSessionStatus.ACTIVE) {
+                startBannerTimer(session)
+            } else {
+                bannerTimerJob?.cancel()
+                _state.update { it.copy(bannerRemainingSeconds = 0) }
+            }
+        }
+    }
+
+    private fun startBannerTimer(session: GameSession) {
+        bannerTimerJob?.cancel()
+        bannerTimerJob = viewModelScope.launch {
+            while (isActive) {
+                val remaining = ((session.expiresAt - System.currentTimeMillis()) / 1000).toInt()
+                _state.update { it.copy(bannerRemainingSeconds = remaining.coerceAtLeast(0)) }
+                if (remaining <= 0) break
+                delay(1000)
+            }
+        }
+    }
+
+    fun onBannerDismissed() {
+        bannerTimerJob?.cancel()
+        _state.update {
+            it.copy(
+                activeSession = null,
+                bannerRemainingSeconds = 0
+            )
+        }
+    }
+
+    fun onBannerContinueClick() {
+        val session = _state.value.activeSession ?: return
+        _state.update { it.copy(isBannerLoading = true) }
+        viewModelScope.launch {
+            getPostByIdUseCase.executeWithResult(session.postId).onSuccess { post ->
+                val effect = when (post.content) {
+                    is PostContent.Text -> MainSideEffect.NavigateToDraw(Routes.Draw(session.id))
+                    is PostContent.Drawing -> MainSideEffect.NavigateToDescribeDrawing(
+                        Routes.DescribeDrawing(session.id)
+                    )
+                }
+                _sideEffects.send(effect)
+
+                delay(150)
+
+                onBannerDismissed()
+            }.onError {
+                _state.update { it.copy(isBannerLoading = false) }
             }
         }
     }

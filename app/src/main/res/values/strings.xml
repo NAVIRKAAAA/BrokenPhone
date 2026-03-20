@@ -131,6 +131,10 @@
     <!-- Choose Avatar -->
     <string name="choose_avatar_title">Who are you today?</string>
 
+    <!-- Active Session Banner -->
+    <string name="active_session_banner_title">Active session</string>
+    <string name="active_session_banner_continue">Continue</string>
+
     <!-- Session error dialog -->
     <string name="error_session_data_title">Connection error</string>
     <string name="error_session_data_retry">Retry</string>

@@ -5,6 +5,6 @@ sealed interface PostDetailsSideEffect {
     data class ShowCopyLinkSuccessToast(val link: String) : PostDetailsSideEffect
     data object NavigateBack : PostDetailsSideEffect
     data object NavigateBackWithForceUpdate : PostDetailsSideEffect
-    data class NavigateToDraw(val postId: String) : PostDetailsSideEffect
-    data class NavigateToDescribeDrawing(val postId: String) : PostDetailsSideEffect
+    data class NavigateToDraw(val sessionId: String) : PostDetailsSideEffect
+    data class NavigateToDescribeDrawing(val sessionId: String) : PostDetailsSideEffect
 }
