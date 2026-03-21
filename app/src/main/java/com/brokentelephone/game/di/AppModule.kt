@@ -88,6 +88,7 @@ import com.brokentelephone.game.features.theme.use_case.UpdateThemeUseCase
 import com.brokentelephone.game.features.welcome.WelcomeViewModel
 import com.brokentelephone.game.features.welcome.use_case.SignInAnonymouslyUseCase
 import com.brokentelephone.game.main.MainViewModel
+import com.brokentelephone.game.main.use_case.ApplyEmailChangeUseCase
 import com.brokentelephone.game.main.use_case.GetActiveSessionUseCase
 import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
 import com.google.firebase.auth.FirebaseAuth
@@ -192,6 +193,7 @@ val appModule = module {
 
     factoryOf(::InitializeSessionUseCase)
     factoryOf(::GetActiveSessionUseCase)
+    factoryOf(::ApplyEmailChangeUseCase)
     single { AppNavBottomBarViewModel(get(), get()) }
     viewModelOf(::MainViewModel)
 }

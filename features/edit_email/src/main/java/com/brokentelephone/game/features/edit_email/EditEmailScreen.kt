@@ -17,7 +17,6 @@ import org.koin.compose.viewmodel.koinViewModel
 fun EditEmailScreen(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    navigateToSignIn: () -> Unit = {},
     viewModel: EditEmailViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -26,7 +25,6 @@ fun EditEmailScreen(
         viewModel.event.collect { event ->
             when (event) {
                 EditEmailEvent.NavigateBack -> onBackClick()
-                EditEmailEvent.NavigateToSignIn -> navigateToSignIn()
             }
         }
     }

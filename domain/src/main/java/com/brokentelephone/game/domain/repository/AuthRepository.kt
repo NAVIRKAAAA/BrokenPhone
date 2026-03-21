@@ -6,4 +6,5 @@ interface AuthRepository {
     suspend fun signInAnonymously(): String
     suspend fun sendPasswordResetEmail(email: String)
     suspend fun sendEmailChangeVerification(newEmail: String)
+    suspend fun applyEmailChange(oobCode: String)
 }

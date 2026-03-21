@@ -714,13 +714,6 @@ fun AppNavGraph(
         ) {
             EditEmailScreen(
                 onBackClick = navController::safePopBackStack,
-                navigateToSignIn = {
-                    navController.navigate(Routes.Welcome) {
-                        popUpTo(0) { inclusive = true }
-                    }
-
-                    navController.navigate(Routes.SignIn)
-                }
             )
         }
 

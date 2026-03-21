@@ -123,3 +123,8 @@ class RecentLoginRequiredException : AppException("Recent login required") {
     override fun getLocalizedMessage(stringProvider: StringProvider): String =
         stringProvider.getString(R.string.error_recent_login_required)
 }
+
+class InvalidActionCodeException : AppException("Action code is invalid or expired") {
+    override fun getLocalizedMessage(stringProvider: StringProvider): String =
+        stringProvider.getString(R.string.error_invalid_action_code)
+}

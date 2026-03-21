@@ -1,6 +1,8 @@
 package com.brokentelephone.game.main
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -28,6 +30,7 @@ import androidx.navigation.compose.rememberNavController
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.banner.ActiveSessionBanner
 import com.brokentelephone.game.core.dialog.ConfirmDialog
+import com.brokentelephone.game.core.dialog.LoadingDialog
 import com.brokentelephone.game.core.locale.LocalizedContextWrapper
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.LocalAppLanguage
@@ -35,6 +38,7 @@ import com.brokentelephone.game.domain.model.settings.AppTheme
 import com.brokentelephone.game.domain.model.settings.Language
 import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBar
 import com.brokentelephone.game.navigation.nav_graph.AppNavGraph
+import com.brokentelephone.game.navigation.routes.Routes
 import com.brokentelephone.game.navigation.utils.navigateSingle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -54,6 +58,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         mainViewModel.initializeDefaultLanguage(Locale.getDefault().language)
+        intent.data?.let { mainViewModel.handleEmailChangeLink(it) }
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
@@ -73,6 +78,13 @@ class MainActivity : ComponentActivity() {
                         }
                         is MainSideEffect.NavigateToDescribeDrawing -> {
                             navController.navigateSingle(effect.route)
+                        }
+                        MainSideEffect.NavigateToSignIn -> {
+                            navController.navigate(Routes.Welcome) {
+                                popUpTo(0) { inclusive = true }
+                            }
+
+                            navController.navigate(Routes.SignIn)
                         }
                     }
                 }
@@ -147,6 +159,10 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
+                    if (state.isEmailChanging) {
+                        LoadingDialog()
+                    }
+
                     state.sessionDataError?.let { message ->
                         ConfirmDialog(
                             title = stringResource(R.string.error_session_data_title),
@@ -162,5 +178,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        Log.d("LOG_TAG", "onNewIntent()")
+        intent.data?.let { mainViewModel.handleEmailChangeLink(it) }
     }
 }

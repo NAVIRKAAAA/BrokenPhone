@@ -1,7 +1,9 @@
 package com.brokentelephone.game.data.repository
 
+import android.util.Log
 import com.brokentelephone.game.domain.repository.AuthRepository
 import com.brokentelephone.game.essentials.exceptions.auth.EmailAlreadyInUseException
+import com.brokentelephone.game.essentials.exceptions.auth.InvalidActionCodeException
 import com.brokentelephone.game.essentials.exceptions.auth.InvalidCredentialsException
 import com.brokentelephone.game.essentials.exceptions.auth.InvalidEmailException
 import com.brokentelephone.game.essentials.exceptions.auth.NetworkException
@@ -14,9 +16,11 @@ import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import com.google.firebase.auth.actionCodeSettings
 import kotlinx.coroutines.tasks.await
 
 class AuthRepositoryImpl(
@@ -88,7 +92,22 @@ class AuthRepositoryImpl(
     override suspend fun sendEmailChangeVerification(newEmail: String) {
         try {
             val user = firebaseAuth.currentUser ?: throw UnauthorizedException()
-            user.verifyBeforeUpdateEmail(newEmail).await()
+            val actionCodeSettings = actionCodeSettings {
+                // URL you want to redirect back to. The domain (www.example.com) for this
+                // URL must be whitelisted in the Firebase Console.
+                url = "https://brokentelephone.firebaseapp.com"
+                // This must be true
+                handleCodeInApp = true
+                setAndroidPackageName(
+                    "com.brokentelephone.game",
+                    true, // installIfNotAvailable
+                    null
+                )
+            }
+
+            user.verifyBeforeUpdateEmail(newEmail, actionCodeSettings).await()
+        } catch (_: FirebaseAuthInvalidUserException) {
+            throw RecentLoginRequiredException()
         } catch (_: FirebaseAuthRecentLoginRequiredException) {
             throw RecentLoginRequiredException()
         } catch (_: FirebaseAuthUserCollisionException) {
@@ -99,8 +118,22 @@ class AuthRepositoryImpl(
             throw NetworkException()
         } catch (_: FirebaseTooManyRequestsException) {
             throw TooManyRequestsException()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.d("LOG_TAG", "e: $e")
             throw UnknownAuthException()
+        }
+    }
+
+    override suspend fun applyEmailChange(oobCode: String) {
+        try {
+            firebaseAuth.applyActionCode(oobCode).await()
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (_: FirebaseTooManyRequestsException) {
+            throw TooManyRequestsException()
+        } catch (_: Exception) {
+            throw InvalidActionCodeException()
         }
     }
 }

@@ -25,6 +25,7 @@
     <string name="error_session_cooldown">Ти нещодавно покинув(ла) цей пост. Спробуй ще раз за кілька хвилин.</string>
     <string name="error_session_already_active">У тебе вже є активна сесія. Щоб продовжити або скасувати її, перейди до Профіль → Налаштування → Ігрова сесія.</string>
     <string name="error_recent_login_required">З міркувань безпеки, будь ласка, вийди з акаунту та увійди знову перед зміною пошти.</string>
+    <string name="error_invalid_action_code">Посилання вже використано або застаріло. Будь ласка, запроси нове.</string>
 
     <!-- Firestore errors -->
     <string name="error_firestore_cancelled">Запит було скасовано. Спробуй ще раз.</string>

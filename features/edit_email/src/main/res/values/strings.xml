@@ -5,7 +5,7 @@
     <string name="edit_email_label">Email</string>
     <string name="edit_email_hint">Enter your new email address</string>
     <string name="edit_email_confirm_title">Confirm email change</string>
-    <string name="edit_email_confirm_body">A confirmation link will be sent to your new email address. It might end up in spam — check there if you don\'t see it.\n\nJust click the link to confirm the change. Then sign in again with your new email.</string>
+    <string name="edit_email_confirm_body">A confirmation link will be sent to your new email address. It might end up in spam — check there if you don\'t see it.\n\nOnce you tap the link, the app will open automatically and prompt you to sign in again.</string>
     <string name="edit_email_confirm_cancel">Cancel</string>
     <string name="edit_email_confirm_ok">Send</string>
 </resources>

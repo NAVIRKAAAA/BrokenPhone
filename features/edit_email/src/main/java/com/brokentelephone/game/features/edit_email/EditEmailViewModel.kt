@@ -81,7 +81,7 @@ class EditEmailViewModel(
             sendEmailChangeVerificationUseCase.execute(_state.value.email.text)
                 .onSuccess {
                     _state.update { it.copy(isLoading = false, showConfirmDialog = false) }
-                    _event.emit(EditEmailEvent.NavigateToSignIn)
+                    _event.emit(EditEmailEvent.NavigateBack)
                 }
                 .onError { error ->
                     val message = exceptionToMessageMapper.map(error)

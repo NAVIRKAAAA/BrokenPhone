@@ -1,5 +1,8 @@
 package com.brokentelephone.game.main
 
+import android.net.Uri
+import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.domain.api_handler.onError
@@ -14,6 +17,7 @@ import com.brokentelephone.game.features.app_preferences.use_case.GetLanguageUse
 import com.brokentelephone.game.features.app_preferences.use_case.GetThemeUseCase
 import com.brokentelephone.game.features.language.use_case.InitializeLanguageUseCase
 import com.brokentelephone.game.features.post_details.use_case.GetPostByIdUseCase
+import com.brokentelephone.game.main.use_case.ApplyEmailChangeUseCase
 import com.brokentelephone.game.main.use_case.GetActiveSessionUseCase
 import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
 import com.brokentelephone.game.navigation.routes.Routes
@@ -36,6 +40,7 @@ class MainViewModel(
     private val initializeSessionUseCase: InitializeSessionUseCase,
     private val getActiveSessionUseCase: GetActiveSessionUseCase,
     private val getPostByIdUseCase: GetPostByIdUseCase,
+    private val applyEmailChangeUseCase: ApplyEmailChangeUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
 
@@ -183,6 +188,23 @@ class MainViewModel(
     fun initializeDefaultLanguage(deviceLanguageTag: String) {
         viewModelScope.launch {
             initializeLanguageUseCase(deviceLanguageTag)
+        }
+    }
+
+    fun handleEmailChangeLink(uri: Uri) {
+        Log.d("LOG_TAG", "handleEmailChangeLink: $uri")
+        val innerLink = uri.getQueryParameter("link") ?: return
+        val innerUri = innerLink.toUri()
+        val oobCode = innerUri.getQueryParameter("oobCode") ?: return
+        if (innerUri.getQueryParameter("mode") != "verifyAndChangeEmail") return
+
+        Log.d("LOG_TAG", "oobCode: $oobCode")
+
+        viewModelScope.launch {
+            _state.update { it.copy(isEmailChanging = true) }
+            applyEmailChangeUseCase.execute(oobCode)
+            _state.update { it.copy(isEmailChanging = false) }
+            _sideEffects.send(MainSideEffect.NavigateToSignIn)
         }
     }
 }

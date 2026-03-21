@@ -5,7 +5,7 @@
     <string name="edit_email_label">Ел. пошта</string>
     <string name="edit_email_hint">Введи нову електронну адресу</string>
     <string name="edit_email_confirm_title">Підтвердити зміну пошти</string>
-    <string name="edit_email_confirm_body">На нову адресу буде надіслано листа з посиланням. Він може потрапити в спам — перевір там, якщо не бачиш у вхідних.\n\nПросто перейди по посиланню, щоб підтвердити зміну. Після цього увійди знову з новою поштою.</string>
+    <string name="edit_email_confirm_body">На нову адресу буде надіслано листа з посиланням. Він може потрапити в спам — перевір там, якщо не бачиш у вхідних.\n\nПісля натискання на посилання застосунок відкриється автоматично і запропонує увійти знову.</string>
     <string name="edit_email_confirm_cancel">Скасувати</string>
     <string name="edit_email_confirm_ok">Надіслати</string>
 </resources>
