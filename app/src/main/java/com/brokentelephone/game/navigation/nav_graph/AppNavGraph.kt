@@ -94,7 +94,7 @@ fun AppNavGraph(
                     navController.navigateSingle(Routes.SignUp)
                 },
                 onSignIn = {
-                    navController.navigateSingle(Routes.SignIn)
+                    navController.navigateSingle(Routes.SignIn())
                 },
                 onNavigateToDashboard = {
                     navController.navigateSingle(Routes.Dashboard) {
@@ -302,8 +302,10 @@ fun AppNavGraph(
                     animationSpec = tween(250)
                 ) + fadeOut(animationSpec = tween(200))
             }
-        ) {
+        ) { backStackEntry ->
+            val route = backStackEntry.toRoute<Routes.SignIn>()
             SignInScreen(
+                initialEmail = route.email,
                 onBackClick = navController::safePopBackStack,
                 onSignedIn = {
                     navController.navigateSingle(Routes.Dashboard) {
@@ -382,7 +384,7 @@ fun AppNavGraph(
                     }
                 },
                 onSignInClick = {
-                    navController.navigateSingle(Routes.SignIn)
+                    navController.navigateSingle(Routes.SignIn())
                 },
             )
         }
@@ -424,7 +426,7 @@ fun AppNavGraph(
                     navController.navigateSingle(Routes.ChainDetails(postId = postId))
                 },
                 onSignInClick = {
-                    navController.navigateSingle(Routes.SignIn)
+                    navController.navigateSingle(Routes.SignIn())
                 },
                 onGetStartedClick = {
                     navController.navigateSingle(Routes.SignUp)

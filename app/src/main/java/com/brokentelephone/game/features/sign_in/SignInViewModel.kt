@@ -1,5 +1,7 @@
 package com.brokentelephone.game.features.sign_in
 
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.domain.api_handler.onError
@@ -19,15 +21,18 @@ import kotlinx.coroutines.launch
 class SignInViewModel(
     private val signInUseCase: SignInUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
+    initialEmail: String = "",
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(SignInState())
+    private val _state = MutableStateFlow(
+        SignInState(email = TextFieldValue(initialEmail, TextRange(initialEmail.length)))
+    )
     val state = _state.asStateFlow()
 
     private val _sideEffects = Channel<SignInSideEffect>(Channel.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
 
-    fun onEmailChanged(email: String) {
+    fun onEmailChanged(email: TextFieldValue) {
         _state.update { it.copy(email = email, credentialsError = null) }
     }
 
@@ -44,14 +49,16 @@ class SignInViewModel(
     }
 
     fun onSignInClick() {
-        val currentState = state.value.copy(email = state.value.email.trim())
+        val trimmedEmail = state.value.email.text.trim()
+        _state.update { it.copy(email = it.email.copy(text = trimmedEmail)) }
+        val currentState = _state.value
         if (!currentState.isSignInEnabled) return
 
         viewModelScope.launch {
             _sideEffects.send(SignInSideEffect.ClearFocus)
             _state.update { it.copy(isLoading = true, credentialsError = null) }
 
-            signInUseCase.execute(currentState.email, currentState.password).onSuccess {
+            signInUseCase.execute(currentState.email.text, currentState.password).onSuccess {
                 _state.update { it.copy(isLoading = false) }
                 _sideEffects.send(SignInSideEffect.SignedIn)
             }.onError { error ->

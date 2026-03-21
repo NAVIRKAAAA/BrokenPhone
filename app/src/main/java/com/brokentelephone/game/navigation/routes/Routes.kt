@@ -29,7 +29,7 @@ sealed class Routes {
     data object SignUp : Routes()
 
     @Serializable
-    data object SignIn : Routes()
+    data class SignIn(val email: String = "") : Routes()
 
     @Serializable
     data object Profile : Routes()

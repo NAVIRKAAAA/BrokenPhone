@@ -79,12 +79,12 @@ class MainActivity : ComponentActivity() {
                         is MainSideEffect.NavigateToDescribeDrawing -> {
                             navController.navigateSingle(effect.route)
                         }
-                        MainSideEffect.NavigateToSignIn -> {
+                        is MainSideEffect.NavigateToSignIn -> {
                             navController.navigate(Routes.Welcome) {
                                 popUpTo(0) { inclusive = true }
                             }
 
-                            navController.navigate(Routes.SignIn)
+                            navController.navigate(Routes.SignIn(email = effect.email))
                         }
                     }
                 }

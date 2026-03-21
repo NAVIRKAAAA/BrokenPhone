@@ -29,6 +29,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.button.AuthButton
 import com.brokentelephone.game.core.text_field.SignUpTextField
+import com.brokentelephone.game.core.text_field.SignUpTextFieldValue
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.top_bar.AuthTopBar
 import com.brokentelephone.game.features.sign_in.model.SignInState
@@ -49,7 +51,7 @@ fun SignInContent(
     state: SignInState,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    onEmailChanged: (String) -> Unit = {},
+    onEmailChanged: (TextFieldValue) -> Unit = {},
     onPasswordChanged: (String) -> Unit = {},
     onTogglePasswordVisibility: () -> Unit = {},
     onSignInClick: () -> Unit = {},
@@ -87,9 +89,9 @@ fun SignInContent(
                 .imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            SignUpTextField(
-                text = state.email,
-                onTextChange = onEmailChanged,
+            SignUpTextFieldValue(
+                value = state.email,
+                onValueChange = onEmailChanged,
                 label = stringResource(R.string.sign_in_email),
                 error = if (state.credentialsError != null) "" else null,
                 imeAction = ImeAction.Next,
@@ -164,7 +166,7 @@ fun SignInContent(
 @Preview
 @Composable
 fun SignInContentPreview() {
-    BrokenTelephoneTheme(darkTheme = false) {
+    BrokenTelephoneTheme(darkTheme = true) {
         SignInContent(
             state = SignInState(
                 credentialsError = ""

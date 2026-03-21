@@ -19,6 +19,7 @@ import com.brokentelephone.game.features.language.use_case.InitializeLanguageUse
 import com.brokentelephone.game.features.post_details.use_case.GetPostByIdUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailChangeUseCase
 import com.brokentelephone.game.main.use_case.GetActiveSessionUseCase
+import com.brokentelephone.game.main.use_case.GetPendingEmailUseCase
 import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
 import com.brokentelephone.game.navigation.routes.Routes
 import kotlinx.coroutines.Job
@@ -41,6 +42,7 @@ class MainViewModel(
     private val getActiveSessionUseCase: GetActiveSessionUseCase,
     private val getPostByIdUseCase: GetPostByIdUseCase,
     private val applyEmailChangeUseCase: ApplyEmailChangeUseCase,
+    private val getPendingEmailUseCase: GetPendingEmailUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
 
@@ -203,8 +205,9 @@ class MainViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isEmailChanging = true) }
             applyEmailChangeUseCase.execute(oobCode)
+            val pendingEmail = getPendingEmailUseCase.execute() ?: ""
             _state.update { it.copy(isEmailChanging = false) }
-            _sideEffects.send(MainSideEffect.NavigateToSignIn)
+            _sideEffects.send(MainSideEffect.NavigateToSignIn(pendingEmail))
         }
     }
 }

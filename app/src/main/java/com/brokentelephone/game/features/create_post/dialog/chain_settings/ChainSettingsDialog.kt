@@ -42,12 +42,12 @@ import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 private const val CHAIN_LENGTH_MIN = 6
 private const val CHAIN_LENGTH_MAX = 20
 private const val CHAIN_LENGTH_STEP = 2
-private const val TEXT_TIME_MIN = 15
-private const val TEXT_TIME_MAX = 60
-private const val TEXT_TIME_STEP = 5
-private const val DRAWING_TIME_MIN = 30
-private const val DRAWING_TIME_MAX = 120
-private const val DRAWING_TIME_STEP = 5
+private const val TEXT_TIME_MIN = 30
+private const val TEXT_TIME_MAX = 120
+private const val TEXT_TIME_STEP = 10
+private const val DRAWING_TIME_MIN = 60
+private const val DRAWING_TIME_MAX = 180
+private const val DRAWING_TIME_STEP = 10
 
 @Composable
 fun ChainSettingsDialog(

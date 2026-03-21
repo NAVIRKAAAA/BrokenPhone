@@ -10,15 +10,17 @@ import com.brokentelephone.game.core.dialog.ErrorDialog
 import com.brokentelephone.game.features.sign_in.content.SignInContent
 import com.brokentelephone.game.features.sign_in.model.SignInSideEffect
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun SignInScreen(
+    initialEmail: String = "",
     onBackClick: () -> Unit,
     onSignedIn: () -> Unit = {},
     onSignUpClick: () -> Unit = {},
     onForgotPasswordClick: (email: String) -> Unit = {},
     modifier: Modifier = Modifier,
-    viewModel: SignInViewModel = koinViewModel(),
+    viewModel: SignInViewModel = koinViewModel { parametersOf(initialEmail) },
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val focusManager = LocalFocusManager.current
@@ -40,7 +42,7 @@ fun SignInScreen(
         onTogglePasswordVisibility = viewModel::onTogglePasswordVisibility,
         onSignInClick = viewModel::onSignInClick,
         onSignUpClick = onSignUpClick,
-        onForgotPasswordClick = { onForgotPasswordClick(state.email) },
+        onForgotPasswordClick = { onForgotPasswordClick(state.email.text) },
         modifier = modifier,
     )
 

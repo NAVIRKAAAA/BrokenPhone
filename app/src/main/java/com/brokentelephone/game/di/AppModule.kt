@@ -6,9 +6,9 @@ import com.brokentelephone.game.data.link.MockLinkProviderImpl
 import com.brokentelephone.game.data.repository.AuthRepositoryImpl
 import com.brokentelephone.game.data.repository.GameSessionRepositoryImpl
 import com.brokentelephone.game.data.repository.MockAppInfoRepositoryImpl
-import com.brokentelephone.game.data.repository.MockUserSettingsRepositoryImpl
 import com.brokentelephone.game.data.repository.PostsRepositoryImpl
 import com.brokentelephone.game.data.repository.ReportsRepositoryImpl
+import com.brokentelephone.game.data.repository.UserSettingsRepositoryImpl
 import com.brokentelephone.game.data.repository.UsersRepositoryImpl
 import com.brokentelephone.game.data.session.UserSessionImpl
 import com.brokentelephone.game.data.storage.FirebaseImageStorage
@@ -90,6 +90,7 @@ import com.brokentelephone.game.features.welcome.use_case.SignInAnonymouslyUseCa
 import com.brokentelephone.game.main.MainViewModel
 import com.brokentelephone.game.main.use_case.ApplyEmailChangeUseCase
 import com.brokentelephone.game.main.use_case.GetActiveSessionUseCase
+import com.brokentelephone.game.main.use_case.GetPendingEmailUseCase
 import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -108,7 +109,7 @@ val appModule = module {
     single<ImageStorage> { FirebaseImageStorage(get()) }
     single<PostRepository> { PostsRepositoryImpl(get()) }
     single<GameSessionRepository> { GameSessionRepositoryImpl(get()) }
-    single<AuthRepository> { AuthRepositoryImpl(get()) }
+    single<AuthRepository> { AuthRepositoryImpl(get(), androidContext()) }
     single { FirebaseAuth.getInstance() }
     single {
         FirebaseFirestore.getInstance().apply {
@@ -120,7 +121,7 @@ val appModule = module {
     single<ApiHandler> { ApiHandlerImpl() }
     single<UserSession> { UserSessionImpl(get(), get()) }
     single<ReportsRepository> { ReportsRepositoryImpl(get()) }
-    single<UserSettingsRepository> { MockUserSettingsRepositoryImpl() }
+    single<UserSettingsRepository> { UserSettingsRepositoryImpl(androidContext()) }
     single<UsersRepository> { UsersRepositoryImpl(get()) }
 
     single { DrawingBitmapSaver(androidContext()) }
@@ -194,6 +195,7 @@ val appModule = module {
     factoryOf(::InitializeSessionUseCase)
     factoryOf(::GetActiveSessionUseCase)
     factoryOf(::ApplyEmailChangeUseCase)
+    factoryOf(::GetPendingEmailUseCase)
     single { AppNavBottomBarViewModel(get(), get()) }
     viewModelOf(::MainViewModel)
 }

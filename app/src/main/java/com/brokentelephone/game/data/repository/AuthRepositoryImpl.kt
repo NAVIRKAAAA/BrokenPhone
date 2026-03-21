@@ -1,5 +1,6 @@
 package com.brokentelephone.game.data.repository
 
+import android.content.Context
 import android.util.Log
 import com.brokentelephone.game.domain.repository.AuthRepository
 import com.brokentelephone.game.essentials.exceptions.auth.EmailAlreadyInUseException
@@ -25,6 +26,7 @@ import kotlinx.coroutines.tasks.await
 
 class AuthRepositoryImpl(
     private val firebaseAuth: FirebaseAuth,
+    private val context: Context,
 ) : AuthRepository {
 
     override suspend fun signUpWithEmailPassword(email: String, password: String): String {
@@ -93,13 +95,10 @@ class AuthRepositoryImpl(
         try {
             val user = firebaseAuth.currentUser ?: throw UnauthorizedException()
             val actionCodeSettings = actionCodeSettings {
-                // URL you want to redirect back to. The domain (www.example.com) for this
-                // URL must be whitelisted in the Firebase Console.
                 url = "https://brokentelephone.firebaseapp.com"
-                // This must be true
                 handleCodeInApp = true
                 setAndroidPackageName(
-                    "com.brokentelephone.game",
+                    context.packageName,
                     true, // installIfNotAvailable
                     null
                 )

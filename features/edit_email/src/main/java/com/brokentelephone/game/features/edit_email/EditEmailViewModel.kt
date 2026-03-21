@@ -12,6 +12,7 @@ import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMap
 import com.brokentelephone.game.features.edit_email.model.EditEmailEvent
 import com.brokentelephone.game.features.edit_email.model.EditEmailState
 import com.brokentelephone.game.features.edit_email.use_case.SendEmailChangeVerificationUseCase
+import com.brokentelephone.game.features.edit_email.use_case.SetPendingEmailUseCase
 import com.brokentelephone.game.features.edit_email.use_case.ValidateEmailUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,6 +26,7 @@ class EditEmailViewModel(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val sendEmailChangeVerificationUseCase: SendEmailChangeVerificationUseCase,
+    private val setPendingEmailUseCase: SetPendingEmailUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
 
@@ -78,8 +80,10 @@ class EditEmailViewModel(
     fun onSaveConfirmed() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
-            sendEmailChangeVerificationUseCase.execute(_state.value.email.text)
+            val newEmail = _state.value.email.text
+            sendEmailChangeVerificationUseCase.execute(newEmail)
                 .onSuccess {
+                    setPendingEmailUseCase.execute(newEmail)
                     _state.update { it.copy(isLoading = false, showConfirmDialog = false) }
                     _event.emit(EditEmailEvent.NavigateBack)
                 }
