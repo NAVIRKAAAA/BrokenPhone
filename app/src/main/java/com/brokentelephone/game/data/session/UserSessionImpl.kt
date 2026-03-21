@@ -16,9 +16,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class UserSessionImpl(
@@ -30,6 +34,7 @@ class UserSessionImpl(
     override val authState: Flow<AuthState> = _authState.asStateFlow()
 
     private var firestoreListener: ListenerRegistration? = null
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override suspend fun initialize() {
         val currentUser = firebaseAuth.currentUser
@@ -51,6 +56,9 @@ class UserSessionImpl(
 
         firebaseAuth.addAuthStateListener { auth ->
             val user = auth.currentUser
+
+            Log.d("LOG_TAG", "isEmailVerified: ${user?.isEmailVerified}")
+
             firestoreListener?.remove()
             firestoreListener = null
 
@@ -70,7 +78,22 @@ class UserSessionImpl(
                 if (error != null || snapshot == null) return@addSnapshotListener
                 val user = snapshot.data?.let { User.fromMap(it) } ?: return@addSnapshotListener
                 _authState.value = if (isAnonymous) AuthState.Guest(user) else AuthState.Auth(user)
+                if (!isAnonymous) scope.launch { syncEmailIfNeeded(uid, user.email) }
             }
+    }
+
+    private suspend fun syncEmailIfNeeded(uid: String, firestoreEmail: String) {
+        val authEmail = firebaseAuth.currentUser?.email ?: return
+        if (authEmail == firestoreEmail) return
+        try {
+            firestore.collection(COLLECTION_USERS)
+                .document(uid)
+                .update(User.FIELD_EMAIL, authEmail)
+                .await()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // best-effort sync, ignore failures
+        }
     }
 
     override suspend fun updateUsername(username: String) {

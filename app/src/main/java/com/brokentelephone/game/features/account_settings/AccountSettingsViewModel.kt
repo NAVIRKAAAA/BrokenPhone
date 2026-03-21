@@ -2,10 +2,11 @@ package com.brokentelephone.game.features.account_settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.features.account_settings.model.AccountSettingsSideEffect
 import com.brokentelephone.game.features.account_settings.model.AccountSettingsState
 import com.brokentelephone.game.features.account_settings.use_case.DeleteAccountUseCase
-import com.brokentelephone.game.features.profile.use_case.GetCurrentUserUseCase
+import com.brokentelephone.game.features.profile.model.toUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,7 +30,7 @@ class AccountSettingsViewModel(
     init {
 
         getCurrentUserUseCase()
-            .onEach { user -> _state.update { it.copy(user = user) } }
+            .onEach { user -> _state.update { it.copy(user = user?.toUi()) } }
             .launchIn(viewModelScope)
     }
 

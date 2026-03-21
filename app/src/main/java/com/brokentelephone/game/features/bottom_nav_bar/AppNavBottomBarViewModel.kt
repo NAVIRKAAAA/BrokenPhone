@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hasRoute
+import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.features.bottom_nav_bar.model.BottomNavBar
 import com.brokentelephone.game.features.bottom_nav_bar.model.BottomNavBarEvent
 import com.brokentelephone.game.features.bottom_nav_bar.model.BottomNavBarState
-import com.brokentelephone.game.features.profile.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.features.settings.use_case.GetAuthStateUseCase
 import com.brokentelephone.game.navigation.routes.Routes
 import kotlinx.coroutines.flow.MutableSharedFlow

@@ -1,7 +1,7 @@
 package com.brokentelephone.game.features.sign_up.use_case
 
 import com.brokentelephone.game.essentials.exceptions.main.AppException
-import com.brokentelephone.game.features.sign_up.SignUpValidator
+import com.brokentelephone.game.essentials.validation.SignUpValidator
 
 class ValidateSignUpUseCase(
     private val validator: SignUpValidator,

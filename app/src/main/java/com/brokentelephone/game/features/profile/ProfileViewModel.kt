@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
+import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.dashboard.model.PostUi
 import com.brokentelephone.game.features.dashboard.model.toUi
@@ -12,8 +13,8 @@ import com.brokentelephone.game.features.post_details.use_case.GetPostLinkByIdUs
 import com.brokentelephone.game.features.profile.model.ProfileSideEffect
 import com.brokentelephone.game.features.profile.model.ProfileState
 import com.brokentelephone.game.features.profile.model.ProfileTab
+import com.brokentelephone.game.features.profile.model.toUi
 import com.brokentelephone.game.features.profile.use_case.GetContributionsUseCase
-import com.brokentelephone.game.features.profile.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.features.profile.use_case.GetMyPostsUseCase
 import com.brokentelephone.game.features.settings.use_case.GetAuthStateUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -53,7 +54,7 @@ class ProfileViewModel(
             .launchIn(viewModelScope)
 
         getCurrentUserUseCase()
-            .onEach { user -> _state.update { it.copy(user = user) } }
+            .onEach { user -> _state.update { it.copy(user = user?.toUi()) } }
             .launchIn(viewModelScope)
     }
 

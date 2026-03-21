@@ -12,6 +12,7 @@ fun EditProfileScreen(
     onBackClick: () -> Unit,
     onEditPhotoClick: () -> Unit,
     onEditUsernameClick: () -> Unit,
+    onEditEmailClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: EditProfileViewModel = koinViewModel(),
 ) {
@@ -22,6 +23,7 @@ fun EditProfileScreen(
         onBackClick = onBackClick,
         onEditPhotoClick = onEditPhotoClick,
         onEditUsernameClick = onEditUsernameClick,
+        onEditEmailClick = onEditEmailClick,
         modifier = modifier,
     )
 }

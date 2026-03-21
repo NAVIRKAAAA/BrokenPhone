@@ -44,6 +44,7 @@ dependencies {
     implementation(project(":essentials"))
     implementation(project(":domain"))
     implementation(project(":features:forgot_password"))
+    implementation(project(":features:edit_email"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

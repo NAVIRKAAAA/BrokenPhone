@@ -7,19 +7,20 @@ import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.session.GameSession
 import com.brokentelephone.game.domain.model.session.GameSessionStatus
+import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
+import com.brokentelephone.game.domain.use_case.LogoutUseCase
 import com.brokentelephone.game.domain.user.AuthState
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.app_preferences.use_case.GetLanguageUseCase
 import com.brokentelephone.game.features.app_preferences.use_case.GetThemeUseCase
 import com.brokentelephone.game.features.post_details.use_case.GetPostByIdUseCase
-import com.brokentelephone.game.features.profile.use_case.GetCurrentUserUseCase
+import com.brokentelephone.game.features.profile.model.toUi
 import com.brokentelephone.game.features.settings.model.SettingsSideEffect
 import com.brokentelephone.game.features.settings.model.SettingsState
 import com.brokentelephone.game.features.settings.use_case.GetAuthStateUseCase
 import com.brokentelephone.game.features.settings.use_case.GetPrivacyPolicyLinkUseCase
 import com.brokentelephone.game.features.settings.use_case.GetTermsOfServiceLinkUseCase
 import com.brokentelephone.game.features.settings.use_case.GetVersionInfoUseCase
-import com.brokentelephone.game.features.settings.use_case.LogoutUseCase
 import com.brokentelephone.game.main.use_case.GetActiveSessionUseCase
 import com.brokentelephone.game.navigation.routes.Routes
 import kotlinx.coroutines.Job
@@ -73,7 +74,7 @@ class SettingsViewModel(
     private fun observeCurrentUser() {
         getCurrentUserUseCase()
             .onEach { user ->
-                _state.update { it.copy(user = user) }
+                _state.update { it.copy(user = user?.toUi()) }
                 val sessionId = user?.sessionId
                 if (sessionId != null) {
                     loadActiveSession(sessionId)

@@ -118,3 +118,8 @@ class UserAlreadyInSessionException : AppException("User already has an active s
     override fun getLocalizedMessage(stringProvider: StringProvider): String =
         stringProvider.getString(R.string.error_session_already_active)
 }
+
+class RecentLoginRequiredException : AppException("Recent login required") {
+    override fun getLocalizedMessage(stringProvider: StringProvider): String =
+        stringProvider.getString(R.string.error_recent_login_required)
+}

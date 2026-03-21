@@ -24,6 +24,7 @@
     <string name="error_session_validation">Something went wrong — this session doesn\'t match your request.</string>
     <string name="error_session_cooldown">You recently left this post. Try again in a few minutes.</string>
     <string name="error_session_already_active">You already have an active session. To continue or cancel it, go to Profile → Settings → Game Session.</string>
+    <string name="error_recent_login_required">For security reasons, please sign out and sign back in before changing your email.</string>
 
     <!-- Firestore errors -->
     <string name="error_firestore_cancelled">The request was cancelled. Try again.</string>

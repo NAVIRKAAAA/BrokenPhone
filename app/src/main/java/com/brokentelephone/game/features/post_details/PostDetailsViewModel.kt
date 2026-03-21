@@ -9,6 +9,7 @@ import com.brokentelephone.game.domain.model.report.ReportPostType
 import com.brokentelephone.game.domain.model.session.GameSession
 import com.brokentelephone.game.domain.model.session.GameSessionStatus
 import com.brokentelephone.game.domain.model.session.cooldownRemainingMs
+import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.essentials.exceptions.auth.PostNotFoundException
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.dashboard.model.PostUi
@@ -21,7 +22,7 @@ import com.brokentelephone.game.features.post_details.use_case.GetPostLinkByIdUs
 import com.brokentelephone.game.features.post_details.use_case.JoinSessionUseCase
 import com.brokentelephone.game.features.post_details.use_case.MarkPostAsNotInterestedUseCase
 import com.brokentelephone.game.features.post_details.use_case.ReportPostUseCase
-import com.brokentelephone.game.features.profile.use_case.GetCurrentUserUseCase
+import com.brokentelephone.game.features.profile.model.toUi
 import com.brokentelephone.game.main.use_case.GetActiveSessionUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -61,7 +62,7 @@ class PostDetailsViewModel(
     init {
         getCurrentUserUseCase()
             .onEach { user ->
-                _state.update { it.copy(userUi = user) }
+                _state.update { it.copy(userUi = user?.toUi()) }
                 val sessionId = user?.sessionId
                 if (sessionId != null) {
                     loadActiveSession(sessionId)

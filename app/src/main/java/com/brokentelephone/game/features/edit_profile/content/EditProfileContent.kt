@@ -25,6 +25,7 @@ fun EditProfileContent(
     onBackClick: () -> Unit,
     onEditPhotoClick: () -> Unit,
     onEditUsernameClick: () -> Unit,
+    onEditEmailClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -59,8 +60,7 @@ fun EditProfileContent(
         AccountTextInfoItem(
             name = stringResource(R.string.edit_profile_field_email),
             value = state.user?.email.orEmpty(),
-            enabled = false,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.clickable(onClick = onEditEmailClick).padding(horizontal = 16.dp)
         )
 
     }
@@ -85,6 +85,7 @@ fun EditProfileContentPreview() {
             onBackClick = {},
             onEditPhotoClick = {},
             onEditUsernameClick = {},
+            onEditEmailClick = {},
         )
     }
 }

@@ -32,3 +32,4 @@ local.properties
 /essentials/build/
 /domain/build/
 /features/forgot_password/build/
+/features/edit_email/build/

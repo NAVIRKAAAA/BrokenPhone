@@ -4,10 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
+import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.create_post.model.CreatePostState
 import com.brokentelephone.game.features.create_post.use_case.CreatePostUseCase
-import com.brokentelephone.game.features.profile.use_case.GetCurrentUserUseCase
+import com.brokentelephone.game.features.profile.model.toUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,7 +37,7 @@ class CreatePostViewModel(
 
     init {
         getCurrentUserUseCase()
-            .onEach { user -> _state.update { it.copy(user = user) } }
+            .onEach { user -> _state.update { it.copy(user = user?.toUi()) } }
             .launchIn(viewModelScope)
     }
 

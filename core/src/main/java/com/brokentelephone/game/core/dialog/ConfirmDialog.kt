@@ -90,11 +90,17 @@ fun  ConfirmDialog(
                     modifier = Modifier
                         .weight(1f)
                         .height(48.dp)
-                        .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp)),
+                        .border(
+                            1.dp,
+                            if (isLoading) MaterialTheme.colorScheme.outline.copy(alpha = 0.38f)
+                            else MaterialTheme.colorScheme.outline,
+                            RoundedCornerShape(14.dp)
+                        ),
                     colors = ButtonDefaults.buttonColors(
                         contentColor = MaterialTheme.colorScheme.onSurface,
                         containerColor = Color.Transparent,
                         disabledContainerColor = Color.Transparent,
+                        disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
                     ),
                     shape = RoundedCornerShape(14.dp),
                     contentPadding = PaddingValues()
@@ -153,6 +159,7 @@ fun ConfirmDialogPreview() {
             confirmText = "Delete",
             onDismiss = {},
             onConfirm = {},
+//            isLoading = true
         )
     }
 }

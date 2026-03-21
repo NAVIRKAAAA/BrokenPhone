@@ -4,13 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
+import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.edit_avatar.model.AvatarUi
 import com.brokentelephone.game.features.edit_avatar.model.Avatars
 import com.brokentelephone.game.features.edit_avatar.model.EditAvatarEvent
 import com.brokentelephone.game.features.edit_avatar.model.EditAvatarState
 import com.brokentelephone.game.features.edit_avatar.use_case.UpdateAvatarUseCase
-import com.brokentelephone.game.features.profile.use_case.GetCurrentUserUseCase
+import com.brokentelephone.game.features.profile.model.toUi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -35,7 +36,7 @@ class EditAvatarViewModel(
         viewModelScope.launch {
             val user = getCurrentUserUseCase().first()
             val avatarId = Avatars.all.find { it.url == user?.avatarUrl }?.id
-            _state.update { it.copy(user = user, initialAvatarId = avatarId) }
+            _state.update { it.copy(user = user?.toUi(), initialAvatarId = avatarId) }
         }
     }
 

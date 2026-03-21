@@ -21,7 +21,6 @@ import com.brokentelephone.game.core.utils.rememberMemberSince
 import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.features.account_settings.model.AccountSettingsState
 import com.brokentelephone.game.features.edit_profile.content.AccountStaticInfoItem
-import com.brokentelephone.game.features.edit_profile.content.AccountTextInfoItem
 import com.brokentelephone.game.features.edit_profile.content.EditProfileTopBar
 import com.brokentelephone.game.features.profile.model.UserUi
 import com.brokentelephone.game.features.settings.content.SettingsLogoutButton
@@ -47,11 +46,11 @@ fun AccountSettingsContent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        AccountTextInfoItem(
+        AccountStaticInfoItem(
             name = stringResource(R.string.account_settings_email),
             value = state.user?.email ?: "",
-            modifier = Modifier.padding(horizontal = 16.dp),
-            enabled = false
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
         )
 
         AccountStaticInfoItem(

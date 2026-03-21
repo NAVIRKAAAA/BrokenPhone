@@ -29,6 +29,7 @@ import com.brokentelephone.game.features.dashboard.DashboardViewModel
 import com.brokentelephone.game.features.describe_drawing.DescribeDrawingScreen
 import com.brokentelephone.game.features.draw.DrawScreen
 import com.brokentelephone.game.features.edit_avatar.EditAvatarScreen
+import com.brokentelephone.game.features.edit_email.EditEmailScreen
 import com.brokentelephone.game.features.edit_profile.EditProfileScreen
 import com.brokentelephone.game.features.edit_username.EditUsernameScreen
 import com.brokentelephone.game.features.forgot_password.ForgotPasswordScreen
@@ -116,7 +117,7 @@ fun AppNavGraph(
             LaunchedEffect(Unit) {
                 val isForceRefresh = savedStateHandle.remove<Boolean>(KEY_FORCE_REFRESH) == true
 
-                if(isForceRefresh) {
+                if (isForceRefresh) {
                     viewModel.onRefresh()
                 }
             }
@@ -419,7 +420,7 @@ fun AppNavGraph(
             popExitTransition = { ExitTransition.None }
         ) {
             ProfileScreen(
-                onPostClick = { postId  ->
+                onPostClick = { postId ->
                     navController.navigateSingle(Routes.ChainDetails(postId = postId))
                 },
                 onSignInClick = {
@@ -446,7 +447,7 @@ fun AppNavGraph(
             },
             exitTransition = {
                 val route = targetState.destination.route
-                if (route?.contains("EditUsername") == true || route?.contains("EditAvatar") == true) {
+                if (route?.contains("EditUsername") == true || route?.contains("EditAvatar") == true || route?.contains("EditEmail") == true) {
                     slideOutHorizontally(
                         targetOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -457,7 +458,7 @@ fun AppNavGraph(
             },
             popEnterTransition = {
                 val route = initialState.destination.route
-                if (route?.contains("EditUsername") == true || route?.contains("EditAvatar") == true) {
+                if (route?.contains("EditUsername") == true || route?.contains("EditAvatar") == true || route?.contains("EditEmail") == true) {
                     slideInHorizontally(
                         initialOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -480,6 +481,9 @@ fun AppNavGraph(
                 },
                 onEditUsernameClick = {
                     navController.navigateSingle(Routes.EditUsername)
+                },
+                onEditEmailClick = {
+                    navController.navigateSingle(Routes.EditEmail)
                 },
             )
         }
@@ -656,7 +660,8 @@ fun AppNavGraph(
                 ) + fadeIn(animationSpec = tween(200))
             },
             exitTransition = {
-                if (targetState.destination.route?.contains("BlockedUsers") == true) {
+                val route = targetState.destination.route
+                if (route?.contains("BlockedUsers") == true) {
                     slideOutHorizontally(
                         targetOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -666,7 +671,8 @@ fun AppNavGraph(
                 }
             },
             popEnterTransition = {
-                if (initialState.destination.route?.contains("BlockedUsers") == true) {
+                val route = initialState.destination.route
+                if (route?.contains("BlockedUsers") == true) {
                     slideInHorizontally(
                         initialOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -688,6 +694,32 @@ fun AppNavGraph(
                     navController.navigate(Routes.Welcome) {
                         popUpTo(0) { inclusive = true }
                     }
+                }
+            )
+        }
+
+        composable<Routes.EditEmail>(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeOut(animationSpec = tween(200))
+            }
+        ) {
+            EditEmailScreen(
+                onBackClick = navController::safePopBackStack,
+                navigateToSignIn = {
+                    navController.navigate(Routes.Welcome) {
+                        popUpTo(0) { inclusive = true }
+                    }
+
+                    navController.navigate(Routes.SignIn)
                 }
             )
         }
