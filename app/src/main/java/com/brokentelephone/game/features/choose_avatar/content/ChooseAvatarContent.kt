@@ -30,7 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.brokentelephone.game.R
+import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.avatar.AvatarComponent
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.features.edit_avatar.model.AvatarUi

@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.brokentelephone.game.R
+import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 
 @Composable

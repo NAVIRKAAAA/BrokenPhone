@@ -1,7 +1,7 @@
 package com.brokentelephone.game.features.bottom_nav_bar.model
 
 import androidx.annotation.StringRes
-import com.brokentelephone.game.R
+import com.brokentelephone.game.core.R
 
 enum class BottomNavBar(
     @param:StringRes val titleResId: Int,

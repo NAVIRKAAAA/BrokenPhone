@@ -54,6 +54,20 @@ class AuthRepositoryImpl(
         }
     }
 
+    override suspend fun sendPasswordResetEmail(email: String) {
+        try {
+            firebaseAuth.sendPasswordResetEmail(email).await()
+        } catch (_: FirebaseAuthInvalidCredentialsException) {
+            throw InvalidEmailException()
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (_: FirebaseTooManyRequestsException) {
+            throw TooManyRequestsException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
+
     override suspend fun signInWithEmailPassword(email: String, password: String) {
         try {
             firebaseAuth.signInWithEmailAndPassword(email, password).await()

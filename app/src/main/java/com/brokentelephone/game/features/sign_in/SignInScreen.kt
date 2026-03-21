@@ -16,6 +16,7 @@ fun SignInScreen(
     onBackClick: () -> Unit,
     onSignedIn: () -> Unit = {},
     onSignUpClick: () -> Unit = {},
+    onForgotPasswordClick: (email: String) -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: SignInViewModel = koinViewModel(),
 ) {
@@ -39,6 +40,7 @@ fun SignInScreen(
         onTogglePasswordVisibility = viewModel::onTogglePasswordVisibility,
         onSignInClick = viewModel::onSignInClick,
         onSignUpClick = onSignUpClick,
+        onForgotPasswordClick = { onForgotPasswordClick(state.email) },
         modifier = modifier,
     )
 

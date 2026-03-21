@@ -121,7 +121,6 @@ class DrawViewModel(
             DrawingAction.OnDiscardConfirm -> onDiscardConfirm()
             DrawingAction.OnDiscardDismiss -> _state.update { it.copy(showDiscardDialog = false) }
             DrawingAction.OnTimesUpGotIt -> onTimesUpGotIt()
-
             DrawingAction.OnGlobalErrorDismiss -> _state.update { it.copy(globalError = null) }
         }
     }

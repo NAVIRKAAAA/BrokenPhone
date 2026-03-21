@@ -23,4 +23,5 @@ rootProject.name = "BrokenTelephone"
 include(":app")
 include(":essentials")
 include(":domain")
- 
+include(":features:forgot_password")
+include(":core")

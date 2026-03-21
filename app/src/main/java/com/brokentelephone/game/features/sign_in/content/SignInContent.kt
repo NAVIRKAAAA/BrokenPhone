@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -35,12 +36,12 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.brokentelephone.game.R
+import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.button.AuthButton
+import com.brokentelephone.game.core.text_field.SignUpTextField
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.top_bar.AuthTopBar
 import com.brokentelephone.game.features.sign_in.model.SignInState
-import com.brokentelephone.game.features.sign_up.content.SignUpTextField
 import kotlinx.coroutines.delay
 
 @Composable
@@ -53,6 +54,7 @@ fun SignInContent(
     onTogglePasswordVisibility: () -> Unit = {},
     onSignInClick: () -> Unit = {},
     onSignUpClick: () -> Unit = {},
+    onForgotPasswordClick: () -> Unit = {},
 ) {
     val emailFocus = remember { FocusRequester() }
     val passwordFocus = remember { FocusRequester() }
@@ -112,7 +114,14 @@ fun SignInContent(
                 modifier = Modifier.focusRequester(passwordFocus),
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            TextButton(
+                onClick = onForgotPasswordClick,
+                modifier = Modifier.align(Alignment.End),
+            ) {
+                Text(stringResource(R.string.sign_in_forgot_password))
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             AuthButton(
                 text = stringResource(R.string.sign_in_button),

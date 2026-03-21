@@ -6,7 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.brokentelephone.game.R
+import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.dialog.ConfirmDialog
 import com.brokentelephone.game.features.account_settings.content.AccountSettingsContent
 import com.brokentelephone.game.features.account_settings.model.AccountSettingsSideEffect

@@ -8,16 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.brokentelephone.game.R
+import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.features.edit_profile.model.EditProfileState
 import com.brokentelephone.game.features.profile.model.UserUi
 
@@ -48,7 +46,7 @@ fun EditProfileContent(
             modifier = Modifier.clickable(onClick = onEditPhotoClick).padding(horizontal = 16.dp)
         )
 
-        HorizontalDivider(color = MaterialTheme.appColors.divider)
+//        HorizontalDivider(color = MaterialTheme.appColors.divider)
 
         AccountTextInfoItem(
             name = stringResource(R.string.edit_profile_field_username),
@@ -56,7 +54,7 @@ fun EditProfileContent(
             modifier = Modifier.clickable(onClick = onEditUsernameClick).padding(horizontal = 16.dp)
         )
 
-        HorizontalDivider(color = MaterialTheme.appColors.divider)
+//        HorizontalDivider(color = MaterialTheme.appColors.divider)
 
         AccountTextInfoItem(
             name = stringResource(R.string.edit_profile_field_email),

@@ -25,7 +25,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
-import com.brokentelephone.game.R
+import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.banner.ActiveSessionBanner
 import com.brokentelephone.game.core.dialog.ConfirmDialog
 import com.brokentelephone.game.core.locale.LocalizedContextWrapper

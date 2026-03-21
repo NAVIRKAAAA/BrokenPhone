@@ -17,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.brokentelephone.game.R
+import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.bottom_sheet.post_bottom_sheet.PostBottomSheet
 import com.brokentelephone.game.core.bottom_sheet.post_bottom_sheet.model.PostBottomSheetAction
 import com.brokentelephone.game.core.dialog.ConfirmDialog

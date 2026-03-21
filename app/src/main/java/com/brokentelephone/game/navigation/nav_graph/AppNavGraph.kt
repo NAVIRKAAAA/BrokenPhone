@@ -31,6 +31,7 @@ import com.brokentelephone.game.features.draw.DrawScreen
 import com.brokentelephone.game.features.edit_avatar.EditAvatarScreen
 import com.brokentelephone.game.features.edit_profile.EditProfileScreen
 import com.brokentelephone.game.features.edit_username.EditUsernameScreen
+import com.brokentelephone.game.features.forgot_password.ForgotPasswordScreen
 import com.brokentelephone.game.features.language.LanguageScreen
 import com.brokentelephone.game.features.notifications.NotificationsScreen
 import com.brokentelephone.game.features.post_details.PostDetailsScreen
@@ -273,7 +274,8 @@ fun AppNavGraph(
                 ) + fadeIn(animationSpec = tween(200))
             },
             exitTransition = {
-                if (targetState.destination.route?.contains("SignUp") == true) {
+                val route = targetState.destination.route
+                if (route?.contains("SignUp") == true || route?.contains("ForgotPassword") == true) {
                     slideOutHorizontally(
                         targetOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -283,7 +285,8 @@ fun AppNavGraph(
                 }
             },
             popEnterTransition = {
-                if (initialState.destination.route?.contains("SignUp") == true) {
+                val route = initialState.destination.route
+                if (route?.contains("SignUp") == true || route?.contains("ForgotPassword") == true) {
                     slideInHorizontally(
                         initialOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -309,6 +312,30 @@ fun AppNavGraph(
                 onSignUpClick = {
                     navController.navigateSingle(Routes.SignUp)
                 },
+                onForgotPasswordClick = { email ->
+                    navController.navigateSingle(Routes.ForgotPassword(email = email))
+                },
+            )
+        }
+
+        composable<Routes.ForgotPassword>(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(250)
+                ) + fadeOut(animationSpec = tween(200))
+            }
+        ) { backStackEntry ->
+            val route = backStackEntry.toRoute<Routes.ForgotPassword>()
+            ForgotPasswordScreen(
+                initialEmail = route.email,
+                onBackClick = navController::safePopBackStack,
             )
         }
 

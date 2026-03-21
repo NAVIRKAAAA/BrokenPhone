@@ -31,3 +31,4 @@ local.properties
 /app/google-services.json
 /essentials/build/
 /domain/build/
+/features/forgot_password/build/

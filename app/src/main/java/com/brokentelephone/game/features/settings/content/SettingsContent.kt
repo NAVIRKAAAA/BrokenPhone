@@ -1,5 +1,6 @@
 package com.brokentelephone.game.features.settings.content
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,7 +24,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.brokentelephone.game.R
+import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.features.edit_profile.content.AccountTextInfoItem
@@ -57,106 +60,118 @@ fun SettingsContent(
             onBackClick = onBackClick,
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .animateContentSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
-        if (state.isAuth) {
-            SettingsItem(
-                text = stringResource(R.string.settings_item_account),
-                onClick = onAccountSettingsClick,
+            Spacer(modifier = Modifier.height(8.dp))
+
+            if (state.isAuth) {
+                SettingsItem(
+                    text = stringResource(R.string.settings_item_account),
+                    onClick = onAccountSettingsClick,
+                    modifier = Modifier
+                )
+            }
+
+            val isGameSessionEnabled = state.user?.sessionId != null
+
+            if (isGameSessionEnabled) {
+                AccountTextInfoItem(
+                    name = stringResource(R.string.settings_item_active_session),
+                    value = state.sessionFormattedTime,
+                    enabled = true,
+                    isLoading = state.isSessionLoading,
+                    modifier = Modifier
+                        .clickable(onClick = onActiveSessionClick)
+                        .padding(horizontal = 16.dp),
+                )
+
+            }
+
+            AccountTextInfoItem(
+                name = stringResource(R.string.account_settings_blocked_users),
+                value = "${state.user?.blockedUsersIds?.size ?: 0}",
                 modifier = Modifier
+                    .clickable(onClick = onBlockedUsersClick)
+                    .padding(horizontal = 16.dp),
             )
-        }
 
-        val isGameSessionEnabled = state.user?.sessionId != null
-
-        AccountTextInfoItem(
-            name = stringResource(R.string.settings_item_active_session),
-            value = state.sessionFormattedTime,
-            enabled = isGameSessionEnabled,
-            isLoading = state.isSessionLoading,
-            modifier = Modifier
-                .clickable(onClick = onActiveSessionClick, enabled = isGameSessionEnabled)
-                .padding(horizontal = 16.dp),
-        )
-
-        AccountTextInfoItem(
-            name = stringResource(R.string.account_settings_blocked_users),
-            value = "${state.user?.blockedUsersIds?.size ?: 0}",
-            modifier = Modifier
-                .clickable(onClick = onBlockedUsersClick)
-                .padding(horizontal = 16.dp),
-        )
-
-        HorizontalDivider(color = MaterialTheme.appColors.divider)
-
-        AccountTextInfoItem(
-            name = stringResource(R.string.app_preferences_notifications),
-            value = stringResource(
-                if (state.notificationsEnabled) R.string.notifications_permission_on
-                else R.string.notifications_permission_off
-            ),
-            modifier = Modifier
-                .clickable(onClick = onNotificationsClick)
-                .padding(horizontal = 16.dp),
-        )
-
-        AccountTextInfoItem(
-            name = stringResource(R.string.app_preferences_language),
-            value = stringResource(state.language.displayNameResId),
-            modifier = Modifier
-                .clickable(onClick = onLanguageClick)
-                .padding(horizontal = 16.dp),
-        )
-
-        AccountTextInfoItem(
-            name = stringResource(R.string.app_preferences_theme),
-            value = stringResource(state.theme.displayNameResId),
-            modifier = Modifier
-                .clickable(onClick = onThemeClick)
-                .padding(horizontal = 16.dp),
-        )
-
-        HorizontalDivider(color = MaterialTheme.appColors.divider)
-
-        SettingsItem(
-            text = stringResource(R.string.information_legal_terms_of_service),
-            onClick = onTermsOfServiceClick,
-            modifier = Modifier
-        )
-
-        SettingsItem(
-            text = stringResource(R.string.information_legal_privacy_policy),
-            onClick = onPrivacyPolicyClick,
-            modifier = Modifier
-        )
-
-        if (state.isAuth) {
             HorizontalDivider(color = MaterialTheme.appColors.divider)
 
-            SettingsLogoutButton(
-                onClick = onLogoutClick,
-                text = stringResource(R.string.settings_logout_button),
+            AccountTextInfoItem(
+                name = stringResource(R.string.app_preferences_notifications),
+                value = stringResource(
+                    if (state.notificationsEnabled) R.string.notifications_permission_on
+                    else R.string.notifications_permission_off
+                ),
+                modifier = Modifier
+                    .clickable(onClick = onNotificationsClick)
+                    .padding(horizontal = 16.dp),
             )
+
+            AccountTextInfoItem(
+                name = stringResource(R.string.app_preferences_language),
+                value = stringResource(state.language.displayNameResId),
+                modifier = Modifier
+                    .clickable(onClick = onLanguageClick)
+                    .padding(horizontal = 16.dp),
+            )
+
+            AccountTextInfoItem(
+                name = stringResource(R.string.app_preferences_theme),
+                value = stringResource(state.theme.displayNameResId),
+                modifier = Modifier
+                    .clickable(onClick = onThemeClick)
+                    .padding(horizontal = 16.dp),
+            )
+
+            HorizontalDivider(color = MaterialTheme.appColors.divider)
+
+            SettingsItem(
+                text = stringResource(R.string.information_legal_terms_of_service),
+                onClick = onTermsOfServiceClick,
+                modifier = Modifier
+            )
+
+            SettingsItem(
+                text = stringResource(R.string.information_legal_privacy_policy),
+                onClick = onPrivacyPolicyClick,
+                modifier = Modifier
+            )
+
+            if (state.isAuth) {
+                HorizontalDivider(color = MaterialTheme.appColors.divider)
+
+                SettingsLogoutButton(
+                    onClick = onLogoutClick,
+                    text = stringResource(R.string.settings_logout_button),
+                )
+            }
+
+            Spacer(
+                modifier = Modifier
+                    .height(16.dp)
+                    .weight(1f)
+            )
+
+            Text(
+                text = state.versionInfo,
+                fontFamily = FontFamily(Font(R.font.nunito_regular)),
+                fontSize = 12.sp,
+                lineHeight = 18.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = modifier
+            )
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+            Spacer(modifier = Modifier.navigationBarsPadding())
         }
-
-        Spacer(
-            modifier = Modifier
-                .height(16.dp)
-                .weight(1f)
-        )
-
-        Text(
-            text = state.versionInfo,
-            fontFamily = FontFamily(Font(R.font.nunito_regular)),
-            fontSize = 12.sp,
-            lineHeight = 18.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = modifier
-        )
-
-        Spacer(modifier = Modifier.height(40.dp))
-
-        Spacer(modifier = Modifier.navigationBarsPadding())
     }
 
 }

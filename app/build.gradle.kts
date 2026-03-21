@@ -40,8 +40,10 @@ android {
 }
 
 dependencies {
+    implementation(project(":core"))
     implementation(project(":essentials"))
     implementation(project(":domain"))
+    implementation(project(":features:forgot_password"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -58,7 +60,6 @@ dependencies {
     implementation(libs.coil.network.okhttp)
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.browser)
-    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.startup)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)

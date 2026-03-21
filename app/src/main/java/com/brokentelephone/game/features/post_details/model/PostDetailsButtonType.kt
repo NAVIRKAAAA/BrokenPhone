@@ -1,6 +1,6 @@
 package com.brokentelephone.game.features.post_details.model
 
-import com.brokentelephone.game.R
+import com.brokentelephone.game.core.R
 
 enum class PostDetailsButtonType(
     val buttonTextResId: Int,

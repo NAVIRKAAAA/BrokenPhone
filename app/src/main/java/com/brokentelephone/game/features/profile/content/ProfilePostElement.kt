@@ -30,7 +30,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.brokentelephone.game.R
+import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.badge.BadgeElement
 import com.brokentelephone.game.core.post.DrawPostImage
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme

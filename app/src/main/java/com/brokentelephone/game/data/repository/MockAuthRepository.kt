@@ -20,6 +20,10 @@ class MockAuthRepository : AuthRepository {
         return "mock-guest-uid"
     }
 
+    override suspend fun sendPasswordResetEmail(email: String) {
+        return
+    }
+
     companion object {
         private const val MOCK_DELAY_MS = 1_500L
     }

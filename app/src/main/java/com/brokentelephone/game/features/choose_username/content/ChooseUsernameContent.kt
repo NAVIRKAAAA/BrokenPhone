@@ -29,14 +29,14 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.brokentelephone.game.R
+import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.button.AuthButton
+import com.brokentelephone.game.core.text_field.SignUpTextFieldValue
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.top_bar.AuthTopBar
 import com.brokentelephone.game.features.choose_username.ChooseUsernameViewModel
 import com.brokentelephone.game.features.choose_username.model.ChooseUsernameState
 import com.brokentelephone.game.features.choose_username.model.SuggestedUsernames
-import com.brokentelephone.game.features.sign_up.content.SignUpTextFieldValue
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalLayoutApi::class)

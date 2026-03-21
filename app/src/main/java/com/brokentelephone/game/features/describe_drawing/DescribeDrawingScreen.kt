@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.brokentelephone.game.R
+import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.dialog.ConfirmDialog
 import com.brokentelephone.game.core.dialog.ErrorDialog
 import com.brokentelephone.game.core.dialog.TimesUpDialog

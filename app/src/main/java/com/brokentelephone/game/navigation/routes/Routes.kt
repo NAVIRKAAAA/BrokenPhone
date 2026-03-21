@@ -66,4 +66,7 @@ sealed class Routes {
 
     @Serializable
     data object Theme : Routes()
+
+    @Serializable
+    data class ForgotPassword(val email: String = "") : Routes()
 }
