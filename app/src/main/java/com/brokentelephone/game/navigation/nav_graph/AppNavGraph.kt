@@ -54,6 +54,7 @@ fun AppNavGraph(
     startDestination: Routes,
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
+    onBannerDismissed: () -> Unit = {},
 ) {
     NavHost(
         navController = navController,
@@ -176,9 +177,11 @@ fun AppNavGraph(
                 },
                 onDrawContinue = { sessionId ->
                     navController.navigateSingle(Routes.Draw(sessionId = sessionId))
+                    onBannerDismissed()
                 },
                 onDescribeDrawingContinue = { sessionId ->
                     navController.navigateSingle(Routes.DescribeDrawing(sessionId = sessionId))
+                    onBannerDismissed()
                 },
                 onViewHistoryClick = { postId ->
                     navController.navigateSingle(Routes.ChainDetails(postId = postId))
@@ -609,9 +612,11 @@ fun AppNavGraph(
                 },
                 onNavigateToDraw = { route ->
                     navController.navigateSingle(route)
+                    onBannerDismissed()
                 },
                 onNavigateToDescribeDrawing = { route ->
                     navController.navigateSingle(route)
+                    onBannerDismissed()
                 },
             )
         }

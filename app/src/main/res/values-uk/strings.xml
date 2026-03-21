@@ -178,6 +178,8 @@
     <string name="post_details_description_own_post">Ти це створив — чекай на інших!</string>
     <string name="post_details_button_cooldown">Ще не час</string>
     <string name="post_details_description_cooldown">Ти нещодавно покинув(ла) цей — спробуй через %1$s</string>
+    <string name="post_details_button_my_session">Продовжити!</string>
+    <string name="post_details_description_my_session">Ти вже почав(ла) — залишилось %1$s!</string>
 
     <string name="bottom_nav_bar_dashboard">Стрічка</string>
     <string name="bottom_nav_bar_create">Створити</string>

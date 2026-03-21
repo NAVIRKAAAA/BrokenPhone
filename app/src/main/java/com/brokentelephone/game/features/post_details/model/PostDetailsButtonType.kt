@@ -45,4 +45,10 @@ enum class PostDetailsButtonType(
         descriptionResId = R.string.post_details_description_cooldown,
     ),
 
+    MY_SESSION(
+        buttonTextResId = R.string.post_details_button_my_session,
+        isEnabled = true,
+        descriptionResId = R.string.post_details_description_my_session,
+    ),
+
 }

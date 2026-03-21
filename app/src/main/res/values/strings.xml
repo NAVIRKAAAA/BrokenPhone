@@ -49,6 +49,8 @@
     <string name="post_details_description_own_post">You started this one — wait for others!</string>
     <string name="post_details_button_cooldown">Not Yet</string>
     <string name="post_details_description_cooldown">You left this one recently — try again in %1$s</string>
+    <string name="post_details_button_my_session">Resume!</string>
+    <string name="post_details_description_my_session">You started this one — %1$s left to finish!</string>
 
     <!-- Times Up Dialog -->
     <string name="times_up_dialog_title">Time\'s up!</string>

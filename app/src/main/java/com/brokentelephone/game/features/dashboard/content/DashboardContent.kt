@@ -64,7 +64,8 @@ fun DashboardContent(
         )
 
         val pullToRefreshState = rememberPullToRefreshState()
-        val isRefreshing = state.isRefreshing || (state.isInitialLoading && state.posts.isNotEmpty())
+        val isRefreshing =
+            state.isRefreshing || (state.isInitialLoading && state.posts.isNotEmpty())
 
         PullToRefreshBox(
             isRefreshing = isRefreshing,
@@ -106,28 +107,28 @@ fun DashboardContent(
                             items = state.posts,
                             key = { _, item -> item.id }
                         ) { index, postUi ->
-                            Column(modifier = Modifier) {
-                                Column(
-                                    modifier = Modifier.combinedClickable(
+                            Column(
+                                modifier = Modifier
+                                    .animateItem()
+                                    .combinedClickable(
                                         onClick = { onPostClick(postUi.id) },
                                         onLongClick = { onMoreClick(postUi.id) },
                                         indication = null,
                                         interactionSource = remember { MutableInteractionSource() }
                                     )
-                                ) {
-                                    if (index != 0) {
-                                        Spacer(modifier = Modifier.height(16.dp))
-                                    }
-                                    PostElement(
-                                        post = postUi,
-                                        isUsersPost = postUi.authorId == state.user?.id,
-                                        onMoreClick = { onMoreClick(postUi.id) },
-                                        modifier = Modifier.padding(horizontal = 16.dp)
-                                    )
+                            ) {
+                                if (index != 0) {
                                     Spacer(modifier = Modifier.height(16.dp))
-                                    if (index != state.posts.lastIndex) {
-                                        HorizontalDivider(color = MaterialTheme.appColors.divider)
-                                    }
+                                }
+                                PostElement(
+                                    post = postUi,
+                                    isUsersPost = postUi.authorId == state.user?.id,
+                                    onMoreClick = { onMoreClick(postUi.id) },
+                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                                if (index != state.posts.lastIndex) {
+                                    HorizontalDivider(color = MaterialTheme.appColors.divider)
                                 }
                             }
                         }

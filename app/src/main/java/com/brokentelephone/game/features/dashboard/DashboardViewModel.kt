@@ -171,18 +171,18 @@ class DashboardViewModel(
     }
 
     fun onNotInterestedClick() {
-//        val postParentId = state.value.selectedPost?.parentId ?: return
-//        _state.update { it.copy(isPostBottomSheetVisible = false, selectedPost = null) }
-//
-//        viewModelScope.launch {
-//            markPostAsNotInterestedUseCase.execute(postParentId).onSuccess {
-//                onRefresh()
-//            }.onError { exception ->
-//                _state.update {
-//                    it.copy(globalError = exceptionToMessageMapper.map(exception))
-//                }
-//            }
-//        }
+        val postId = state.value.selectedPost?.id ?: return
+        _state.update { it.copy(isPostBottomSheetVisible = false, selectedPost = null) }
+
+        viewModelScope.launch {
+            markPostAsNotInterestedUseCase.execute(postId).onSuccess {
+                onRefresh()
+            }.onError { exception ->
+                _state.update {
+                    it.copy(globalError = exceptionToMessageMapper.map(exception))
+                }
+            }
+        }
     }
 
     fun onBlockClick() {

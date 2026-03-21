@@ -123,6 +123,7 @@ class MainActivity : ComponentActivity() {
                             AppNavGraph(
                                 startDestination = startDestination,
                                 navController = navController,
+                                onBannerDismissed = mainViewModel::onBannerDismissed,
                             )
 
                             AppNavBottomBar(

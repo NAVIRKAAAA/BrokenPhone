@@ -114,10 +114,13 @@ fun PostDetailsContent(
 
                         Spacer(modifier = Modifier.height(12.dp))
 
-                        val descriptionText = if (state.buttonType == PostDetailsButtonType.COOLDOWN) {
-                            stringResource(state.buttonType.descriptionResId, state.formattedCooldown)
-                        } else {
-                            stringResource(state.buttonType.descriptionResId, post.nextTimeLimit)
+                        val descriptionText = when (state.buttonType) {
+                            PostDetailsButtonType.COOLDOWN ->
+                                stringResource(state.buttonType.descriptionResId, state.formattedCooldown)
+                            PostDetailsButtonType.MY_SESSION ->
+                                stringResource(state.buttonType.descriptionResId, state.formattedSessionTime)
+                            else ->
+                                stringResource(state.buttonType.descriptionResId, post.nextTimeLimit)
                         }
 
                         Text(

@@ -10,9 +10,9 @@ class MarkPostAsNotInterestedUseCase(
     private val handler: ApiHandler,
 ) {
 
-    suspend fun execute(postParentId: String): AppResult<Unit> {
+    suspend fun execute(postId: String): AppResult<Unit> {
         return handler.handle(Dispatchers.IO) {
-            userSession.markPostAsNotInterested(postParentId)
+            userSession.markPostAsNotInterested(postId)
         }
     }
 

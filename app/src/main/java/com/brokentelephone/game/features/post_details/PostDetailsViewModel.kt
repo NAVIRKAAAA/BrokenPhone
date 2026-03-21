@@ -6,10 +6,13 @@ import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.report.ReportPostType
+import com.brokentelephone.game.domain.model.session.GameSession
+import com.brokentelephone.game.domain.model.session.GameSessionStatus
 import com.brokentelephone.game.domain.model.session.cooldownRemainingMs
 import com.brokentelephone.game.essentials.exceptions.auth.PostNotFoundException
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.dashboard.model.PostUi
+import com.brokentelephone.game.features.post_details.model.PostDetailsButtonType
 import com.brokentelephone.game.features.post_details.model.PostDetailsSideEffect
 import com.brokentelephone.game.features.post_details.model.PostDetailsState
 import com.brokentelephone.game.features.post_details.use_case.BlockUserUseCase
@@ -19,6 +22,7 @@ import com.brokentelephone.game.features.post_details.use_case.JoinSessionUseCas
 import com.brokentelephone.game.features.post_details.use_case.MarkPostAsNotInterestedUseCase
 import com.brokentelephone.game.features.post_details.use_case.ReportPostUseCase
 import com.brokentelephone.game.features.profile.use_case.GetCurrentUserUseCase
+import com.brokentelephone.game.main.use_case.GetActiveSessionUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -42,12 +46,14 @@ class PostDetailsViewModel(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
     private val joinSessionUseCase: JoinSessionUseCase,
+    private val getActiveSessionUseCase: GetActiveSessionUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PostDetailsState())
     val state = _state.asStateFlow()
 
     private var cooldownTimerJob: Job? = null
+    private var sessionTimerJob: Job? = null
 
     private val _sideEffects = Channel<PostDetailsSideEffect>(Channel.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
@@ -56,10 +62,43 @@ class PostDetailsViewModel(
         getCurrentUserUseCase()
             .onEach { user ->
                 _state.update { it.copy(userUi = user) }
+                val sessionId = user?.sessionId
+                if (sessionId != null) {
+                    loadActiveSession(sessionId)
+                } else {
+                    sessionTimerJob?.cancel()
+                    _state.update { it.copy(activeSession = null, sessionRemainingSeconds = 0) }
+                }
             }
             .launchIn(viewModelScope)
 
         loadPost()
+    }
+
+    private fun loadActiveSession(sessionId: String) {
+        viewModelScope.launch {
+            getActiveSessionUseCase.execute(sessionId).onSuccess { session ->
+                if (session.status == GameSessionStatus.ACTIVE && session.postId == postId) {
+                    _state.update { it.copy(activeSession = session) }
+                    startSessionTimer(session)
+                } else {
+                    sessionTimerJob?.cancel()
+                    _state.update { it.copy(activeSession = null, sessionRemainingSeconds = 0) }
+                }
+            }
+        }
+    }
+
+    private fun startSessionTimer(session: GameSession) {
+        sessionTimerJob?.cancel()
+        sessionTimerJob = viewModelScope.launch {
+            while (isActive) {
+                val remaining = ((session.expiresAt - System.currentTimeMillis()) / 1000).toInt()
+                _state.update { it.copy(sessionRemainingSeconds = remaining.coerceAtLeast(0)) }
+                if (remaining <= 0) break
+                delay(1000)
+            }
+        }
     }
 
     private fun updateCooldown(postUi: PostUi) {
@@ -153,19 +192,17 @@ class PostDetailsViewModel(
     }
 
     fun onNotInterestedClick() {
-//        val post = state.value.postUi ?: return
-//        val postParentId = post.parentId
-//        _state.update { it.copy(isBottomSheetVisible = false) }
-//
-//        viewModelScope.launch {
-//            markPostAsNotInterestedUseCase.execute(postParentId).onSuccess {
-//                _sideEffects.send(PostDetailsSideEffect.NavigateBackWithForceUpdate)
-//            }.onError { exception ->
-//                _state.update {
-//                    it.copy(globalError = exceptionToMessageMapper.map(exception))
-//                }
-//            }
-//        }
+        _state.update { it.copy(isBottomSheetVisible = false) }
+
+        viewModelScope.launch {
+            markPostAsNotInterestedUseCase.execute(postId).onSuccess {
+                _sideEffects.send(PostDetailsSideEffect.NavigateBackWithForceUpdate)
+            }.onError { exception ->
+                _state.update {
+                    it.copy(globalError = exceptionToMessageMapper.map(exception))
+                }
+            }
+        }
     }
 
     fun onBlockConfirm() {
@@ -189,7 +226,21 @@ class PostDetailsViewModel(
     }
 
     fun onContinueClick() {
-        val post = state.value.postUi ?: return
+        val currentState = state.value
+        val post = currentState.postUi ?: return
+
+        if (currentState.buttonType == PostDetailsButtonType.MY_SESSION) {
+            val session = currentState.activeSession ?: return
+            viewModelScope.launch {
+                val effect = when (post.content) {
+                    is PostContent.Text -> PostDetailsSideEffect.NavigateToDraw(session.id)
+                    is PostContent.Drawing -> PostDetailsSideEffect.NavigateToDescribeDrawing(session.id)
+                }
+                _sideEffects.send(effect)
+            }
+            return
+        }
+
         _state.update { it.copy(isContinueLoading = true) }
         viewModelScope.launch {
             joinSessionUseCase.execute(postId, post.nextTimeLimit).onSuccess { session ->
