@@ -2,6 +2,7 @@ package com.brokentelephone.game.data.repository
 
 import android.content.Context
 import android.util.Log
+import com.brokentelephone.game.domain.model.auth.GoogleAuthResult
 import com.brokentelephone.game.domain.repository.AuthRepository
 import com.brokentelephone.game.essentials.exceptions.auth.EmailAlreadyInUseException
 import com.brokentelephone.game.essentials.exceptions.auth.InvalidActionCodeException
@@ -21,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.actionCodeSettings
 import kotlinx.coroutines.tasks.await
 
@@ -41,6 +43,25 @@ class AuthRepositoryImpl(
             throw InvalidEmailException()
         } catch (_: FirebaseAuthWeakPasswordException) {
             throw WeakPasswordException()
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (_: FirebaseTooManyRequestsException) {
+            throw TooManyRequestsException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
+
+    override suspend fun signInWithGoogle(idToken: String): GoogleAuthResult {
+        return try {
+            val credential = GoogleAuthProvider.getCredential(idToken, null)
+            val authResult = firebaseAuth.signInWithCredential(credential).await()
+            val uid = authResult.user?.uid ?: throw UnknownAuthException()
+            val email = authResult.user?.email.orEmpty()
+            val isNewUser = authResult.additionalUserInfo?.isNewUser ?: false
+            GoogleAuthResult(uid = uid, email = email, isNewUser = isNewUser)
+        } catch (_: FirebaseAuthUserCollisionException) {
+            throw EmailAlreadyInUseException()
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
         } catch (_: FirebaseTooManyRequestsException) {

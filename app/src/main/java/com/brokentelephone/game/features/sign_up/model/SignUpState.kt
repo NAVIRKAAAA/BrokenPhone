@@ -11,10 +11,12 @@ data class SignUpState(
     val confirmPasswordError: String? = null,
     val globalError: String? = null,
     val isLoading: Boolean = false,
+    val isGoogleLoading: Boolean = false,
 ) {
     val isSignUpEnabled: Boolean
         get() = email.isNotBlank()
             && password.isNotBlank()
             && confirmPassword.isNotBlank()
             && !isLoading
+            && !isGoogleLoading
 }

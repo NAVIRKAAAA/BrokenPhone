@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -22,21 +21,14 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.LinkAnnotation
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withLink
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.button.AuthButton
+import com.brokentelephone.game.core.button.GoogleSignInButton
+import com.brokentelephone.game.core.divider.OrDivider
+import com.brokentelephone.game.core.text.TermsAndPrivacyText
 import com.brokentelephone.game.core.text_field.SignUpTextField
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.top_bar.AuthTopBar
@@ -57,6 +49,7 @@ fun SignUpContent(
     onSignInClick: () -> Unit = {},
     onTermsClick: () -> Unit = {},
     onPrivacyPolicyClick: () -> Unit = {},
+    onGoogleSignInClick: () -> Unit = {},
 ) {
     Column(
         modifier = modifier
@@ -141,69 +134,53 @@ fun SignUpContent(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-            val primaryColor = MaterialTheme.colorScheme.primary
 
-            val signInText = buildAnnotatedString {
-                append("${stringResource(R.string.sign_up_already_have_account)} ")
-                withLink(
-                    LinkAnnotation.Clickable(
-                        tag = "SIGN_IN",
-                        linkInteractionListener = { onSignInClick() },
-                    )
-                ) {
-                    withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.None)) {
-                        append(stringResource(R.string.sign_up_sign_in_link))
-                    }
-                }
-            }
+            OrDivider()
 
-            Text(
-                text = signInText,
-                textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(R.font.nunito_semi_bold)),
-                fontSize = 14.sp,
-                lineHeight = 21.sp,
-                modifier = Modifier.padding(horizontal = 16.dp),
-                color = MaterialTheme.colorScheme.onBackground,
+            Spacer(modifier = Modifier.height(16.dp))
+
+            GoogleSignInButton(
+                onClick = onGoogleSignInClick,
+                isLoading = state.isGoogleLoading,
+                enabled = !state.isLoading,
             )
+//            val primaryColor = MaterialTheme.colorScheme.primary
+//
+//            val signInText = buildAnnotatedString {
+//                append("${stringResource(R.string.sign_up_already_have_account)} ")
+//                withLink(
+//                    LinkAnnotation.Clickable(
+//                        tag = "SIGN_IN",
+//                        linkInteractionListener = { onSignInClick() },
+//                    )
+//                ) {
+//                    withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.None)) {
+//                        append(stringResource(R.string.sign_up_sign_in_link))
+//                    }
+//                }
+//            }
+//
+//            Text(
+//                text = signInText,
+//                textAlign = TextAlign.Center,
+//                fontFamily = FontFamily(Font(R.font.nunito_semi_bold)),
+//                fontSize = 14.sp,
+//                lineHeight = 21.sp,
+//                modifier = Modifier.padding(horizontal = 16.dp),
+//                color = MaterialTheme.colorScheme.onBackground,
+//            )
 
             Spacer(modifier = Modifier.weight(1f))
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            val termsText = buildAnnotatedString {
-                append("${stringResource(R.string.sign_up_terms_prefix)} ")
-                withLink(
-                    LinkAnnotation.Clickable(
-                        tag = "TERMS",
-                        linkInteractionListener = { onTermsClick() },
-                    )
-                ) {
-                    withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.None)) {
-                        append(stringResource(R.string.sign_up_terms))
-                    }
-                }
-                append(" ${stringResource(R.string.sign_up_terms_and)} ")
-                withLink(
-                    LinkAnnotation.Clickable(
-                        tag = "PRIVACY",
-                        linkInteractionListener = { onPrivacyPolicyClick() },
-                    )
-                ) {
-                    withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.None)) {
-                        append(stringResource(R.string.sign_up_privacy_policy))
-                    }
-                }
-            }
-
-            Text(
-                text = termsText,
-                textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                fontSize = 12.sp,
-                lineHeight = 16.sp,
-                modifier = Modifier.padding(horizontal = 16.dp),
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+            TermsAndPrivacyText(
+                prefix = stringResource(R.string.sign_up_terms_prefix),
+                termsText = stringResource(R.string.sign_up_terms),
+                andText = stringResource(R.string.sign_up_terms_and),
+                privacyPolicyText = stringResource(R.string.sign_up_privacy_policy),
+                onTermsClick = onTermsClick,
+                onPrivacyPolicyClick = onPrivacyPolicyClick,
             )
 
             Spacer(modifier = Modifier.height(16.dp))

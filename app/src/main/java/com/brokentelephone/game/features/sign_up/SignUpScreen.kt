@@ -17,6 +17,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun SignUpScreen(
     onBackClick: () -> Unit,
     onSignedUp: () -> Unit = {},
+    onNavigateToChooseAvatar: () -> Unit = {},
     onSignInClick: () -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: SignUpViewModel = koinViewModel(),
@@ -29,6 +30,7 @@ fun SignUpScreen(
         viewModel.sideEffects.collect { effect ->
             when (effect) {
                 SignUpSideEffect.SignedUp -> onSignedUp()
+                SignUpSideEffect.NavigateToChooseAvatar -> onNavigateToChooseAvatar()
                 SignUpSideEffect.ClearFocus -> focusManager.clearFocus()
                 is SignUpSideEffect.OpenLink -> context.openCustomTab(effect.url)
             }
@@ -47,6 +49,7 @@ fun SignUpScreen(
         onSignInClick = onSignInClick,
         onTermsClick = viewModel::onTermsClick,
         onPrivacyPolicyClick = viewModel::onPrivacyPolicyClick,
+        onGoogleSignInClick = viewModel::onGoogleSignInClick,
         modifier = modifier,
     )
 

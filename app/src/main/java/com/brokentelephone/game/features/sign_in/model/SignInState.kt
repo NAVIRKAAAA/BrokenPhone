@@ -7,9 +7,10 @@ data class SignInState(
     val password: String = "",
     val isPasswordVisible: Boolean = false,
     val isLoading: Boolean = false,
+    val isGoogleLoading: Boolean = false,
     val credentialsError: String? = null,
     val globalError: String? = null,
 ) {
     val isSignInEnabled: Boolean
-        get() = email.text.isNotBlank() && password.isNotBlank() && !isLoading
+        get() = email.text.isNotBlank() && password.isNotBlank() && !isLoading && !isGoogleLoading
 }

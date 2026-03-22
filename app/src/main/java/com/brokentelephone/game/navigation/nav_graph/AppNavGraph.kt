@@ -312,6 +312,11 @@ fun AppNavGraph(
                         popUpTo(0) { inclusive = true }
                     }
                 },
+                onNavigateToChooseAvatar = {
+                    navController.navigateSingle(Routes.ChooseAvatar) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
                 onSignUpClick = {
                     navController.navigateSingle(Routes.SignUp)
                 },
@@ -379,6 +384,11 @@ fun AppNavGraph(
             SignUpScreen(
                 onBackClick = navController::safePopBackStack,
                 onSignedUp = {
+                    navController.navigateSingle(Routes.Dashboard) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
+                onNavigateToChooseAvatar = {
                     navController.navigateSingle(Routes.ChooseAvatar) {
                         popUpTo(0) { inclusive = true }
                     }

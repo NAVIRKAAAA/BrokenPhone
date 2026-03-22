@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -22,20 +21,10 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.LinkAnnotation
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withLink
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.button.AuthButton
 import com.brokentelephone.game.core.text_field.SignUpTextFieldValue
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
@@ -43,7 +32,6 @@ import com.brokentelephone.game.core.top_bar.AuthTopBar
 import com.brokentelephone.game.features.forgot_password.R
 import com.brokentelephone.game.features.forgot_password.model.ForgotPasswordState
 import kotlinx.coroutines.delay
-import com.brokentelephone.game.core.R as CoreR
 
 @Composable
 fun ForgotPasswordContent(
@@ -105,37 +93,37 @@ fun ForgotPasswordContent(
                 isLoading = state.isLoading,
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+//            Spacer(modifier = Modifier.height(16.dp))
 
-            val primaryColor = MaterialTheme.colorScheme.primary
-            val signInText = buildAnnotatedString {
-                append("${stringResource(R.string.forgot_password_remember_password)} ")
-                withLink(
-                    LinkAnnotation.Clickable(
-                        tag = "SIGN_IN",
-                        linkInteractionListener = { onBackClick() },
-                    )
-                ) {
-                    withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.None)) {
-                        append(stringResource(R.string.forgot_password_sign_in_link))
-                    }
-                }
-            }
-
-            Text(
-                text = signInText,
-                textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(CoreR.font.nunito_semi_bold)),
-                fontSize = 14.sp,
-                lineHeight = 21.sp,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.padding(horizontal = 16.dp),
-            )
+//            val primaryColor = MaterialTheme.colorScheme.primary
+//            val signInText = buildAnnotatedString {
+//                append("${stringResource(R.string.forgot_password_remember_password)} ")
+//                withLink(
+//                    LinkAnnotation.Clickable(
+//                        tag = "SIGN_IN",
+//                        linkInteractionListener = { onBackClick() },
+//                    )
+//                ) {
+//                    withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.None)) {
+//                        append(stringResource(R.string.forgot_password_sign_in_link))
+//                    }
+//                }
+//            }
+//
+//            Text(
+//                text = signInText,
+//                textAlign = TextAlign.Center,
+//                fontFamily = FontFamily(Font(CoreR.font.nunito_semi_bold)),
+//                fontSize = 14.sp,
+//                lineHeight = 21.sp,
+//                color = MaterialTheme.colorScheme.onBackground,
+//                modifier = Modifier.padding(horizontal = 16.dp),
+//            )
         }
     }
 }
 
-@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Preview()
 @Composable
 fun ForgotPasswordContentPreview() {
     BrokenTelephoneTheme {

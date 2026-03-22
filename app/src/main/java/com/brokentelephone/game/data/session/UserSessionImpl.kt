@@ -38,6 +38,9 @@ class UserSessionImpl(
 
     override suspend fun initialize() {
         val currentUser = firebaseAuth.currentUser
+
+        Log.d("LOG_TAG", "initialize: $currentUser")
+
         if (currentUser != null) {
             try {
                 val snapshot =
@@ -57,7 +60,7 @@ class UserSessionImpl(
         firebaseAuth.addAuthStateListener { auth ->
             val user = auth.currentUser
 
-            Log.d("LOG_TAG", "isEmailVerified: ${user?.isEmailVerified}")
+            Log.d("LOG_TAG", "addAuthStateListener(): $user")
 
             firestoreListener?.remove()
             firestoreListener = null
@@ -78,9 +81,35 @@ class UserSessionImpl(
                 if (error != null || snapshot == null) return@addSnapshotListener
                 val user = snapshot.data?.let { User.fromMap(it) } ?: return@addSnapshotListener
                 _authState.value = if (isAnonymous) AuthState.Guest(user) else AuthState.Auth(user)
-                if (!isAnonymous) scope.launch { syncEmailIfNeeded(uid, user.email) }
+                if (!isAnonymous) {
+                    scope.launch { syncEmailIfNeeded(uid, user.email) }
+//                    scope.launch { syncAuthProviderIfNeeded(uid, user.authProvider) }
+                }
             }
     }
+
+//    private suspend fun syncAuthProviderIfNeeded(uid: String, firestoreAuthProvider: AuthProvider) {
+//        val firebaseProvider = firebaseAuth.currentUser?.providerData
+//            ?.firstOrNull { it.providerId != "firebase" }
+//            ?.providerId
+//            ?.let {
+//                when (it) {
+//                    "google.com" -> AuthProvider.GOOGLE
+//                    "password" -> AuthProvider.EMAIL
+//                    else -> null
+//                }
+//            } ?: return
+//        if (firebaseProvider == firestoreAuthProvider) return
+//        try {
+//            firestore.collection(COLLECTION_USERS)
+//                .document(uid)
+//                .update(User.FIELD_AUTH_PROVIDER, firebaseProvider.name)
+//                .await()
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            // best-effort sync, ignore failures
+//        }
+//    }
 
     private suspend fun syncEmailIfNeeded(uid: String, firestoreEmail: String) {
         val authEmail = firebaseAuth.currentUser?.email ?: return

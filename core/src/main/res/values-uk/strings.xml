@@ -22,6 +22,7 @@
     <string name="notifications_dialog_rationale_body">Дізнавайся першим, коли твоя черга або ланцюжок завершено!</string>
     <string name="notifications_dialog_rationale_confirm">Дозволити</string>
 
+    <string name="common_or">або</string>
     <string name="common_cancel">Скасувати</string>
     <string name="common_post">Відправити</string>
     <string name="common_discard">Закинути</string>
@@ -211,6 +212,8 @@
     <string name="sign_up_password_show">Показати пароль</string>
     <string name="sign_up_password_hide">Сховати пароль</string>
 
+    <string name="google_sign_in_button">Продовжити з Google</string>
+    <string name="sign_in_terms_prefix">Входячи, ви погоджуєтесь з нашими</string>
     <string name="sign_in_title">З поверненням!</string>
     <string name="sign_in_email">Ел. пошта</string>
     <string name="sign_in_password">Пароль</string>

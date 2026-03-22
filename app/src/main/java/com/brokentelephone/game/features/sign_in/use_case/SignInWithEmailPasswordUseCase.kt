@@ -5,7 +5,7 @@ import com.brokentelephone.game.domain.api_handler.AppResult
 import com.brokentelephone.game.domain.repository.AuthRepository
 import kotlinx.coroutines.Dispatchers
 
-class SignInUseCase(
+class SignInWithEmailPasswordUseCase(
     private val authRepository: AuthRepository,
     private val handler: ApiHandler,
 ) {

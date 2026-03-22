@@ -2,6 +2,7 @@
     <string name="app_name">Broken Telephone: Draw &amp; Guess</string>
 
     <!-- Common -->
+    <string name="common_or">or</string>
     <string name="common_cancel">Cancel</string>
     <string name="common_post">Submit</string>
     <string name="common_discard">Discard</string>
@@ -160,7 +161,11 @@
     <string name="dashboard_badge_complete">Finished!</string>
     <string name="dashboard_badge_you">You!</string>
 
+    <!-- Google Sign In -->
+    <string name="google_sign_in_button">Continue with Google</string>
+
     <!-- Sign In -->
+    <string name="sign_in_terms_prefix">By signing in, you agree to our</string>
     <string name="sign_in_title">Welcome Back</string>
     <string name="sign_in_email">Email</string>
     <string name="sign_in_password">Password</string>

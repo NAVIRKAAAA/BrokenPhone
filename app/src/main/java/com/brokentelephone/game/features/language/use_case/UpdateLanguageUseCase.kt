@@ -6,5 +6,7 @@ import com.brokentelephone.game.domain.repository.UserSettingsRepository
 class UpdateLanguageUseCase(
     private val repository: UserSettingsRepository,
 ) {
-    suspend operator fun invoke(language: Language) = repository.updateLanguage(language)
+    suspend operator fun invoke(language: Language) {
+        return repository.updateLanguage(language)
+    }
 }

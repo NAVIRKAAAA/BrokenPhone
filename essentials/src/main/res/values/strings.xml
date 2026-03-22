@@ -10,6 +10,7 @@
     <string name="error_auth_invalid_credentials">Incorrect email or password.</string>
     <string name="error_auth_unknown">Something went wrong. Please try again.</string>
     <string name="error_cancelled">Request timed out. Please try again.</string>
+    <string name="error_google_sign_in_cancelled">Google sign-in was cancelled.</string>
     <string name="error_session_data">Couldn\'t load your account data. Please check your connection and try again.</string>
     <string name="error_unauthorized">You need to be signed in to perform this action.</string>
     <string name="error_image_upload">Failed to upload image. Please try again.</string>

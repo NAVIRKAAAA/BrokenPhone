@@ -1,6 +1,7 @@
 package com.brokentelephone.game.di
 
 import com.brokentelephone.game.core.timer.CountdownTimer
+import com.brokentelephone.game.data.google.GoogleSignInManagerImpl
 import com.brokentelephone.game.data.handler.ApiHandlerImpl
 import com.brokentelephone.game.data.link.MockLinkProviderImpl
 import com.brokentelephone.game.data.repository.AuthRepositoryImpl
@@ -13,6 +14,7 @@ import com.brokentelephone.game.data.repository.UsersRepositoryImpl
 import com.brokentelephone.game.data.session.UserSessionImpl
 import com.brokentelephone.game.data.storage.FirebaseImageStorage
 import com.brokentelephone.game.domain.api_handler.ApiHandler
+import com.brokentelephone.game.domain.google.GoogleSignInManager
 import com.brokentelephone.game.domain.link.LinkProvider
 import com.brokentelephone.game.domain.repository.AppInfoRepository
 import com.brokentelephone.game.domain.repository.AuthRepository
@@ -24,6 +26,7 @@ import com.brokentelephone.game.domain.repository.UsersRepository
 import com.brokentelephone.game.domain.storage.ImageStorage
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.domain.use_case.LogoutUseCase
+import com.brokentelephone.game.domain.use_case.SignInWithGoogleUseCase
 import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.essentials.validation.SignUpValidator
 import com.brokentelephone.game.features.account_settings.AccountSettingsViewModel
@@ -79,7 +82,7 @@ import com.brokentelephone.game.features.settings.use_case.GetPrivacyPolicyLinkU
 import com.brokentelephone.game.features.settings.use_case.GetTermsOfServiceLinkUseCase
 import com.brokentelephone.game.features.settings.use_case.GetVersionInfoUseCase
 import com.brokentelephone.game.features.sign_in.SignInViewModel
-import com.brokentelephone.game.features.sign_in.use_case.SignInUseCase
+import com.brokentelephone.game.features.sign_in.use_case.SignInWithEmailPasswordUseCase
 import com.brokentelephone.game.features.sign_up.SignUpViewModel
 import com.brokentelephone.game.features.sign_up.use_case.SignUpUseCase
 import com.brokentelephone.game.features.sign_up.use_case.ValidateSignUpUseCase
@@ -110,6 +113,7 @@ val appModule = module {
     single<PostRepository> { PostsRepositoryImpl(get()) }
     single<GameSessionRepository> { GameSessionRepositoryImpl(get()) }
     single<AuthRepository> { AuthRepositoryImpl(get(), androidContext()) }
+    single<GoogleSignInManager> { GoogleSignInManagerImpl(androidContext()) }
     single { FirebaseAuth.getInstance() }
     single {
         FirebaseFirestore.getInstance().apply {
@@ -144,7 +148,8 @@ val appModule = module {
     factoryOf(::SignUpValidator)
     factoryOf(::ValidateSignUpUseCase)
     factoryOf(::SignUpUseCase)
-    factoryOf(::SignInUseCase)
+    factoryOf(::SignInWithEmailPasswordUseCase)
+    factoryOf(::SignInWithGoogleUseCase)
     factoryOf(::GetCurrentUserUseCase)
     factoryOf(::UpdateUsernameUseCase)
     factoryOf(::UpdateAvatarUseCase)

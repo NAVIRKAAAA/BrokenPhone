@@ -3,9 +3,9 @@ package com.brokentelephone.game.main
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -17,10 +17,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -31,11 +29,9 @@ import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.banner.ActiveSessionBanner
 import com.brokentelephone.game.core.dialog.ConfirmDialog
 import com.brokentelephone.game.core.dialog.LoadingDialog
-import com.brokentelephone.game.core.locale.LocalizedContextWrapper
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.LocalAppLanguage
 import com.brokentelephone.game.domain.model.settings.AppTheme
-import com.brokentelephone.game.domain.model.settings.Language
 import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBar
 import com.brokentelephone.game.navigation.nav_graph.AppNavGraph
 import com.brokentelephone.game.navigation.routes.Routes
@@ -45,7 +41,7 @@ import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
     private val mainViewModel: MainViewModel by viewModel()
 
@@ -76,9 +72,11 @@ class MainActivity : ComponentActivity() {
                         is MainSideEffect.NavigateToDraw -> {
                             navController.navigateSingle(effect.route)
                         }
+
                         is MainSideEffect.NavigateToDescribeDrawing -> {
                             navController.navigateSingle(effect.route)
                         }
+
                         is MainSideEffect.NavigateToSignIn -> {
                             navController.navigate(Routes.Welcome) {
                                 popUpTo(0) { inclusive = true }
@@ -102,19 +100,8 @@ class MainActivity : ComponentActivity() {
                 controller.isAppearanceLightNavigationBars = false
             }
 
-            val locale = remember(state.language) {
-                when (state.language) {
-                    Language.ENGLISH -> Locale.ENGLISH
-                    Language.UKRAINIAN -> Locale.forLanguageTag("uk")
-                }
-            }
-            val localizedContext = remember(locale) {
-                LocalizedContextWrapper(base = this@MainActivity, locale = locale)
-            }
-
             CompositionLocalProvider(
-                LocalAppLanguage provides state.language,
-                LocalContext provides localizedContext,
+                LocalAppLanguage provides state.language
             ) {
                 BrokenTelephoneTheme(darkTheme = isDarkTheme) {
 

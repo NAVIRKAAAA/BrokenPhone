@@ -4,8 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.brokentelephone.game.core.browser.openCustomTab
 import com.brokentelephone.game.core.dialog.ErrorDialog
 import com.brokentelephone.game.features.sign_in.content.SignInContent
 import com.brokentelephone.game.features.sign_in.model.SignInSideEffect
@@ -17,6 +19,7 @@ fun SignInScreen(
     initialEmail: String = "",
     onBackClick: () -> Unit,
     onSignedIn: () -> Unit = {},
+    onNavigateToChooseAvatar: () -> Unit = {},
     onSignUpClick: () -> Unit = {},
     onForgotPasswordClick: (email: String) -> Unit = {},
     modifier: Modifier = Modifier,
@@ -24,12 +27,15 @@ fun SignInScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.sideEffects.collect { effect ->
             when (effect) {
                 SignInSideEffect.SignedIn -> onSignedIn()
+                SignInSideEffect.NavigateToChooseAvatar -> onNavigateToChooseAvatar()
                 SignInSideEffect.ClearFocus -> focusManager.clearFocus()
+                is SignInSideEffect.OpenLink -> context.openCustomTab(effect.url)
             }
         }
     }
@@ -43,6 +49,9 @@ fun SignInScreen(
         onSignInClick = viewModel::onSignInClick,
         onSignUpClick = onSignUpClick,
         onForgotPasswordClick = { onForgotPasswordClick(state.email.text) },
+        onTermsClick = viewModel::onTermsClick,
+        onPrivacyPolicyClick = viewModel::onPrivacyPolicyClick,
+        onGoogleSignInClick = viewModel::onGoogleSignInClick,
         modifier = modifier,
     )
 

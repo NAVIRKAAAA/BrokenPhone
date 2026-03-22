@@ -1,7 +1,7 @@
 package com.brokentelephone.game.features.choose_username.model
 
 object SuggestedUsernames {
-    val all: List<String> = listOf(
+    private val all: List<String> = listOf(
         "Scribble King",
         "Bad Artist",
         "Blind Guesser",
@@ -104,4 +104,5 @@ object SuggestedUsernames {
     )
 
     fun random10(): List<String> = all.shuffled().take(10)
+    fun random(): String = all.random()
 }

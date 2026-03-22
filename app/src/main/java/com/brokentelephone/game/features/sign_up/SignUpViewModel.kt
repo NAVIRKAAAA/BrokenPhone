@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
+import com.brokentelephone.game.domain.use_case.SignInWithGoogleUseCase
+import com.brokentelephone.game.essentials.exceptions.auth.GoogleSignInCancelledException
 import com.brokentelephone.game.essentials.exceptions.auth.InvalidEmailException
 import com.brokentelephone.game.essentials.exceptions.auth.PasswordsDoNotMatchException
 import com.brokentelephone.game.essentials.exceptions.auth.WeakPasswordException
@@ -23,6 +25,7 @@ import kotlinx.coroutines.launch
 
 class SignUpViewModel(
     private val signUpUseCase: SignUpUseCase,
+    private val signInWithGoogleUseCase: SignInWithGoogleUseCase,
     private val validateSignUpUseCase: ValidateSignUpUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
     private val getTermsOfServiceLinkUseCase: GetTermsOfServiceLinkUseCase,
@@ -71,6 +74,29 @@ class SignUpViewModel(
         }
     }
 
+    fun onGoogleSignInClick() {
+        if (_state.value.isGoogleLoading || _state.value.isLoading) return
+
+        viewModelScope.launch {
+            _state.update { it.copy(isGoogleLoading = true) }
+
+            signInWithGoogleUseCase.execute().onSuccess { isNewUser ->
+                _state.update { it.copy(isGoogleLoading = false) }
+                if (isNewUser) {
+                    _sideEffects.send(SignUpSideEffect.NavigateToChooseAvatar)
+                } else {
+                    _sideEffects.send(SignUpSideEffect.SignedUp)
+                }
+            }.onError { exception ->
+                if (exception !is GoogleSignInCancelledException) {
+                    _state.update { it.copy(isGoogleLoading = false, globalError = exceptionToMessageMapper.map(exception)) }
+                } else {
+                    _state.update { it.copy(isGoogleLoading = false) }
+                }
+            }
+        }
+    }
+
     fun onSignUpClick() {
         val currentState = state.value.copy(email = state.value.email.trim())
         if (!currentState.isSignUpEnabled) return
@@ -101,7 +127,7 @@ class SignUpViewModel(
 
             signUpUseCase.execute(currentState.email, currentState.password).onSuccess {
                 _state.update { it.copy(isLoading = false) }
-                _sideEffects.send(SignUpSideEffect.SignedUp)
+                _sideEffects.send(SignUpSideEffect.NavigateToChooseAvatar)
             }.onError { error ->
                 val message = exceptionToMessageMapper.map(error)
                 _state.update { it.copy(isLoading = false, globalError = message) }
