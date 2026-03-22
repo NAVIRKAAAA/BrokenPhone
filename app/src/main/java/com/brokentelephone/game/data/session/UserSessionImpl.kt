@@ -1,7 +1,9 @@
 package com.brokentelephone.game.data.session
 
 import android.util.Log
+import com.brokentelephone.game.data.ext.toAuthProvider
 import com.brokentelephone.game.domain.model.settings.NotificationType
+import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.domain.user.AuthState
 import com.brokentelephone.game.domain.user.BlockedUser
 import com.brokentelephone.game.domain.user.OnboardingStep
@@ -83,33 +85,28 @@ class UserSessionImpl(
                 _authState.value = if (isAnonymous) AuthState.Guest(user) else AuthState.Auth(user)
                 if (!isAnonymous) {
                     scope.launch { syncEmailIfNeeded(uid, user.email) }
-//                    scope.launch { syncAuthProviderIfNeeded(uid, user.authProvider) }
+                    scope.launch { syncAuthProviderIfNeeded(uid, user.authProvider) }
                 }
             }
     }
 
-//    private suspend fun syncAuthProviderIfNeeded(uid: String, firestoreAuthProvider: AuthProvider) {
-//        val firebaseProvider = firebaseAuth.currentUser?.providerData
-//            ?.firstOrNull { it.providerId != "firebase" }
-//            ?.providerId
-//            ?.let {
-//                when (it) {
-//                    "google.com" -> AuthProvider.GOOGLE
-//                    "password" -> AuthProvider.EMAIL
-//                    else -> null
-//                }
-//            } ?: return
-//        if (firebaseProvider == firestoreAuthProvider) return
-//        try {
-//            firestore.collection(COLLECTION_USERS)
-//                .document(uid)
-//                .update(User.FIELD_AUTH_PROVIDER, firebaseProvider.name)
-//                .await()
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            // best-effort sync, ignore failures
-//        }
-//    }
+    private suspend fun syncAuthProviderIfNeeded(uid: String, firestoreAuthProvider: AuthProvider) {
+        val firebaseProvider = firebaseAuth.currentUser?.providerData
+            ?.lastOrNull { it.providerId != "firebase" }
+            ?.providerId
+            ?.toAuthProvider() ?: return
+
+        if (firebaseProvider == firestoreAuthProvider) return
+        try {
+            firestore.collection(COLLECTION_USERS)
+                .document(uid)
+                .update(User.FIELD_AUTH_PROVIDER, firebaseProvider.name)
+                .await()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // best-effort sync, ignore failures
+        }
+    }
 
     private suspend fun syncEmailIfNeeded(uid: String, firestoreEmail: String) {
         val authEmail = firebaseAuth.currentUser?.email ?: return
