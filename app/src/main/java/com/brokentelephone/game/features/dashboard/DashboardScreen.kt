@@ -88,7 +88,7 @@ fun DashboardScreen(
                 }
 
                 DashboardSideEffect.ScrollToTop -> {
-                    scope.launch { listState.scrollToItem(0) }
+                   listState.animateScrollToItem(0)
                 }
             }
         }

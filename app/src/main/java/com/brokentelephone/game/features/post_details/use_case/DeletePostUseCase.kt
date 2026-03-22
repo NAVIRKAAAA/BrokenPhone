@@ -9,9 +9,9 @@ class DeletePostUseCase(
     private val repository: PostRepository,
     private val handler: ApiHandler
 ) {
-    suspend fun execute(postId: String, parentId: String) : AppResult<Unit> {
+    suspend fun execute(postId: String) : AppResult<Unit> {
         return handler.handle(Dispatchers.IO) {
-            repository.deletePost(postId, parentId)
+            repository.deletePost(postId)
         }
     }
 }

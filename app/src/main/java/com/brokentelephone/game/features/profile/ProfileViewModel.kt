@@ -158,26 +158,26 @@ class ProfileViewModel(
         _state.update { it.copy(isDeleteLoading = true) }
 
         viewModelScope.launch {
-//            deletePostUseCase.execute(post.id, post.parentId).onSuccess {
-//                _state.update {
-//                    it.copy(
-//                        isDeleteLoading = false,
-//                        isDeleteDialogVisible = false,
-//                        selectedPost = null
-//                    )
-//                }
-//
-//                onRefresh()
-//            }.onError { exception ->
-//                _state.update {
-//                    it.copy(
-//                        isDeleteLoading = false,
-//                        isDeleteDialogVisible = false,
-//                        selectedPost = null,
-//                        globalError = exceptionToMessageMapper.map(exception)
-//                    )
-//                }
-//            }
+            deletePostUseCase.execute(post.id).onSuccess {
+                _state.update {
+                    it.copy(
+                        isDeleteLoading = false,
+                        isDeleteDialogVisible = false,
+                        selectedPost = null
+                    )
+                }
+
+                onRefresh()
+            }.onError { exception ->
+                _state.update {
+                    it.copy(
+                        isDeleteLoading = false,
+                        isDeleteDialogVisible = false,
+                        selectedPost = null,
+                        globalError = exceptionToMessageMapper.map(exception)
+                    )
+                }
+            }
 
         }
     }

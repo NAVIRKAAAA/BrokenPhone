@@ -12,7 +12,9 @@ import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
 import com.brokentelephone.game.domain.model.sort.DashboardSort
 import com.brokentelephone.game.domain.repository.PostRepository
+import com.brokentelephone.game.essentials.exceptions.auth.CannotDeletePostException
 import com.brokentelephone.game.essentials.exceptions.auth.NetworkException
+import com.brokentelephone.game.essentials.exceptions.auth.PostInProgressException
 import com.brokentelephone.game.essentials.exceptions.auth.PostNotFoundException
 import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
 import com.brokentelephone.game.essentials.exceptions.main.AppException
@@ -248,14 +250,48 @@ class PostsRepositoryImpl(
         }
     }
 
-    override suspend fun deletePost(postId: String, parentId: String) {
+    override suspend fun deletePost(postId: String) {
         try {
-//            if (postId == parentId) {
-//                val postDoc = collection.document(postId).get().await()
-//                deleteRootPost(postId, postDoc)
-//            } else {
-//                deleteContinuation(postId, rootPostId = parentId)
-//            }
+            val post = collection.document(postId).get().await()
+                .data?.toPost() ?: throw PostNotFoundException()
+
+            val chainGeneration = collection.firestore
+                .collection(CHAINS_COLLECTION)
+                .document(post.chainId)
+                .get()
+                .await()
+                .getLong(FIELD_GENERATION)?.toInt() ?: throw PostNotFoundException()
+
+            if (post.status == PostStatus.IN_PROGRESS) throw PostInProgressException()
+            if (chainGeneration != post.generation) throw CannotDeletePostException()
+            if (chainGeneration == post.maxGenerations) throw CannotDeletePostException()
+
+            val postRef = collection.document(postId)
+            val chainRef = collection.firestore
+                .collection(CHAINS_COLLECTION)
+                .document(post.chainId)
+            val userPostRef = collection.firestore
+                .collection(USERS_COLLECTION)
+                .document(post.authorId)
+                .collection(USER_POSTS_COLLECTION)
+                .document(postId)
+            val userContributionRef = collection.firestore
+                .collection(USERS_COLLECTION)
+                .document(post.authorId)
+                .collection(CONTRIBUTIONS_COLLECTION)
+                .document(postId)
+
+            val userDocRef = if (userPostRef.get().await().exists()) {
+                userPostRef
+            } else {
+                userContributionRef
+            }
+
+            collection.firestore.runBatch { batch ->
+                batch.delete(postRef)
+                batch.delete(chainRef)
+                batch.delete(userDocRef)
+            }.await()
         } catch (e: AppException) {
             throw e
         } catch (_: FirebaseNetworkException) {
@@ -265,87 +301,6 @@ class PostsRepositoryImpl(
         } catch (_: Exception) {
             throw UnknownAuthException()
         }
-    }
-
-    private suspend fun deleteRootPost(postId: String, postDoc: DocumentSnapshot) {
-//        val post = postDoc.data?.toPost() ?: throw PostNotFoundException()
-//
-//        if (post.status == PostStatus.IN_PROGRESS) throw PostInProgressException()
-//
-//        val chainSnapshot = collection.document(postId).collection(CHAIN_COLLECTION).get().await()
-//        val chainCount = chainSnapshot.size()
-//        val canDelete = chainCount == 1 || post.generation != post.maxGenerations
-//        if (!canDelete) throw CannotDeletePostException()
-//
-//        val userPostRef = collection.firestore
-//            .collection(USERS_COLLECTION)
-//            .document(post.authorId)
-//            .collection(USER_POSTS_COLLECTION)
-//            .document(postId)
-//
-//        collection.firestore.runBatch { batch ->
-//            batch.delete(collection.document(postId))
-//            batch.delete(userPostRef)
-//            chainSnapshot.documents.forEach { batch.delete(it.reference) }
-//        }.await()
-    }
-
-    private suspend fun deleteContinuation(postId: String, rootPostId: String) {
-//
-//        val chainEntryDoc = collection.document(rootPostId)
-//            .collection(CHAIN_COLLECTION)
-//            .whereEqualTo(FIELD_ID, postId)
-//            .limit(1)
-//            .get()
-//            .await()
-//            .documents
-//            .firstOrNull() ?: throw PostNotFoundException()
-//
-//        val chainEntry = chainEntryDoc.data?.toPost() ?: throw PostNotFoundException()
-//
-//        val rootPost = collection.document(rootPostId).get().await()
-//            .data?.toPost() ?: throw PostNotFoundException()
-//
-//        if (rootPost.status == PostStatus.IN_PROGRESS) {
-//            throw PostInProgressException()
-//        }
-//        if (chainEntry.generation != rootPost.generation) {
-//            throw CannotDeletePostException()
-//        }
-//        if (chainEntry.generation == rootPost.maxGenerations) {
-//            throw CannotDeletePostException()
-//        }
-//
-//        val prevEntry = collection.document(rootPostId)
-//            .collection(CHAIN_COLLECTION)
-//            .whereEqualTo(FIELD_GENERATION, chainEntry.generation - 1)
-//            .limit(1)
-//            .get()
-//            .await()
-//            .documents
-//            .firstOrNull()?.data?.toPost() ?: throw PostNotFoundException()
-//
-//        val rolledBackPost = rootPost.copy(
-//            authorId = prevEntry.authorId,
-//            authorName = prevEntry.authorName,
-//            avatarUrl = prevEntry.avatarUrl,
-//            content = prevEntry.content,
-//            generation = prevEntry.generation,
-//            updatedAt = prevEntry.updatedAt,
-//            status = PostStatus.AVAILABLE,
-//        )
-//
-//        val contributionRef = collection.firestore
-//            .collection(USERS_COLLECTION)
-//            .document(chainEntry.authorId)
-//            .collection(CONTRIBUTIONS_COLLECTION)
-//            .document(postId)
-//
-//        collection.firestore.runBatch { batch ->
-//            batch.set(collection.document(rootPostId), rolledBackPost.toMap())
-//            batch.delete(chainEntryDoc.reference)
-//            batch.delete(contributionRef)
-//        }.await()
     }
 
     private fun contributionsCollection(userId: String) = collection.firestore

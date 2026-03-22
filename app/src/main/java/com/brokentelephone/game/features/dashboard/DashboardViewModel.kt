@@ -75,8 +75,6 @@ class DashboardViewModel(
                         )
                     }
 
-                    delay(500)
-
                     _sideEffects.send(DashboardSideEffect.ScrollToTop)
                 }
                 .onError { exception ->
@@ -134,10 +132,6 @@ class DashboardViewModel(
                             hasMore = page.hasMore,
                         )
                     }
-
-                    delay(500)
-
-                    _sideEffects.send(DashboardSideEffect.ScrollToTop)
                 }
                 .onError {
                     _state.update { it.copy(isRefreshing = false) }
