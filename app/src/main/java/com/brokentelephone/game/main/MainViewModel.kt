@@ -18,6 +18,7 @@ import com.brokentelephone.game.features.app_preferences.use_case.GetThemeUseCas
 import com.brokentelephone.game.features.language.use_case.InitializeLanguageUseCase
 import com.brokentelephone.game.features.post_details.use_case.GetPostByIdUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailChangeUseCase
+import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
 import com.brokentelephone.game.main.use_case.GetActiveSessionUseCase
 import com.brokentelephone.game.main.use_case.GetPendingEmailUseCase
 import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
@@ -42,6 +43,7 @@ class MainViewModel(
     private val getActiveSessionUseCase: GetActiveSessionUseCase,
     private val getPostByIdUseCase: GetPostByIdUseCase,
     private val applyEmailChangeUseCase: ApplyEmailChangeUseCase,
+    private val applyEmailVerificationUseCase: ApplyEmailVerificationUseCase,
     private val getPendingEmailUseCase: GetPendingEmailUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
@@ -79,10 +81,10 @@ class MainViewModel(
                 val user = authState.getUserOrNull()
 
                 val (destination, pendingRoutes) = when (user?.onboardingStep) {
-                    null -> Routes.Welcome to emptyList()
-                    OnboardingStep.CHOOSE_AVATAR -> Routes.ChooseAvatar to emptyList()
-                    OnboardingStep.CHOOSE_USERNAME -> Routes.ChooseAvatar to listOf(Routes.ChooseUsername)
-                    OnboardingStep.COMPLETED -> Routes.Dashboard to emptyList()
+                    null -> Routes.AuthGraph to emptyList()
+                    OnboardingStep.CHOOSE_AVATAR -> Routes.AuthGraph to emptyList()
+                    OnboardingStep.CHOOSE_USERNAME -> Routes.AuthGraph to listOf(Routes.ChooseUsername)
+                    OnboardingStep.COMPLETED -> Routes.MainGraph to emptyList()
                 }
 
                 _state.update {
@@ -193,20 +195,41 @@ class MainViewModel(
         }
     }
 
-    fun handleEmailChangeLink(uri: Uri) {
-        Log.d("LOG_TAG", "handleEmailChangeLink: $uri")
+    fun handleAuthLink(uri: Uri) {
+        Log.d("LOG_TAG", "handleAuthLink: $uri")
+
         val innerLink = uri.getQueryParameter("link") ?: return
         val innerUri = innerLink.toUri()
         val oobCode = innerUri.getQueryParameter("oobCode") ?: return
-        if (innerUri.getQueryParameter("mode") != "verifyAndChangeEmail") return
+        val mode = innerUri.getQueryParameter("mode") ?: return
 
-        Log.d("LOG_TAG", "oobCode: $oobCode")
+        Log.d("LOG_TAG", "mode: $mode, oobCode: $oobCode")
 
+        when (mode) {
+            "verifyAndChangeEmail" -> handleEmailChange(oobCode)
+            "verifyEmail" -> handleEmailVerification(oobCode)
+        }
+    }
+
+    private fun handleEmailVerification(oobCode: String) {
         viewModelScope.launch {
-            _state.update { it.copy(isEmailChanging = true) }
+            _state.update { it.copy(isLoading = true) }
+            applyEmailVerificationUseCase.execute(oobCode).onSuccess {
+                Log.d("LOG_TAG", "handleEmailVerification(): onSuccess")
+                // TODO: Show success banner
+            }.onError {exception ->
+                Log.d("LOG_TAG", "handleEmailVerification(): onError: $exception")
+            }
+            _state.update { it.copy(isLoading = false) }
+        }
+    }
+
+    private fun handleEmailChange(oobCode: String) {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
             applyEmailChangeUseCase.execute(oobCode)
             val pendingEmail = getPendingEmailUseCase.execute() ?: ""
-            _state.update { it.copy(isEmailChanging = false) }
+            _state.update { it.copy(isLoading = false) }
             _sideEffects.send(MainSideEffect.NavigateToSignIn(pendingEmail))
         }
     }

@@ -1,5 +1,6 @@
 package com.brokentelephone.game.features.profile
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.domain.api_handler.onError
@@ -49,6 +50,8 @@ class ProfileViewModel(
     private var lastLoadedAt: Long = 0L
 
     init {
+        Log.d("LOG_TAG", "ProfileViewModel Init")
+
         getAuthStateUseCase()
             .onEach { authState -> _state.update { it.copy(isAuth = authState.isAuth()) } }
             .launchIn(viewModelScope)

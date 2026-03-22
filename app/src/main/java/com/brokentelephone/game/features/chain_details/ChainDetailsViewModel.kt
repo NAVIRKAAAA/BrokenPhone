@@ -15,7 +15,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -75,8 +74,11 @@ class ChainDetailsViewModel(
 
     private fun loadPost() {
         viewModelScope.launch {
-            val post = getPostByIdUseCase.invoke(postId).firstOrNull() ?: return@launch
-            _state.update { it.copy(post = post) }
+
+            getPostByIdUseCase.executeWithResult(postId).onSuccess { post ->
+                _state.update { it.copy(post = post) }
+            }
+
         }
     }
 

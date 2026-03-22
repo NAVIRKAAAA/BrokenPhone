@@ -37,6 +37,21 @@ class UsersRepositoryImpl(
         }
     }
 
+    override suspend fun getUserByEmail(email: String): User? {
+        try {
+            val snapshot = collection.whereEqualTo(User.FIELD_EMAIL, email).get().await()
+            return snapshot.documents.firstOrNull()?.data?.let { User.fromMap(it) }
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (e: FirebaseFirestoreException) {
+            Log.d("LOG_TAG", "Error: $e")
+            throw e.toAppException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "Error: $e")
+            throw UnknownAuthException()
+        }
+    }
+
     override suspend fun createUser(
         id: String,
         email: String,

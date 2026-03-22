@@ -16,6 +16,7 @@ data class User(
     val blockedBy: List<String> = emptyList(),
     val notInterestedPostIds: List<String> = emptyList(),
     val sessionId: String? = null,
+    val isEmailVerified: Boolean = false,
 ) {
 
     fun toMap(): Map<String, Any?> = mapOf(
@@ -32,6 +33,7 @@ data class User(
         FIELD_BLOCKED_BY to blockedBy,
         FIELD_NOT_INTERESTED_POST_IDS to notInterestedPostIds,
         FIELD_SESSION_ID to sessionId,
+        FIELD_IS_EMAIL_VERIFIED to isEmailVerified,
     )
 
     companion object {
@@ -48,6 +50,7 @@ data class User(
         const val FIELD_BLOCKED_BY = "blockedBy"
         const val FIELD_NOT_INTERESTED_POST_IDS = "notInterestedPostIds"
         const val FIELD_SESSION_ID = "sessionId"
+        const val FIELD_IS_EMAIL_VERIFIED = "isEmailVerified"
 
         @Suppress("UNCHECKED_CAST")
         fun fromMap(map: Map<String, Any?>): User? {
@@ -70,6 +73,7 @@ data class User(
                     blockedBy = (map[FIELD_BLOCKED_BY] as? List<String>) ?: emptyList(),
                     notInterestedPostIds = (map[FIELD_NOT_INTERESTED_POST_IDS] as? List<String>) ?: emptyList(),
                     sessionId = map[FIELD_SESSION_ID] as? String,
+                    isEmailVerified = map[FIELD_IS_EMAIL_VERIFIED] as? Boolean ?: false,
                 )
             } catch (_: Exception) {
                 null

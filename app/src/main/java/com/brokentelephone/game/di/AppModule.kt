@@ -31,6 +31,7 @@ import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.essentials.validation.SignUpValidator
 import com.brokentelephone.game.features.account_settings.AccountSettingsViewModel
 import com.brokentelephone.game.features.account_settings.use_case.DeleteAccountUseCase
+import com.brokentelephone.game.features.account_settings.use_case.SendEmailVerificationUseCase
 import com.brokentelephone.game.features.app_preferences.use_case.GetLanguageUseCase
 import com.brokentelephone.game.features.app_preferences.use_case.GetThemeUseCase
 import com.brokentelephone.game.features.blocked_users.BlockedUsersViewModel
@@ -92,6 +93,7 @@ import com.brokentelephone.game.features.welcome.WelcomeViewModel
 import com.brokentelephone.game.features.welcome.use_case.SignInAnonymouslyUseCase
 import com.brokentelephone.game.main.MainViewModel
 import com.brokentelephone.game.main.use_case.ApplyEmailChangeUseCase
+import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
 import com.brokentelephone.game.main.use_case.GetActiveSessionUseCase
 import com.brokentelephone.game.main.use_case.GetPendingEmailUseCase
 import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
@@ -180,6 +182,7 @@ val appModule = module {
     factoryOf(::GetAuthStateUseCase)
     viewModelOf(::SettingsViewModel)
     factoryOf(::DeleteAccountUseCase)
+    factoryOf(::SendEmailVerificationUseCase)
     factoryOf(::GetBlockedUsersUseCase)
     factoryOf(::UnblockUserUseCase)
     viewModelOf(::BlockedUsersViewModel)
@@ -200,6 +203,7 @@ val appModule = module {
     factoryOf(::InitializeSessionUseCase)
     factoryOf(::GetActiveSessionUseCase)
     factoryOf(::ApplyEmailChangeUseCase)
+    factoryOf(::ApplyEmailVerificationUseCase)
     factoryOf(::GetPendingEmailUseCase)
     single { AppNavBottomBarViewModel(get(), get()) }
     viewModelOf(::MainViewModel)

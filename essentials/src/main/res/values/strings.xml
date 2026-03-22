@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Auth errors -->
-    <string name="error_auth_email_already_in_use">This email is already registered. Try signing in instead.</string>
+    <string name="error_auth_email_already_in_use">An account with this email already exists.</string>
     <string name="error_auth_invalid_email">Please enter a valid email address.</string>
     <string name="error_auth_weak_password">Password must be at least 8 characters long.</string>
     <string name="error_auth_passwords_do_not_match">Passwords don\'t match. Please try again.</string>

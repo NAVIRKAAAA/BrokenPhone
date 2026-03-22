@@ -11,7 +11,8 @@ data class UserUi(
     val authProvider: AuthProvider = AuthProvider.EMAIL,
     val createdAt: Long,
     val sessionId: String? = null,
-    val blockedUsersIds: List<String> = listOf()
+    val blockedUsersIds: List<String> = listOf(),
+    val isEmailVerified: Boolean = false,
 )
 
 fun User.toUi() = UserUi(
@@ -22,5 +23,6 @@ fun User.toUi() = UserUi(
     authProvider = authProvider,
     createdAt = createdAt,
     sessionId = sessionId,
-    blockedUsersIds = blockedUserIds
+    blockedUsersIds = blockedUserIds,
+    isEmailVerified = isEmailVerified,
 )

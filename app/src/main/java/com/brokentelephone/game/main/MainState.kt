@@ -13,7 +13,7 @@ data class MainState(
     val pendingRoutes: List<Routes> = emptyList(),
     val sessionDataError: String? = null,
     val isSessionLoading: Boolean = false,
-    val isEmailChanging: Boolean = false,
+    val isLoading: Boolean = false,
     val activeSession: GameSession? = null,
     val bannerRemainingSeconds: Int = 0,
     val isBannerLoading: Boolean = false,

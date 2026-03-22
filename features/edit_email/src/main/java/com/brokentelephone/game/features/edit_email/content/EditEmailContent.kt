@@ -70,6 +70,17 @@ fun EditEmailContent(
                 .verticalScroll(rememberScrollState())
                 .imePadding(),
         ) {
+//            Spacer(modifier = Modifier.height(16.dp))
+//
+//            Text(
+//                text = stringResource(R.string.edit_email_confirm_body),
+//                fontFamily = FontFamily(Font(CoreR.font.nunito_regular)),
+//                fontSize = 13.sp,
+//                lineHeight = 19.sp,
+//                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+//                modifier = Modifier.padding(horizontal = 16.dp),
+//            )
+
             Spacer(modifier = Modifier.height(16.dp))
 
             SignUpTextFieldValue(

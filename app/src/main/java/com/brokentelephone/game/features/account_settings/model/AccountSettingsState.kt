@@ -6,4 +6,7 @@ data class AccountSettingsState(
     val user: UserUi? = null,
     val isDeleteAccountDialogVisible: Boolean = false,
     val isDeleteAccountLoading: Boolean = false,
+    val isVerifyEmailDialogVisible: Boolean = false,
+    val isVerifyEmailLoading: Boolean = false,
+    val globalError: String? = null,
 )

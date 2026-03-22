@@ -1,8 +1,10 @@
 package com.brokentelephone.game.data.google
 
 import android.content.Context
+import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
+import androidx.credentials.exceptions.ClearCredentialException
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import com.brokentelephone.game.BuildConfig
 import com.brokentelephone.game.domain.google.GoogleSignInManager
@@ -32,6 +34,14 @@ class GoogleSignInManagerImpl(
             return credential.idToken
         } catch (_: GetCredentialCancellationException) {
             throw GoogleSignInCancelledException()
+        }
+    }
+
+    override suspend fun clearCredentialState() {
+        try {
+            CredentialManager.create(context).clearCredentialState(ClearCredentialStateRequest())
+        } catch (_: ClearCredentialException) {
+            // best-effort, ignore failures
         }
     }
 }

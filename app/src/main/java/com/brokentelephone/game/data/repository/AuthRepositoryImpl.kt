@@ -145,6 +145,43 @@ class AuthRepositoryImpl(
         }
     }
 
+    override suspend fun sendEmailVerification(email: String) {
+        try {
+            val user = firebaseAuth.currentUser ?: throw UnauthorizedException()
+            val actionCodeSettings = actionCodeSettings {
+                url = "https://brokentelephone.firebaseapp.com"
+                handleCodeInApp = true
+                setAndroidPackageName(
+                    context.packageName,
+                    true,
+                    null
+                )
+            }
+            user.sendEmailVerification(actionCodeSettings).await()
+        } catch (_: UnauthorizedException) {
+            throw UnauthorizedException()
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (_: FirebaseTooManyRequestsException) {
+            throw TooManyRequestsException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
+
+    override suspend fun applyEmailVerification(oobCode: String) {
+        try {
+            firebaseAuth.applyActionCode(oobCode).await()
+            firebaseAuth.currentUser?.reload()?.await()
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (_: FirebaseTooManyRequestsException) {
+            throw TooManyRequestsException()
+        } catch (_: Exception) {
+            throw InvalidActionCodeException()
+        }
+    }
+
     override suspend fun applyEmailChange(oobCode: String) {
         try {
             firebaseAuth.applyActionCode(oobCode).await()

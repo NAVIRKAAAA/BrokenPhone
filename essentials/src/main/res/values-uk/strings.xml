@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Auth errors -->
-    <string name="error_auth_email_already_in_use">Цей email вже зареєстрований. Спробуй увійти.</string>
+    <string name="error_auth_email_already_in_use">Акаунт з цією електронною поштою вже існує.</string>
     <string name="error_auth_invalid_email">Введи коректну адресу електронної пошти.</string>
     <string name="error_auth_weak_password">Пароль має містити щонайменше 8 символів.</string>
     <string name="error_auth_passwords_do_not_match">Паролі не збігаються. Спробуй ще раз.</string>

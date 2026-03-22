@@ -94,6 +94,11 @@
 
     <string name="account_settings_title">Акаунт</string>
     <string name="account_settings_email">Ел. пошта</string>
+    <string name="account_settings_email_not_verified">Не підтверджено · Натисни щоб підтвердити</string>
+    <string name="account_settings_email_verified">Підтверджено</string>
+    <string name="account_settings_verify_email_dialog_title">Підтвердити ел. пошту</string>
+    <string name="account_settings_verify_email_dialog_body">На твою електронну пошту буде надіслано посилання для підтвердження. Натисни на нього, щоб підтвердити що ця адреса твоя.\n\nЛист може потрапити в спам — перевір там, якщо не бачиш його.\n\nЯкщо ти вже підтвердив, але статус досі показує «не підтверджено» — перезапусти додаток.</string>
+    <string name="account_settings_verify_email_dialog_confirm">Надіслати</string>
     <string name="account_settings_provider">Спосіб входу</string>
     <string name="account_settings_provider_email">Ел. пошта</string>
     <string name="account_settings_provider_google">Google</string>

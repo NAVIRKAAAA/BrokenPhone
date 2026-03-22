@@ -8,6 +8,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.dialog.ConfirmDialog
+import com.brokentelephone.game.core.dialog.ErrorDialog
 import com.brokentelephone.game.features.account_settings.content.AccountSettingsContent
 import com.brokentelephone.game.features.account_settings.model.AccountSettingsSideEffect
 import org.koin.compose.viewmodel.koinViewModel
@@ -32,9 +33,29 @@ fun AccountSettingsScreen(
     AccountSettingsContent(
         state = state,
         onBackClick = onBackClick,
+        onVerifyEmailClick = viewModel::onVerifyEmailClick,
         onDeleteAccountClick = viewModel::onDeleteAccountClick,
         modifier = modifier,
     )
+
+    state.globalError?.let { message ->
+        ErrorDialog(
+            body = message,
+            onOkClick = viewModel::onGlobalErrorDismissed,
+        )
+    }
+
+    if (state.isVerifyEmailDialogVisible) {
+        ConfirmDialog(
+            title = stringResource(R.string.account_settings_verify_email_dialog_title),
+            body = stringResource(R.string.account_settings_verify_email_dialog_body),
+            cancelText = stringResource(R.string.common_cancel),
+            confirmText = stringResource(R.string.account_settings_verify_email_dialog_confirm),
+            onDismiss = viewModel::onVerifyEmailDismissed,
+            onConfirm = viewModel::onVerifyEmailConfirmed,
+            isLoading = state.isVerifyEmailLoading,
+        )
+    }
 
     if (state.isDeleteAccountDialogVisible) {
         ConfirmDialog(

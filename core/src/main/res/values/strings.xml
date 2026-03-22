@@ -104,6 +104,11 @@
     <!-- Account Settings -->
     <string name="account_settings_title">Account Settings</string>
     <string name="account_settings_email">Email</string>
+    <string name="account_settings_email_not_verified">Not verified · Tap to verify</string>
+    <string name="account_settings_email_verified">Verified</string>
+    <string name="account_settings_verify_email_dialog_title">Verify email</string>
+    <string name="account_settings_verify_email_dialog_body">A verification link will be sent to your email address. Tap it to confirm it\'s yours.\n\nIt might end up in spam — check there if you don\'t see it.\n\nIf you\'ve already verified but it still shows as unverified, restart the app.</string>
+    <string name="account_settings_verify_email_dialog_confirm">Send</string>
     <string name="account_settings_provider">Sign-in method</string>
     <string name="account_settings_member_since">Member since</string>
     <string name="account_settings_blocked_users">Blocked Users</string>

@@ -16,6 +16,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.brokentelephone.game.features.account_settings.AccountSettingsScreen
 import com.brokentelephone.game.features.blocked_users.BlockedUsersScreen
@@ -63,771 +64,784 @@ fun AppNavGraph(
         startDestination = startDestination,
         modifier = modifier,
     ) {
-        composable<Routes.Welcome>(
-            enterTransition = { EnterTransition.None },
-            exitTransition = {
-                val route = targetState.destination.route
-                if (route?.contains("SignUp") == true || route?.contains("SignIn") == true) {
-                    slideOutHorizontally(
-                        targetOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                } else {
-                    ExitTransition.None
-                }
-            },
-            popEnterTransition = {
-                val route = initialState.destination.route
-                if (route?.contains("SignUp") == true || route?.contains("SignIn") == true) {
-                    slideInHorizontally(
-                        initialOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                } else {
-                    EnterTransition.None
-                }
-            },
-            popExitTransition = { ExitTransition.None }
-        ) {
-            WelcomeScreen(
-                onGetStarted = {
-                    navController.navigateSingle(Routes.SignUp)
-                },
-                onSignIn = {
-                    navController.navigateSingle(Routes.SignIn())
-                },
-                onNavigateToDashboard = {
-                    navController.navigateSingle(Routes.Dashboard) {
-                        popUpTo(Routes.Welcome) { inclusive = true }
-                    }
-                }
-            )
-        }
 
-        composable<Routes.Dashboard>(
-            enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None },
-            popEnterTransition = { EnterTransition.None },
-            popExitTransition = { ExitTransition.None }
-        ) {
-
-            val viewModel: DashboardViewModel = koinViewModel()
-            val savedStateHandle = it.savedStateHandle
-
-            LaunchedEffect(Unit) {
-                val isForceRefresh = savedStateHandle.remove<Boolean>(KEY_FORCE_REFRESH) == true
-
-                if (isForceRefresh) {
-                    viewModel.onRefresh()
-                }
-            }
-
-            DashboardScreen(
-                viewModel = viewModel,
-                onPostClick = { postId ->
-                    navController.navigateSingle(Routes.PostDetails(postId = postId))
-                }
-            )
-        }
-
-        composable<Routes.PostDetails>(
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            exitTransition = {
-                val route = targetState.destination.route
-                if (route?.contains("Draw") == true || route?.contains("ChainDetails") == true) {
-                    slideOutHorizontally(
-                        targetOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                } else {
-                    ExitTransition.None
-                }
-            },
-            popEnterTransition = {
-                val route = initialState.destination.route
-                if (route?.contains("Draw") == true || route?.contains("ChainDetails") == true) {
-                    slideInHorizontally(
-                        initialOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                } else {
-                    EnterTransition.None
-                }
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeOut(animationSpec = tween(200))
-            }
-        ) { backStackEntry ->
-            val route = backStackEntry.toRoute<Routes.PostDetails>()
-            val viewModel: PostDetailsViewModel = koinViewModel { parametersOf(route.postId) }
-            PostDetailsScreen(
-                viewModel = viewModel,
-                onBackClick = navController::safePopBackStack,
-                navigateBackWithForceUpdate = {
-                    navController.getBackStackEntry(Routes.Dashboard)
-                        .savedStateHandle[KEY_FORCE_REFRESH] = true
-
-                    navController.safePopBackStack()
-                },
-                onDrawContinue = { sessionId ->
-                    navController.navigateSingle(Routes.Draw(sessionId = sessionId))
-                    onBannerDismissed()
-                },
-                onDescribeDrawingContinue = { sessionId ->
-                    navController.navigateSingle(Routes.DescribeDrawing(sessionId = sessionId))
-                    onBannerDismissed()
-                },
-                onViewHistoryClick = { postId ->
-                    navController.navigateSingle(Routes.ChainDetails(postId = postId))
-                },
-            )
-        }
-
-        composable<Routes.Draw>(
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeOut(animationSpec = tween(200))
-            }
-        ) { backStackEntry ->
-            val route = backStackEntry.toRoute<Routes.Draw>()
-            DrawScreen(
-                sessionId = route.sessionId,
-                onBackClick = navController::safePopBackStack,
-                onPostSubmitted = {
-                    navController.getBackStackEntry(Routes.Dashboard)
-                        .savedStateHandle[KEY_FORCE_REFRESH] = true
-
-                    navController.popBackStack(Routes.Dashboard, inclusive = false)
-                }
-            )
-        }
-
-        composable<Routes.DescribeDrawing>(
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeOut(animationSpec = tween(200))
-            }
-        ) { backStackEntry ->
-            val route = backStackEntry.toRoute<Routes.DescribeDrawing>()
-            DescribeDrawingScreen(
-                sessionId = route.sessionId,
-                onBackClick = navController::safePopBackStack,
-                onPostSubmitted = {
-                    navController.getBackStackEntry(Routes.Dashboard)
-                        .savedStateHandle[KEY_FORCE_REFRESH] = true
-
-                    navController.popBackStack(Routes.Dashboard, inclusive = false)
-                }
-            )
-        }
-
-        composable<Routes.ChainDetails>(
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeOut(animationSpec = tween(200))
-            }
-        ) { backStackEntry ->
-            val route = backStackEntry.toRoute<Routes.ChainDetails>()
-            val viewModel: ChainDetailsViewModel = koinViewModel { parametersOf(route.postId) }
-            ChainDetailsScreen(
-                viewModel = viewModel,
-                onBackClick = navController::safePopBackStack,
-            )
-        }
-
-        composable<Routes.SignIn>(
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            exitTransition = {
-                val route = targetState.destination.route
-                if (route?.contains("SignUp") == true || route?.contains("ForgotPassword") == true) {
-                    slideOutHorizontally(
-                        targetOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                } else {
-                    ExitTransition.None
-                }
-            },
-            popEnterTransition = {
-                val route = initialState.destination.route
-                if (route?.contains("SignUp") == true || route?.contains("ForgotPassword") == true) {
-                    slideInHorizontally(
-                        initialOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                } else {
-                    EnterTransition.None
-                }
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeOut(animationSpec = tween(200))
-            }
-        ) { backStackEntry ->
-            val route = backStackEntry.toRoute<Routes.SignIn>()
-            SignInScreen(
-                initialEmail = route.email,
-                onBackClick = navController::safePopBackStack,
-                onSignedIn = {
-                    navController.navigateSingle(Routes.Dashboard) {
-                        popUpTo(0) { inclusive = true }
+        navigation<Routes.AuthGraph>(startDestination = Routes.Welcome) {
+            composable<Routes.Welcome>(
+                enterTransition = { EnterTransition.None },
+                exitTransition = {
+                    val route = targetState.destination.route
+                    if (route?.contains("SignUp") == true || route?.contains("SignIn") == true) {
+                        slideOutHorizontally(
+                            targetOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeOut(animationSpec = tween(200))
+                    } else {
+                        ExitTransition.None
                     }
                 },
-                onNavigateToChooseAvatar = {
-                    navController.navigateSingle(Routes.ChooseAvatar) {
-                        popUpTo(0) { inclusive = true }
+                popEnterTransition = {
+                    val route = initialState.destination.route
+                    if (route?.contains("SignUp") == true || route?.contains("SignIn") == true) {
+                        slideInHorizontally(
+                            initialOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeIn(animationSpec = tween(200))
+                    } else {
+                        EnterTransition.None
                     }
                 },
-                onSignUpClick = {
-                    navController.navigateSingle(Routes.SignUp)
-                },
-                onForgotPasswordClick = { email ->
-                    navController.navigateSingle(Routes.ForgotPassword(email = email))
-                },
-            )
-        }
-
-        composable<Routes.ForgotPassword>(
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeOut(animationSpec = tween(200))
-            }
-        ) { backStackEntry ->
-            val route = backStackEntry.toRoute<Routes.ForgotPassword>()
-            ForgotPasswordScreen(
-                initialEmail = route.email,
-                onBackClick = navController::safePopBackStack,
-            )
-        }
-
-        composable<Routes.SignUp>(
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            exitTransition = {
-                if (targetState.destination.route?.contains("SignIn") == true) {
-                    slideOutHorizontally(
-                        targetOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                } else {
-                    ExitTransition.None
-                }
-            },
-            popEnterTransition = {
-                if (initialState.destination.route?.contains("SignIn") == true) {
-                    slideInHorizontally(
-                        initialOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                } else {
-                    EnterTransition.None
-                }
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeOut(animationSpec = tween(200))
-            }
-        ) {
-            SignUpScreen(
-                onBackClick = navController::safePopBackStack,
-                onSignedUp = {
-                    navController.navigateSingle(Routes.Dashboard) {
-                        popUpTo(0) { inclusive = true }
+                popExitTransition = { ExitTransition.None }
+            ) {
+                WelcomeScreen(
+                    onGetStarted = {
+                        navController.navigateSingle(Routes.SignUp)
+                    },
+                    onSignIn = {
+                        navController.navigateSingle(Routes.SignIn())
+                    },
+                    onNavigateToDashboard = {
+                        navController.navigateSingle(Routes.Dashboard) {
+                            popUpTo(Routes.Welcome) { inclusive = true }
+                        }
                     }
-                },
-                onNavigateToChooseAvatar = {
-                    navController.navigateSingle(Routes.ChooseAvatar) {
-                        popUpTo(0) { inclusive = true }
-                    }
-                },
-                onSignInClick = {
-                    navController.navigateSingle(Routes.SignIn())
-                },
-            )
-        }
-
-        composable<Routes.Profile>(
-            enterTransition = { EnterTransition.None },
-            exitTransition = {
-                val route = targetState.destination.route
-                if (route?.contains("PostDetails") == true || route?.contains("EditProfile") == true || route?.contains(
-                        "Settings"
-                    ) == true
-                ) {
-                    slideOutHorizontally(
-                        targetOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                } else {
-                    ExitTransition.None
-                }
-            },
-            popEnterTransition = {
-                val route = initialState.destination.route
-                if (route?.contains("PostDetails") == true || route?.contains("EditProfile") == true || route?.contains(
-                        "Settings"
-                    ) == true
-                ) {
-                    slideInHorizontally(
-                        initialOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                } else {
-                    EnterTransition.None
-                }
-            },
-            popExitTransition = { ExitTransition.None }
-        ) {
-            ProfileScreen(
-                onPostClick = { postId ->
-                    navController.navigateSingle(Routes.ChainDetails(postId = postId))
-                },
-                onSignInClick = {
-                    navController.navigateSingle(Routes.SignIn())
-                },
-                onGetStartedClick = {
-                    navController.navigateSingle(Routes.SignUp)
-                },
-                onEditClick = {
-                    navController.navigateSingle(Routes.EditProfile)
-                },
-                onSettingsClick = {
-                    navController.navigateSingle(Routes.Settings)
-                },
-            )
-        }
-
-        composable<Routes.EditProfile>(
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            exitTransition = {
-                val route = targetState.destination.route
-                if (route?.contains("EditUsername") == true || route?.contains("EditAvatar") == true || route?.contains("EditEmail") == true) {
-                    slideOutHorizontally(
-                        targetOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                } else {
-                    ExitTransition.None
-                }
-            },
-            popEnterTransition = {
-                val route = initialState.destination.route
-                if (route?.contains("EditUsername") == true || route?.contains("EditAvatar") == true || route?.contains("EditEmail") == true) {
-                    slideInHorizontally(
-                        initialOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                } else {
-                    EnterTransition.None
-                }
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeOut(animationSpec = tween(200))
-            }
-        ) {
-            EditProfileScreen(
-                onBackClick = navController::safePopBackStack,
-                onEditPhotoClick = {
-                    navController.navigateSingle(Routes.EditAvatar)
-                },
-                onEditUsernameClick = {
-                    navController.navigateSingle(Routes.EditUsername)
-                },
-                onEditEmailClick = {
-                    navController.navigateSingle(Routes.EditEmail)
-                },
-            )
-        }
-
-        composable<Routes.EditUsername>(
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeOut(animationSpec = tween(200))
-            }
-        ) {
-            EditUsernameScreen(
-                onBackClick = navController::safePopBackStack,
-            )
-        }
-
-        composable<Routes.ChooseAvatar>(
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            exitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { -it / 3 },
-                    animationSpec = tween(250)
-                ) + fadeOut(animationSpec = tween(200))
-            },
-            popEnterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { -it / 3 },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-        ) {
-            ChooseAvatarScreen(
-                navigateToChooseUsername = {
-                    navController.navigateSingle(Routes.ChooseUsername)
-                },
-            )
-        }
-
-        composable<Routes.ChooseUsername>(
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeOut(animationSpec = tween(200))
-            },
-        ) {
-            ChooseUsernameScreen(
-                onBackClick = navController::safePopBackStack,
-                navigateToFeed = {
-                    navController.navigateSingle(Routes.Dashboard) {
-                        popUpTo(0) { inclusive = true }
-                    }
-                },
-            )
-        }
-
-        composable<Routes.EditAvatar>(
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeOut(animationSpec = tween(200))
-            }
-        ) {
-            EditAvatarScreen(
-                onBackClick = navController::safePopBackStack,
-            )
-        }
-
-        composable<Routes.Settings>(
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            exitTransition = {
-                val route = targetState.destination.route
-                if (route?.contains("AccountSettings") == true || route?.contains("Notifications") == true || route?.contains(
-                        "Language"
-                    ) == true || route?.contains("Theme") == true || route?.contains("BlockedUsers") == true
-                ) {
-                    slideOutHorizontally(
-                        targetOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                } else {
-                    ExitTransition.None
-                }
-            },
-            popEnterTransition = {
-                val route = initialState.destination.route
-                if (route?.contains("AccountSettings") == true || route?.contains("Notifications") == true || route?.contains(
-                        "Language"
-                    ) == true || route?.contains("Theme") == true || route?.contains("BlockedUsers") == true
-                ) {
-                    slideInHorizontally(
-                        initialOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                } else {
-                    EnterTransition.None
-                }
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeOut(animationSpec = tween(200))
-            }
-        ) {
-            SettingsScreen(
-                onBackClick = navController::safePopBackStack,
-                onNavigateToWelcome = {
-                    navController.navigate(Routes.Welcome) {
-                        popUpTo(0) { inclusive = true }
-                    }
-                },
-                onAccountSettingsClick = {
-                    navController.navigateSingle(Routes.AccountSettings)
-                },
-                onNotificationsClick = {
-                    navController.navigateSingle(Routes.Notifications)
-                },
-                onLanguageClick = {
-                    navController.navigateSingle(Routes.Language)
-                },
-                onThemeClick = {
-                    navController.navigateSingle(Routes.Theme)
-                },
-                onBlockedUsersClick = {
-                    navController.navigateSingle(Routes.BlockedUsers)
-                },
-                onNavigateToDraw = { route ->
-                    navController.navigateSingle(route)
-                    onBannerDismissed()
-                },
-                onNavigateToDescribeDrawing = { route ->
-                    navController.navigateSingle(route)
-                    onBannerDismissed()
-                },
-            )
-        }
-
-        composable<Routes.AccountSettings>(
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            exitTransition = {
-                val route = targetState.destination.route
-                if (route?.contains("BlockedUsers") == true) {
-                    slideOutHorizontally(
-                        targetOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                } else {
-                    ExitTransition.None
-                }
-            },
-            popEnterTransition = {
-                val route = initialState.destination.route
-                if (route?.contains("BlockedUsers") == true) {
-                    slideInHorizontally(
-                        initialOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                } else {
-                    EnterTransition.None
-                }
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeOut(animationSpec = tween(200))
-            }
-        ) {
-            AccountSettingsScreen(
-                onBackClick = navController::safePopBackStack,
-                onNavigateToWelcome = {
-                    navController.navigate(Routes.Welcome) {
-                        popUpTo(0) { inclusive = true }
-                    }
-                }
-            )
-        }
-
-        composable<Routes.EditEmail>(
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeOut(animationSpec = tween(200))
-            }
-        ) {
-            EditEmailScreen(
-                onBackClick = navController::safePopBackStack,
-            )
-        }
-
-        composable<Routes.BlockedUsers>(
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeOut(animationSpec = tween(200))
-            }
-        ) {
-            BlockedUsersScreen(
-                onBackClick = navController::safePopBackStack,
-            )
-        }
-
-        composable<Routes.Language>(
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeOut(animationSpec = tween(200))
-            }
-        ) {
-            LanguageScreen(
-                onBackClick = navController::safePopBackStack,
-            )
-        }
-
-        composable<Routes.Notifications>(
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeOut(animationSpec = tween(200))
-            }
-        ) {
-            NotificationsScreen(
-                onBackClick = navController::safePopBackStack,
-            )
-        }
-
-        composable<Routes.Theme>(
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(250)
-                ) + fadeOut(animationSpec = tween(200))
-            }
-        ) {
-            ThemeScreen(
-                onBackClick = navController::safePopBackStack,
-            )
-        }
-
-
-        composable<Routes.CreatePost>(
-            enterTransition = {
-                slideInVertically(
-                    initialOffsetY = { it },
-                    animationSpec = tween(300)
-                )
-            },
-            exitTransition = { ExitTransition.None },
-            popEnterTransition = { EnterTransition.None },
-            popExitTransition = {
-                slideOutVertically(
-                    targetOffsetY = { it },
-                    animationSpec = tween(300)
-                ) + fadeOut(
-                    animationSpec = tween(200)
                 )
             }
-        ) {
-            CreatePostScreen(
-                onBackClick = navController::safePopBackStack,
-                onPostCreated = navController::safePopBackStack
-            )
+
+            composable<Routes.SignIn>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                exitTransition = {
+                    val route = targetState.destination.route
+                    if (route?.contains("SignUp") == true || route?.contains("ForgotPassword") == true) {
+                        slideOutHorizontally(
+                            targetOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeOut(animationSpec = tween(200))
+                    } else {
+                        ExitTransition.None
+                    }
+                },
+                popEnterTransition = {
+                    val route = initialState.destination.route
+                    if (route?.contains("SignUp") == true || route?.contains("ForgotPassword") == true) {
+                        slideInHorizontally(
+                            initialOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeIn(animationSpec = tween(200))
+                    } else {
+                        EnterTransition.None
+                    }
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) { backStackEntry ->
+                val route = backStackEntry.toRoute<Routes.SignIn>()
+                SignInScreen(
+                    initialEmail = route.email,
+                    onBackClick = navController::safePopBackStack,
+                    onSignedIn = {
+                        navController.navigateSingle(Routes.Dashboard) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    },
+                    onNavigateToChooseAvatar = {
+                        navController.navigateSingle(Routes.ChooseAvatar) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    },
+                    onSignUpClick = {
+                        navController.navigateSingle(Routes.SignUp)
+                    },
+                    onForgotPasswordClick = { email ->
+                        navController.navigateSingle(Routes.ForgotPassword(email = email))
+                    },
+                )
+            }
+
+            composable<Routes.ForgotPassword>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) { backStackEntry ->
+                val route = backStackEntry.toRoute<Routes.ForgotPassword>()
+                ForgotPasswordScreen(
+                    initialEmail = route.email,
+                    onBackClick = navController::safePopBackStack,
+                )
+            }
+
+            composable<Routes.SignUp>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                exitTransition = {
+                    if (targetState.destination.route?.contains("SignIn") == true) {
+                        slideOutHorizontally(
+                            targetOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeOut(animationSpec = tween(200))
+                    } else {
+                        ExitTransition.None
+                    }
+                },
+                popEnterTransition = {
+                    if (initialState.destination.route?.contains("SignIn") == true) {
+                        slideInHorizontally(
+                            initialOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeIn(animationSpec = tween(200))
+                    } else {
+                        EnterTransition.None
+                    }
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) {
+                SignUpScreen(
+                    onBackClick = navController::safePopBackStack,
+                    onSignedUp = {
+                        navController.navigateSingle(Routes.Dashboard) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    },
+                    onNavigateToChooseAvatar = {
+                        navController.navigateSingle(Routes.ChooseAvatar) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    },
+                    onSignInClick = {
+                        navController.navigateSingle(Routes.SignIn())
+                    },
+                )
+            }
+
+            composable<Routes.ChooseAvatar>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                exitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { -it / 3 },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                },
+                popEnterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { -it / 3 },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+            ) {
+                ChooseAvatarScreen(
+                    navigateToChooseUsername = {
+                        navController.navigateSingle(Routes.ChooseUsername)
+                    },
+                )
+            }
+
+            composable<Routes.ChooseUsername>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                },
+            ) {
+                ChooseUsernameScreen(
+                    onBackClick = navController::safePopBackStack,
+                    navigateToFeed = {
+                        navController.navigateSingle(Routes.Dashboard) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    },
+                )
+            }
+
+        }
+
+        navigation<Routes.MainGraph>(startDestination = Routes.Dashboard) {
+
+            composable<Routes.Dashboard>(
+                enterTransition = { EnterTransition.None },
+                exitTransition = { ExitTransition.None },
+                popEnterTransition = { EnterTransition.None },
+                popExitTransition = { ExitTransition.None }
+            ) {
+
+                val viewModel: DashboardViewModel = koinViewModel()
+                val savedStateHandle = it.savedStateHandle
+
+                LaunchedEffect(Unit) {
+                    val isForceRefresh = savedStateHandle.remove<Boolean>(KEY_FORCE_REFRESH) == true
+
+                    if (isForceRefresh) {
+                        viewModel.onRefresh()
+                    }
+                }
+
+                DashboardScreen(
+                    viewModel = viewModel,
+                    onPostClick = { postId ->
+                        navController.navigateSingle(Routes.PostDetails(postId = postId))
+                    }
+                )
+            }
+
+            composable<Routes.PostDetails>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                exitTransition = {
+                    val route = targetState.destination.route
+                    if (route?.contains("Draw") == true || route?.contains("ChainDetails") == true) {
+                        slideOutHorizontally(
+                            targetOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeOut(animationSpec = tween(200))
+                    } else {
+                        ExitTransition.None
+                    }
+                },
+                popEnterTransition = {
+                    val route = initialState.destination.route
+                    if (route?.contains("Draw") == true || route?.contains("ChainDetails") == true) {
+                        slideInHorizontally(
+                            initialOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeIn(animationSpec = tween(200))
+                    } else {
+                        EnterTransition.None
+                    }
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) { backStackEntry ->
+                val route = backStackEntry.toRoute<Routes.PostDetails>()
+                val viewModel: PostDetailsViewModel = koinViewModel { parametersOf(route.postId) }
+                PostDetailsScreen(
+                    viewModel = viewModel,
+                    onBackClick = navController::safePopBackStack,
+                    navigateBackWithForceUpdate = {
+                        navController.getBackStackEntry(Routes.Dashboard)
+                            .savedStateHandle[KEY_FORCE_REFRESH] = true
+
+                        navController.safePopBackStack()
+                    },
+                    onDrawContinue = { sessionId ->
+                        navController.navigateSingle(Routes.Draw(sessionId = sessionId))
+                        onBannerDismissed()
+                    },
+                    onDescribeDrawingContinue = { sessionId ->
+                        navController.navigateSingle(Routes.DescribeDrawing(sessionId = sessionId))
+                        onBannerDismissed()
+                    },
+                    onViewHistoryClick = { postId ->
+                        navController.navigateSingle(Routes.ChainDetails(postId = postId))
+                    },
+                )
+            }
+
+            composable<Routes.Draw>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) { backStackEntry ->
+                val route = backStackEntry.toRoute<Routes.Draw>()
+                DrawScreen(
+                    sessionId = route.sessionId,
+                    onBackClick = navController::safePopBackStack,
+                    onPostSubmitted = {
+                        navController.getBackStackEntry(Routes.Dashboard)
+                            .savedStateHandle[KEY_FORCE_REFRESH] = true
+
+                        navController.popBackStack(Routes.Dashboard, inclusive = false)
+                    }
+                )
+            }
+
+            composable<Routes.DescribeDrawing>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) { backStackEntry ->
+                val route = backStackEntry.toRoute<Routes.DescribeDrawing>()
+                DescribeDrawingScreen(
+                    sessionId = route.sessionId,
+                    onBackClick = navController::safePopBackStack,
+                    onPostSubmitted = {
+                        navController.getBackStackEntry(Routes.Dashboard)
+                            .savedStateHandle[KEY_FORCE_REFRESH] = true
+
+                        navController.popBackStack(Routes.Dashboard, inclusive = false)
+                    }
+                )
+            }
+
+            composable<Routes.ChainDetails>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) { backStackEntry ->
+                val route = backStackEntry.toRoute<Routes.ChainDetails>()
+                val viewModel: ChainDetailsViewModel = koinViewModel { parametersOf(route.postId) }
+                ChainDetailsScreen(
+                    viewModel = viewModel,
+                    onBackClick = navController::safePopBackStack,
+                )
+            }
+
+            composable<Routes.Profile>(
+                enterTransition = { EnterTransition.None },
+                exitTransition = {
+                    val route = targetState.destination.route
+                    if (route?.contains("PostDetails") == true || route?.contains("EditProfile") == true || route?.contains(
+                            "Settings"
+                        ) == true
+                    ) {
+                        slideOutHorizontally(
+                            targetOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeOut(animationSpec = tween(200))
+                    } else {
+                        ExitTransition.None
+                    }
+                },
+                popEnterTransition = {
+                    val route = initialState.destination.route
+                    if (route?.contains("PostDetails") == true || route?.contains("EditProfile") == true || route?.contains(
+                            "Settings"
+                        ) == true
+                    ) {
+                        slideInHorizontally(
+                            initialOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeIn(animationSpec = tween(200))
+                    } else {
+                        EnterTransition.None
+                    }
+                },
+                popExitTransition = { ExitTransition.None }
+            ) {
+                ProfileScreen(
+                    onPostClick = { postId ->
+                        navController.navigateSingle(Routes.ChainDetails(postId = postId))
+                    },
+                    onSignInClick = {
+                        navController.navigateSingle(Routes.SignIn())
+                    },
+                    onGetStartedClick = {
+                        navController.navigateSingle(Routes.SignUp)
+                    },
+                    onEditClick = {
+                        navController.navigateSingle(Routes.EditProfile)
+                    },
+                    onSettingsClick = {
+                        navController.navigateSingle(Routes.Settings)
+                    },
+                )
+            }
+
+            composable<Routes.EditProfile>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                exitTransition = {
+                    val route = targetState.destination.route
+                    if (route?.contains("EditUsername") == true || route?.contains("EditAvatar") == true || route?.contains(
+                            "EditEmail"
+                        ) == true
+                    ) {
+                        slideOutHorizontally(
+                            targetOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeOut(animationSpec = tween(200))
+                    } else {
+                        ExitTransition.None
+                    }
+                },
+                popEnterTransition = {
+                    val route = initialState.destination.route
+                    if (route?.contains("EditUsername") == true || route?.contains("EditAvatar") == true || route?.contains(
+                            "EditEmail"
+                        ) == true
+                    ) {
+                        slideInHorizontally(
+                            initialOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeIn(animationSpec = tween(200))
+                    } else {
+                        EnterTransition.None
+                    }
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) {
+                EditProfileScreen(
+                    onBackClick = navController::safePopBackStack,
+                    onEditPhotoClick = {
+                        navController.navigateSingle(Routes.EditAvatar)
+                    },
+                    onEditUsernameClick = {
+                        navController.navigateSingle(Routes.EditUsername)
+                    },
+                    onEditEmailClick = {
+                        navController.navigateSingle(Routes.EditEmail)
+                    },
+                )
+            }
+
+            composable<Routes.EditUsername>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) {
+                EditUsernameScreen(
+                    onBackClick = navController::safePopBackStack,
+                )
+            }
+
+            composable<Routes.EditAvatar>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) {
+                EditAvatarScreen(
+                    onBackClick = navController::safePopBackStack,
+                )
+            }
+
+            composable<Routes.Settings>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                exitTransition = {
+                    val route = targetState.destination.route
+                    if (route?.contains("AccountSettings") == true || route?.contains("Notifications") == true || route?.contains(
+                            "Language"
+                        ) == true || route?.contains("Theme") == true || route?.contains("BlockedUsers") == true
+                    ) {
+                        slideOutHorizontally(
+                            targetOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeOut(animationSpec = tween(200))
+                    } else {
+                        ExitTransition.None
+                    }
+                },
+                popEnterTransition = {
+                    val route = initialState.destination.route
+                    if (route?.contains("AccountSettings") == true || route?.contains("Notifications") == true || route?.contains(
+                            "Language"
+                        ) == true || route?.contains("Theme") == true || route?.contains("BlockedUsers") == true
+                    ) {
+                        slideInHorizontally(
+                            initialOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeIn(animationSpec = tween(200))
+                    } else {
+                        EnterTransition.None
+                    }
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) {
+                SettingsScreen(
+                    onBackClick = navController::safePopBackStack,
+                    onNavigateToWelcome = {
+                        navController.navigate(Routes.Welcome) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    },
+                    onAccountSettingsClick = {
+                        navController.navigateSingle(Routes.AccountSettings)
+                    },
+                    onNotificationsClick = {
+                        navController.navigateSingle(Routes.Notifications)
+                    },
+                    onLanguageClick = {
+                        navController.navigateSingle(Routes.Language)
+                    },
+                    onThemeClick = {
+                        navController.navigateSingle(Routes.Theme)
+                    },
+                    onBlockedUsersClick = {
+                        navController.navigateSingle(Routes.BlockedUsers)
+                    },
+                    onNavigateToDraw = { route ->
+                        navController.navigateSingle(route)
+                        onBannerDismissed()
+                    },
+                    onNavigateToDescribeDrawing = { route ->
+                        navController.navigateSingle(route)
+                        onBannerDismissed()
+                    },
+                )
+            }
+
+            composable<Routes.AccountSettings>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                exitTransition = {
+                    val route = targetState.destination.route
+                    if (route?.contains("BlockedUsers") == true) {
+                        slideOutHorizontally(
+                            targetOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeOut(animationSpec = tween(200))
+                    } else {
+                        ExitTransition.None
+                    }
+                },
+                popEnterTransition = {
+                    val route = initialState.destination.route
+                    if (route?.contains("BlockedUsers") == true) {
+                        slideInHorizontally(
+                            initialOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeIn(animationSpec = tween(200))
+                    } else {
+                        EnterTransition.None
+                    }
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) {
+                AccountSettingsScreen(
+                    onBackClick = navController::safePopBackStack,
+                    onNavigateToWelcome = {
+                        navController.navigate(Routes.Welcome) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            composable<Routes.EditEmail>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) {
+                EditEmailScreen(
+                    onBackClick = navController::safePopBackStack,
+                )
+            }
+
+            composable<Routes.BlockedUsers>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) {
+                BlockedUsersScreen(
+                    onBackClick = navController::safePopBackStack,
+                )
+            }
+
+            composable<Routes.Language>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) {
+                LanguageScreen(
+                    onBackClick = navController::safePopBackStack,
+                )
+            }
+
+            composable<Routes.Notifications>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) {
+                NotificationsScreen(
+                    onBackClick = navController::safePopBackStack,
+                )
+            }
+
+            composable<Routes.Theme>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) {
+                ThemeScreen(
+                    onBackClick = navController::safePopBackStack,
+                )
+            }
+
+
+            composable<Routes.CreatePost>(
+                enterTransition = {
+                    slideInVertically(
+                        initialOffsetY = { it },
+                        animationSpec = tween(300)
+                    )
+                },
+                exitTransition = { ExitTransition.None },
+                popEnterTransition = { EnterTransition.None },
+                popExitTransition = {
+                    slideOutVertically(
+                        targetOffsetY = { it },
+                        animationSpec = tween(300)
+                    ) + fadeOut(
+                        animationSpec = tween(200)
+                    )
+                }
+            ) {
+                CreatePostScreen(
+                    onBackClick = navController::safePopBackStack,
+                    onPostCreated = navController::safePopBackStack
+                )
+            }
         }
     }
 }

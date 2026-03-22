@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
 
         mainViewModel.initializeDefaultLanguage(Locale.getDefault().language)
-        intent.data?.let { mainViewModel.handleEmailChangeLink(it) }
+        intent.data?.let { mainViewModel.handleAuthLink(it) }
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
@@ -146,7 +146,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
 
-                    if (state.isEmailChanging) {
+                    if (state.isLoading) {
                         LoadingDialog()
                     }
 
@@ -170,6 +170,6 @@ class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         Log.d("LOG_TAG", "onNewIntent()")
-        intent.data?.let { mainViewModel.handleEmailChangeLink(it) }
+        intent.data?.let { mainViewModel.handleAuthLink(it) }
     }
 }

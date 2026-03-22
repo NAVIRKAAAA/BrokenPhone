@@ -2,10 +2,14 @@ package com.brokentelephone.game.features.account_settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.brokentelephone.game.domain.api_handler.onError
+import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
+import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.account_settings.model.AccountSettingsSideEffect
 import com.brokentelephone.game.features.account_settings.model.AccountSettingsState
 import com.brokentelephone.game.features.account_settings.use_case.DeleteAccountUseCase
+import com.brokentelephone.game.features.account_settings.use_case.SendEmailVerificationUseCase
 import com.brokentelephone.game.features.profile.model.toUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +22,9 @@ import kotlinx.coroutines.launch
 
 class AccountSettingsViewModel(
     private val deleteAccountUseCase: DeleteAccountUseCase,
+    private val sendEmailVerificationUseCase: SendEmailVerificationUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AccountSettingsState())
@@ -32,6 +38,40 @@ class AccountSettingsViewModel(
         getCurrentUserUseCase()
             .onEach { user -> _state.update { it.copy(user = user?.toUi()) } }
             .launchIn(viewModelScope)
+    }
+
+    fun onVerifyEmailClick() {
+        _state.update { it.copy(isVerifyEmailDialogVisible = true) }
+    }
+
+    fun onVerifyEmailDismissed() {
+        _state.update { it.copy(isVerifyEmailDialogVisible = false) }
+    }
+
+    fun onVerifyEmailConfirmed() {
+        val email = _state.value.user?.email ?: return
+        _state.update { it.copy(isVerifyEmailLoading = true) }
+        viewModelScope.launch {
+            sendEmailVerificationUseCase.execute(email)
+                .onSuccess {
+                    _state.update { it.copy(isVerifyEmailLoading = false, isVerifyEmailDialogVisible = false) }
+
+                    // TODO: Show success banner
+                }
+                .onError { error ->
+                    _state.update {
+                        it.copy(
+                            isVerifyEmailLoading = false,
+                            isVerifyEmailDialogVisible = false,
+                            globalError = exceptionToMessageMapper.map(error),
+                        )
+                    }
+                }
+        }
+    }
+
+    fun onGlobalErrorDismissed() {
+        _state.update { it.copy(globalError = null) }
     }
 
     fun onDeleteAccountClick() {

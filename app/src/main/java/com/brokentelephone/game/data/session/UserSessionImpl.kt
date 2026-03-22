@@ -62,7 +62,7 @@ class UserSessionImpl(
         firebaseAuth.addAuthStateListener { auth ->
             val user = auth.currentUser
 
-            Log.d("LOG_TAG", "addAuthStateListener(): $user")
+            Log.d("LOG_TAG", "isEmailVerified(): ${user?.isEmailVerified}")
 
             firestoreListener?.remove()
             firestoreListener = null
@@ -86,8 +86,23 @@ class UserSessionImpl(
                 if (!isAnonymous) {
                     scope.launch { syncEmailIfNeeded(uid, user.email) }
                     scope.launch { syncAuthProviderIfNeeded(uid, user.authProvider) }
+                    scope.launch { syncIsEmailVerifiedIfNeeded(uid, user.isEmailVerified) }
                 }
             }
+    }
+
+    private suspend fun syncIsEmailVerifiedIfNeeded(uid: String, firestoreIsEmailVerified: Boolean) {
+        val authIsEmailVerified = firebaseAuth.currentUser?.isEmailVerified ?: return
+        if (authIsEmailVerified == firestoreIsEmailVerified) return
+        try {
+            firestore.collection(COLLECTION_USERS)
+                .document(uid)
+                .update(User.FIELD_IS_EMAIL_VERIFIED, authIsEmailVerified)
+                .await()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // best-effort sync, ignore failures
+        }
     }
 
     private suspend fun syncAuthProviderIfNeeded(uid: String, firestoreAuthProvider: AuthProvider) {
