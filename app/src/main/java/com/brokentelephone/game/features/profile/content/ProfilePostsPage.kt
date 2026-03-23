@@ -21,10 +21,12 @@ import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.features.dashboard.model.PostUi
+import com.brokentelephone.game.features.profile.model.ProfileTab
 
 @Composable
 fun ProfilePostsPage(
     posts: List<PostUi>,
+    profileTab: ProfileTab,
     isLoading: Boolean,
     nestedScrollConnection: NestedScrollConnection,
     onPostClick: (postId: String) -> Unit,
@@ -36,6 +38,18 @@ fun ProfilePostsPage(
         isLoading = isLoading,
         shimmerContent = {
             ProfilePageShimmerList(modifier = modifier)
+        },
+        isEmpty = !isLoading && posts.isEmpty(),
+        emptyContent = {
+            if (profileTab == ProfileTab.POSTS) {
+                EmptyPostsElement(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+                )
+            } else {
+                EmptyContributionsElement(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+                )
+            }
         },
         content = {
             val listState = rememberLazyListState()

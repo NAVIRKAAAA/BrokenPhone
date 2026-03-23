@@ -130,6 +130,10 @@
 
     <string name="profile_sign_in">Увійти</string>
     <string name="profile_title">Профіль</string>
+    <string name="profile_empty_tap">Натисни, щоб створити свій перший пост</string>
+    <string name="profile_empty_contributions_tap">Натисни, щоб зробити свій перший внесок</string>
+    <string name="profile_empty_contributions_join">Приєднатися</string>
+    <string name="profile_empty_hint">Двері, які існують лише тоді, коли ніхто не дивиться.</string>
     <string name="profile_posts">Пости</string>
     <string name="profile_contributions">Внески</string>
     <string name="profile_top_bar_edit">Редагувати</string>

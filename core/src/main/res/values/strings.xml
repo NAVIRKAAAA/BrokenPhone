@@ -197,6 +197,10 @@
 
     <!-- Profile -->
     <string name="profile_title">Profile</string>
+    <string name="profile_empty_tap">Tap to create your first post</string>
+    <string name="profile_empty_contributions_tap">Tap to make your first contribution</string>
+    <string name="profile_empty_contributions_join">Join</string>
+    <string name="profile_empty_hint">A door that only exists when no one is watching.</string>
     <string name="profile_posts">Posts</string>
     <string name="profile_contributions">Contributions</string>
     <string name="profile_top_bar_edit">Edit</string>

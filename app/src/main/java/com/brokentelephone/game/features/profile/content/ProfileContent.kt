@@ -213,6 +213,7 @@ fun ProfileContent(
 
                                         ProfilePostsPage(
                                             posts = state.myPosts,
+                                            profileTab = ProfileTab.POSTS,
                                             isLoading = showShimmerEffect,
                                             nestedScrollConnection = nestedScrollConnection,
                                             onPostClick = onPostClick,
@@ -226,6 +227,7 @@ fun ProfileContent(
 
                                         ProfilePostsPage(
                                             posts = state.myContributions,
+                                            profileTab = ProfileTab.CONTRIBUTIONS,
                                             isLoading = showShimmerEffect,
                                             nestedScrollConnection = nestedScrollConnection,
                                             onPostClick = onPostClick,
@@ -311,7 +313,8 @@ fun ProfileContentPreview() {
                 ),
 //                myPosts = MockPostRepository.mockList.map { it.toUi() },
 //                myContributions = MockPostRepository.mockList.map { it.toUi() },
-                isAuth = true
+                isAuth = true,
+                isPostsLoading = false
             ),
             onEditClick = {},
             onSettingsClick = {},
