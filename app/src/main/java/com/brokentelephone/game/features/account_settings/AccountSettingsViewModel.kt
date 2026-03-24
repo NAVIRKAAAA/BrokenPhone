@@ -2,6 +2,7 @@ package com.brokentelephone.game.features.account_settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.brokentelephone.game.core.model.user.toUi
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
@@ -10,7 +11,6 @@ import com.brokentelephone.game.features.account_settings.model.AccountSettingsS
 import com.brokentelephone.game.features.account_settings.model.AccountSettingsState
 import com.brokentelephone.game.features.account_settings.use_case.DeleteAccountUseCase
 import com.brokentelephone.game.features.account_settings.use_case.SendEmailVerificationUseCase
-import com.brokentelephone.game.features.profile.model.toUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

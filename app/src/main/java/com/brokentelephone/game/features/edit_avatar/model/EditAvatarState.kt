@@ -1,6 +1,6 @@
 package com.brokentelephone.game.features.edit_avatar.model
 
-import com.brokentelephone.game.features.profile.model.UserUi
+import com.brokentelephone.game.core.model.user.UserUi
 
 data class EditAvatarState(
     val user: UserUi? = null,

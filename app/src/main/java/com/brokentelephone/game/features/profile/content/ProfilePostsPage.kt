@@ -18,10 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import com.brokentelephone.game.core.model.profile.ProfileTab
 import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.features.dashboard.model.PostUi
-import com.brokentelephone.game.features.profile.model.ProfileTab
 
 @Composable
 fun ProfilePostsPage(

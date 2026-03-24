@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.profile.content
+package com.brokentelephone.game.core.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,27 +28,19 @@ import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 @Composable
 fun AccountInfoSection(
     username: String,
-    isAuth: Boolean = true,
     modifier: Modifier = Modifier,
+    isAuth: Boolean = true,
     postsCount: Int = 0,
     contributions: Int = 0,
+    friends: Int = 0,
     avatarUrl: String? = null,
 ) {
-
-    Row(
-        modifier = modifier.fillMaxWidth()
-    ) {
-
-        AvatarComponent(
-            avatarUrl = avatarUrl,
-            size = 64.dp
-        )
+    Row(modifier = modifier.fillMaxWidth()) {
+        AvatarComponent(avatarUrl = avatarUrl, size = 64.dp)
 
         Spacer(modifier = Modifier.width(12.dp))
 
-        Column(
-            modifier = Modifier
-        ) {
+        Column {
             Text(
                 text = username,
                 textAlign = TextAlign.Start,
@@ -56,29 +48,28 @@ fun AccountInfoSection(
                 fontSize = 19.sp,
                 lineHeight = 28.sp,
                 overflow = TextOverflow.Ellipsis,
-                maxLines = 1,
+                maxLines = 2,
                 color = MaterialTheme.colorScheme.onSurface,
             )
 
-            if(isAuth) {
+            if (isAuth) {
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Row(
-                    modifier = Modifier,
-                    horizontalArrangement = Arrangement.spacedBy(24.dp)
-                ) {
+                Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
                     StatInfo(
                         value = postsCount,
-                        name = stringResource(R.string.profile_posts)
+                        name = stringResource(R.string.profile_posts),
                     )
-
                     StatInfo(
                         value = contributions,
-                        name = stringResource(R.string.profile_contributions)
+                        name = stringResource(R.string.profile_contributions),
+                    )
+                    StatInfo(
+                        value = friends,
+                        name = stringResource(R.string.profile_friends),
                     )
                 }
             } else {
-
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
@@ -87,27 +78,19 @@ fun AccountInfoSection(
                     fontFamily = FontFamily(Font(R.font.nunito_regular)),
                     fontSize = 14.sp,
                     lineHeight = 21.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
     }
-
 }
 
 @Preview
 @Composable
-fun AccountInfoSectionPreview() {
-    BrokenTelephoneTheme(
-        darkTheme = true
-    ) {
-        Box(
-            modifier = Modifier.background(MaterialTheme.colorScheme.background)
-        ) {
-            AccountInfoSection(
-                username = "Alex",
-                isAuth = false
-            )
+private fun AccountInfoSectionPreview() {
+    BrokenTelephoneTheme(darkTheme = true) {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            AccountInfoSection(username = "Alex", isAuth = true)
         }
     }
 }

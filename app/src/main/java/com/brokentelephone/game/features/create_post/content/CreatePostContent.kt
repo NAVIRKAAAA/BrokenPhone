@@ -16,9 +16,9 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.features.create_post.model.CreatePostState
-import com.brokentelephone.game.features.profile.model.UserUi
 import kotlinx.coroutines.delay
 
 @Composable

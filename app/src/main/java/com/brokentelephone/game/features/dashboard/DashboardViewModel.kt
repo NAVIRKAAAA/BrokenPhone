@@ -3,6 +3,7 @@ package com.brokentelephone.game.features.dashboard
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.brokentelephone.game.core.model.user.toUi
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.model.report.ReportPostType
@@ -19,7 +20,6 @@ import com.brokentelephone.game.features.post_details.use_case.BlockUserUseCase
 import com.brokentelephone.game.features.post_details.use_case.GetPostLinkByIdUseCase
 import com.brokentelephone.game.features.post_details.use_case.MarkPostAsNotInterestedUseCase
 import com.brokentelephone.game.features.post_details.use_case.ReportPostUseCase
-import com.brokentelephone.game.features.profile.model.toUi
 import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay

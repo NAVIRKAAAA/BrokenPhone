@@ -1,6 +1,6 @@
 package com.brokentelephone.game.features.account_settings.model
 
-import com.brokentelephone.game.features.profile.model.UserUi
+import com.brokentelephone.game.core.model.user.UserUi
 
 data class AccountSettingsState(
     val user: UserUi? = null,

@@ -1,11 +1,11 @@
 package com.brokentelephone.game.features.post_details.model
 
+import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
 import com.brokentelephone.game.domain.model.session.GameSession
 import com.brokentelephone.game.domain.model.session.isMyActiveSession
 import com.brokentelephone.game.features.dashboard.model.PostUi
-import com.brokentelephone.game.features.profile.model.UserUi
 
 data class PostDetailsState(
     val postUi: PostUi? = null,

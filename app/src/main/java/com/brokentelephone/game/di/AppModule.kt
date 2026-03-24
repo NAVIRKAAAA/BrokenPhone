@@ -25,6 +25,7 @@ import com.brokentelephone.game.domain.repository.UserSettingsRepository
 import com.brokentelephone.game.domain.repository.UsersRepository
 import com.brokentelephone.game.domain.storage.ImageStorage
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
+import com.brokentelephone.game.domain.use_case.GetUsersByIdsUseCase
 import com.brokentelephone.game.domain.use_case.LogoutUseCase
 import com.brokentelephone.game.domain.use_case.SignInWithGoogleUseCase
 import com.brokentelephone.game.domain.user.UserSession
@@ -153,6 +154,7 @@ val appModule = module {
     factoryOf(::SignInWithEmailPasswordUseCase)
     factoryOf(::SignInWithGoogleUseCase)
     factoryOf(::GetCurrentUserUseCase)
+    factoryOf(::GetUsersByIdsUseCase)
     factoryOf(::UpdateUsernameUseCase)
     factoryOf(::UpdateAvatarUseCase)
     factoryOf(::GetMyPostsUseCase)

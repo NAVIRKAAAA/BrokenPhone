@@ -78,4 +78,7 @@ sealed class Routes {
 
     @Serializable
     data object EditEmail : Routes()
+
+    @Serializable
+    data class UserDetails(val userId: String) : Routes()
 }

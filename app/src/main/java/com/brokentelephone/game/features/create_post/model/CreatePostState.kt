@@ -1,6 +1,6 @@
 package com.brokentelephone.game.features.create_post.model
 
-import com.brokentelephone.game.features.profile.model.UserUi
+import com.brokentelephone.game.core.model.user.UserUi
 
 data class CreatePostState(
     val text: String = "",

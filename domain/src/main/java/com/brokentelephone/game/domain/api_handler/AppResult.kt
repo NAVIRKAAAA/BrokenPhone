@@ -14,3 +14,7 @@ suspend fun <T> AppResult<T>.onError(action: suspend (Exception) -> Unit): AppRe
     if (this is AppResult.Error) action(exception)
     return this
 }
+
+fun <T> AppResult<T>.getResultOrNull(): T? {
+    return if (this is AppResult.Success) data else null
+}

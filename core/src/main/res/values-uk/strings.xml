@@ -139,6 +139,10 @@
     <string name="profile_top_bar_edit">Редагувати</string>
     <string name="profile_top_bar_settings">Налаштування</string>
     <string name="profile_guest_note">Ти граєш як гість. Зареєструйся, щоб зберегти прогрес!</string>
+    <string name="profile_friends">Друзі</string>
+    <string name="friendship_add">Додати в друзі</string>
+    <string name="friendship_invited">Запрошення надіслано</string>
+    <string name="friendship_friends">Друзі</string>
 
     <string name="create_post_title">Новий ланцюжок</string>
     <string name="create_post_placeholder">Напиши щось, щоб почати…</string>

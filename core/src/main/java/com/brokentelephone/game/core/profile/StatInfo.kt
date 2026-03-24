@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.profile.content
+package com.brokentelephone.game.core.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -19,12 +19,9 @@ import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 fun StatInfo(
     value: Int,
     name: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-
-    Column(
-        modifier = modifier
-    ) {
+    Column(modifier = modifier) {
         Text(
             text = value.toString(),
             textAlign = TextAlign.Start,
@@ -40,25 +37,17 @@ fun StatInfo(
             fontFamily = FontFamily(Font(R.font.nunito_regular)),
             fontSize = 12.sp,
             lineHeight = 18.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
-
 }
 
 @Preview
 @Composable
-fun StatInfoPreview() {
-    BrokenTelephoneTheme(
-        darkTheme = true
-    ) {
-        Box(
-            modifier = Modifier.background(MaterialTheme.colorScheme.background)
-        ) {
-            StatInfo(
-                value = 12,
-                name = "Posts"
-            )
+private fun StatInfoPreview() {
+    BrokenTelephoneTheme(darkTheme = true) {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            StatInfo(value = 12, name = "Posts")
         }
     }
 }

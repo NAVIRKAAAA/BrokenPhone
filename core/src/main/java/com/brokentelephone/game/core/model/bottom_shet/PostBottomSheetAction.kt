@@ -1,4 +1,4 @@
-package com.brokentelephone.game.core.bottom_sheet.post_bottom_sheet.model
+package com.brokentelephone.game.core.model.bottom_shet
 
 import androidx.annotation.StringRes
 import com.brokentelephone.game.core.R

@@ -3,6 +3,8 @@ package com.brokentelephone.game.features.profile
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.brokentelephone.game.core.model.profile.ProfileTab
+import com.brokentelephone.game.core.model.user.toUi
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
@@ -13,8 +15,6 @@ import com.brokentelephone.game.features.post_details.use_case.DeletePostUseCase
 import com.brokentelephone.game.features.post_details.use_case.GetPostLinkByIdUseCase
 import com.brokentelephone.game.features.profile.model.ProfileSideEffect
 import com.brokentelephone.game.features.profile.model.ProfileState
-import com.brokentelephone.game.features.profile.model.ProfileTab
-import com.brokentelephone.game.features.profile.model.toUi
 import com.brokentelephone.game.features.profile.use_case.GetContributionsUseCase
 import com.brokentelephone.game.features.profile.use_case.GetMyPostsUseCase
 import com.brokentelephone.game.features.settings.use_case.GetAuthStateUseCase
@@ -72,6 +72,8 @@ class ProfileViewModel(
             posts.await()
             contributions.await()
             lastLoadedAt = System.currentTimeMillis()
+
+            _state.update { it.copy(isInitialLoading = false) }
         }
     }
 

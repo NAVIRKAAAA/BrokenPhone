@@ -9,16 +9,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PrimaryTabRow
-import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -42,12 +43,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
+import com.brokentelephone.game.core.model.profile.ProfileTab
+import com.brokentelephone.game.core.model.user.UserUi
+import com.brokentelephone.game.core.profile.AccountInfoSection
+import com.brokentelephone.game.core.profile.ProfileTabRow
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.core.theme.appColors
+import com.brokentelephone.game.core.top_bar.ProfileTopBar
 import com.brokentelephone.game.features.profile.model.ProfileState
-import com.brokentelephone.game.features.profile.model.ProfileTab
-import com.brokentelephone.game.features.profile.model.UserUi
 import com.brokentelephone.game.features.welcome.content.WelcomeButton
 import kotlinx.coroutines.launch
 
@@ -115,22 +118,37 @@ fun ProfileContent(
         ) {
 
             val pullToRefreshState = rememberPullToRefreshState()
-            val isContributionsRefreshing =
-                (state.isContributionsLoading && state.myContributions.isNotEmpty())
-            val isPostsRefreshing =
-                (state.isPostsLoading && state.myPosts.isNotEmpty())
 
-            val isRefreshing = state.isRefreshing || isContributionsRefreshing || isPostsRefreshing
+            val isRefreshing =
+                (state.isRefreshing || state.isContributionsLoading || state.isPostsLoading) && !state.isInitialLoading
 
             ProfileTopBar(
                 title = stringResource(R.string.profile_title),
                 username = state.user?.username.orEmpty(),
                 avatarUrl = state.user?.avatarUrl,
-                onEditClick = onEditClick,
-                onSettingsClick = onSettingsClick,
                 isScrolled = isScrolledPastAccountInfo,
-                showEditButton = state.isAuth,
                 onTitleClick = { scope.launch { listState.animateScrollToItem(0) } },
+                actions = {
+                    if (state.isAuth) {
+                        IconButton(onClick = onEditClick) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_edit),
+                                contentDescription = stringResource(R.string.profile_top_bar_edit),
+                                modifier = Modifier.size(24.dp),
+                                tint = MaterialTheme.colorScheme.onBackground,
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(12.dp))
+                    }
+                    IconButton(onClick = onSettingsClick) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_settings),
+                            contentDescription = stringResource(R.string.profile_top_bar_settings),
+                            modifier = Modifier.size(24.dp),
+                            tint = MaterialTheme.colorScheme.onBackground,
+                        )
+                    }
+                },
             )
 
             PullToRefreshBox(
@@ -164,37 +182,11 @@ fun ProfileContent(
 
                     if (state.isAuth) {
                         stickyHeader {
-                            PrimaryTabRow(
-                                selectedTabIndex = state.selectedTab.ordinal,
-                                containerColor = MaterialTheme.colorScheme.background,
-                                divider = {
-                                    HorizontalDivider(color = MaterialTheme.appColors.divider)
-                                }
-                            ) {
-                                ProfileTab.entries.forEachIndexed { index, tab ->
-                                    val isSelected = state.selectedTab.ordinal == index
-                                    val color = if (isSelected) {
-                                        MaterialTheme.colorScheme.primary
-                                    } else {
-                                        MaterialTheme.colorScheme.onSurfaceVariant
-                                    }
-
-                                    Tab(
-                                        selected = isSelected,
-                                        onClick = { onTabSelect(tab) },
-                                        text = {
-                                            Text(
-                                                text = stringResource(tab.labelResId),
-                                                textAlign = TextAlign.Start,
-                                                fontFamily = FontFamily(Font(R.font.nunito_bold)),
-                                                fontSize = 17.sp,
-                                                lineHeight = 25.sp,
-                                                color = color
-                                            )
-                                        }
-                                    )
-                                }
-                            }
+                            ProfileTabRow(
+                                tabs = ProfileTab.entries,
+                                selectedIndex = state.selectedTab.ordinal,
+                                onTabSelect = onTabSelect,
+                            )
                         }
 
                         item {
@@ -204,12 +196,10 @@ fun ProfileContent(
                                 verticalAlignment = Alignment.Top,
                                 beyondViewportPageCount = 1
                             ) { page ->
-                                val profileTab = ProfileTab.entries[page]
-
-                                when (profileTab) {
+                                when (ProfileTab.entries[page]) {
                                     ProfileTab.POSTS -> {
                                         val showShimmerEffect =
-                                            state.isPostsLoading && state.myPosts.isEmpty()
+                                            state.isPostsLoading && state.myPosts.isEmpty() && state.isInitialLoading
 
                                         ProfilePostsPage(
                                             posts = state.myPosts,
@@ -223,7 +213,7 @@ fun ProfileContent(
 
                                     ProfileTab.CONTRIBUTIONS -> {
                                         val showShimmerEffect =
-                                            state.isContributionsLoading && state.myContributions.isEmpty()
+                                            state.isContributionsLoading && state.myContributions.isEmpty() && state.isInitialLoading
 
                                         ProfilePostsPage(
                                             posts = state.myContributions,

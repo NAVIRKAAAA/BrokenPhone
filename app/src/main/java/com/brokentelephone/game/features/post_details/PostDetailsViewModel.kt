@@ -2,6 +2,7 @@ package com.brokentelephone.game.features.post_details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.brokentelephone.game.core.model.user.toUi
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.model.post.PostContent
@@ -22,7 +23,6 @@ import com.brokentelephone.game.features.post_details.use_case.GetPostLinkByIdUs
 import com.brokentelephone.game.features.post_details.use_case.JoinSessionUseCase
 import com.brokentelephone.game.features.post_details.use_case.MarkPostAsNotInterestedUseCase
 import com.brokentelephone.game.features.post_details.use_case.ReportPostUseCase
-import com.brokentelephone.game.features.profile.model.toUi
 import com.brokentelephone.game.main.use_case.GetActiveSessionUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel

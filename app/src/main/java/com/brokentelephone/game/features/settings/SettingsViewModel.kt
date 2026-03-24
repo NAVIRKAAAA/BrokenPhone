@@ -2,6 +2,7 @@ package com.brokentelephone.game.features.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.brokentelephone.game.core.model.user.toUi
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.model.post.PostContent
@@ -14,7 +15,6 @@ import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMap
 import com.brokentelephone.game.features.app_preferences.use_case.GetLanguageUseCase
 import com.brokentelephone.game.features.app_preferences.use_case.GetThemeUseCase
 import com.brokentelephone.game.features.post_details.use_case.GetPostByIdUseCase
-import com.brokentelephone.game.features.profile.model.toUi
 import com.brokentelephone.game.features.settings.model.SettingsSideEffect
 import com.brokentelephone.game.features.settings.model.SettingsState
 import com.brokentelephone.game.features.settings.use_case.GetAuthStateUseCase

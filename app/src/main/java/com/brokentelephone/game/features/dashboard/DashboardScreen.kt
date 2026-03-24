@@ -20,10 +20,10 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.bottom_sheet.post_bottom_sheet.PostBottomSheet
-import com.brokentelephone.game.core.bottom_sheet.post_bottom_sheet.model.PostBottomSheetAction
 import com.brokentelephone.game.core.bottom_sheet.report_post_bottom_sheet.ReportPostBottomSheet
 import com.brokentelephone.game.core.dialog.ConfirmDialog
 import com.brokentelephone.game.core.dialog.ErrorDialog
+import com.brokentelephone.game.core.model.bottom_shet.PostBottomSheetAction
 import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBarViewModel
 import com.brokentelephone.game.features.bottom_nav_bar.model.BottomNavBarEvent
 import com.brokentelephone.game.features.dashboard.content.DashboardContent

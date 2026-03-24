@@ -70,13 +70,11 @@ fun SettingsContent(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            if (state.isAuth) {
-                SettingsItem(
-                    text = stringResource(R.string.settings_item_account),
-                    onClick = onAccountSettingsClick,
-                    modifier = Modifier
-                )
-            }
+            SettingsItem(
+                text = stringResource(R.string.settings_item_account),
+                onClick = onAccountSettingsClick,
+                modifier = Modifier
+            )
 
             val isGameSessionEnabled = state.user?.sessionId != null
 

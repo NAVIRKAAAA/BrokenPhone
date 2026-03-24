@@ -203,6 +203,10 @@
     <string name="profile_empty_hint">A door that only exists when no one is watching.</string>
     <string name="profile_posts">Posts</string>
     <string name="profile_contributions">Contributions</string>
+    <string name="profile_friends">Friends</string>
+    <string name="friendship_add">Add Friend</string>
+    <string name="friendship_invited">Invite Sent</string>
+    <string name="friendship_friends">Friends</string>
     <string name="profile_top_bar_edit">Edit</string>
     <string name="profile_top_bar_settings">Settings</string>
     <string name="profile_sign_in">Sign In</string>

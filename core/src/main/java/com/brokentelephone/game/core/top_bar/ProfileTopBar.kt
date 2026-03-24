@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.profile.content
+package com.brokentelephone.game.core.top_bar
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
@@ -41,12 +41,11 @@ fun ProfileTopBar(
     title: String,
     username: String,
     avatarUrl: String?,
-    onEditClick: () -> Unit,
-    onSettingsClick: () -> Unit,
     isScrolled: Boolean,
+    actions: @Composable RowScope.() -> Unit,
     modifier: Modifier = Modifier,
-    showEditButton: Boolean = true,
     onTitleClick: () -> Unit = {},
+    onBackClick: (() -> Unit)? = null,
 ) {
     Row(
         modifier = modifier
@@ -56,10 +55,24 @@ fun ProfileTopBar(
                 indication = null,
                 onClick = onTitleClick,
             )
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
+
+        if(onBackClick != null) {
+
+            IconButton(onClick = onBackClick) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_back),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground,
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
         AnimatedContent(
             targetState = isScrolled,
             transitionSpec = {
@@ -108,31 +121,14 @@ fun ProfileTopBar(
             }
         }
 
-        Row(modifier = Modifier
-            .statusBarsPadding()
-            .padding(vertical = 8.dp)) {
-            if (showEditButton) {
-                IconButton(onClick = onEditClick) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_edit),
-                        contentDescription = stringResource(R.string.profile_top_bar_edit),
-                        modifier = Modifier.size(24.dp),
-                        tint = MaterialTheme.colorScheme.onBackground,
-                    )
-                }
+        Row(
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(vertical = 8.dp),
+            content = actions,
+        )
 
-                Spacer(modifier = Modifier.width(12.dp))
-            }
-
-            IconButton(onClick = onSettingsClick) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_settings),
-                    contentDescription = stringResource(R.string.profile_top_bar_settings),
-                    modifier = Modifier.size(24.dp),
-                    tint = MaterialTheme.colorScheme.onBackground,
-                )
-            }
-        }
+        Spacer(modifier = Modifier.width(8.dp))
     }
 }
 
@@ -144,9 +140,26 @@ private fun ProfileTopBarPreview() {
             title = "Profile",
             username = "alex_username",
             avatarUrl = null,
-            onEditClick = {},
-            onSettingsClick = {},
             isScrolled = false,
+            actions = {
+                IconButton(onClick = {}) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_edit),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+                IconButton(onClick = {}) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_settings),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
+            }
         )
     }
 }
@@ -159,9 +172,18 @@ private fun ProfileTopBarScrolledPreview() {
             title = "Profile",
             username = "alex_username",
             avatarUrl = null,
-            onEditClick = {},
-            onSettingsClick = {},
             isScrolled = true,
+            actions = {
+                IconButton(onClick = {}) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_settings),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
+            },
+            onBackClick = {}
         )
     }
 }

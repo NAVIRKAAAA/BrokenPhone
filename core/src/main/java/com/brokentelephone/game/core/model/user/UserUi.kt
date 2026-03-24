@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.profile.model
+package com.brokentelephone.game.core.model.user
 
 import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.domain.user.User

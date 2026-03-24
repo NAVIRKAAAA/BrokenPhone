@@ -1,9 +1,9 @@
 package com.brokentelephone.game.features.settings.model
 
+import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.domain.model.session.GameSession
 import com.brokentelephone.game.domain.model.settings.AppTheme
 import com.brokentelephone.game.domain.model.settings.Language
-import com.brokentelephone.game.features.profile.model.UserUi
 
 data class SettingsState(
     val versionInfo: String = "",

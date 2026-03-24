@@ -2,6 +2,7 @@ package com.brokentelephone.game.features.chain_details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.brokentelephone.game.core.model.user.toUi
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
@@ -10,7 +11,6 @@ import com.brokentelephone.game.features.chain_details.model.ChainDetailsSideEff
 import com.brokentelephone.game.features.chain_details.model.ChainDetailsState
 import com.brokentelephone.game.features.chain_details.use_case.GetChainByPostIdUseCase
 import com.brokentelephone.game.features.post_details.use_case.GetPostByIdUseCase
-import com.brokentelephone.game.features.profile.model.toUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

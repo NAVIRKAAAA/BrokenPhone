@@ -17,21 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
+import com.brokentelephone.game.core.model.badge.StrongBadgeElementType
 import com.brokentelephone.game.core.theme.appColors
-
-enum class StrongBadgeElementType(
-    val iconResId: Int,
-    val textResId: Int,
-) {
-    COMPLETE(
-        iconResId = R.drawable.ic_complete,
-        textResId = R.string.dashboard_badge_complete,
-    ),
-    YOU(
-        iconResId = R.drawable.ic_fire,
-        textResId = R.string.dashboard_badge_you,
-    )
-}
 
 @Composable
 fun StrongBadgeElement(

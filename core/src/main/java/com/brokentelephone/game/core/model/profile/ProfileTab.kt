@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.profile.model
+package com.brokentelephone.game.core.model.profile
 
 import androidx.annotation.StringRes
 import com.brokentelephone.game.core.R

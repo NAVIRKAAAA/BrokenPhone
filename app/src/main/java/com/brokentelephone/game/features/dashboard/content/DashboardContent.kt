@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.banner.ActiveSessionBanner
+import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.pagination.LoadMoreIndicator
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.shimmer.ShimmerContent
@@ -36,7 +37,6 @@ import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.domain.model.sort.DashboardSort
 import com.brokentelephone.game.features.dashboard.model.DashboardState
-import com.brokentelephone.game.features.profile.model.UserUi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

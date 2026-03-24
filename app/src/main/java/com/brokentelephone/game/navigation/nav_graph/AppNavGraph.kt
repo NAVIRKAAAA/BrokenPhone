@@ -43,6 +43,7 @@ import com.brokentelephone.game.features.settings.SettingsScreen
 import com.brokentelephone.game.features.sign_in.SignInScreen
 import com.brokentelephone.game.features.sign_up.SignUpScreen
 import com.brokentelephone.game.features.theme.ThemeScreen
+import com.brokentelephone.game.features.user_details.UserDetailsScreen
 import com.brokentelephone.game.features.welcome.WelcomeScreen
 import com.brokentelephone.game.navigation.routes.Routes
 import com.brokentelephone.game.navigation.utils.navigateSingle
@@ -818,6 +819,27 @@ fun AppNavGraph(
                 )
             }
 
+
+            composable<Routes.UserDetails>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) { backStackEntry ->
+                val route = backStackEntry.toRoute<Routes.UserDetails>()
+                UserDetailsScreen(
+                    userId = route.userId,
+                    onBackClick = navController::safePopBackStack,
+                )
+            }
 
             composable<Routes.CreatePost>(
                 enterTransition = {

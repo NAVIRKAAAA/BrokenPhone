@@ -5,6 +5,7 @@ import com.brokentelephone.game.di.appModule
 import com.brokentelephone.game.essentials.di.essentialsModule
 import com.brokentelephone.game.features.edit_email.di.editEmailModule
 import com.brokentelephone.game.features.forgot_password.di.forgotPasswordModule
+import com.brokentelephone.game.features.user_details.di.userDetailsModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -14,7 +15,7 @@ class App : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@App)
-            modules(essentialsModule, appModule, forgotPasswordModule, editEmailModule)
+            modules(essentialsModule, appModule, forgotPasswordModule, editEmailModule, userDetailsModule)
         }
     }
 }
