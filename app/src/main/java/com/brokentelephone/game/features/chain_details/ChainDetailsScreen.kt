@@ -15,6 +15,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun ChainDetailsScreen(
     onBackClick: () -> Unit,
+    onUserClick: (userId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ChainDetailsViewModel = koinViewModel(),
 ) {
@@ -36,6 +37,7 @@ fun ChainDetailsScreen(
         state = state,
         onBackClick = onBackClick,
         onRefresh = viewModel::onRefresh,
+        onUserClick = onUserClick,
         modifier = modifier,
     )
 

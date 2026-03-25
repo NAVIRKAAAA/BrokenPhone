@@ -2,40 +2,49 @@ package com.brokentelephone.game.features.user_details.content
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
+import com.brokentelephone.game.core.button.WelcomeButton
 import com.brokentelephone.game.core.model.profile.ProfileTab
-import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.profile.AccountInfoSection
+import com.brokentelephone.game.core.profile.AccountInfoSectionShimmer
+import com.brokentelephone.game.core.profile.MemberSinceText
+import com.brokentelephone.game.core.profile.ProfilePostsPage
 import com.brokentelephone.game.core.profile.ProfileTabRow
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
+import com.brokentelephone.game.core.shimmer.ShimmerContent
+import com.brokentelephone.game.core.shimmer.shimmer
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.top_bar.ProfileTopBar
 import com.brokentelephone.game.features.user_details.model.UserDetailsState
@@ -46,9 +55,36 @@ fun UserDetailsContent(
     onBackClick: () -> Unit,
     onTabSelect: (ProfileTab) -> Unit,
     listState: LazyListState = rememberLazyListState(),
+    onRefresh: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    val isScrolledPastAccountInfo by remember { derivedStateOf { listState.firstVisibleItemIndex > 1 } }
+    val isScrolledPastAccountInfo by remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
+
+    val user = state.user
+
+    val pagerState = rememberPagerState(
+        initialPage = state.selectedTab.ordinal,
+        pageCount = { ProfileTab.entries.size }
+    )
+
+    val nestedScrollConnection = remember(listState) {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                val consumed = listState.dispatchRawDelta(-available.y)
+                return Offset(0f, -consumed)
+            }
+        }
+    }
+
+    LaunchedEffect(state.selectedTab) {
+        pagerState.animateScrollToPage(state.selectedTab.ordinal)
+    }
+
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }.collect { page ->
+            onTabSelect(ProfileTab.entries[page])
+        }
+    }
 
     Column(
         modifier = modifier
@@ -57,26 +93,22 @@ fun UserDetailsContent(
     ) {
         ProfileTopBar(
             title = stringResource(R.string.profile_title),
-            username = state.user?.username.orEmpty(),
-            avatarUrl = state.user?.avatarUrl,
+            username = user?.username.orEmpty(),
+            avatarUrl = user?.avatarUrl,
             isScrolled = isScrolledPastAccountInfo,
             actions = {
-                IconButton(onClick = {}) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_person_add),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp),
-                        tint = MaterialTheme.colorScheme.onBackground,
-                    )
-                }
+                IconButton(
+                    onClick = {},
+                    enabled = user != null,
+                ) {
 
-                IconButton(onClick = {}) {
                     Icon(
                         painter = painterResource(R.drawable.ic_more_vert),
                         contentDescription = null,
-                        modifier = Modifier.size(24.dp),
                         tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = if (user == null) Modifier.shimmer(cornerRadius = 4.dp) else Modifier,
                     )
+
                 }
             },
             onBackClick = onBackClick
@@ -84,11 +116,11 @@ fun UserDetailsContent(
 
         val pullToRefreshState = rememberPullToRefreshState()
 
-        val isRefreshing = false
+        val isRefreshing = state.isRefreshing
 
         PullToRefreshBox(
             isRefreshing = isRefreshing,
-            onRefresh = {},
+            onRefresh = onRefresh,
             state = pullToRefreshState,
             modifier = Modifier.fillMaxSize(),
             indicator = {
@@ -102,36 +134,93 @@ fun UserDetailsContent(
             LazyColumn(
                 state = listState,
                 modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
                 item {
 
-                    Text(
-                        text = "Member since Mar 2026",
-                        fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                        fontSize = 14.sp,
-                        lineHeight = 20.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.CenterStart)
-                            .padding(horizontal = 16.dp),
+                    ShimmerContent(
+                        isLoading = user == null,
+                        shimmerContent = {
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                            ) {
+
+                                AccountInfoSectionShimmer(
+                                    modifier = Modifier
+                                        .padding(horizontal = 16.dp)
+                                        .padding(top = 16.dp, bottom = 24.dp),
+                                )
+
+                                MemberSinceText(
+                                    createdAt = null,
+                                    modifier = Modifier
+                                        .padding(horizontal = 16.dp)
+                                        .padding(bottom = 8.dp),
+                                )
+                            }
+                        },
+                        content = {
+                            if (user != null) {
+                                Column(
+                                    modifier = Modifier.fillMaxSize(),
+                                ) {
+                                    AccountInfoSection(
+                                        username = user.username,
+                                        avatarUrl = user.avatarUrl,
+                                        modifier = Modifier
+                                            .padding(
+                                                horizontal = 16.dp,
+                                            )
+                                            .padding(top = 16.dp, bottom = 24.dp),
+                                        postsCount = state.myPosts.size,
+                                        contributions = state.myContributions.size,
+                                        isAuth = true
+                                    )
+
+                                    MemberSinceText(
+                                        createdAt = user.createdAt,
+                                        modifier = Modifier
+                                            .padding(horizontal = 16.dp)
+                                    )
+
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp, vertical = 12.dp)
+                                    ) {
+                                        WelcomeButton(
+                                            text = "Add Friend",
+                                            onClick = {},
+                                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                                            containerColor = MaterialTheme.colorScheme.primary,
+
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .height(48.dp)
+                                        )
+
+
+                                        Spacer(modifier = Modifier.width(12.dp))
+
+
+                                        WelcomeButton(
+                                            text = "Share Profile",
+                                            onClick = {},
+                                            contentColor = MaterialTheme.colorScheme.onSurface,
+                                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .height(48.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        },
                     )
 
-                    Spacer(modifier = Modifier.height(4.dp))
+
                 }
 
-                item {
-                    AccountInfoSection(
-                        username = state.user?.username.orEmpty(),
-                        avatarUrl = state.user?.avatarUrl,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp),
-                        postsCount = 0,
-                        contributions = 0,
-                        isAuth = true
-                    )
-                }
 
                 stickyHeader {
                     ProfileTabRow(
@@ -139,6 +228,43 @@ fun UserDetailsContent(
                         selectedIndex = state.selectedTab.ordinal,
                         onTabSelect = onTabSelect,
                     )
+                }
+
+                item {
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier.fillParentMaxHeight(),
+                        verticalAlignment = Alignment.Top,
+                        beyondViewportPageCount = 1
+                    ) { page ->
+                        when (ProfileTab.entries[page]) {
+                            ProfileTab.POSTS -> {
+                                val showShimmerEffect =
+                                    state.isPostsLoading && state.myPosts.isEmpty() && state.isInitialLoading
+
+                                ProfilePostsPage(
+                                    posts = state.myPosts,
+                                    isLoading = showShimmerEffect,
+                                    nestedScrollConnection = nestedScrollConnection,
+                                    onPostClick = {},
+                                    onMoreClick = {},
+                                )
+                            }
+
+                            ProfileTab.CONTRIBUTIONS -> {
+                                val showShimmerEffect =
+                                    state.isContributionsLoading && state.myContributions.isEmpty() && state.isInitialLoading
+
+                                ProfilePostsPage(
+                                    posts = state.myContributions,
+                                    isLoading = showShimmerEffect,
+                                    nestedScrollConnection = nestedScrollConnection,
+                                    onPostClick = {},
+                                    onMoreClick = {},
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -152,13 +278,13 @@ private fun UserDetailsContentPreview() {
     BrokenTelephoneTheme(darkTheme = false) {
         UserDetailsContent(
             state = UserDetailsState(
-                user = UserUi(
-                    id = "user-1",
-                    username = "Alex",
-                    avatarUrl = null,
-                    email = "",
-                    createdAt = 0
-                ),
+//                user = UserUi(
+//                    id = "user-1",
+//                    username = "Alex",
+//                    avatarUrl = null,
+//                    email = "",
+//                    createdAt = 0
+//                ),
             ),
             onBackClick = {},
             onTabSelect = {}

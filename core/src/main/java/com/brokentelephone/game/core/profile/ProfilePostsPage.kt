@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.profile.content
+package com.brokentelephone.game.core.profile
 
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -18,20 +18,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import com.brokentelephone.game.core.model.profile.ProfileTab
+import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.appColors
-import com.brokentelephone.game.features.dashboard.model.PostUi
 
 @Composable
 fun ProfilePostsPage(
     posts: List<PostUi>,
-    profileTab: ProfileTab,
     isLoading: Boolean,
     nestedScrollConnection: NestedScrollConnection,
     onPostClick: (postId: String) -> Unit,
     onMoreClick: (postId: String) -> Unit,
     modifier: Modifier = Modifier,
+    emptyContent: @Composable (() -> Unit) = {}
 ) {
 
     ShimmerContent(
@@ -40,17 +39,7 @@ fun ProfilePostsPage(
             ProfilePageShimmerList(modifier = modifier)
         },
         isEmpty = !isLoading && posts.isEmpty(),
-        emptyContent = {
-            if (profileTab == ProfileTab.POSTS) {
-                EmptyPostsElement(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
-                )
-            } else {
-                EmptyContributionsElement(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
-                )
-            }
-        },
+        emptyContent = emptyContent,
         content = {
             val listState = rememberLazyListState()
 
@@ -65,7 +54,7 @@ fun ProfilePostsPage(
                     key = { _, item -> item.id },
                 ) { index, post ->
                     Column(
-                        modifier = Modifier.animateItem()
+                        modifier = Modifier.Companion.animateItem()
                     ) {
                         if (index != 0) {
                             HorizontalDivider(color = MaterialTheme.appColors.divider)

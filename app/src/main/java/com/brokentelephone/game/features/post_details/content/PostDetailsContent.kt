@@ -35,6 +35,7 @@ fun PostDetailsContent(
     onContinueClick: () -> Unit,
     onViewHistoryClick: () -> Unit,
     onMoreClick: () -> Unit,
+    onUserClick: (userId: String) -> Unit,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
 ) {
@@ -98,6 +99,7 @@ fun PostDetailsContent(
                     ) {
                         PostDetailsElement(
                             post = post,
+                            onUserClick = { onUserClick(post.authorId) },
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
 
@@ -165,7 +167,8 @@ fun PostDetailsContentPreview() {
                 ),
                 onContinueClick = {},
                 onViewHistoryClick = {},
-                onMoreClick = {}
+                onMoreClick = {},
+                onUserClick = {}
             )
         }
     }

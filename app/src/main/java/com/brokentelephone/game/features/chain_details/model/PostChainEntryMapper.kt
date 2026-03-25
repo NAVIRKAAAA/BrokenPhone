@@ -1,8 +1,8 @@
 package com.brokentelephone.game.features.chain_details.model
 
+import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.domain.model.post.PostChainEntry
 import com.brokentelephone.game.domain.model.post.PostContent
-import com.brokentelephone.game.features.dashboard.model.PostUi
 
 fun PostChainEntry.toUi(
     id: String,

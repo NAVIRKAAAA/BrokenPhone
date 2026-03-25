@@ -317,6 +317,9 @@ fun AppNavGraph(
                     viewModel = viewModel,
                     onPostClick = { postId ->
                         navController.navigateSingle(Routes.PostDetails(postId = postId))
+                    },
+                    onUserClick = { userId ->
+                        navController.navigateSingle(Routes.UserDetails(userId = userId))
                     }
                 )
             }
@@ -378,6 +381,9 @@ fun AppNavGraph(
                     },
                     onViewHistoryClick = { postId ->
                         navController.navigateSingle(Routes.ChainDetails(postId = postId))
+                    },
+                    onUserClick = { userId ->
+                        navController.navigateSingle(Routes.UserDetails(userId = userId))
                     },
                 )
             }
@@ -443,6 +449,16 @@ fun AppNavGraph(
                         animationSpec = tween(250)
                     ) + fadeIn(animationSpec = tween(200))
                 },
+                popEnterTransition = {
+                    if (initialState.destination.route?.contains("UserDetails") == true) {
+                        EnterTransition.None
+                    } else {
+                        slideInHorizontally(
+                            initialOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeIn(animationSpec = tween(200))
+                    }
+                },
                 popExitTransition = {
                     slideOutHorizontally(
                         targetOffsetX = { it },
@@ -455,6 +471,9 @@ fun AppNavGraph(
                 ChainDetailsScreen(
                     viewModel = viewModel,
                     onBackClick = navController::safePopBackStack,
+                    onUserClick = { userId ->
+                        navController.navigateSingle(Routes.UserDetails(userId = userId))
+                    },
                 )
             }
 
@@ -822,16 +841,32 @@ fun AppNavGraph(
 
             composable<Routes.UserDetails>(
                 enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
+                    val from = initialState.destination.route
+                    if (from?.contains("Dashboard") == true || from?.contains("PostDetails") == true || from?.contains("ChainDetails") == true) {
+                        slideInVertically(
+                            initialOffsetY = { it },
+                            animationSpec = tween(300)
+                        )
+                    } else {
+                        slideInHorizontally(
+                            initialOffsetX = { it },
+                            animationSpec = tween(250)
+                        ) + fadeIn(animationSpec = tween(200))
+                    }
                 },
                 popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
+                    val to = targetState.destination.route
+                    if (to?.contains("Dashboard") == true || to?.contains("PostDetails") == true || to?.contains("ChainDetails") == true) {
+                        slideOutVertically(
+                            targetOffsetY = { it },
+                            animationSpec = tween(300)
+                        ) + fadeOut(animationSpec = tween(200))
+                    } else {
+                        slideOutHorizontally(
+                            targetOffsetX = { it },
+                            animationSpec = tween(250)
+                        ) + fadeOut(animationSpec = tween(200))
+                    }
                 }
             ) { backStackEntry ->
                 val route = backStackEntry.toRoute<Routes.UserDetails>()

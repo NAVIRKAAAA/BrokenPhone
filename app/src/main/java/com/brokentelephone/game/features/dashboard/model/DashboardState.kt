@@ -1,5 +1,6 @@
 package com.brokentelephone.game.features.dashboard.model
 
+import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.domain.model.sort.DashboardSort
 

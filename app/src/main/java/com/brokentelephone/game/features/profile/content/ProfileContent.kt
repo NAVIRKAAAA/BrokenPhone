@@ -43,15 +43,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
+import com.brokentelephone.game.core.button.WelcomeButton
 import com.brokentelephone.game.core.model.profile.ProfileTab
 import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.profile.AccountInfoSection
+import com.brokentelephone.game.core.profile.ProfilePostsPage
 import com.brokentelephone.game.core.profile.ProfileTabRow
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.top_bar.ProfileTopBar
 import com.brokentelephone.game.features.profile.model.ProfileState
-import com.brokentelephone.game.features.welcome.content.WelcomeButton
 import kotlinx.coroutines.launch
 
 @Composable
@@ -203,11 +204,18 @@ fun ProfileContent(
 
                                         ProfilePostsPage(
                                             posts = state.myPosts,
-                                            profileTab = ProfileTab.POSTS,
                                             isLoading = showShimmerEffect,
                                             nestedScrollConnection = nestedScrollConnection,
                                             onPostClick = onPostClick,
                                             onMoreClick = onMoreClick,
+                                            emptyContent = {
+                                                EmptyPostsElement(
+                                                    modifier = Modifier.padding(
+                                                        horizontal = 16.dp,
+                                                        vertical = 16.dp
+                                                    ),
+                                                )
+                                            }
                                         )
                                     }
 
@@ -217,11 +225,18 @@ fun ProfileContent(
 
                                         ProfilePostsPage(
                                             posts = state.myContributions,
-                                            profileTab = ProfileTab.CONTRIBUTIONS,
                                             isLoading = showShimmerEffect,
                                             nestedScrollConnection = nestedScrollConnection,
                                             onPostClick = onPostClick,
                                             onMoreClick = onMoreClick,
+                                            emptyContent = {
+                                                EmptyContributionsElement(
+                                                    modifier = Modifier.padding(
+                                                        horizontal = 16.dp,
+                                                        vertical = 16.dp
+                                                    ),
+                                                )
+                                            }
                                         )
                                     }
                                 }

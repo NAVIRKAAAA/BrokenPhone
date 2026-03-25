@@ -26,7 +26,8 @@ fun UserDetailsScreen(
     UserDetailsContent(
         state = state,
         onBackClick = onBackClick,
-        onTabSelect = {},
+        onTabSelect = viewModel::onTabSelect,
         modifier = modifier,
+        onRefresh = viewModel::onRefresh
     )
 }

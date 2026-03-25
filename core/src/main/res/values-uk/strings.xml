@@ -140,6 +140,7 @@
     <string name="profile_top_bar_settings">Налаштування</string>
     <string name="profile_guest_note">Ти граєш як гість. Зареєструйся, щоб зберегти прогрес!</string>
     <string name="profile_friends">Друзі</string>
+    <string name="profile_member_since">У додатку з %1$s</string>
     <string name="friendship_add">Додати в друзі</string>
     <string name="friendship_invited">Запрошення надіслано</string>
     <string name="friendship_friends">Друзі</string>

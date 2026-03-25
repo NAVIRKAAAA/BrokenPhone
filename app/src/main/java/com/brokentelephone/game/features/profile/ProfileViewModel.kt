@@ -3,20 +3,20 @@ package com.brokentelephone.game.features.profile
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.brokentelephone.game.core.model.post.PostUi
+import com.brokentelephone.game.core.model.post.toUi
 import com.brokentelephone.game.core.model.profile.ProfileTab
 import com.brokentelephone.game.core.model.user.toUi
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
+import com.brokentelephone.game.domain.use_case.GetUserContributionsUseCase
+import com.brokentelephone.game.domain.use_case.GetUserPostsUseCase
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
-import com.brokentelephone.game.features.dashboard.model.PostUi
-import com.brokentelephone.game.features.dashboard.model.toUi
 import com.brokentelephone.game.features.post_details.use_case.DeletePostUseCase
 import com.brokentelephone.game.features.post_details.use_case.GetPostLinkByIdUseCase
 import com.brokentelephone.game.features.profile.model.ProfileSideEffect
 import com.brokentelephone.game.features.profile.model.ProfileState
-import com.brokentelephone.game.features.profile.use_case.GetContributionsUseCase
-import com.brokentelephone.game.features.profile.use_case.GetMyPostsUseCase
 import com.brokentelephone.game.features.settings.use_case.GetAuthStateUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
@@ -33,8 +33,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalCoroutinesApi::class)
 class ProfileViewModel(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val getMyPostsUseCase: GetMyPostsUseCase,
-    private val getContributionsUseCase: GetContributionsUseCase,
+    private val getUserPostsUseCase: GetUserPostsUseCase,
+    private val getUserContributionsUseCase: GetUserContributionsUseCase,
     private val getPostLinkByIdUseCase: GetPostLinkByIdUseCase,
     private val deletePostUseCase: DeletePostUseCase,
     private val getAuthStateUseCase: GetAuthStateUseCase,
@@ -95,7 +95,9 @@ class ProfileViewModel(
     }
 
     private suspend fun fetchMyPosts() {
-        getMyPostsUseCase.execute()
+        val user = state.value.user ?: return
+
+        getUserPostsUseCase.execute(user.id)
             .onSuccess { posts ->
                 _state.update {
                     it.copy(
@@ -109,7 +111,9 @@ class ProfileViewModel(
     }
 
     private suspend fun fetchContributions() {
-        getContributionsUseCase.execute()
+        val user = state.value.user ?: return
+
+        getUserContributionsUseCase.execute(user.id)
             .onSuccess { posts ->
                 _state.update {
                     it.copy(

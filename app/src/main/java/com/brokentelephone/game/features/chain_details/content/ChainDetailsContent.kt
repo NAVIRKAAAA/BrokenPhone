@@ -36,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
+import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.shimmer.ShimmerContent
@@ -45,7 +46,6 @@ import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
 import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.features.chain_details.model.ChainDetailsState
-import com.brokentelephone.game.features.dashboard.model.PostUi
 import com.brokentelephone.game.features.edit_profile.content.EditProfileTopBar
 import kotlin.uuid.ExperimentalUuidApi
 
@@ -55,6 +55,7 @@ fun ChainDetailsContent(
     state: ChainDetailsState,
     onBackClick: () -> Unit,
     onRefresh: () -> Unit,
+    onUserClick: (userId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val lazyListState = rememberLazyListState()
@@ -122,7 +123,8 @@ fun ChainDetailsContent(
 
                                 ChainDetailsElement(
                                     post = postUi,
-                                    isHidden = chainSize != maxGenerations && (postUi.authorId != state.userUi?.id || postUi.id != state.postId)
+                                    isHidden = chainSize != maxGenerations && (postUi.authorId != state.userUi?.id || postUi.id != state.postId),
+                                    onUserClick = { onUserClick(postUi.authorId) }
                                 )
 
                                 if (index < maxGenerations) {
@@ -273,6 +275,7 @@ fun ChainDetailsContentPreview() {
             ),
             onBackClick = {},
             onRefresh = {},
+            onUserClick = {},
         )
     }
 }

@@ -1,6 +1,8 @@
 package com.brokentelephone.game.features.post_details.content
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,17 +31,18 @@ import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.avatar.AvatarComponent
 import com.brokentelephone.game.core.badge.BadgeElement
 import com.brokentelephone.game.core.badge.StrongBadgeElement
-import com.brokentelephone.game.core.badge.StrongBadgeElementType
+import com.brokentelephone.game.core.model.badge.StrongBadgeElementType
+import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.post.DrawPostImage
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.utils.rememberRelativeTime
 import com.brokentelephone.game.domain.model.post.PostContent
-import com.brokentelephone.game.features.dashboard.model.PostUi
 
 @Composable
 fun PostDetailsElement(
     post: PostUi,
     modifier: Modifier = Modifier,
+    onUserClick: () -> Unit = {},
 ) {
 
     val relativeTime = rememberRelativeTime(post.createdAt)
@@ -53,7 +57,12 @@ fun PostDetailsElement(
         ) {
             AvatarComponent(
                 avatarUrl = post.avatarUrl,
-                size = 40.dp
+                size = 40.dp,
+                modifier = Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = onUserClick
+                )
             )
 
             Spacer(modifier = Modifier.width(12.dp))
@@ -66,7 +75,13 @@ fun PostDetailsElement(
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f, fill = false)
+                modifier = Modifier
+                    .weight(1f, fill = false)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = onUserClick
+                    )
             )
 
             Spacer(modifier = Modifier.width(8.dp))

@@ -32,6 +32,7 @@ fun PostDetailsScreen(
     onDrawContinue: (sessionId: String) -> Unit,
     onDescribeDrawingContinue: (sessionId: String) -> Unit,
     onViewHistoryClick: (postId: String) -> Unit,
+    onUserClick: (userId: String) -> Unit,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
     navigateBackWithForceUpdate: () -> Unit = {},
@@ -69,6 +70,7 @@ fun PostDetailsScreen(
         onViewHistoryClick = {
             state.postUi?.let { onViewHistoryClick(it.id) }
         },
+        onUserClick = onUserClick,
         modifier = modifier
     )
 

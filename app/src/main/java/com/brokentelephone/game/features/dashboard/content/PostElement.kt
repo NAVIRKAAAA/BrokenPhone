@@ -35,13 +35,13 @@ import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.avatar.AvatarComponent
 import com.brokentelephone.game.core.badge.BadgeElement
 import com.brokentelephone.game.core.badge.StrongBadgeElement
-import com.brokentelephone.game.core.badge.StrongBadgeElementType
+import com.brokentelephone.game.core.model.badge.StrongBadgeElementType
+import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.post.DrawPostImage
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.utils.rememberRelativeTime
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
-import com.brokentelephone.game.features.dashboard.model.PostUi
 
 @Composable
 fun PostElement(
@@ -49,6 +49,7 @@ fun PostElement(
     modifier: Modifier = Modifier,
     isUsersPost: Boolean = false,
     onMoreClick: () -> Unit = {},
+    onUserClick: () -> Unit = {}
 ) {
 
     val relativeTime = rememberRelativeTime(post.createdAt)
@@ -60,7 +61,12 @@ fun PostElement(
 
         AvatarComponent(
             avatarUrl = post.avatarUrl,
-            size = 40.dp
+            size = 40.dp,
+            modifier = Modifier.clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onUserClick
+            )
         )
 
         Spacer(modifier = Modifier.width(12.dp))
@@ -84,7 +90,13 @@ fun PostElement(
                         color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f, fill = false)
+                        modifier = Modifier
+                            .weight(1f, fill = false)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = onUserClick
+                            )
                     )
 
                     Spacer(modifier = Modifier.width(8.dp))

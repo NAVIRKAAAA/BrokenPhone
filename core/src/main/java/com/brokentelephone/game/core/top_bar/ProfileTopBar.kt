@@ -6,9 +6,11 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -60,13 +62,20 @@ fun ProfileTopBar(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
 
-        if(onBackClick != null) {
+        if (onBackClick != null) {
 
-            IconButton(onClick = onBackClick) {
+            IconButton(
+                onClick = onBackClick,
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .padding(vertical = 8.dp)
+            ) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_back),
+                    painter = painterResource(R.drawable.ic_close),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier
+                        .size(24.dp)
                 )
             }
         }
@@ -167,23 +176,25 @@ private fun ProfileTopBarPreview() {
 @Preview
 @Composable
 private fun ProfileTopBarScrolledPreview() {
-    BrokenTelephoneTheme(darkTheme = true) {
-        ProfileTopBar(
-            title = "Profile",
-            username = "alex_username",
-            avatarUrl = null,
-            isScrolled = true,
-            actions = {
-                IconButton(onClick = {}) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_settings),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp),
-                        tint = MaterialTheme.colorScheme.onBackground,
-                    )
-                }
-            },
-            onBackClick = {}
-        )
+    BrokenTelephoneTheme(darkTheme = false) {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            ProfileTopBar(
+                title = "Profile",
+                username = "alex_username",
+                avatarUrl = null,
+                isScrolled = true,
+                actions = {
+                    IconButton(onClick = {}) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_settings),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp),
+                            tint = MaterialTheme.colorScheme.onBackground,
+                        )
+                    }
+                },
+                onBackClick = {}
+            )
+        }
     }
 }

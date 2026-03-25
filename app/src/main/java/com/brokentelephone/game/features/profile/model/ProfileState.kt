@@ -1,8 +1,8 @@
 package com.brokentelephone.game.features.profile.model
 
+import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.model.profile.ProfileTab
 import com.brokentelephone.game.core.model.user.UserUi
-import com.brokentelephone.game.features.dashboard.model.PostUi
 
 data class ProfileState(
     val selectedTab: ProfileTab = ProfileTab.POSTS,
@@ -12,7 +12,7 @@ data class ProfileState(
     val isInitialLoading: Boolean = true,
     val myPosts: List<PostUi> = emptyList(),
     val myContributions: List<PostUi> = emptyList(),
-    val isContributionsLoading: Boolean = false,
+    val isContributionsLoading: Boolean = true,
     val isRefreshing: Boolean = false,
     // Bottom sheets / dialogs
     val selectedPost: PostUi? = null,

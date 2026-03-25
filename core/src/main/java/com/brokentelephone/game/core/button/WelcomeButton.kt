@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.welcome.content
+package com.brokentelephone.game.core.button
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth

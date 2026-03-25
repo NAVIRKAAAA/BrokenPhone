@@ -37,6 +37,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun DashboardScreen(
     onPostClick: (postId: String) -> Unit,
+    onUserClick: (userId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DashboardViewModel = koinViewModel(),
     navBarViewModel: AppNavBottomBarViewModel = koinInject()
@@ -115,6 +116,7 @@ fun DashboardScreen(
         state = state,
         listState = listState,
         onPostClick = onPostClick,
+        onUserClick = onUserClick,
         onMoreClick = { postId ->
             val post = state.posts.find { it.id == postId } ?: return@DashboardContent
             viewModel.onMoreClick(post)

@@ -45,6 +45,7 @@ fun DashboardContent(
     listState: LazyListState,
     onPostClick: (postId: String) -> Unit,
     onMoreClick: (postId: String) -> Unit,
+    onUserClick: (userId: String) -> Unit,
     onSortSelected: (DashboardSort) -> Unit,
     onTitleClick: () -> Unit,
     onRefresh: () -> Unit,
@@ -124,6 +125,7 @@ fun DashboardContent(
                                     post = postUi,
                                     isUsersPost = postUi.authorId == state.user?.id,
                                     onMoreClick = { onMoreClick(postUi.id) },
+                                    onUserClick = { onUserClick(postUi.authorId) },
                                     modifier = Modifier.padding(horizontal = 16.dp)
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
@@ -167,6 +169,7 @@ fun DashboardContentPreview() {
                 ),
                 onPostClick = {},
                 onMoreClick = {},
+                onUserClick = {},
                 onSortSelected = {},
                 onTitleClick = {},
                 onRefresh = {},

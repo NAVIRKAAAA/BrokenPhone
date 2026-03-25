@@ -25,6 +25,8 @@ import com.brokentelephone.game.domain.repository.UserSettingsRepository
 import com.brokentelephone.game.domain.repository.UsersRepository
 import com.brokentelephone.game.domain.storage.ImageStorage
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
+import com.brokentelephone.game.domain.use_case.GetUserContributionsUseCase
+import com.brokentelephone.game.domain.use_case.GetUserPostsUseCase
 import com.brokentelephone.game.domain.use_case.GetUsersByIdsUseCase
 import com.brokentelephone.game.domain.use_case.LogoutUseCase
 import com.brokentelephone.game.domain.use_case.SignInWithGoogleUseCase
@@ -76,8 +78,6 @@ import com.brokentelephone.game.features.post_details.use_case.JoinSessionUseCas
 import com.brokentelephone.game.features.post_details.use_case.MarkPostAsNotInterestedUseCase
 import com.brokentelephone.game.features.post_details.use_case.ReportPostUseCase
 import com.brokentelephone.game.features.profile.ProfileViewModel
-import com.brokentelephone.game.features.profile.use_case.GetContributionsUseCase
-import com.brokentelephone.game.features.profile.use_case.GetMyPostsUseCase
 import com.brokentelephone.game.features.settings.SettingsViewModel
 import com.brokentelephone.game.features.settings.use_case.GetAuthStateUseCase
 import com.brokentelephone.game.features.settings.use_case.GetPrivacyPolicyLinkUseCase
@@ -157,8 +157,8 @@ val appModule = module {
     factoryOf(::GetUsersByIdsUseCase)
     factoryOf(::UpdateUsernameUseCase)
     factoryOf(::UpdateAvatarUseCase)
-    factoryOf(::GetMyPostsUseCase)
-    factoryOf(::GetContributionsUseCase)
+    factoryOf(::GetUserPostsUseCase)
+    factoryOf(::GetUserContributionsUseCase)
 
     viewModelOf(::CreatePostViewModel)
     factoryOf(::LoadInitialPostsUseCase)

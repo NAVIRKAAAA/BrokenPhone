@@ -2,6 +2,7 @@ package com.brokentelephone.game.features.post_details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.model.user.toUi
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
@@ -13,7 +14,6 @@ import com.brokentelephone.game.domain.model.session.cooldownRemainingMs
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.essentials.exceptions.auth.PostNotFoundException
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
-import com.brokentelephone.game.features.dashboard.model.PostUi
 import com.brokentelephone.game.features.post_details.model.PostDetailsButtonType
 import com.brokentelephone.game.features.post_details.model.PostDetailsSideEffect
 import com.brokentelephone.game.features.post_details.model.PostDetailsState

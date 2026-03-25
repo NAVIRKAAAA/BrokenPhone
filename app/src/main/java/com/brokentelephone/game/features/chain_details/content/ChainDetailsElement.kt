@@ -1,6 +1,8 @@
 package com.brokentelephone.game.features.chain_details.content
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,19 +27,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.avatar.AvatarComponent
+import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.modifier.hidden
 import com.brokentelephone.game.core.post.DrawPostImage
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.utils.rememberRelativeTime
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
-import com.brokentelephone.game.features.dashboard.model.PostUi
 
 @Composable
 fun ChainDetailsElement(
     post: PostUi,
     modifier: Modifier = Modifier,
-    isHidden: Boolean = false
+    isHidden: Boolean = false,
+    onUserClick: () -> Unit = {},
 ) {
     val relativeTime = rememberRelativeTime(post.createdAt)
 
@@ -48,7 +52,15 @@ fun ChainDetailsElement(
         AvatarComponent(
             avatarUrl = post.avatarUrl,
             size = 40.dp,
-            modifier = if (isHidden) Modifier.hidden(cornerRadius = 50.dp) else Modifier
+            modifier = if (isHidden) {
+                Modifier.hidden(cornerRadius = 50.dp)
+            } else {
+                Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = onUserClick
+                )
+            }
         )
 
         Spacer(modifier = Modifier.width(12.dp))
@@ -74,7 +86,14 @@ fun ChainDetailsElement(
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier
                             .weight(1f, fill = false)
-                            .then(if (isHidden) Modifier.hidden(cornerRadius = 4.dp) else Modifier)
+                            .then(
+                                if (isHidden) Modifier.hidden(cornerRadius = 4.dp)
+                                else Modifier.clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null,
+                                    onClick = onUserClick
+                                )
+                            )
                     )
 
                     Spacer(modifier = Modifier.width(8.dp))

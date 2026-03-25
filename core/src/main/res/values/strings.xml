@@ -211,6 +211,7 @@
     <string name="profile_top_bar_settings">Settings</string>
     <string name="profile_sign_in">Sign In</string>
     <string name="profile_guest_note">You\'re playing as a guest. Sign up to save your progress!</string>
+    <string name="profile_member_since">Member since %1$s</string>
 
     <!-- Bottom Nav Bar -->
     <string name="bottom_nav_bar_dashboard">Feed</string>
