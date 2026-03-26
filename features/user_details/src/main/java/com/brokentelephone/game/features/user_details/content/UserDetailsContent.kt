@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -35,10 +34,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.button.WelcomeButton
 import com.brokentelephone.game.core.model.profile.ProfileTab
 import com.brokentelephone.game.core.profile.AccountInfoSection
 import com.brokentelephone.game.core.profile.AccountInfoSectionShimmer
+import com.brokentelephone.game.core.profile.FriendshipActionButton
 import com.brokentelephone.game.core.profile.MemberSinceText
 import com.brokentelephone.game.core.profile.ProfilePostsPage
 import com.brokentelephone.game.core.profile.ProfileTabRow
@@ -54,6 +53,7 @@ fun UserDetailsContent(
     state: UserDetailsState,
     onBackClick: () -> Unit,
     onTabSelect: (ProfileTab) -> Unit,
+    onAddFriendClick: () -> Unit,
     listState: LazyListState = rememberLazyListState(),
     onRefresh: () -> Unit = {},
     modifier: Modifier = Modifier,
@@ -188,29 +188,20 @@ fun UserDetailsContent(
                                             .fillMaxWidth()
                                             .padding(horizontal = 16.dp, vertical = 12.dp)
                                     ) {
-                                        WelcomeButton(
-                                            text = "Add Friend",
-                                            onClick = {},
-                                            contentColor = MaterialTheme.colorScheme.onPrimary,
-                                            containerColor = MaterialTheme.colorScheme.primary,
-
-                                            modifier = Modifier
-                                                .weight(1f)
-                                                .height(48.dp)
+                                        FriendshipActionButton(
+                                            state = state.friendshipActionState,
+                                            onAddFriendClick = onAddFriendClick,
+                                            onCancelRequestClick = {},
+                                            onRemoveFriendClick = {},
+                                            isLoading = state.isFriendshipActionLoading,
+                                            modifier = Modifier.weight(1f),
                                         )
-
 
                                         Spacer(modifier = Modifier.width(12.dp))
 
-
-                                        WelcomeButton(
-                                            text = "Share Profile",
+                                        ShareProfileButton(
                                             onClick = {},
-                                            contentColor = MaterialTheme.colorScheme.onSurface,
-                                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                                            modifier = Modifier
-                                                .weight(1f)
-                                                .height(48.dp)
+                                            isLoading = false
                                         )
                                     }
                                 }
@@ -277,6 +268,7 @@ fun UserDetailsContent(
 private fun UserDetailsContentPreview() {
     BrokenTelephoneTheme(darkTheme = false) {
         UserDetailsContent(
+            onAddFriendClick = {},
             state = UserDetailsState(
 //                user = UserUi(
 //                    id = "user-1",

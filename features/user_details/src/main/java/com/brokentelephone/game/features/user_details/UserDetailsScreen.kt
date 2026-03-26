@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.brokentelephone.game.core.dialog.ErrorDialog
 import com.brokentelephone.game.features.user_details.content.UserDetailsContent
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -27,7 +28,15 @@ fun UserDetailsScreen(
         state = state,
         onBackClick = onBackClick,
         onTabSelect = viewModel::onTabSelect,
+        onAddFriendClick = viewModel::onAddFriendClick,
         modifier = modifier,
         onRefresh = viewModel::onRefresh
     )
+
+    state.globalError?.let { error ->
+        ErrorDialog(
+            body = error,
+            onOkClick = viewModel::onGlobalErrorDismiss,
+        )
+    }
 }

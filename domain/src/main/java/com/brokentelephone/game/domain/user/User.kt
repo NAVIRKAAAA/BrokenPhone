@@ -12,6 +12,7 @@ data class User(
     val notifications: List<NotificationType>,
     val authProvider: AuthProvider,
     val onboardingStep: OnboardingStep,
+    val friendIds: List<String> = emptyList(),
     val blockedUserIds: List<String> = emptyList(),
     val blockedBy: List<String> = emptyList(),
     val notInterestedPostIds: List<String> = emptyList(),
@@ -29,6 +30,7 @@ data class User(
         FIELD_ONBOARDING_STEP to onboardingStep.name,
         FIELD_CREATED_AT to createdAt,
         FIELD_UPDATED_AT to updatedAt,
+        FIELD_FRIEND_IDS to friendIds,
         FIELD_BLOCKED_USER_IDS to blockedUserIds,
         FIELD_BLOCKED_BY to blockedBy,
         FIELD_NOT_INTERESTED_POST_IDS to notInterestedPostIds,
@@ -46,6 +48,7 @@ data class User(
         const val FIELD_ONBOARDING_STEP = "onboardingStep"
         const val FIELD_CREATED_AT = "createdAt"
         const val FIELD_UPDATED_AT = "updatedAt"
+        const val FIELD_FRIEND_IDS = "friendIds"
         const val FIELD_BLOCKED_USER_IDS = "blockedUserIds"
         const val FIELD_BLOCKED_BY = "blockedBy"
         const val FIELD_NOT_INTERESTED_POST_IDS = "notInterestedPostIds"
@@ -69,6 +72,7 @@ data class User(
                     }.getOrDefault(OnboardingStep.CHOOSE_USERNAME),
                     createdAt = map[FIELD_CREATED_AT] as? Long ?: 0L,
                     updatedAt = map[FIELD_UPDATED_AT] as? Long ?: 0L,
+                    friendIds = (map[FIELD_FRIEND_IDS] as? List<String>) ?: emptyList(),
                     blockedUserIds = (map[FIELD_BLOCKED_USER_IDS] as? List<String>) ?: emptyList(),
                     blockedBy = (map[FIELD_BLOCKED_BY] as? List<String>) ?: emptyList(),
                     notInterestedPostIds = (map[FIELD_NOT_INTERESTED_POST_IDS] as? List<String>) ?: emptyList(),

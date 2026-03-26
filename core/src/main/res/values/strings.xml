@@ -204,14 +204,17 @@
     <string name="profile_posts">Posts</string>
     <string name="profile_contributions">Contributions</string>
     <string name="profile_friends">Friends</string>
-    <string name="friendship_add">Add Friend</string>
-    <string name="friendship_invited">Invite Sent</string>
-    <string name="friendship_friends">Friends</string>
     <string name="profile_top_bar_edit">Edit</string>
     <string name="profile_top_bar_settings">Settings</string>
     <string name="profile_sign_in">Sign In</string>
     <string name="profile_guest_note">You\'re playing as a guest. Sign up to save your progress!</string>
     <string name="profile_member_since">Member since %1$s</string>
+
+    <!-- Friendship Action -->
+    <string name="friendship_action_add">Add Friend</string>
+    <string name="friendship_action_accept">Accept</string>
+    <string name="friendship_action_invite_sent">Invite Sent</string>
+    <string name="friendship_action_friends">Friends</string>
 
     <!-- Bottom Nav Bar -->
     <string name="bottom_nav_bar_dashboard">Feed</string>

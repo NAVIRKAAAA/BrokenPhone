@@ -7,11 +7,14 @@ import com.brokentelephone.game.core.model.profile.ProfileTab
 import com.brokentelephone.game.core.model.user.toUi
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
+import com.brokentelephone.game.domain.model.friend.FriendshipActionState
 import com.brokentelephone.game.domain.use_case.GetUserContributionsUseCase
 import com.brokentelephone.game.domain.use_case.GetUserPostsUseCase
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.user_details.model.UserDetailsState
+import com.brokentelephone.game.features.user_details.use_case.GetFriendshipActionStateUseCase
 import com.brokentelephone.game.features.user_details.use_case.GetUserByIdUseCase
+import com.brokentelephone.game.features.user_details.use_case.SendFriendRequestUseCase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,6 +28,8 @@ class UserDetailsViewModel(
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
     private val getUserPostsUseCase: GetUserPostsUseCase,
     private val getUserContributionsUseCase: GetUserContributionsUseCase,
+    private val getFriendshipActionStateUseCase: GetFriendshipActionStateUseCase,
+    private val sendFriendRequestUseCase: SendFriendRequestUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(UserDetailsState())
@@ -32,11 +37,16 @@ class UserDetailsViewModel(
 
     private var lastLoadedAt: Long = 0L
 
+
     fun onResume() {
         if (!isLoadAllowed(lastLoadedAt)) return
 
         viewModelScope.launch {
-            fetchUser()
+            val user = async { fetchUser() }
+            val friendshipActionState = async { fetchFriendshipActionState() }
+
+            user.await()
+            friendshipActionState.await()
 
             _state.update { it.copy(isPostsLoading = true, isContributionsLoading = true) }
 
@@ -56,7 +66,11 @@ class UserDetailsViewModel(
 
             delay(150)
 
-            fetchUser()
+            val user = async { fetchUser() }
+            val friendshipActionState = async { fetchFriendshipActionState() }
+
+            user.await()
+            friendshipActionState.await()
 
             val posts = async { fetchMyPosts() }
             val contributions = async { fetchContributions() }
@@ -67,6 +81,13 @@ class UserDetailsViewModel(
 
             _state.update { it.copy(isRefreshing = false) }
         }
+    }
+
+    private suspend fun fetchFriendshipActionState() {
+        getFriendshipActionStateUseCase.execute(userId)
+            .onSuccess { friendshipState ->
+                _state.update { it.copy(friendshipActionState = friendshipState) }
+            }
     }
 
     private suspend fun fetchUser() {
@@ -121,6 +142,29 @@ class UserDetailsViewModel(
     private fun isLoadAllowed(lastLoadedAt: Long): Boolean {
         if (lastLoadedAt == 0L) return true
         return System.currentTimeMillis() - lastLoadedAt >= COOLDOWN_MS
+    }
+
+    fun onAddFriendClick() {
+        viewModelScope.launch {
+            _state.update { it.copy(isFriendshipActionLoading = true) }
+            sendFriendRequestUseCase.execute(userId)
+                .onSuccess {
+                    _state.update {
+                        it.copy(
+                            isFriendshipActionLoading = false,
+                            friendshipActionState = FriendshipActionState.INVITE_SENT,
+                        )
+                    }
+                }
+                .onError { exception ->
+                    _state.update {
+                        it.copy(
+                            isFriendshipActionLoading = false,
+                            globalError = exceptionToMessageMapper.map(exception),
+                        )
+                    }
+                }
+        }
     }
 
     fun onTabSelect(tab: ProfileTab) {

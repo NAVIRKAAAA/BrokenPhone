@@ -141,9 +141,12 @@
     <string name="profile_guest_note">Ти граєш як гість. Зареєструйся, щоб зберегти прогрес!</string>
     <string name="profile_friends">Друзі</string>
     <string name="profile_member_since">У додатку з %1$s</string>
-    <string name="friendship_add">Додати в друзі</string>
-    <string name="friendship_invited">Запрошення надіслано</string>
-    <string name="friendship_friends">Друзі</string>
+
+    <!-- Friendship Action -->
+    <string name="friendship_action_add">Додати в друзі</string>
+    <string name="friendship_action_accept">Прийняти</string>
+    <string name="friendship_action_invite_sent">Запит надіслано</string>
+    <string name="friendship_action_friends">Друзі</string>
 
     <string name="create_post_title">Новий ланцюжок</string>
     <string name="create_post_placeholder">Напиши щось, щоб почати…</string>
