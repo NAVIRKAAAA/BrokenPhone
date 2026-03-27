@@ -168,6 +168,7 @@ class GameSessionRepositoryImpl(
         content: PostContent,
     ) {
         try {
+            Log.d("LOG_TAG", "completeSession()")
             val postRef = collection.firestore.collection(POSTS_COLLECTION).document(postId)
             val sessionRef = collection.document(sessionId)
             val newPostRef = collection.firestore.collection(POSTS_COLLECTION).document()
@@ -232,6 +233,7 @@ class GameSessionRepositoryImpl(
                 transaction.set(newPostRef, newPost.toMap())
                 transaction.set(contributionRef, newPost.toMap())
             }.await()
+
         } catch (e: AppException) {
             throw e
         }  catch (_: FirebaseNetworkException) {

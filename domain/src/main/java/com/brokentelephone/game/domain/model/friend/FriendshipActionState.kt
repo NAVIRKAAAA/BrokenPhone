@@ -5,4 +5,5 @@ enum class FriendshipActionState {
     INVITE_SENT,
     INVITE_RECEIVED,
     FRIENDS,
+    IS_ME,
 }

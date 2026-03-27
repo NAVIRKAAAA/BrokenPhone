@@ -24,6 +24,15 @@ fun FriendshipActionButton(
     isLoading: Boolean = false,
 ) {
     when (state) {
+        FriendshipActionState.IS_ME -> WelcomeButton(
+            text = stringResource(R.string.friendship_action_is_me),
+            onClick = {},
+            enabled = false,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            modifier = modifier.height(48.dp),
+        )
+
         FriendshipActionState.NOT_FRIENDS -> WelcomeButton(
             text = stringResource(R.string.friendship_action_add),
             onClick = onAddFriendClick,

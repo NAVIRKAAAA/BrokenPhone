@@ -41,7 +41,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    onPostClick: (postId: String) -> Unit,
+    onPostClick: (postId: String, userId: String) -> Unit,
     onSignInClick: () -> Unit,
     onGetStartedClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -106,7 +106,7 @@ fun ProfileScreen(
         onGetStartedClick = onGetStartedClick,
         onTabSelect = viewModel::onTabSelect,
         onScrollDirectionChange = navBarViewModel::onScrollDirectionChange,
-        onPostClick = onPostClick,
+        onPostClick = { postId -> onPostClick(postId, state.user?.id.orEmpty()) },
         onMoreClick = { postId ->
             val post = (state.myPosts + state.myContributions).find { it.id == postId }
                 ?: return@ProfileContent

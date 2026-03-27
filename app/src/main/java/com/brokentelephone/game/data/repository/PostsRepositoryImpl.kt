@@ -287,18 +287,36 @@ class PostsRepositoryImpl(
                 userContributionRef
             }
 
-            collection.firestore.runBatch { batch ->
-                batch.delete(postRef)
-                batch.delete(chainRef)
-                batch.delete(userDocRef)
-            }.await()
+            if (post.generation == 1) {
+                collection.firestore.runBatch { batch ->
+                    batch.delete(postRef)
+                    batch.delete(chainRef)
+                    batch.delete(userDocRef)
+                }.await()
+            } else {
+                val prevPostDoc = collection
+                    .whereEqualTo(FIELD_CHAIN_ID, post.chainId)
+                    .whereEqualTo(FIELD_GENERATION, post.generation - 1)
+                    .get()
+                    .await()
+                    .documents
+                    .firstOrNull() ?: throw PostNotFoundException()
+
+                collection.firestore.runBatch { batch ->
+                    batch.delete(postRef)
+                    batch.update(chainRef, FIELD_GENERATION, post.generation - 1)
+                    batch.update(prevPostDoc.reference, FIELD_STATUS, PostStatus.AVAILABLE.name)
+                    batch.delete(userDocRef)
+                }.await()
+            }
         } catch (e: AppException) {
             throw e
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
         } catch (e: FirebaseFirestoreException) {
             throw e.toAppException()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "deletePost: $e")
             throw UnknownAuthException()
         }
     }

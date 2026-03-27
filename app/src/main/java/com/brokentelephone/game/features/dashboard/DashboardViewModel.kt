@@ -10,16 +10,16 @@ import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.model.report.ReportPostType
 import com.brokentelephone.game.domain.model.sort.DashboardSort
+import com.brokentelephone.game.domain.use_case.BlockUserUseCase
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
+import com.brokentelephone.game.domain.use_case.GetPostLinkByIdUseCase
+import com.brokentelephone.game.domain.use_case.MarkPostAsNotInterestedUseCase
+import com.brokentelephone.game.domain.use_case.ReportPostUseCase
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.dashboard.model.DashboardSideEffect
 import com.brokentelephone.game.features.dashboard.model.DashboardState
 import com.brokentelephone.game.features.dashboard.use_case.LoadInitialPostsUseCase
 import com.brokentelephone.game.features.dashboard.use_case.LoadNextPostsUseCase
-import com.brokentelephone.game.features.post_details.use_case.BlockUserUseCase
-import com.brokentelephone.game.features.post_details.use_case.GetPostLinkByIdUseCase
-import com.brokentelephone.game.features.post_details.use_case.MarkPostAsNotInterestedUseCase
-import com.brokentelephone.game.features.post_details.use_case.ReportPostUseCase
 import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -52,7 +52,6 @@ class DashboardViewModel(
     val sideEffects = _sideEffects.receiveAsFlow()
 
     init {
-        Log.d("LOG_TAG", "DashboardViewModel Init")
         getCurrentUserUseCase()
             .onEach { user -> _state.update { it.copy(user = user?.toUi()) } }
             .launchIn(viewModelScope)

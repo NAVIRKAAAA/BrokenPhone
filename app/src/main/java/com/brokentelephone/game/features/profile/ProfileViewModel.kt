@@ -1,6 +1,5 @@
 package com.brokentelephone.game.features.profile
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.core.model.post.PostUi
@@ -9,12 +8,12 @@ import com.brokentelephone.game.core.model.profile.ProfileTab
 import com.brokentelephone.game.core.model.user.toUi
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
+import com.brokentelephone.game.domain.use_case.DeletePostUseCase
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
+import com.brokentelephone.game.domain.use_case.GetPostLinkByIdUseCase
 import com.brokentelephone.game.domain.use_case.GetUserContributionsUseCase
 import com.brokentelephone.game.domain.use_case.GetUserPostsUseCase
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
-import com.brokentelephone.game.features.post_details.use_case.DeletePostUseCase
-import com.brokentelephone.game.features.post_details.use_case.GetPostLinkByIdUseCase
 import com.brokentelephone.game.features.profile.model.ProfileSideEffect
 import com.brokentelephone.game.features.profile.model.ProfileState
 import com.brokentelephone.game.features.settings.use_case.GetAuthStateUseCase
@@ -50,8 +49,6 @@ class ProfileViewModel(
     private var lastLoadedAt: Long = 0L
 
     init {
-        Log.d("LOG_TAG", "ProfileViewModel Init")
-
         getAuthStateUseCase()
             .onEach { authState -> _state.update { it.copy(isAuth = authState.isAuth()) } }
             .launchIn(viewModelScope)

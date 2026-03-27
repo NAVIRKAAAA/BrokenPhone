@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.post_details.use_case
+package com.brokentelephone.game.domain.use_case
 
 import com.brokentelephone.game.domain.api_handler.ApiHandler
 import com.brokentelephone.game.domain.api_handler.AppResult
@@ -7,13 +7,11 @@ import kotlinx.coroutines.Dispatchers
 
 class BlockUserUseCase(
     private val userSession: UserSession,
-    private val handler: ApiHandler
+    private val handler: ApiHandler,
 ) {
-
     suspend fun execute(userId: String): AppResult<Unit> {
         return handler.handle(Dispatchers.IO) {
             userSession.blockUser(userId)
         }
     }
-
 }

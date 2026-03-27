@@ -467,7 +467,7 @@ fun AppNavGraph(
                 }
             ) { backStackEntry ->
                 val route = backStackEntry.toRoute<Routes.ChainDetails>()
-                val viewModel: ChainDetailsViewModel = koinViewModel { parametersOf(route.postId) }
+                val viewModel: ChainDetailsViewModel = koinViewModel { parametersOf(route.postId, route.userId) }
                 ChainDetailsScreen(
                     viewModel = viewModel,
                     onBackClick = navController::safePopBackStack,
@@ -510,8 +510,8 @@ fun AppNavGraph(
                 popExitTransition = { ExitTransition.None }
             ) {
                 ProfileScreen(
-                    onPostClick = { postId ->
-                        navController.navigateSingle(Routes.ChainDetails(postId = postId))
+                    onPostClick = { postId, userId ->
+                        navController.navigateSingle(Routes.ChainDetails(postId = postId, userId = userId))
                     },
                     onSignInClick = {
                         navController.navigateSingle(Routes.SignIn())
@@ -854,6 +854,18 @@ fun AppNavGraph(
                         ) + fadeIn(animationSpec = tween(200))
                     }
                 },
+                exitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { -it / 3 },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                },
+                popEnterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { -it / 3 },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
                 popExitTransition = {
                     val to = targetState.destination.route
                     if (to?.contains("Dashboard") == true || to?.contains("PostDetails") == true || to?.contains("ChainDetails") == true) {
@@ -873,6 +885,19 @@ fun AppNavGraph(
                 UserDetailsScreen(
                     userId = route.userId,
                     onBackClick = navController::safePopBackStack,
+                    onPostClick = { postId, userId ->
+                        navController.navigateSingle(Routes.ChainDetails(postId = postId, userId = userId))
+                    },
+                    onNavigateBackWithForceUpdate = {
+                        val isDashboardInBackStack = navController.previousBackStackEntry
+                            ?.destination?.route?.contains("Dashboard") == true
+
+                        if (isDashboardInBackStack) {
+                            navController.getBackStackEntry(Routes.Dashboard)
+                                .savedStateHandle[KEY_FORCE_REFRESH] = true
+                        }
+                        navController.safePopBackStack()
+                    },
                 )
             }
 

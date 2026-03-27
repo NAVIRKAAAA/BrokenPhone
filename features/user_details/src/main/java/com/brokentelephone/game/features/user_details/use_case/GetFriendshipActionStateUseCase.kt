@@ -20,7 +20,11 @@ class GetFriendshipActionStateUseCase(
         return handler.handle(Dispatchers.IO) {
             val user = userSession.authState.first().getUserOrNull() ?: throw UnauthorizedException()
 
-            friendRequestRepository.getFriendshipActionState(user.id, targetUserId)
+            if (user.id == targetUserId) {
+                FriendshipActionState.IS_ME
+            } else {
+                friendRequestRepository.getFriendshipActionState(user.id, targetUserId)
+            }
         }
     }
 }

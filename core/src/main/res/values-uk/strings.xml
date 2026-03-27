@@ -147,6 +147,7 @@
     <string name="friendship_action_accept">Прийняти</string>
     <string name="friendship_action_invite_sent">Запит надіслано</string>
     <string name="friendship_action_friends">Друзі</string>
+    <string name="friendship_action_is_me">Це ти</string>
 
     <string name="create_post_title">Новий ланцюжок</string>
     <string name="create_post_placeholder">Напиши щось, щоб почати…</string>

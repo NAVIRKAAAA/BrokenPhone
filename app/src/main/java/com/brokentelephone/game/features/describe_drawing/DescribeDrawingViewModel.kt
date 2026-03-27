@@ -1,5 +1,6 @@
 package com.brokentelephone.game.features.describe_drawing
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.domain.api_handler.onError
@@ -148,7 +149,9 @@ class DescribeDrawingViewModel(
 
         timerJob?.cancel()
         _state.update { it.copy(showPostConfirmDialog = false, isPosting = true) }
+
         viewModelScope.launch {
+            Log.d("LOG_TAG", "onPostConfirm()")
             submitDescriptionUseCase.execute(post.id, text)
                 .onSuccess {
                     _state.update { it.copy(isPosting = false) }
@@ -157,7 +160,8 @@ class DescribeDrawingViewModel(
 
                     _sideEffects.send(DescribeDrawingSideEffect.PostCreated)
                 }
-                .onError { _ ->
+                .onError { e ->
+                    Log.d("LOG_TAG", "onPostConfirm: $e")
                     // HANDLE
                 }
         }

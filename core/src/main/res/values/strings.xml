@@ -215,6 +215,7 @@
     <string name="friendship_action_accept">Accept</string>
     <string name="friendship_action_invite_sent">Invite Sent</string>
     <string name="friendship_action_friends">Friends</string>
+    <string name="friendship_action_is_me">This is you</string>
 
     <!-- Bottom Nav Bar -->
     <string name="bottom_nav_bar_dashboard">Feed</string>

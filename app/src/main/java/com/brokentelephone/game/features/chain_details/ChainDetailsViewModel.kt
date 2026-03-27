@@ -2,10 +2,8 @@ package com.brokentelephone.game.features.chain_details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.brokentelephone.game.core.model.user.toUi
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
-import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.chain_details.model.ChainDetailsSideEffect
 import com.brokentelephone.game.features.chain_details.model.ChainDetailsState
@@ -15,22 +13,20 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ChainDetailsViewModel(
     val postId: String,
+    val userId: String,
     private val getChainByPostIdUseCase: GetChainByPostIdUseCase,
     private val getPostByIdUseCase: GetPostByIdUseCase,
-    private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
 
     private val _state =
-        MutableStateFlow(ChainDetailsState(postId = postId))
+        MutableStateFlow(ChainDetailsState(postId = postId, userId = userId))
     val state = _state.asStateFlow()
 
     private val _sideEffects = Channel<ChainDetailsSideEffect>(Channel.BUFFERED)
@@ -39,9 +35,6 @@ class ChainDetailsViewModel(
     private var lastLoadedAt: Long = 0L
 
     init {
-        getCurrentUserUseCase()
-            .onEach { user -> _state.update { it.copy(userUi = user?.toUi()) } }
-            .launchIn(viewModelScope)
 
         loadPost()
     }

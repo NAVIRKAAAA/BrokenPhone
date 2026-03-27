@@ -1,6 +1,5 @@
 package com.brokentelephone.game.features.chain_details.content
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,14 +36,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.model.post.PostUi
-import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
-import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.features.chain_details.model.ChainDetailsState
 import com.brokentelephone.game.features.edit_profile.content.EditProfileTopBar
 import kotlin.uuid.ExperimentalUuidApi
@@ -111,10 +108,6 @@ fun ChainDetailsContent(
                             items = state.chain,
                             key = { _, item -> item.id }
                         ) { index, postUi ->
-                            Log.d(
-                                "LOG_TAG",
-                                "CLicked post id: ${state.postId}. Current post id: ${postUi.id}"
-                            )
                             Column {
 
                                 if (index != 0) {
@@ -123,7 +116,7 @@ fun ChainDetailsContent(
 
                                 ChainDetailsElement(
                                     post = postUi,
-                                    isHidden = chainSize != maxGenerations && (postUi.authorId != state.userUi?.id || postUi.id != state.postId),
+                                    isHidden = chainSize != maxGenerations && (postUi.authorId != state.userId || postUi.id != state.postId),
                                     onUserClick = { onUserClick(postUi.authorId) }
                                 )
 
@@ -251,14 +244,7 @@ fun ChainDetailsContentPreview() {
 //                        authorId = if (index == 1) userId else index.toString()
 //                    )
 //                }.subList(0, 1),
-                userUi = UserUi(
-                    id = "1",
-                    username = "Alex",
-                    email = "alex@example.com",
-                    avatarUrl = null,
-                    authProvider = AuthProvider.EMAIL,
-                    createdAt = 1_700_000_000_000L,
-                ),
+                userId = "1",
                 post = PostUi(
                     id = "1",
                     authorId = "user-1",

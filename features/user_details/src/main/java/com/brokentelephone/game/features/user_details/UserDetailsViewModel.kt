@@ -2,41 +2,68 @@ package com.brokentelephone.game.features.user_details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.model.post.toUi
 import com.brokentelephone.game.core.model.profile.ProfileTab
 import com.brokentelephone.game.core.model.user.toUi
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.model.friend.FriendshipActionState
+import com.brokentelephone.game.domain.model.report.ReportPostType
+import com.brokentelephone.game.domain.use_case.BlockUserUseCase
+import com.brokentelephone.game.domain.use_case.DeletePostUseCase
+import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
+import com.brokentelephone.game.domain.use_case.GetPostLinkByIdUseCase
 import com.brokentelephone.game.domain.use_case.GetUserContributionsUseCase
 import com.brokentelephone.game.domain.use_case.GetUserPostsUseCase
+import com.brokentelephone.game.domain.use_case.MarkPostAsNotInterestedUseCase
+import com.brokentelephone.game.domain.use_case.ReportPostUseCase
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
+import com.brokentelephone.game.features.user_details.model.UserDetailsSideEffect
 import com.brokentelephone.game.features.user_details.model.UserDetailsState
 import com.brokentelephone.game.features.user_details.use_case.GetFriendshipActionStateUseCase
 import com.brokentelephone.game.features.user_details.use_case.GetUserByIdUseCase
 import com.brokentelephone.game.features.user_details.use_case.SendFriendRequestUseCase
 import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class UserDetailsViewModel(
     private val userId: String,
     private val getUserByIdUseCase: GetUserByIdUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
     private val getUserPostsUseCase: GetUserPostsUseCase,
     private val getUserContributionsUseCase: GetUserContributionsUseCase,
     private val getFriendshipActionStateUseCase: GetFriendshipActionStateUseCase,
     private val sendFriendRequestUseCase: SendFriendRequestUseCase,
+    private val getPostLinkByIdUseCase: GetPostLinkByIdUseCase,
+    private val blockUserUseCase: BlockUserUseCase,
+    private val markPostAsNotInterestedUseCase: MarkPostAsNotInterestedUseCase,
+    private val reportPostUseCase: ReportPostUseCase,
+    private val deletePostUseCase: DeletePostUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(UserDetailsState())
     val state = _state.asStateFlow()
 
+    private val _sideEffects = Channel<UserDetailsSideEffect>(Channel.BUFFERED)
+    val sideEffects = _sideEffects.receiveAsFlow()
+
     private var lastLoadedAt: Long = 0L
 
+    init {
+        getCurrentUserUseCase()
+            .onEach { user -> _state.update { it.copy(currentUser = user?.toUi()) } }
+            .launchIn(viewModelScope)
+    }
 
     fun onResume() {
         if (!isLoadAllowed(lastLoadedAt)) return
@@ -164,6 +191,113 @@ class UserDetailsViewModel(
                         )
                     }
                 }
+        }
+    }
+
+    fun onMoreClick(post: PostUi) {
+        _state.update { it.copy(selectedPost = post, isPostBottomSheetVisible = true) }
+    }
+
+    fun onPostBottomSheetDismiss() {
+        _state.update { it.copy(isPostBottomSheetVisible = false) }
+    }
+
+    fun onCopyLinkClick() {
+        val postId = state.value.selectedPost?.id ?: return
+        val link = getPostLinkByIdUseCase(postId)
+        _state.update { it.copy(isPostBottomSheetVisible = false) }
+        viewModelScope.launch { _sideEffects.send(UserDetailsSideEffect.ShowCopyLinkSuccessToast(link)) }
+    }
+
+    fun onNotInterestedClick() {
+        val postId = state.value.selectedPost?.id ?: return
+        _state.update { it.copy(isPostBottomSheetVisible = false, selectedPost = null) }
+        viewModelScope.launch {
+            markPostAsNotInterestedUseCase.execute(postId).onSuccess {
+                _sideEffects.send(UserDetailsSideEffect.NavigateBackWithForceUpdate)
+            }.onError { exception ->
+                _state.update { it.copy(globalError = exceptionToMessageMapper.map(exception)) }
+            }
+        }
+    }
+
+    fun onBlockClick() {
+        _state.update { it.copy(isPostBottomSheetVisible = false, isBlockDialogVisible = true) }
+    }
+
+    fun onBlockDialogDismiss() {
+        _state.update { it.copy(isBlockDialogVisible = false, selectedPost = null) }
+    }
+
+    fun onBlockConfirm() {
+        val userId = state.value.selectedPost?.authorId ?: return
+        _state.update { it.copy(isBlockLoading = true) }
+        viewModelScope.launch {
+            blockUserUseCase.execute(userId).onSuccess {
+                _state.update {
+                    it.copy(isBlockLoading = false, isBlockDialogVisible = false, selectedPost = null)
+                }
+                _sideEffects.send(UserDetailsSideEffect.NavigateBackWithForceUpdate)
+            }.onError { exception ->
+                _state.update {
+                    it.copy(
+                        isBlockLoading = false,
+                        isBlockDialogVisible = false,
+                        selectedPost = null,
+                        globalError = exceptionToMessageMapper.map(exception),
+                    )
+                }
+            }
+        }
+    }
+
+    fun onReportClick() {
+        _state.update { it.copy(isPostBottomSheetVisible = false, isReportBottomSheetVisible = true) }
+    }
+
+    fun onReportBottomSheetDismiss() {
+        _state.update { it.copy(isReportBottomSheetVisible = false) }
+    }
+
+    fun onReportTypeSelected(type: ReportPostType) {
+        val postId = state.value.selectedPost?.id ?: return
+        _state.update { it.copy(isReportBottomSheetVisible = false, selectedPost = null) }
+        viewModelScope.launch {
+            reportPostUseCase.execute(postId, type).onSuccess {
+                _sideEffects.send(UserDetailsSideEffect.ShowReportSuccessToast)
+            }.onError { exception ->
+                _state.update { it.copy(globalError = exceptionToMessageMapper.map(exception)) }
+            }
+        }
+    }
+
+    fun onDeleteClick() {
+        _state.update { it.copy(isPostBottomSheetVisible = false, isDeleteDialogVisible = true) }
+    }
+
+    fun onDeleteDialogDismiss() {
+        _state.update { it.copy(isDeleteDialogVisible = false) }
+    }
+
+    fun onDeleteConfirm() {
+        val post = state.value.selectedPost ?: return
+        _state.update { it.copy(isDeleteLoading = true) }
+        viewModelScope.launch {
+            deletePostUseCase.execute(post.id).onSuccess {
+                _state.update {
+                    it.copy(isDeleteLoading = false, isDeleteDialogVisible = false, selectedPost = null)
+                }
+                onRefresh()
+            }.onError { exception ->
+                _state.update {
+                    it.copy(
+                        isDeleteLoading = false,
+                        isDeleteDialogVisible = false,
+                        selectedPost = null,
+                        globalError = exceptionToMessageMapper.map(exception),
+                    )
+                }
+            }
         }
     }
 

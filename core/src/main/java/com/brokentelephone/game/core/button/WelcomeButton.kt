@@ -28,6 +28,7 @@ fun WelcomeButton(
     containerColor: Color,
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
+    enabled: Boolean = true,
 ) {
     Button(
         onClick = onClick,
@@ -36,11 +37,13 @@ fun WelcomeButton(
             .height(56.dp),
         colors = ButtonDefaults.buttonColors(
             contentColor = contentColor,
-            containerColor = containerColor
+            containerColor = containerColor,
+            disabledContentColor = contentColor.copy(alpha = 0.5f),
+            disabledContainerColor = containerColor.copy(alpha = 0.5f),
         ),
         shape = RoundedCornerShape(16.dp),
         contentPadding = PaddingValues(),
-        enabled = !isLoading,
+        enabled = enabled && !isLoading,
     ) {
         if (isLoading) {
             CircularProgressIndicator(

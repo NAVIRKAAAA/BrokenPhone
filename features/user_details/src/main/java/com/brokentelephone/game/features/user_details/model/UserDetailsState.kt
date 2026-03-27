@@ -10,6 +10,7 @@ data class UserDetailsState(
     val friendshipActionState: FriendshipActionState? = null,
     val isFriendshipActionLoading: Boolean = false,
     val user: UserUi? = null,
+    val currentUser: UserUi? = null,
     val globalError: String? = null,
     val selectedTab: ProfileTab = ProfileTab.POSTS,
     val isPostsLoading: Boolean = true,
@@ -18,4 +19,14 @@ data class UserDetailsState(
     val myContributions: List<PostUi> = emptyList(),
     val isContributionsLoading: Boolean = true,
     val isRefreshing: Boolean = false,
-)
+    val selectedPost: PostUi? = null,
+    val isPostBottomSheetVisible: Boolean = false,
+    val isReportBottomSheetVisible: Boolean = false,
+    val isBlockDialogVisible: Boolean = false,
+    val isBlockLoading: Boolean = false,
+    val isDeleteDialogVisible: Boolean = false,
+    val isDeleteLoading: Boolean = false,
+) {
+    val isOwnProfile: Boolean
+        get() = user != null && currentUser != null && user.id == currentUser.id
+}

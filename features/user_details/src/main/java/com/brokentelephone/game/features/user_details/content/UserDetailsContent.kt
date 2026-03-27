@@ -54,6 +54,8 @@ fun UserDetailsContent(
     onBackClick: () -> Unit,
     onTabSelect: (ProfileTab) -> Unit,
     onAddFriendClick: () -> Unit,
+    onPostClick: (postId: String) -> Unit,
+    onMoreClick: (postId: String) -> Unit,
     listState: LazyListState = rememberLazyListState(),
     onRefresh: () -> Unit = {},
     modifier: Modifier = Modifier,
@@ -237,8 +239,8 @@ fun UserDetailsContent(
                                     posts = state.myPosts,
                                     isLoading = showShimmerEffect,
                                     nestedScrollConnection = nestedScrollConnection,
-                                    onPostClick = {},
-                                    onMoreClick = {},
+                                    onPostClick = onPostClick,
+                                    onMoreClick = onMoreClick,
                                 )
                             }
 
@@ -250,8 +252,8 @@ fun UserDetailsContent(
                                     posts = state.myContributions,
                                     isLoading = showShimmerEffect,
                                     nestedScrollConnection = nestedScrollConnection,
-                                    onPostClick = {},
-                                    onMoreClick = {},
+                                    onPostClick = onPostClick,
+                                    onMoreClick = onMoreClick,
                                 )
                             }
                         }
@@ -269,6 +271,8 @@ private fun UserDetailsContentPreview() {
     BrokenTelephoneTheme(darkTheme = false) {
         UserDetailsContent(
             onAddFriendClick = {},
+            onPostClick = {},
+            onMoreClick = {},
             state = UserDetailsState(
 //                user = UserUi(
 //                    id = "user-1",
