@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language_english">English</string>
+    <string name="language_ukrainian">Українська</string>
+
+    <string name="theme_system">Системна</string>
+    <string name="theme_light">Світла</string>
+    <string name="theme_dark">Темна</string>
+
+    <string name="notifications_type_news">Новини</string>
+    <string name="notifications_type_chain_completed">Ланцюжок завершено</string>
+
+    <string name="dashboard_sort_almost_done">Майже готово</string>
+    <string name="dashboard_sort_latest">Останні</string>
+    <string name="dashboard_sort_longest_chain">Найдовший ланцюг</string>
+
+    <string name="account_settings_provider_email">Ел. пошта</string>
+    <string name="account_settings_provider_google">Google</string>
+    <string name="account_settings_provider_guest">Гість</string>
+
+    <string name="report_post_bottom_sheet_spam">Спам</string>
+    <string name="report_post_bottom_sheet_offensive_content">Образливий контент</string>
+    <string name="report_post_bottom_sheet_other">Інше</string>
+
+</resources>

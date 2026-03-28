@@ -56,6 +56,7 @@ fun UserDetailsContent(
     onAddFriendClick: () -> Unit,
     onPostClick: (postId: String) -> Unit,
     onMoreClick: (postId: String) -> Unit,
+    onMoreVertClick: () -> Unit,
     listState: LazyListState = rememberLazyListState(),
     onRefresh: () -> Unit = {},
     modifier: Modifier = Modifier,
@@ -99,18 +100,18 @@ fun UserDetailsContent(
             avatarUrl = user?.avatarUrl,
             isScrolled = isScrolledPastAccountInfo,
             actions = {
-                IconButton(
-                    onClick = {},
-                    enabled = user != null,
-                ) {
-
-                    Icon(
-                        painter = painterResource(R.drawable.ic_more_vert),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onBackground,
-                        modifier = if (user == null) Modifier.shimmer(cornerRadius = 4.dp) else Modifier,
-                    )
-
+                if (!state.isOwnProfile) {
+                    IconButton(
+                        onClick = onMoreVertClick,
+                        enabled = user != null,
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_more_vert),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground,
+                            modifier = if (user == null) Modifier.shimmer(cornerRadius = 4.dp) else Modifier,
+                        )
+                    }
                 }
             },
             onBackClick = onBackClick
@@ -273,6 +274,7 @@ private fun UserDetailsContentPreview() {
             onAddFriendClick = {},
             onPostClick = {},
             onMoreClick = {},
+            onMoreVertClick = {},
             state = UserDetailsState(
 //                user = UserUi(
 //                    id = "user-1",

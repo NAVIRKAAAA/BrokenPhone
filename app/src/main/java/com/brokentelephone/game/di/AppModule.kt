@@ -36,6 +36,7 @@ import com.brokentelephone.game.domain.use_case.GetUsersByIdsUseCase
 import com.brokentelephone.game.domain.use_case.LogoutUseCase
 import com.brokentelephone.game.domain.use_case.MarkPostAsNotInterestedUseCase
 import com.brokentelephone.game.domain.use_case.ReportPostUseCase
+import com.brokentelephone.game.domain.use_case.ReportUserUseCase
 import com.brokentelephone.game.domain.use_case.SignInWithGoogleUseCase
 import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.essentials.validation.SignUpValidator
@@ -141,6 +142,7 @@ val appModule = module {
     factoryOf(::GetPostLinkByIdUseCase)
     factoryOf(::DeletePostUseCase)
     factoryOf(::ReportPostUseCase)
+    factoryOf(::ReportUserUseCase)
     factoryOf(::BlockUserUseCase)
     factoryOf(::JoinSessionUseCase)
     factoryOf(::MarkPostAsNotInterestedUseCase)

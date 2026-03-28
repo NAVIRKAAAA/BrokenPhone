@@ -16,7 +16,8 @@
     <string name="error_image_upload">Не вдалося завантажити зображення. Спробуй ще раз.</string>
     <string name="error_post_not_found">Не вдалося завантажити пост. Можливо, він був видалений або виникли проблеми з інтернетом.</string>
     <string name="error_user_not_found">Цього користувача більше не існує. Можливо, він видалив свій акаунт.</string>
-    <string name="error_already_reported">Ти вже скаржився на цей пост.</string>
+    <string name="error_already_reported_post">Ти вже скаржився на цей пост.</string>
+    <string name="error_already_reported_user">Ти вже скаржився на цього користувача.</string>
     <string name="error_post_in_progress">Зараз хтось працює над цим постом — видалити неможливо.</string>
     <string name="error_cannot_delete_post">Не можна видалити цей пост, бо інші вже додали до нього свій внесок.</string>
     <string name="error_post_unavailable_to_join">Хтось інший вже почав працювати над цим постом. Зачекай трохи — незабаром він знову стане доступним.</string>

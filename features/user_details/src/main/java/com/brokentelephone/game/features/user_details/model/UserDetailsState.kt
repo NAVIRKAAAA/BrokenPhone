@@ -26,6 +26,8 @@ data class UserDetailsState(
     val isBlockLoading: Boolean = false,
     val isDeleteDialogVisible: Boolean = false,
     val isDeleteLoading: Boolean = false,
+    val isUserBottomSheetVisible: Boolean = false,
+    val isUserReportBottomSheetVisible: Boolean = false,
 ) {
     val isOwnProfile: Boolean
         get() = user != null && currentUser != null && user.id == currentUser.id

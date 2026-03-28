@@ -28,19 +28,21 @@ import com.brokentelephone.game.core.bottom_sheet.report_post_bottom_sheet.conte
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.domain.model.report.ReportPostType
+import com.brokentelephone.game.domain.model.report.ReportType
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportPostBottomSheet(
     onDismissRequest: () -> Unit,
+    types: List<ReportType>,
     modifier: Modifier = Modifier,
     sheetState: SheetState = rememberModalBottomSheetState(),
-    onReportClick: (ReportPostType) -> Unit = {},
+    onReportClick: (ReportType) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
 
-    fun hideAndThen(type: ReportPostType) {
+    fun hideAndThen(type: ReportType) {
         scope.launch {
             sheetState.hide()
         }.invokeOnCompletion {
@@ -57,6 +59,7 @@ fun ReportPostBottomSheet(
     ) {
 
         ReportPostBottomSheetContent(
+            types = types,
             onReportClick = { hideAndThen(it) },
         )
 
@@ -66,8 +69,9 @@ fun ReportPostBottomSheet(
 
 @Composable
 fun ReportPostBottomSheetContent(
+    types: List<ReportType>,
     modifier: Modifier = Modifier,
-    onReportClick: (ReportPostType) -> Unit = {},
+    onReportClick: (ReportType) -> Unit = {},
 ) {
 
     Column(
@@ -88,7 +92,6 @@ fun ReportPostBottomSheetContent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        val types = ReportPostType.entries
         types.forEachIndexed { index, type ->
             ReportPostBottomSheetButton(
                 text = stringResource(type.labelResId),
@@ -113,6 +116,6 @@ fun ReportPostBottomSheetPreview() {
     BrokenTelephoneTheme(
         darkTheme = false
     ) {
-        ReportPostBottomSheet(onDismissRequest = {})
+        ReportPostBottomSheet(onDismissRequest = {}, types = ReportPostType.entries)
     }
 }

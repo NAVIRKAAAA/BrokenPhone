@@ -17,7 +17,7 @@
     <string name="notifications_all">Всі сповіщення</string>
     <string name="notifications_type_news">Новини</string>
     <string name="notifications_type_new_posts">Нові пости</string>
-    <string name="notifications_type_chain_completed">Ланцюжок завершено</string>
+
     <string name="notifications_dialog_rationale_title">Дозволити сповіщення</string>
     <string name="notifications_dialog_rationale_body">Дізнавайся першим, коли твоя черга або ланцюжок завершено!</string>
     <string name="notifications_dialog_rationale_confirm">Дозволити</string>
@@ -68,9 +68,6 @@
     <string name="post_bottom_sheet_report">Поскаржитись</string>
 
     <string name="report_post_bottom_sheet_title">Чому ти скаржишся?</string>
-    <string name="report_post_bottom_sheet_spam">Спам</string>
-    <string name="report_post_bottom_sheet_offensive_content">Образливий контент</string>
-    <string name="report_post_bottom_sheet_other">Інше</string>
 
     <string name="theme_title">Тема</string>
     <string name="theme_system">Системна</string>
@@ -100,9 +97,6 @@
     <string name="account_settings_verify_email_dialog_body">На твою електронну пошту буде надіслано посилання для підтвердження. Натисни на нього, щоб підтвердити що ця адреса твоя.\n\nЛист може потрапити в спам — перевір там, якщо не бачиш його.\n\nЯкщо ти вже підтвердив, але статус досі показує «не підтверджено» — перезапусти додаток.</string>
     <string name="account_settings_verify_email_dialog_confirm">Надіслати</string>
     <string name="account_settings_provider">Спосіб входу</string>
-    <string name="account_settings_provider_email">Ел. пошта</string>
-    <string name="account_settings_provider_google">Google</string>
-    <string name="account_settings_provider_guest">Гість</string>
     <string name="account_settings_member_since">У додатку з</string>
     <string name="account_settings_blocked_users">Заблоковані користувачі</string>
     <string name="account_settings_delete_account">Видалити акаунт</string>
@@ -209,9 +203,6 @@
     <string name="bottom_nav_bar_guest">Гість</string>
 
     <string name="dashboard_title">Привіт, %1$s!</string>
-    <string name="dashboard_sort_almost_done">Майже готово</string>
-    <string name="dashboard_sort_latest">Останні</string>
-    <string name="dashboard_sort_longest_chain">Найдовший ланцюг</string>
     <string name="dashboard_badge_complete">Завершено!</string>
     <string name="dashboard_badge_you">Ти!</string>
 

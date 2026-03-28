@@ -79,9 +79,14 @@ class UserNotFoundException : AppException("User not found") {
         stringProvider.getString(R.string.error_user_not_found)
 }
 
-class AlreadyReportedException : AppException("Post already reported") {
+class AlreadyReportedPostException : AppException("Post already reported") {
     override fun getLocalizedMessage(stringProvider: StringProvider): String =
-        stringProvider.getString(R.string.error_already_reported)
+        stringProvider.getString(R.string.error_already_reported_post)
+}
+
+class AlreadyReportedUserException : AppException("User already reported") {
+    override fun getLocalizedMessage(stringProvider: StringProvider): String =
+        stringProvider.getString(R.string.error_already_reported_user)
 }
 
 class PostInProgressException : AppException("Post is currently in progress") {

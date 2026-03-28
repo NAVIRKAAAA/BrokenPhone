@@ -10,6 +10,7 @@ import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.model.friend.FriendshipActionState
 import com.brokentelephone.game.domain.model.report.ReportPostType
+import com.brokentelephone.game.domain.model.report.ReportUserType
 import com.brokentelephone.game.domain.use_case.BlockUserUseCase
 import com.brokentelephone.game.domain.use_case.DeletePostUseCase
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
@@ -18,6 +19,7 @@ import com.brokentelephone.game.domain.use_case.GetUserContributionsUseCase
 import com.brokentelephone.game.domain.use_case.GetUserPostsUseCase
 import com.brokentelephone.game.domain.use_case.MarkPostAsNotInterestedUseCase
 import com.brokentelephone.game.domain.use_case.ReportPostUseCase
+import com.brokentelephone.game.domain.use_case.ReportUserUseCase
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.user_details.model.UserDetailsSideEffect
 import com.brokentelephone.game.features.user_details.model.UserDetailsState
@@ -48,6 +50,7 @@ class UserDetailsViewModel(
     private val blockUserUseCase: BlockUserUseCase,
     private val markPostAsNotInterestedUseCase: MarkPostAsNotInterestedUseCase,
     private val reportPostUseCase: ReportPostUseCase,
+    private val reportUserUseCase: ReportUserUseCase,
     private val deletePostUseCase: DeletePostUseCase,
 ) : ViewModel() {
 
@@ -194,6 +197,34 @@ class UserDetailsViewModel(
         }
     }
 
+    fun onMoreVertClick() {
+        _state.update { it.copy(isUserBottomSheetVisible = true) }
+    }
+
+    fun onUserBottomSheetDismiss() {
+        _state.update { it.copy(isUserBottomSheetVisible = false) }
+    }
+
+    fun onUserReportClick() {
+        _state.update { it.copy(isUserBottomSheetVisible = false, isUserReportBottomSheetVisible = true) }
+    }
+
+    fun onUserReportBottomSheetDismiss() {
+        _state.update { it.copy(isUserReportBottomSheetVisible = false) }
+    }
+
+    fun onUserReportTypeSelected(type: ReportUserType) {
+        _state.update { it.copy(isUserReportBottomSheetVisible = false) }
+        viewModelScope.launch {
+            reportUserUseCase.execute(userId, type)
+                .onSuccess {
+                    _sideEffects.send(UserDetailsSideEffect.ShowReportSuccessToast)
+                }.onError { exception ->
+                    _state.update { it.copy(globalError = exceptionToMessageMapper.map(exception)) }
+                }
+        }
+    }
+
     fun onMoreClick(post: PostUi) {
         _state.update { it.copy(selectedPost = post, isPostBottomSheetVisible = true) }
     }
@@ -230,7 +261,6 @@ class UserDetailsViewModel(
     }
 
     fun onBlockConfirm() {
-        val userId = state.value.selectedPost?.authorId ?: return
         _state.update { it.copy(isBlockLoading = true) }
         viewModelScope.launch {
             blockUserUseCase.execute(userId).onSuccess {

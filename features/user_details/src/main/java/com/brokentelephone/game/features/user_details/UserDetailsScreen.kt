@@ -21,6 +21,8 @@ import com.brokentelephone.game.core.bottom_sheet.report_post_bottom_sheet.Repor
 import com.brokentelephone.game.core.dialog.ConfirmDialog
 import com.brokentelephone.game.core.dialog.ErrorDialog
 import com.brokentelephone.game.core.model.bottom_shet.PostBottomSheetAction
+import com.brokentelephone.game.domain.model.report.ReportPostType
+import com.brokentelephone.game.domain.model.report.ReportUserType
 import com.brokentelephone.game.features.user_details.content.UserDetailsContent
 import com.brokentelephone.game.features.user_details.model.UserDetailsSideEffect
 import org.koin.compose.viewmodel.koinViewModel
@@ -82,9 +84,32 @@ fun UserDetailsScreen(
                 ?: return@UserDetailsContent
             viewModel.onMoreClick(post)
         },
+        onMoreVertClick = viewModel::onMoreVertClick,
         modifier = modifier,
         onRefresh = viewModel::onRefresh,
     )
+
+    if (state.isUserBottomSheetVisible) {
+        PostBottomSheet(
+            onDismissRequest = viewModel::onUserBottomSheetDismiss,
+            actions = listOf(PostBottomSheetAction.BLOCK, PostBottomSheetAction.REPORT),
+            onActionClick = { action ->
+                when (action) {
+                    PostBottomSheetAction.REPORT -> viewModel.onUserReportClick()
+                    PostBottomSheetAction.BLOCK -> viewModel.onBlockClick()
+                    else -> {}
+                }
+            },
+        )
+    }
+
+    if (state.isUserReportBottomSheetVisible) {
+        ReportPostBottomSheet(
+            onDismissRequest = viewModel::onUserReportBottomSheetDismiss,
+            types = ReportUserType.entries,
+            onReportClick = { viewModel.onUserReportTypeSelected(it as ReportUserType) },
+        )
+    }
 
     if (state.isPostBottomSheetVisible) {
         val actions = if (state.isOwnProfile) {
@@ -110,7 +135,8 @@ fun UserDetailsScreen(
     if (state.isReportBottomSheetVisible) {
         ReportPostBottomSheet(
             onDismissRequest = viewModel::onReportBottomSheetDismiss,
-            onReportClick = viewModel::onReportTypeSelected,
+            types = ReportPostType.entries,
+            onReportClick = { viewModel.onReportTypeSelected(it as ReportPostType) },
         )
     }
 
