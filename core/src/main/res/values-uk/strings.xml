@@ -225,6 +225,11 @@
     <string name="sign_up_already_have_account">Вже грали раніше?</string>
     <string name="sign_up_sign_in_link">Увійти</string>
     <string name="sign_up_password_show">Показати пароль</string>
+    <string name="friends_title">Друзі</string>
+    <string name="friends_search_placeholder">Пошук друзів</string>
+    <string name="friends_empty_title">Поки немає друзів</string>
+    <string name="friends_empty_body">Додай друзів, щоб побачити їх тут</string>
+    <string name="search_text_field_clear">Очистити пошук</string>
     <string name="sign_up_password_hide">Сховати пароль</string>
 
     <string name="google_sign_in_button">Продовжити з Google</string>

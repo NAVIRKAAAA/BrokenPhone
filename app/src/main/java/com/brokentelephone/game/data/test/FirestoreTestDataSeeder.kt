@@ -8,7 +8,9 @@ import com.brokentelephone.game.domain.model.settings.NotificationType
 import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.domain.user.User
+import com.brokentelephone.game.features.choose_username.model.SuggestedUsernames
 import com.brokentelephone.game.features.edit_avatar.model.Avatars
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
@@ -34,6 +36,34 @@ class FirestoreTestDataSeeder(
             )
             usersCollection.document(id).set(user.toMap()).await()
         }
+    }
+
+    suspend fun seedFriends(targetUserId: String = "Va9OfTygaXOH3OLRWPMjOs4TR5y2", count: Int = 100) {
+        val now = System.currentTimeMillis()
+        val friendIds = mutableListOf<String>()
+
+        repeat(count) {
+            val docRef = usersCollection.document()
+            val username = SuggestedUsernames.random()
+            val user = User(
+                id = docRef.id,
+                username = username,
+                email = "${username.replace(" ", "").lowercase()}_${it}@test.com",
+                avatarUrl = Avatars.all.random().url,
+                authProvider = AuthProvider.EMAIL,
+                createdAt = now,
+                updatedAt = now,
+                notifications = NotificationType.entries,
+                onboardingStep = OnboardingStep.COMPLETED,
+                friendIds = listOf(targetUserId),
+            )
+            docRef.set(user.toMap()).await()
+            friendIds.add(docRef.id)
+        }
+
+        usersCollection.document(targetUserId)
+            .update("friendIds", FieldValue.arrayUnion(*friendIds.toTypedArray()))
+            .await()
     }
 
     suspend fun seedPosts(count: Int = 100) {

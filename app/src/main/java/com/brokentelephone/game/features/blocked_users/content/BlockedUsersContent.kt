@@ -1,6 +1,5 @@
 package com.brokentelephone.game.features.blocked_users.content
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,9 +31,9 @@ import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
+import com.brokentelephone.game.core.top_bar.EditProfileTopBar
 import com.brokentelephone.game.features.blocked_users.model.BlockedUserUi
 import com.brokentelephone.game.features.blocked_users.model.BlockedUsersState
-import com.brokentelephone.game.features.edit_profile.content.EditProfileTopBar
 
 @Composable
 fun BlockedUsersContent(
@@ -72,7 +71,6 @@ fun BlockedUsersContent(
                 )
             },
         ) {
-            Log.d("LOG_TAG", "ShowShimmer: ${state.isLoading && !state.isLoadRetrying}")
             ShimmerContent(
                 isLoading = state.isLoading && state.blockedUsers.isEmpty(),
                 isEmpty = !state.isLoading && state.blockedUsers.isEmpty() && state.loadError == null,

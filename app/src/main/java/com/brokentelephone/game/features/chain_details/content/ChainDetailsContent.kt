@@ -40,10 +40,10 @@ import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
+import com.brokentelephone.game.core.top_bar.EditProfileTopBar
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
 import com.brokentelephone.game.features.chain_details.model.ChainDetailsState
-import com.brokentelephone.game.features.edit_profile.content.EditProfileTopBar
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalMaterial3Api::class)

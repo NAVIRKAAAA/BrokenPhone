@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
 //        lifecycleScope.launch(Dispatchers.IO) {
-//            FirestoreTestDataSeeder(FirebaseFirestore.getInstance()).seedUsers()
+//            FirestoreTestDataSeeder(FirebaseFirestore.getInstance()).seedFriends()
 //        }
 
         setContent {

@@ -67,6 +67,7 @@ fun ProfileContent(
     onPostClick: (postId: String) -> Unit,
     onMoreClick: (postId: String) -> Unit,
     onRefresh: () -> Unit,
+    onFriendsClick: () -> Unit,
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
 ) {
@@ -177,7 +178,9 @@ fun ProfileContent(
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp),
                             postsCount = state.myPosts.size,
                             contributions = state.myContributions.size,
-                            isAuth = state.isAuth
+                            friends = state.user?.friendIds?.size ?: 0,
+                            isAuth = state.isAuth,
+                            onFriendsClick = onFriendsClick,
                         )
                     }
 
@@ -329,7 +332,8 @@ fun ProfileContentPreview() {
             onScrollDirectionChange = {},
             onPostClick = { },
             onMoreClick = {},
-            onRefresh = {}
+            onRefresh = {},
+            onFriendsClick = {},
         )
     }
 }

@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.edit_profile.content
+package com.brokentelephone.game.core.top_bar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -59,13 +59,9 @@ fun EditProfileTopBar(
 
 @Preview
 @Composable
-fun EditProfileTopBarPreview() {
-    BrokenTelephoneTheme(
-        darkTheme = true
-    ) {
-        Box(
-            modifier = Modifier.background(MaterialTheme.colorScheme.background)
-        ) {
+private fun EditProfileTopBarPreview() {
+    BrokenTelephoneTheme(darkTheme = true) {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
             EditProfileTopBar(title = "Edit Profile")
         }
     }

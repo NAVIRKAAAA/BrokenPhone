@@ -1,11 +1,14 @@
 package com.brokentelephone.game.core.profile
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -20,8 +23,16 @@ fun StatInfo(
     value: Int,
     name: String,
     modifier: Modifier = Modifier,
+    enabled: Boolean = false,
+    onClick: () -> Unit = {},
 ) {
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier.clickable(
+            onClick = onClick,
+            enabled = enabled,
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() })
+    ) {
         Text(
             text = value.toString(),
             textAlign = TextAlign.Start,

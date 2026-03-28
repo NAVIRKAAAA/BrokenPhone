@@ -178,6 +178,7 @@ fun UserDetailsContent(
                                             .padding(top = 16.dp, bottom = 24.dp),
                                         postsCount = state.myPosts.size,
                                         contributions = state.myContributions.size,
+                                        friends = user.friendIds.size,
                                         isAuth = true
                                     )
 

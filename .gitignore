@@ -34,3 +34,4 @@ local.properties
 /features/forgot_password/build/
 /features/edit_email/build/
 /features/user_details/build/
+/features/friends/build/

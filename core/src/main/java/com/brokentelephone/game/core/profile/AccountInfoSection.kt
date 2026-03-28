@@ -34,6 +34,7 @@ fun AccountInfoSection(
     contributions: Int = 0,
     friends: Int = 0,
     avatarUrl: String? = null,
+    onFriendsClick: () -> Unit = {},
 ) {
     Row(modifier = modifier.fillMaxWidth()) {
         AvatarComponent(avatarUrl = avatarUrl, size = 64.dp)
@@ -67,6 +68,8 @@ fun AccountInfoSection(
                     StatInfo(
                         value = friends,
                         name = stringResource(R.string.profile_friends),
+                        enabled = true,
+                        onClick = onFriendsClick,
                     )
                 }
             } else {

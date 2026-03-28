@@ -39,8 +39,7 @@ class UsersRepositoryImpl(
 
     override suspend fun getUsersByIds(ids: List<String>): List<User> {
         try {
-            val snapshot = collection.whereIn(User.FIELD_ID, ids).get().await()
-            return snapshot.documents.mapNotNull { it.data?.let { data -> User.fromMap(data) } }
+            return whereInChunked(User.FIELD_ID, ids, User::fromMap)
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
         } catch (e: FirebaseFirestoreException) {

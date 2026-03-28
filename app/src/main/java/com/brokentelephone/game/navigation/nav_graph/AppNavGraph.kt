@@ -34,6 +34,7 @@ import com.brokentelephone.game.features.edit_email.EditEmailScreen
 import com.brokentelephone.game.features.edit_profile.EditProfileScreen
 import com.brokentelephone.game.features.edit_username.EditUsernameScreen
 import com.brokentelephone.game.features.forgot_password.ForgotPasswordScreen
+import com.brokentelephone.game.features.friends.FriendsScreen
 import com.brokentelephone.game.features.language.LanguageScreen
 import com.brokentelephone.game.features.notifications.NotificationsScreen
 import com.brokentelephone.game.features.post_details.PostDetailsScreen
@@ -519,6 +520,9 @@ fun AppNavGraph(
                     onGetStartedClick = {
                         navController.navigateSingle(Routes.SignUp)
                     },
+                    onFriendsClick = {
+                        navController.navigateSingle(Routes.Friends)
+                    },
                     onEditClick = {
                         navController.navigateSingle(Routes.EditProfile)
                     },
@@ -898,6 +902,25 @@ fun AppNavGraph(
                         }
                         navController.safePopBackStack()
                     },
+                )
+            }
+
+            composable<Routes.Friends>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) {
+                FriendsScreen(
+                    onBackClick = navController::safePopBackStack,
                 )
             }
 

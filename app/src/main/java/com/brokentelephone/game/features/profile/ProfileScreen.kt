@@ -44,6 +44,7 @@ fun ProfileScreen(
     onPostClick: (postId: String, userId: String) -> Unit,
     onSignInClick: () -> Unit,
     onGetStartedClick: () -> Unit,
+    onFriendsClick: () -> Unit,
     modifier: Modifier = Modifier,
     onEditClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {},
@@ -106,6 +107,7 @@ fun ProfileScreen(
         onGetStartedClick = onGetStartedClick,
         onTabSelect = viewModel::onTabSelect,
         onScrollDirectionChange = navBarViewModel::onScrollDirectionChange,
+        onFriendsClick = onFriendsClick,
         onPostClick = { postId -> onPostClick(postId, state.user?.id.orEmpty()) },
         onMoreClick = { postId ->
             val post = (state.myPosts + state.myContributions).find { it.id == postId }

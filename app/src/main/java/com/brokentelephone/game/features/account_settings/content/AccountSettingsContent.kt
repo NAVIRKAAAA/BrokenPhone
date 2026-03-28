@@ -19,11 +19,11 @@ import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
+import com.brokentelephone.game.core.top_bar.EditProfileTopBar
 import com.brokentelephone.game.core.utils.rememberMemberSince
 import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.features.account_settings.model.AccountSettingsState
 import com.brokentelephone.game.features.edit_profile.content.AccountStaticInfoItem
-import com.brokentelephone.game.features.edit_profile.content.EditProfileTopBar
 import com.brokentelephone.game.features.settings.content.SettingsLogoutButton
 
 @Composable

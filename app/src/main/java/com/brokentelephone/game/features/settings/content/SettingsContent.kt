@@ -27,8 +27,8 @@ import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
+import com.brokentelephone.game.core.top_bar.EditProfileTopBar
 import com.brokentelephone.game.features.edit_profile.content.AccountTextInfoItem
-import com.brokentelephone.game.features.edit_profile.content.EditProfileTopBar
 import com.brokentelephone.game.features.settings.model.SettingsState
 
 
