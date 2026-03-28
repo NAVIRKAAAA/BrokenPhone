@@ -2,22 +2,25 @@ package com.brokentelephone.game.data.repository
 
 import android.util.Log
 import com.brokentelephone.game.data.mapper.toAppException
+import com.brokentelephone.game.data.mapper.toFriendRequest
 import com.brokentelephone.game.data.mapper.toMap
 import com.brokentelephone.game.domain.model.friend.FriendRequest
 import com.brokentelephone.game.domain.model.friend.FriendRequestStatus
 import com.brokentelephone.game.domain.model.friend.FriendshipActionState
-import com.brokentelephone.game.domain.repository.FriendRequestRepository
+import com.brokentelephone.game.domain.repository.FriendsRepository
 import com.brokentelephone.game.domain.user.User
+import com.brokentelephone.game.essentials.exceptions.auth.FriendRequestNotFoundException
 import com.brokentelephone.game.essentials.exceptions.auth.NetworkException
 import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
 import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.tasks.await
 
-class FriendRequestRepositoryImpl(
+class FriendsRepositoryImpl(
     firestore: FirebaseFirestore,
-) : FirestoreRepository(firestore), FriendRequestRepository {
+) : FirestoreRepository(firestore), FriendsRepository {
 
     override val collectionName = "friend_requests"
 
@@ -67,6 +70,26 @@ class FriendRequestRepositoryImpl(
         }
     }
 
+    override suspend fun getSentPendingRequestId(senderId: String, receiverId: String): String? {
+        return try {
+            val snapshot = collection
+                .whereEqualTo(FIELD_SENDER_ID, senderId)
+                .whereEqualTo(FIELD_RECEIVER_ID, receiverId)
+                .whereEqualTo(FIELD_STATUS, FriendRequestStatus.PENDING.name)
+                .get()
+                .await()
+            snapshot.documents.firstOrNull()?.id
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (e: FirebaseFirestoreException) {
+            Log.d("LOG_TAG", "getSentPendingRequestId error: $e")
+            throw e.toAppException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "getSentPendingRequestId error: $e")
+            throw UnknownAuthException()
+        }
+    }
+
     override suspend fun sendFriendRequest(senderId: String, receiverId: String) {
         try {
             val docRef = collection.document()
@@ -90,11 +113,53 @@ class FriendRequestRepositoryImpl(
     }
 
     override suspend fun acceptFriendRequest(requestId: String) {
-        return
+        try {
+            val firestore = collection.firestore
+            val requestRef = collection.document(requestId)
+
+            firestore.runTransaction { transaction ->
+                val request = transaction.get(requestRef).data?.toFriendRequest()
+                    ?: throw FriendRequestNotFoundException()
+
+                val senderRef = firestore.collection(USERS_COLLECTION).document(request.senderId)
+                val receiverRef =
+                    firestore.collection(USERS_COLLECTION).document(request.receiverId)
+
+                transaction.update(
+                    senderRef,
+                    User.FIELD_FRIEND_IDS,
+                    FieldValue.arrayUnion(request.receiverId)
+                )
+                transaction.update(
+                    receiverRef,
+                    User.FIELD_FRIEND_IDS,
+                    FieldValue.arrayUnion(request.senderId)
+                )
+                transaction.delete(requestRef)
+            }.await()
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (e: FirebaseFirestoreException) {
+            Log.d("LOG_TAG", "acceptFriendRequest error: $e")
+            throw e.toAppException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "acceptFriendRequest error: $e")
+            throw UnknownAuthException()
+        }
     }
 
     override suspend fun cancelFriendRequest(requestId: String) {
-        updateStatus(requestId, FriendRequestStatus.CANCELLED_BY_SENDER)
+        try {
+            collection.document(requestId).delete().await()
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (e: FirebaseFirestoreException) {
+            Log.d("LOG_TAG", "cancelFriendRequest error: $e")
+            throw e.toAppException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "cancelFriendRequest error: $e")
+            throw UnknownAuthException()
+        }
     }
 
     override suspend fun declineFriendRequest(requestId: String) {
@@ -102,7 +167,24 @@ class FriendRequestRepositoryImpl(
     }
 
     override suspend fun removeFriend(userId: String, friendId: String) {
-        return
+        try {
+            val firestore = collection.firestore
+            val userRef = firestore.collection(USERS_COLLECTION).document(userId)
+            val friendRef = firestore.collection(USERS_COLLECTION).document(friendId)
+
+            firestore.runTransaction { transaction ->
+                transaction.update(userRef, User.FIELD_FRIEND_IDS, FieldValue.arrayRemove(friendId))
+                transaction.update(friendRef, User.FIELD_FRIEND_IDS, FieldValue.arrayRemove(userId))
+            }.await()
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (e: FirebaseFirestoreException) {
+            Log.d("LOG_TAG", "removeFriend error: $e")
+            throw e.toAppException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "removeFriend error: $e")
+            throw UnknownAuthException()
+        }
     }
 
     private suspend fun updateStatus(requestId: String, status: FriendRequestStatus) {

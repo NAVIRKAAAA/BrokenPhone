@@ -161,7 +161,7 @@ class PostDetailsViewModel(
     }
 
     fun onCopyLinkClick() {
-        val link = getPostLinkByIdUseCase(postId)
+        val link = getPostLinkByIdUseCase.execute(postId)
         _state.update { it.copy(isBottomSheetVisible = false) }
         viewModelScope.launch {
             _sideEffects.send(

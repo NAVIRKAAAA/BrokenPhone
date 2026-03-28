@@ -78,6 +78,9 @@ fun UserDetailsScreen(
         onBackClick = onBackClick,
         onTabSelect = viewModel::onTabSelect,
         onAddFriendClick = viewModel::onAddFriendClick,
+        onAcceptRequestClick = viewModel::onAcceptRequestClick,
+        onCancelRequestClick = viewModel::onCancelRequestClick,
+        onRemoveFriendClick = viewModel::onRemoveFriendClick,
         onPostClick = { postId -> onPostClick(postId, userId) },
         onMoreClick = { postId ->
             val post = (state.myPosts + state.myContributions).find { it.id == postId }
@@ -90,11 +93,22 @@ fun UserDetailsScreen(
     )
 
     if (state.isUserBottomSheetVisible) {
+        val actions = if (state.isOwnProfile) {
+            listOf(PostBottomSheetAction.COPY_LINK)
+        } else {
+            listOf(
+                PostBottomSheetAction.COPY_LINK,
+                PostBottomSheetAction.BLOCK,
+                PostBottomSheetAction.REPORT
+            )
+        }
+
         PostBottomSheet(
             onDismissRequest = viewModel::onUserBottomSheetDismiss,
-            actions = listOf(PostBottomSheetAction.BLOCK, PostBottomSheetAction.REPORT),
+            actions = actions,
             onActionClick = { action ->
                 when (action) {
+                    PostBottomSheetAction.COPY_LINK -> viewModel.onCopyUserLinkClick()
                     PostBottomSheetAction.REPORT -> viewModel.onUserReportClick()
                     PostBottomSheetAction.BLOCK -> viewModel.onBlockClick()
                     else -> {}
@@ -161,6 +175,30 @@ fun UserDetailsScreen(
             onDismiss = viewModel::onDeleteDialogDismiss,
             onConfirm = viewModel::onDeleteConfirm,
             isLoading = state.isDeleteLoading,
+        )
+    }
+
+    if (state.isRemoveFriendDialogVisible) {
+        ConfirmDialog(
+            title = stringResource(R.string.common_dialog_remove_friend_title),
+            body = stringResource(R.string.common_dialog_remove_friend_body),
+            cancelText = stringResource(R.string.common_cancel),
+            confirmText = stringResource(R.string.common_dialog_remove_friend_confirm),
+            onDismiss = viewModel::onRemoveFriendDialogDismiss,
+            onConfirm = viewModel::onRemoveFriendConfirm,
+            isLoading = state.isRemoveFriendLoading,
+        )
+    }
+
+    if (state.isCancelRequestDialogVisible) {
+        ConfirmDialog(
+            title = stringResource(R.string.common_dialog_cancel_request_title),
+            body = stringResource(R.string.common_dialog_cancel_request_body),
+            cancelText = stringResource(R.string.common_cancel),
+            confirmText = stringResource(R.string.common_dialog_cancel_request_confirm),
+            onDismiss = viewModel::onCancelRequestDialogDismiss,
+            onConfirm = viewModel::onCancelRequestConfirm,
+            isLoading = state.isCancelRequestLoading,
         )
     }
 

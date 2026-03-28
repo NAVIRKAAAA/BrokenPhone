@@ -2,8 +2,8 @@ package com.brokentelephone.game.domain.use_case
 
 import com.brokentelephone.game.domain.link.LinkProvider
 
-class GetPostLinkByIdUseCase(
+class GetUserLinkByIdUseCase(
     private val linkProvider: LinkProvider,
 ) {
-    fun execute(postId: String): String = linkProvider.getPostLinkById(postId)
+    fun execute(userId: String): String = linkProvider.getUserLinkById(userId)
 }

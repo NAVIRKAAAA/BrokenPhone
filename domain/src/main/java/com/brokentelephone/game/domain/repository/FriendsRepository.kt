@@ -2,11 +2,13 @@ package com.brokentelephone.game.domain.repository
 
 import com.brokentelephone.game.domain.model.friend.FriendshipActionState
 
-interface FriendRequestRepository {
+interface FriendsRepository {
 
     suspend fun getFriendshipActionState(currentUserId: String, targetUserId: String): FriendshipActionState
 
     suspend fun sendFriendRequest(senderId: String, receiverId: String)
+
+    suspend fun getSentPendingRequestId(senderId: String, receiverId: String): String?
 
     suspend fun acceptFriendRequest(requestId: String)
 

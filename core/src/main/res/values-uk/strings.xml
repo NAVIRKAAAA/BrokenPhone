@@ -37,6 +37,12 @@
     <string name="common_dialog_block_body">Ти більше не бачитимеш пости цього користувача.</string>
     <string name="common_dialog_delete_post_title">Видалити пост?</string>
     <string name="common_dialog_delete_post_body">Цю дію не можна скасувати.</string>
+    <string name="common_dialog_remove_friend_title">Видалити з друзів?</string>
+    <string name="common_dialog_remove_friend_body">Цю людину буде видалено зі списку твоїх друзів.</string>
+    <string name="common_dialog_remove_friend_confirm">Підтвердити</string>
+    <string name="common_dialog_cancel_request_title">Скасувати запит?</string>
+    <string name="common_dialog_cancel_request_body">Твій запит на дружбу буде відкликано.</string>
+    <string name="common_dialog_cancel_request_confirm">Підтвердити</string>
 
     <string name="edit_profile_title">Редагувати профіль</string>
     <string name="edit_profile_field_avatar">Аватар</string>

@@ -11,13 +11,17 @@ import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.model.friend.FriendshipActionState
 import com.brokentelephone.game.domain.model.report.ReportPostType
 import com.brokentelephone.game.domain.model.report.ReportUserType
+import com.brokentelephone.game.domain.use_case.AcceptFriendRequestUseCase
 import com.brokentelephone.game.domain.use_case.BlockUserUseCase
+import com.brokentelephone.game.domain.use_case.CancelFriendRequestUseCase
 import com.brokentelephone.game.domain.use_case.DeletePostUseCase
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.domain.use_case.GetPostLinkByIdUseCase
 import com.brokentelephone.game.domain.use_case.GetUserContributionsUseCase
+import com.brokentelephone.game.domain.use_case.GetUserLinkByIdUseCase
 import com.brokentelephone.game.domain.use_case.GetUserPostsUseCase
 import com.brokentelephone.game.domain.use_case.MarkPostAsNotInterestedUseCase
+import com.brokentelephone.game.domain.use_case.RemoveFriendUseCase
 import com.brokentelephone.game.domain.use_case.ReportPostUseCase
 import com.brokentelephone.game.domain.use_case.ReportUserUseCase
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
@@ -46,7 +50,11 @@ class UserDetailsViewModel(
     private val getUserContributionsUseCase: GetUserContributionsUseCase,
     private val getFriendshipActionStateUseCase: GetFriendshipActionStateUseCase,
     private val sendFriendRequestUseCase: SendFriendRequestUseCase,
+    private val acceptFriendRequestUseCase: AcceptFriendRequestUseCase,
+    private val cancelFriendRequestUseCase: CancelFriendRequestUseCase,
+    private val removeFriendUseCase: RemoveFriendUseCase,
     private val getPostLinkByIdUseCase: GetPostLinkByIdUseCase,
+    private val getUserLinkByIdUseCase: GetUserLinkByIdUseCase,
     private val blockUserUseCase: BlockUserUseCase,
     private val markPostAsNotInterestedUseCase: MarkPostAsNotInterestedUseCase,
     private val reportPostUseCase: ReportPostUseCase,
@@ -197,6 +205,101 @@ class UserDetailsViewModel(
         }
     }
 
+    fun onAcceptRequestClick() {
+        viewModelScope.launch {
+            _state.update { it.copy(isFriendshipActionLoading = true) }
+            acceptFriendRequestUseCase.execute(userId)
+                .onSuccess {
+                    _state.update {
+                        it.copy(
+                            isFriendshipActionLoading = false,
+                            friendshipActionState = FriendshipActionState.FRIENDS,
+                        )
+                    }
+                }
+                .onError { exception ->
+                    _state.update {
+                        it.copy(
+                            isFriendshipActionLoading = false,
+                            globalError = exceptionToMessageMapper.map(exception),
+                        )
+                    }
+                }
+        }
+    }
+
+    fun onCancelRequestClick() {
+        _state.update { it.copy(isCancelRequestDialogVisible = true) }
+    }
+
+    fun onCancelRequestDialogDismiss() {
+        _state.update { it.copy(isCancelRequestDialogVisible = false) }
+    }
+
+    fun onCancelRequestConfirm() {
+        _state.update { it.copy(isCancelRequestLoading = true) }
+        viewModelScope.launch {
+            cancelFriendRequestUseCase.execute(userId)
+                .onSuccess {
+                    _state.update {
+                        it.copy(
+                            isCancelRequestLoading = false,
+                            isCancelRequestDialogVisible = false,
+                            friendshipActionState = FriendshipActionState.NOT_FRIENDS,
+                        )
+                    }
+                }
+                .onError { exception ->
+                    _state.update {
+                        it.copy(
+                            isCancelRequestLoading = false,
+                            isCancelRequestDialogVisible = false,
+                            globalError = exceptionToMessageMapper.map(exception),
+                        )
+                    }
+                }
+        }
+    }
+
+    fun onRemoveFriendClick() {
+        _state.update { it.copy(isRemoveFriendDialogVisible = true) }
+    }
+
+    fun onRemoveFriendDialogDismiss() {
+        _state.update { it.copy(isRemoveFriendDialogVisible = false) }
+    }
+
+    fun onRemoveFriendConfirm() {
+        _state.update { it.copy(isRemoveFriendLoading = true) }
+        viewModelScope.launch {
+            removeFriendUseCase.execute(userId)
+                .onSuccess {
+                    _state.update {
+                        it.copy(
+                            isRemoveFriendLoading = false,
+                            isRemoveFriendDialogVisible = false,
+                            friendshipActionState = FriendshipActionState.NOT_FRIENDS,
+                        )
+                    }
+                }
+                .onError { exception ->
+                    _state.update {
+                        it.copy(
+                            isRemoveFriendLoading = false,
+                            isRemoveFriendDialogVisible = false,
+                            globalError = exceptionToMessageMapper.map(exception),
+                        )
+                    }
+                }
+        }
+    }
+
+    fun onCopyUserLinkClick() {
+        val link = getUserLinkByIdUseCase.execute(userId)
+        _state.update { it.copy(isUserBottomSheetVisible = false) }
+        viewModelScope.launch { _sideEffects.send(UserDetailsSideEffect.ShowCopyLinkSuccessToast(link)) }
+    }
+
     fun onMoreVertClick() {
         _state.update { it.copy(isUserBottomSheetVisible = true) }
     }
@@ -235,7 +338,7 @@ class UserDetailsViewModel(
 
     fun onCopyLinkClick() {
         val postId = state.value.selectedPost?.id ?: return
-        val link = getPostLinkByIdUseCase(postId)
+        val link = getPostLinkByIdUseCase.execute(postId)
         _state.update { it.copy(isPostBottomSheetVisible = false) }
         viewModelScope.launch { _sideEffects.send(UserDetailsSideEffect.ShowCopyLinkSuccessToast(link)) }
     }

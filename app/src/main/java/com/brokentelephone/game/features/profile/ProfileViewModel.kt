@@ -134,7 +134,7 @@ class ProfileViewModel(
 
     fun onCopyLinkClick() {
         val postId = state.value.selectedPost?.id ?: return
-        val link = getPostLinkByIdUseCase(postId)
+        val link = getPostLinkByIdUseCase.execute(postId)
         _state.update { it.copy(isPostBottomSheetVisible = false) }
         viewModelScope.launch { _sideEffects.send(ProfileSideEffect.ShowCopyLinkSuccessToast(link)) }
     }

@@ -17,6 +17,12 @@
     <string name="common_dialog_block_body">You won\'t see posts from this user anymore.</string>
     <string name="common_dialog_delete_post_title">Delete post?</string>
     <string name="common_dialog_delete_post_body">This action cannot be undone.</string>
+    <string name="common_dialog_remove_friend_title">Remove friend?</string>
+    <string name="common_dialog_remove_friend_body">This person will be removed from your friends list.</string>
+    <string name="common_dialog_remove_friend_confirm">Confirm</string>
+    <string name="common_dialog_cancel_request_title">Cancel request?</string>
+    <string name="common_dialog_cancel_request_body">Your friend request will be withdrawn.</string>
+    <string name="common_dialog_cancel_request_confirm">Confirm</string>
 
     <!-- Chain Details -->
     <string name="chain_details_title">The Chain</string>

@@ -16,6 +16,7 @@
     <string name="error_image_upload">Failed to upload image. Please try again.</string>
     <string name="error_post_not_found">Couldn\'t load the post. It may have been deleted or you might have a poor internet connection.</string>
     <string name="error_user_not_found">This user no longer exists. They may have deleted their account.</string>
+    <string name="error_friend_request_not_found">Friend request not found. It may have already been cancelled or accepted.</string>
     <string name="error_already_reported_post">You\'ve already reported this post.</string>
     <string name="error_already_reported_user">You\'ve already reported this user.</string>
     <string name="error_post_in_progress">This post is currently being worked on and can\'t be deleted right now.</string>

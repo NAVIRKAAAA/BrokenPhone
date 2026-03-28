@@ -3,9 +3,9 @@ package com.brokentelephone.game.di
 import com.brokentelephone.game.core.timer.CountdownTimer
 import com.brokentelephone.game.data.google.GoogleSignInManagerImpl
 import com.brokentelephone.game.data.handler.ApiHandlerImpl
-import com.brokentelephone.game.data.link.MockLinkProviderImpl
+import com.brokentelephone.game.data.link.LinkProviderImpl
 import com.brokentelephone.game.data.repository.AuthRepositoryImpl
-import com.brokentelephone.game.data.repository.FriendRequestRepositoryImpl
+import com.brokentelephone.game.data.repository.FriendsRepositoryImpl
 import com.brokentelephone.game.data.repository.GameSessionRepositoryImpl
 import com.brokentelephone.game.data.repository.MockAppInfoRepositoryImpl
 import com.brokentelephone.game.data.repository.PostsRepositoryImpl
@@ -19,7 +19,7 @@ import com.brokentelephone.game.domain.google.GoogleSignInManager
 import com.brokentelephone.game.domain.link.LinkProvider
 import com.brokentelephone.game.domain.repository.AppInfoRepository
 import com.brokentelephone.game.domain.repository.AuthRepository
-import com.brokentelephone.game.domain.repository.FriendRequestRepository
+import com.brokentelephone.game.domain.repository.FriendsRepository
 import com.brokentelephone.game.domain.repository.GameSessionRepository
 import com.brokentelephone.game.domain.repository.PostRepository
 import com.brokentelephone.game.domain.repository.ReportsRepository
@@ -112,7 +112,7 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val appModule = module {
-    single<LinkProvider> { MockLinkProviderImpl() }
+    single<LinkProvider> { LinkProviderImpl() }
     single<AppInfoRepository> { MockAppInfoRepositoryImpl() }
     single { FirebaseStorage.getInstance() }
     single<ImageStorage> { FirebaseImageStorage(get()) }
@@ -133,7 +133,7 @@ val appModule = module {
     single<ReportsRepository> { ReportsRepositoryImpl(get()) }
     single<UserSettingsRepository> { UserSettingsRepositoryImpl(androidContext()) }
     single<UsersRepository> { UsersRepositoryImpl(get()) }
-    single<FriendRequestRepository> { FriendRequestRepositoryImpl(get()) }
+    single<FriendsRepository> { FriendsRepositoryImpl(get()) }
 
     single { DrawingBitmapSaver(androidContext()) }
     factoryOf(::CountdownTimer)

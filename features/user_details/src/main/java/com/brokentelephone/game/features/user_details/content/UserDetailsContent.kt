@@ -54,6 +54,9 @@ fun UserDetailsContent(
     onBackClick: () -> Unit,
     onTabSelect: (ProfileTab) -> Unit,
     onAddFriendClick: () -> Unit,
+    onAcceptRequestClick: () -> Unit,
+    onCancelRequestClick: () -> Unit,
+    onRemoveFriendClick: () -> Unit,
     onPostClick: (postId: String) -> Unit,
     onMoreClick: (postId: String) -> Unit,
     onMoreVertClick: () -> Unit,
@@ -100,18 +103,16 @@ fun UserDetailsContent(
             avatarUrl = user?.avatarUrl,
             isScrolled = isScrolledPastAccountInfo,
             actions = {
-                if (!state.isOwnProfile) {
-                    IconButton(
-                        onClick = onMoreVertClick,
-                        enabled = user != null,
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_more_vert),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onBackground,
-                            modifier = if (user == null) Modifier.shimmer(cornerRadius = 4.dp) else Modifier,
-                        )
-                    }
+                IconButton(
+                    onClick = onMoreVertClick,
+                    enabled = user != null,
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_more_vert),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = if (user == null) Modifier.shimmer(cornerRadius = 4.dp) else Modifier,
+                    )
                 }
             },
             onBackClick = onBackClick
@@ -194,8 +195,9 @@ fun UserDetailsContent(
                                         FriendshipActionButton(
                                             state = state.friendshipActionState,
                                             onAddFriendClick = onAddFriendClick,
-                                            onCancelRequestClick = {},
-                                            onRemoveFriendClick = {},
+                                            onAcceptRequestClick = onAcceptRequestClick,
+                                            onCancelRequestClick = onCancelRequestClick,
+                                            onRemoveFriendClick = onRemoveFriendClick,
                                             isLoading = state.isFriendshipActionLoading,
                                             modifier = Modifier.weight(1f),
                                         )
@@ -272,6 +274,9 @@ private fun UserDetailsContentPreview() {
     BrokenTelephoneTheme(darkTheme = false) {
         UserDetailsContent(
             onAddFriendClick = {},
+            onAcceptRequestClick = {},
+            onCancelRequestClick = {},
+            onRemoveFriendClick = {},
             onPostClick = {},
             onMoreClick = {},
             onMoreVertClick = {},

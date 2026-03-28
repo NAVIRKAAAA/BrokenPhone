@@ -28,6 +28,10 @@ data class UserDetailsState(
     val isDeleteLoading: Boolean = false,
     val isUserBottomSheetVisible: Boolean = false,
     val isUserReportBottomSheetVisible: Boolean = false,
+    val isCancelRequestDialogVisible: Boolean = false,
+    val isCancelRequestLoading: Boolean = false,
+    val isRemoveFriendDialogVisible: Boolean = false,
+    val isRemoveFriendLoading: Boolean = false,
 ) {
     val isOwnProfile: Boolean
         get() = user != null && currentUser != null && user.id == currentUser.id
