@@ -84,4 +84,7 @@ sealed class Routes {
 
     @Serializable
     data object Friends : Routes()
+
+    @Serializable
+    data object AddFriend : Routes()
 }

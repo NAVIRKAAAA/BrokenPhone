@@ -230,6 +230,13 @@
     <string name="friends_empty_title">Поки немає друзів</string>
     <string name="friends_empty_body">Додай друзів, щоб побачити їх тут</string>
     <string name="search_text_field_clear">Очистити пошук</string>
+
+    <!-- Add Friend -->
+    <string name="add_friend_title">Додати друга</string>
+    <string name="add_friend_search_placeholder">Пошук за нікнеймом</string>
+    <string name="add_friend_initial_hint">Знайдіть людей за їх нікнеймом</string>
+    <string name="add_friend_no_results">Нікого не знайдено</string>
+    <string name="add_friend_pending_invites">Надіслані запити</string>
     <string name="sign_up_password_hide">Сховати пароль</string>
 
     <string name="google_sign_in_button">Продовжити з Google</string>

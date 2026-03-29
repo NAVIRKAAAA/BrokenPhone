@@ -8,6 +8,7 @@ import com.brokentelephone.game.core.model.user.toUi
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.use_case.GetFriendsUseCase
+import com.brokentelephone.game.domain.use_case.RemoveFriendUseCase
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.friends.model.FriendsSideEffect
 import com.brokentelephone.game.features.friends.model.FriendsState
@@ -26,6 +27,7 @@ import kotlinx.coroutines.launch
 @OptIn(FlowPreview::class)
 class FriendsViewModel(
     private val getFriendsUseCase: GetFriendsUseCase,
+    private val removeFriendUseCase: RemoveFriendUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
 
@@ -118,6 +120,41 @@ class FriendsViewModel(
 
     fun onSearchClear() {
         _state.update { it.copy(searchQuery = "") }
+    }
+
+    fun onRemoveFriendClick(friendId: String) {
+        _state.update { it.copy(selectedFriendId = friendId) }
+    }
+
+    fun onRemoveFriendDialogDismiss() {
+        _state.update { it.copy(selectedFriendId = null) }
+    }
+
+    fun onRemoveFriendConfirm() {
+        val friendId = _state.value.selectedFriendId ?: return
+        _state.update { it.copy(isRemoveFriendLoading = true) }
+        viewModelScope.launch {
+            removeFriendUseCase.execute(friendId)
+                .onSuccess {
+                    onRefresh()
+
+                    _state.update {
+                        it.copy(
+                            selectedFriendId = null,
+                            isRemoveFriendLoading = false,
+                        )
+                    }
+                }
+                .onError { exception ->
+                    _state.update {
+                        it.copy(
+                            selectedFriendId = null,
+                            isRemoveFriendLoading = false,
+                            globalError = exceptionToMessageMapper.map(exception),
+                        )
+                    }
+                }
+        }
     }
 
     fun onGlobalErrorDismiss() {

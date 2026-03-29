@@ -3,6 +3,7 @@ package com.brokentelephone.game.main
 import android.app.Application
 import com.brokentelephone.game.di.appModule
 import com.brokentelephone.game.essentials.di.essentialsModule
+import com.brokentelephone.game.features.add_friend.di.addFriendModule
 import com.brokentelephone.game.features.edit_email.di.editEmailModule
 import com.brokentelephone.game.features.forgot_password.di.forgotPasswordModule
 import com.brokentelephone.game.features.friends.di.friendsModule
@@ -16,7 +17,7 @@ class App : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@App)
-            modules(essentialsModule, appModule, forgotPasswordModule, editEmailModule, userDetailsModule, friendsModule)
+            modules(essentialsModule, appModule, forgotPasswordModule, editEmailModule, userDetailsModule, friendsModule, addFriendModule)
         }
     }
 }

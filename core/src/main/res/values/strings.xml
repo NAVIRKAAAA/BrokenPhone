@@ -228,6 +228,13 @@
     <string name="friendship_action_friends">Friends</string>
     <string name="friendship_action_is_me">This is you</string>
 
+    <!-- Add Friend -->
+    <string name="add_friend_title">Add Friend</string>
+    <string name="add_friend_search_placeholder">Search by username</string>
+    <string name="add_friend_initial_hint">Find people by their username</string>
+    <string name="add_friend_no_results">No users found</string>
+    <string name="add_friend_pending_invites">Pending invites</string>
+
     <!-- Bottom Nav Bar -->
     <string name="bottom_nav_bar_dashboard">Feed</string>
     <string name="bottom_nav_bar_create">Create</string>

@@ -1,5 +1,6 @@
 package com.brokentelephone.game.domain.repository
 
+import com.brokentelephone.game.domain.model.friend.FriendRequest
 import com.brokentelephone.game.domain.model.friend.FriendshipActionState
 
 interface FriendsRepository {
@@ -17,4 +18,6 @@ interface FriendsRepository {
     suspend fun declineFriendRequest(requestId: String)
 
     suspend fun removeFriend(userId: String, friendId: String)
+
+    suspend fun getSentPendingRequests(senderId: String): List<FriendRequest>
 }

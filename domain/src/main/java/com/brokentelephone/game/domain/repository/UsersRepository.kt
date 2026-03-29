@@ -7,6 +7,7 @@ interface UsersRepository {
     suspend fun getUserById(id: String): User?
     suspend fun getUsersByIds(ids: List<String>): List<User>
     suspend fun getUserByEmail(email: String): User?
+    suspend fun searchByUsername(query: String): List<User>
     suspend fun createUser(
         id: String,
         email: String,

@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.brokentelephone.game.features.account_settings.AccountSettingsScreen
+import com.brokentelephone.game.features.add_friend.AddFriendScreen
 import com.brokentelephone.game.features.blocked_users.BlockedUsersScreen
 import com.brokentelephone.game.features.chain_details.ChainDetailsScreen
 import com.brokentelephone.game.features.chain_details.ChainDetailsViewModel
@@ -846,7 +847,7 @@ fun AppNavGraph(
             composable<Routes.UserDetails>(
                 enterTransition = {
                     val from = initialState.destination.route
-                    if (from?.contains("Dashboard") == true || from?.contains("PostDetails") == true || from?.contains("ChainDetails") == true) {
+                    if (from?.contains("Dashboard") == true || from?.contains("PostDetails") == true || from?.contains("ChainDetails") == true || from?.contains("Friends") == true) {
                         slideInVertically(
                             initialOffsetY = { it },
                             animationSpec = tween(300)
@@ -872,7 +873,7 @@ fun AppNavGraph(
                 },
                 popExitTransition = {
                     val to = targetState.destination.route
-                    if (to?.contains("Dashboard") == true || to?.contains("PostDetails") == true || to?.contains("ChainDetails") == true) {
+                    if (to?.contains("Dashboard") == true || to?.contains("PostDetails") == true || to?.contains("ChainDetails") == true || to?.contains("Friends") == true) {
                         slideOutVertically(
                             targetOffsetY = { it },
                             animationSpec = tween(300)
@@ -912,6 +913,26 @@ fun AppNavGraph(
                         animationSpec = tween(250)
                     ) + fadeIn(animationSpec = tween(200))
                 },
+                exitTransition = {
+                    if (targetState.destination.route?.contains("AddFriend") == true) {
+                        slideOutHorizontally(
+                            targetOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeOut(animationSpec = tween(200))
+                    } else {
+                        ExitTransition.None
+                    }
+                },
+                popEnterTransition = {
+                    if (initialState.destination.route?.contains("AddFriend") == true) {
+                        slideInHorizontally(
+                            initialOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeIn(animationSpec = tween(200))
+                    } else {
+                        EnterTransition.None
+                    }
+                },
                 popExitTransition = {
                     slideOutHorizontally(
                         targetOffsetX = { it },
@@ -920,6 +941,37 @@ fun AppNavGraph(
                 }
             ) {
                 FriendsScreen(
+                    onBackClick = navController::safePopBackStack,
+                    onUserClick = { userId ->
+                        navController.navigateSingle(Routes.UserDetails(userId = userId))
+                    },
+                    onAddFriendClick = {
+                        navController.navigateSingle(Routes.AddFriend)
+                    },
+                )
+            }
+
+            composable<Routes.AddFriend>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                popEnterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { -it / 3 },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) {
+                AddFriendScreen(
                     onBackClick = navController::safePopBackStack,
                 )
             }

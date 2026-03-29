@@ -9,4 +9,6 @@ data class FriendsState(
     val isRefreshing: Boolean = false,
     val loadError: String? = null,
     val globalError: String? = null,
+    val selectedFriendId: String? = null,
+    val isRemoveFriendLoading: Boolean = false,
 )

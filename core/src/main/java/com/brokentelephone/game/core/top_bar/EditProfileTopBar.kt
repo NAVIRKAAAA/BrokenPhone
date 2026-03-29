@@ -28,6 +28,7 @@ fun EditProfileTopBar(
     title: String,
     onBackClick: () -> Unit = {},
     modifier: Modifier = Modifier,
+    actions: (@Composable () -> Unit)? = null,
 ) {
     Row(
         modifier = modifier
@@ -53,7 +54,11 @@ fun EditProfileTopBar(
             color = MaterialTheme.colorScheme.primary,
         )
 
-        Box(modifier = Modifier.size(48.dp))
+        if (actions != null) {
+            actions()
+        } else {
+            Box(modifier = Modifier.size(48.dp))
+        }
     }
 }
 

@@ -1,7 +1,9 @@
 package com.brokentelephone.game.features.friends.content
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.DragInteraction
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,7 +11,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -18,14 +19,18 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,7 +52,9 @@ fun FriendsContent(
     onSearchQueryChange: (String) -> Unit,
     onSearchClear: () -> Unit,
     onRefresh: () -> Unit,
+    onUserClick: (String) -> Unit,
     onRemoveFriendClick: (String) -> Unit,
+    onAddFriendClick: () -> Unit,
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
 ) {
@@ -68,12 +75,22 @@ fun FriendsContent(
         EditProfileTopBar(
             title = stringResource(R.string.friends_title),
             onBackClick = onBackClick,
+            actions = {
+                IconButton(onClick = onAddFriendClick) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_person_add),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            },
         )
 
         val searchBarTopOffset = SearchTextFieldHeight + 8.dp
 
         val pullToRefreshState = rememberPullToRefreshState()
-        val isRefreshing = state.isRefreshing || (state.isLoading && state.filteredFriends.isNotEmpty())
+        val isRefreshing =
+            state.isRefreshing || (state.isLoading && state.filteredFriends.isNotEmpty())
 
         Box(modifier = Modifier.fillMaxSize()) {
             PullToRefreshBox(
@@ -98,15 +115,25 @@ fun FriendsContent(
                         LazyColumn(
                             state = listState,
                             modifier = Modifier
-                                .fillMaxSize()
-                                .imePadding(),
-                            contentPadding = PaddingValues(top = searchBarTopOffset + 16.dp, bottom = 16.dp),
+                                .fillMaxSize(),
+                            contentPadding = PaddingValues(
+                                top = searchBarTopOffset + 16.dp,
+                                bottom = 16.dp
+                            ),
                         ) {
                             itemsIndexed(
                                 items = state.filteredFriends,
                                 key = { _, item -> item.id },
                             ) { index, user ->
-                                Column(modifier = Modifier.animateItem()) {
+                                Column(
+                                    modifier = Modifier
+                                        .animateItem()
+                                        .clickable(
+                                            onClick = { onUserClick(user.id) },
+                                            indication = null,
+                                            interactionSource = remember { MutableInteractionSource() }
+                                        )
+                                ) {
                                     if (index != 0) {
                                         Spacer(modifier = Modifier.height(16.dp))
                                     }
@@ -157,7 +184,9 @@ private fun FriendsContentPreview() {
             onSearchQueryChange = {},
             onSearchClear = {},
             onRefresh = {},
+            onUserClick = {},
             onRemoveFriendClick = {},
+            onAddFriendClick = {},
         )
     }
 }

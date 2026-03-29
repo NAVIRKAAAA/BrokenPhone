@@ -12,6 +12,7 @@ import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
 import com.brokentelephone.game.features.choose_username.model.SuggestedUsernames
 import com.brokentelephone.game.features.edit_avatar.model.Avatars
 import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.tasks.await
@@ -55,6 +56,42 @@ class UsersRepositoryImpl(
         try {
             val snapshot = collection.whereEqualTo(User.FIELD_EMAIL, email).get().await()
             return snapshot.documents.firstOrNull()?.data?.let { User.fromMap(it) }
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (e: FirebaseFirestoreException) {
+            Log.d("LOG_TAG", "Error: $e")
+            throw e.toAppException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "Error: $e")
+            throw UnknownAuthException()
+        }
+    }
+
+    override suspend fun searchByUsername(query: String): List<User> {
+        try {
+            val capitalized = query.replaceFirstChar { it.uppercase() }
+            val lowercased = query.lowercase()
+
+            fun rangeFilter(value: String) = Filter.and(
+                Filter.greaterThanOrEqualTo(User.FIELD_USERNAME, value),
+                Filter.lessThanOrEqualTo(User.FIELD_USERNAME, value + "\uF8FF"),
+            )
+
+            val snapshot = collection
+                .where(
+                    Filter.or(
+                        rangeFilter(query),
+                        rangeFilter(capitalized),
+                        rangeFilter(lowercased)
+                    )
+                )
+                .get()
+                .await()
+
+            return snapshot.documents
+                .mapNotNull { it.data?.let { data -> User.fromMap(data) } }
+                .distinctBy { it.id }
+                .sortedBy { it.createdAt }
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
         } catch (e: FirebaseFirestoreException) {
