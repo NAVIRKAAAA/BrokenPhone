@@ -20,6 +20,7 @@ import com.brokentelephone.game.core.R
 fun AddFriendPendingHeader(
     count: Int,
     modifier: Modifier = Modifier,
+    title: String = stringResource(R.string.add_friend_pending_invites),
 ) {
     Row(
         modifier = modifier
@@ -29,7 +30,7 @@ fun AddFriendPendingHeader(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = stringResource(R.string.add_friend_pending_invites),
+            text = title,
             fontFamily = FontFamily(Font(R.font.nunito_bold)),
             fontSize = 13.sp,
             lineHeight = 20.sp,

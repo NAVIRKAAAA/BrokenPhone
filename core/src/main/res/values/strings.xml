@@ -224,6 +224,7 @@
     <!-- Friendship Action -->
     <string name="friendship_action_add">Add Friend</string>
     <string name="friendship_action_accept">Accept</string>
+    <string name="friendship_action_decline">Decline</string>
     <string name="friendship_action_invite_sent">Invite Sent</string>
     <string name="friendship_action_friends">Friends</string>
     <string name="friendship_action_is_me">This is you</string>
@@ -234,6 +235,7 @@
     <string name="add_friend_initial_hint">Find people by their username</string>
     <string name="add_friend_no_results">No users found</string>
     <string name="add_friend_pending_invites">Pending invites</string>
+    <string name="add_friend_received_invites">Received invites</string>
 
     <!-- Bottom Nav Bar -->
     <string name="bottom_nav_bar_dashboard">Feed</string>

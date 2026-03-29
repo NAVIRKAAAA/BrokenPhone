@@ -847,7 +847,7 @@ fun AppNavGraph(
             composable<Routes.UserDetails>(
                 enterTransition = {
                     val from = initialState.destination.route
-                    if (from?.contains("Dashboard") == true || from?.contains("PostDetails") == true || from?.contains("ChainDetails") == true || from?.contains("Friends") == true) {
+                    if (from?.contains("Dashboard") == true || from?.contains("PostDetails") == true || from?.contains("ChainDetails") == true || from?.contains("Friends") == true || from?.contains("AddFriend") == true) {
                         slideInVertically(
                             initialOffsetY = { it },
                             animationSpec = tween(300)
@@ -873,7 +873,7 @@ fun AppNavGraph(
                 },
                 popExitTransition = {
                     val to = targetState.destination.route
-                    if (to?.contains("Dashboard") == true || to?.contains("PostDetails") == true || to?.contains("ChainDetails") == true || to?.contains("Friends") == true) {
+                    if (to?.contains("Dashboard") == true || to?.contains("PostDetails") == true || to?.contains("ChainDetails") == true || to?.contains("Friends") == true || to?.contains("AddFriend") == true) {
                         slideOutVertically(
                             targetOffsetY = { it },
                             animationSpec = tween(300)
@@ -958,11 +958,25 @@ fun AppNavGraph(
                         animationSpec = tween(250)
                     ) + fadeIn(animationSpec = tween(200))
                 },
+                exitTransition = {
+                    if (targetState.destination.route?.contains("UserDetails") == true) {
+                        ExitTransition.None
+                    } else {
+                        slideOutHorizontally(
+                            targetOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeOut(animationSpec = tween(200))
+                    }
+                },
                 popEnterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
+                    if (initialState.destination.route?.contains("UserDetails") == true) {
+                        EnterTransition.None
+                    } else {
+                        slideInHorizontally(
+                            initialOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeIn(animationSpec = tween(200))
+                    }
                 },
                 popExitTransition = {
                     slideOutHorizontally(
@@ -973,6 +987,9 @@ fun AppNavGraph(
             ) {
                 AddFriendScreen(
                     onBackClick = navController::safePopBackStack,
+                    onUserClick = { userId ->
+                        navController.navigateSingle(Routes.UserDetails(userId = userId))
+                    },
                 )
             }
 

@@ -2,7 +2,9 @@ package com.brokentelephone.game.features.add_friend.content
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.DragInteraction
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,6 +25,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
@@ -31,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.model.user.UserUi
+import com.brokentelephone.game.core.profile.FriendRequestItem
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.text_field.SearchTextField
@@ -50,8 +54,11 @@ fun AddFriendContent(
     onBackClick: () -> Unit,
     onSearchQueryChange: (String) -> Unit,
     onSearchClear: () -> Unit,
+    onUserClick: (userId: String) -> Unit,
     onAddFriendClick: (userId: String) -> Unit,
     onCancelRequestClick: (userId: String) -> Unit,
+    onAcceptRequestClick: (userId: String) -> Unit,
+    onDeclineRequestClick: (userId: String) -> Unit,
     onRefresh: () -> Unit,
     listState: LazyListState = rememberLazyListState(),
     modifier: Modifier = Modifier,
@@ -113,22 +120,71 @@ fun AddFriendContent(
                                 items = state.results,
                                 key = { _, item -> item.user.id },
                             ) { index, item ->
-                                if (index != 0) Spacer(modifier = Modifier.height(16.dp))
-                                AddFriendUserItem(
-                                    item = item,
-                                    onAddFriendClick = { onAddFriendClick(item.user.id) },
-                                    onCancelRequestClick = { onCancelRequestClick(item.user.id) },
+                                Column(
                                     modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 16.dp),
-                                )
-                                if (index != state.results.lastIndex) {
-                                    Spacer(modifier = Modifier.height(16.dp))
-                                    HorizontalDivider(color = MaterialTheme.appColors.divider)
-                                } else {
-                                    Spacer(modifier = Modifier.height(16.dp))
+                                        .animateItem()
+                                        .clickable(
+                                            onClick = { onUserClick(item.user.id) },
+                                            indication = null,
+                                            interactionSource = remember { MutableInteractionSource() },
+                                        )
+                                ) {
+                                    if (index != 0) Spacer(modifier = Modifier.height(16.dp))
+                                    AddFriendUserItem(
+                                        item = item,
+                                        onAddFriendClick = { onAddFriendClick(item.user.id) },
+                                        onCancelRequestClick = { onCancelRequestClick(item.user.id) },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp),
+                                    )
+                                    if (index != state.results.lastIndex) {
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                        HorizontalDivider(color = MaterialTheme.appColors.divider)
+                                    } else {
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                    }
                                 }
                             }
+                            stickyHeader(key = "received_header") {
+                                AddFriendPendingHeader(
+                                    count = state.receivedPendingInvites.size,
+                                    title = stringResource(R.string.add_friend_received_invites),
+                                )
+
+                            }
+
+                            itemsIndexed(
+                                items = state.receivedPendingInvites,
+                                key = { _, item -> "received_${item.user.id}" },
+                            ) { index, item ->
+                                Column(
+                                    modifier = Modifier
+                                        .animateItem()
+                                        .clickable(
+                                            onClick = { onUserClick(item.user.id) },
+                                            indication = null,
+                                            interactionSource = remember { MutableInteractionSource() },
+                                        )
+                                ) {
+                                    if (index != 0) Spacer(modifier = Modifier.height(16.dp))
+                                    FriendRequestItem(
+                                        user = item.user,
+                                        onAcceptClick = { onAcceptRequestClick(item.user.id) },
+                                        onDeclineClick = { onDeclineRequestClick(item.user.id) },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp),
+                                    )
+                                    if (index != state.receivedPendingInvites.lastIndex) {
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                        HorizontalDivider(color = MaterialTheme.appColors.divider)
+                                    } else {
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                    }
+                                }
+                            }
+
                             stickyHeader(key = "pending_header") {
                                 AddFriendPendingHeader(count = state.pendingInvites.size)
                             }
@@ -137,18 +193,28 @@ fun AddFriendContent(
                                 items = state.pendingInvites,
                                 key = { _, item -> "pending_${item.user.id}" },
                             ) { index, item ->
-                                if (index != 0) Spacer(modifier = Modifier.height(16.dp))
-                                AddFriendUserItem(
-                                    item = item,
-                                    onAddFriendClick = {},
-                                    onCancelRequestClick = { onCancelRequestClick(item.user.id) },
+                                Column(
                                     modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 16.dp),
-                                )
-                                if (index != state.pendingInvites.lastIndex) {
-                                    Spacer(modifier = Modifier.height(16.dp))
-                                    HorizontalDivider(color = MaterialTheme.appColors.divider)
+                                        .animateItem()
+                                        .clickable(
+                                            onClick = { onUserClick(item.user.id) },
+                                            indication = null,
+                                            interactionSource = remember { MutableInteractionSource() },
+                                        )
+                                ) {
+                                    if (index != 0) Spacer(modifier = Modifier.height(16.dp))
+                                    AddFriendUserItem(
+                                        item = item,
+                                        onAddFriendClick = {},
+                                        onCancelRequestClick = { onCancelRequestClick(item.user.id) },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp),
+                                    )
+                                    if (index != state.pendingInvites.lastIndex) {
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                        HorizontalDivider(color = MaterialTheme.appColors.divider)
+                                    }
                                 }
                             }
 
@@ -242,8 +308,9 @@ private fun AddFriendContentPreview() {
         AddFriendContent(
             state = AddFriendState(
                 searchQuery = "alex",
-//                results = previewUsers,
-//                pendingInvites = previewPendingInvites,
+                results = previewUsers,
+                pendingInvites = previewPendingInvites,
+                receivedPendingInvites = previewPendingInvites,
                 isLoading = false
             ),
             onBackClick = {},
@@ -251,7 +318,10 @@ private fun AddFriendContentPreview() {
             onSearchClear = {},
             onAddFriendClick = {},
             onCancelRequestClick = {},
-            onRefresh = {}
+            onAcceptRequestClick = {},
+            onDeclineRequestClick = {},
+            onRefresh = {},
+            onUserClick = {}
         )
     }
 }

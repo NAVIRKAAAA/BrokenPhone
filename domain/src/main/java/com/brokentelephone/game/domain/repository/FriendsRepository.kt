@@ -20,4 +20,6 @@ interface FriendsRepository {
     suspend fun removeFriend(userId: String, friendId: String)
 
     suspend fun getSentPendingRequests(senderId: String): List<FriendRequest>
+
+    suspend fun getReceivedPendingRequests(receiverId: String): List<FriendRequest>
 }

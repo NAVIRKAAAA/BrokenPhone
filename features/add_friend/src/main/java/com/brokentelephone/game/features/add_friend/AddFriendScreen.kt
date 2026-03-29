@@ -16,6 +16,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun AddFriendScreen(
     onBackClick: () -> Unit,
+    onUserClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddFriendViewModel = koinViewModel(),
 ) {
@@ -41,8 +42,11 @@ fun AddFriendScreen(
         onBackClick = onBackClick,
         onSearchQueryChange = viewModel::onSearchQueryChange,
         onSearchClear = viewModel::onSearchClear,
+        onUserClick = onUserClick,
         onAddFriendClick = {},
         onCancelRequestClick = {},
+        onAcceptRequestClick = {},
+        onDeclineRequestClick = {},
         modifier = modifier,
         onRefresh = viewModel::onRefresh,
         listState = listState

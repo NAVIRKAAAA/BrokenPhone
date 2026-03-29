@@ -1,6 +1,5 @@
 package com.brokentelephone.game.features.add_friend
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.domain.api_handler.onError
@@ -9,8 +8,10 @@ import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMap
 import com.brokentelephone.game.features.add_friend.model.AddFriendSideEffect
 import com.brokentelephone.game.features.add_friend.model.AddFriendState
 import com.brokentelephone.game.features.add_friend.use_case.GetPendingInvitesUseCase
+import com.brokentelephone.game.features.add_friend.use_case.GetReceivedPendingInvitesUseCase
 import com.brokentelephone.game.features.add_friend.use_case.SearchUsersUseCase
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +30,7 @@ import kotlinx.coroutines.launch
 class AddFriendViewModel(
     private val searchUsersUseCase: SearchUsersUseCase,
     private val getPendingInvitesUseCase: GetPendingInvitesUseCase,
+    private val getReceivedPendingInvitesUseCase: GetReceivedPendingInvitesUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
 
@@ -61,20 +63,30 @@ class AddFriendViewModel(
 
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
-            getPendingInvitesUseCase.execute()
-                .onSuccess { pendingInvites ->
-                    lastLoadedAt = System.currentTimeMillis()
-                    _state.update { it.copy(pendingInvites = pendingInvites, isLoading = false) }
-                }
-                .onError { exception ->
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            globalError = exceptionToMessageMapper.map(exception),
-                        )
-                    }
-                }
+
+            val pendingInvites = async { fetchPendingInvites() }
+            val receivedPendingInvites = async { fetchReceivedPendingInvites() }
+            pendingInvites.await()
+            receivedPendingInvites.await()
+
+            lastLoadedAt = System.currentTimeMillis()
+
+            _state.update { it.copy(isLoading = false) }
         }
+    }
+
+    private suspend fun fetchPendingInvites() {
+        getPendingInvitesUseCase.execute()
+            .onSuccess { pendingInvites ->
+                _state.update { it.copy(pendingInvites = pendingInvites) }
+            }
+    }
+
+    private suspend fun fetchReceivedPendingInvites() {
+        getReceivedPendingInvitesUseCase.execute()
+            .onSuccess { pendingInvites ->
+                _state.update { it.copy(receivedPendingInvites = pendingInvites) }
+            }
     }
 
     fun onRefresh() {
@@ -82,42 +94,32 @@ class AddFriendViewModel(
             _state.update { it.copy(isRefreshing = true) }
             delay(150)
 
-            getPendingInvitesUseCase.execute()
-                .onSuccess { pendingInvites ->
-                    lastLoadedAt = System.currentTimeMillis()
-                    _state.update { it.copy(pendingInvites = pendingInvites, isRefreshing = false) }
-                }
-                .onError { exception ->
-                    _state.update {
-                        it.copy(
-                            isRefreshing = false,
-                            globalError = exceptionToMessageMapper.map(exception),
-                        )
-                    }
-                }
+            val pendingInvites = async { fetchPendingInvites() }
+            val receivedPendingInvites = async { fetchReceivedPendingInvites() }
+            pendingInvites.await()
+            receivedPendingInvites.await()
+
+            lastLoadedAt = System.currentTimeMillis()
+
+            _state.update { it.copy(isRefreshing = false) }
         }
     }
 
     private suspend fun search(query: String) {
         _state.update { it.copy(isSearching = true) }
-        Log.d("LOG_TAG", "search: $query")
 
         searchUsersUseCase.execute(query)
             .onSuccess { results ->
-                Log.d("LOG_TAG", "search: ${results.size}")
-                val pendingIds = _state.value.pendingInvites.map { it.user.id }.toSet()
-                val filtered = results.filter { it.user.id !in pendingIds }
+                val excludedIds = (_state.value.pendingInvites + _state.value.receivedPendingInvites)
+                    .map { it.user.id }.toSet()
+                val filtered = results.filter { it.user.id !in excludedIds }
                 _state.update { it.copy(results = filtered, isSearching = false) }
 
                 _event.emit(AddFriendSideEffect.ScrollToTop)
             }
             .onError { exception ->
-                Log.d("LOG_TAG", "search: $exception")
                 _state.update {
-                    it.copy(
-                        isSearching = false,
-                        globalError = exceptionToMessageMapper.map(exception),
-                    )
+                    it.copy(isSearching = false)
                 }
             }
     }

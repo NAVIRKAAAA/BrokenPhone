@@ -145,6 +145,7 @@
     <!-- Friendship Action -->
     <string name="friendship_action_add">Додати в друзі</string>
     <string name="friendship_action_accept">Прийняти</string>
+    <string name="friendship_action_decline">Відхилити</string>
     <string name="friendship_action_invite_sent">Запит надіслано</string>
     <string name="friendship_action_friends">Друзі</string>
     <string name="friendship_action_is_me">Це ти</string>
@@ -237,6 +238,7 @@
     <string name="add_friend_initial_hint">Знайдіть людей за їх нікнеймом</string>
     <string name="add_friend_no_results">Нікого не знайдено</string>
     <string name="add_friend_pending_invites">Надіслані запити</string>
+    <string name="add_friend_received_invites">Отримані запити</string>
     <string name="sign_up_password_hide">Сховати пароль</string>
 
     <string name="google_sign_in_button">Продовжити з Google</string>

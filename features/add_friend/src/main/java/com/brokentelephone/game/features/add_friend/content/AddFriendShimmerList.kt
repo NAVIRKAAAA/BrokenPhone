@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.profile.FriendItemShimmer
+import com.brokentelephone.game.core.profile.FriendRequestItemShimmer
 import com.brokentelephone.game.core.shimmer.shimmer
 import com.brokentelephone.game.core.text_field.SearchTextFieldHeight
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
@@ -43,30 +44,24 @@ fun AddFriendShimmerList(
         userScrollEnabled = false,
     ) {
         stickyHeader {
-            Row(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(horizontal = 16.dp).padding(bottom = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = stringResource(R.string.add_friend_pending_invites),
-                    fontFamily = FontFamily(Font(R.font.nunito_bold)),
-                    fontSize = 13.sp,
-                    lineHeight = 20.sp,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.weight(1f),
-                )
-                Text(
-                    text = "00",
-                    fontFamily = FontFamily(Font(R.font.nunito_bold)),
-                    fontSize = 13.sp,
-                    lineHeight = 20.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.shimmer(cornerRadius = 4.dp),
-                )
+            ShimmerHeader(title = stringResource(R.string.add_friend_received_invites))
+        }
+
+        items(2) { index ->
+            Column {
+                if (index != 0) Spacer(modifier = Modifier.height(16.dp))
+                FriendRequestItemShimmer(modifier = Modifier.padding(horizontal = 16.dp))
+                if (index != 1) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    HorizontalDivider(color = MaterialTheme.appColors.divider)
+                } else {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
             }
+        }
+
+        stickyHeader {
+            ShimmerHeader(title = stringResource(R.string.add_friend_pending_invites))
         }
 
         items(3) { index ->
@@ -79,6 +74,35 @@ fun AddFriendShimmerList(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun ShimmerHeader(title: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = title,
+            fontFamily = FontFamily(Font(R.font.nunito_bold)),
+            fontSize = 13.sp,
+            lineHeight = 20.sp,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.weight(1f),
+        )
+        Text(
+            text = "00",
+            fontFamily = FontFamily(Font(R.font.nunito_bold)),
+            fontSize = 13.sp,
+            lineHeight = 20.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.shimmer(cornerRadius = 4.dp),
+        )
     }
 }
 

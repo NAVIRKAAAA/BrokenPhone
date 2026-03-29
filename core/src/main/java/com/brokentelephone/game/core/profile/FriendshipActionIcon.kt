@@ -2,7 +2,6 @@ package com.brokentelephone.game.core.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -58,17 +57,7 @@ fun FriendshipActionIcon(
             )
         }
 
-        else -> {
-            IconButton(
-                enabled = false,
-                onClick = {return@IconButton}
-            ) {
-                CircularProgressIndicator(
-                    modifier = modifier,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
+        else -> return
     }
 }
 

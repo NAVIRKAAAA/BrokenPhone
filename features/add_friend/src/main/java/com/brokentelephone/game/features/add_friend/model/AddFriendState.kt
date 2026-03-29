@@ -6,6 +6,7 @@ data class AddFriendState(
     val isSearching: Boolean = false,
     val isLoading: Boolean = true,
     val pendingInvites: List<AddFriendUserUi> = emptyList(),
+    val receivedPendingInvites: List<AddFriendUserUi> = emptyList(),
     val globalError: String? = null,
     val isRefreshing: Boolean = false
 )

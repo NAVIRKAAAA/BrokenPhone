@@ -206,6 +206,25 @@ class FriendsRepositoryImpl(
         }
     }
 
+    override suspend fun getReceivedPendingRequests(receiverId: String): List<FriendRequest> {
+        return try {
+            val snapshot = collection
+                .whereEqualTo(FIELD_RECEIVER_ID, receiverId)
+                .whereEqualTo(FIELD_STATUS, FriendRequestStatus.PENDING.name)
+                .get()
+                .await()
+            snapshot.documents.mapNotNull { it.data?.toFriendRequest() }
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (e: FirebaseFirestoreException) {
+            Log.d("LOG_TAG", "getReceivedPendingRequests error: $e")
+            throw e.toAppException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "getReceivedPendingRequests error: $e")
+            throw UnknownAuthException()
+        }
+    }
+
     private suspend fun updateStatus(requestId: String, status: FriendRequestStatus) {
         try {
             collection.document(requestId)
