@@ -57,6 +57,7 @@ fun AddFriendContent(
     onUserClick: (userId: String) -> Unit,
     onAddFriendClick: (userId: String) -> Unit,
     onCancelRequestClick: (userId: String) -> Unit,
+    onRemoveFriendClick: (userId: String) -> Unit,
     onAcceptRequestClick: (userId: String) -> Unit,
     onDeclineRequestClick: (userId: String) -> Unit,
     onRefresh: () -> Unit,
@@ -134,6 +135,8 @@ fun AddFriendContent(
                                         item = item,
                                         onAddFriendClick = { onAddFriendClick(item.user.id) },
                                         onCancelRequestClick = { onCancelRequestClick(item.user.id) },
+                                        onRemoveFriendClick = { onRemoveFriendClick(item.user.id) },
+                                        isLoading = item.user.id in state.addingFriendUserIds,
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(horizontal = 16.dp),
@@ -172,6 +175,9 @@ fun AddFriendContent(
                                         user = item.user,
                                         onAcceptClick = { onAcceptRequestClick(item.user.id) },
                                         onDeclineClick = { onDeclineRequestClick(item.user.id) },
+                                        isAcceptLoading = item.user.id in state.acceptingUserIds,
+                                        isDeclineLoading = item.user.id in state.decliningUserIds,
+                                        enabled = item.user.id !in state.acceptingUserIds && item.user.id !in state.decliningUserIds,
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(horizontal = 16.dp),
@@ -207,6 +213,7 @@ fun AddFriendContent(
                                         item = item,
                                         onAddFriendClick = {},
                                         onCancelRequestClick = { onCancelRequestClick(item.user.id) },
+                                        onRemoveFriendClick = { onRemoveFriendClick(item.user.id) },
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(horizontal = 16.dp),
@@ -318,6 +325,7 @@ private fun AddFriendContentPreview() {
             onSearchClear = {},
             onAddFriendClick = {},
             onCancelRequestClick = {},
+            onRemoveFriendClick = {},
             onAcceptRequestClick = {},
             onDeclineRequestClick = {},
             onRefresh = {},

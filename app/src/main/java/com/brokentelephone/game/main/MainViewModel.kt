@@ -105,7 +105,7 @@ class MainViewModel(
                 _state.update {
                     it.copy(
                         isSessionLoading = false,
-                        startDestination = Routes.Welcome
+                        startDestination = Routes.AuthGraph
                     )
                 }
 
@@ -182,7 +182,7 @@ class MainViewModel(
     }
 
     fun onSessionErrorDismissed() {
-        _state.update { it.copy(sessionDataError = null, startDestination = Routes.Welcome) }
+        _state.update { it.copy(sessionDataError = null, startDestination = Routes.AuthGraph) }
     }
 
     fun onPendingRoutesConsumed() {

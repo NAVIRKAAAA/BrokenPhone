@@ -35,7 +35,9 @@ fun AddFriendUserItem(
     item: AddFriendUserUi,
     onAddFriendClick: () -> Unit,
     onCancelRequestClick: () -> Unit,
+    onRemoveFriendClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
 ) {
     val memberSince = rememberMemberSince(item.user.createdAt)
 
@@ -78,7 +80,8 @@ fun AddFriendUserItem(
             state = item.friendshipState,
             onAddFriendClick = onAddFriendClick,
             onCancelRequestClick = onCancelRequestClick,
-            onRemoveFriendClick = {},
+            onRemoveFriendClick = onRemoveFriendClick,
+            isLoading = isLoading,
         )
     }
 }
@@ -102,6 +105,7 @@ private fun AddFriendUserItemPreview() {
                 ),
                 onAddFriendClick = {},
                 onCancelRequestClick = {},
+                onRemoveFriendClick = {},
             )
         }
     }

@@ -36,6 +36,7 @@ fun FriendRequestItem(
     modifier: Modifier = Modifier,
     isAcceptLoading: Boolean = false,
     isDeclineLoading: Boolean = false,
+    enabled: Boolean = true,
 ) {
     val memberSince = rememberMemberSince(user.createdAt)
 
@@ -85,6 +86,7 @@ fun FriendRequestItem(
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 containerColor = MaterialTheme.colorScheme.surfaceVariant,
                 isLoading = isDeclineLoading,
+                enabled = enabled,
                 modifier = Modifier
                     .weight(1f)
                     .height(48.dp),
@@ -98,6 +100,7 @@ fun FriendRequestItem(
                 contentColor = MaterialTheme.colorScheme.onPrimary,
                 containerColor = MaterialTheme.colorScheme.primary,
                 isLoading = isAcceptLoading,
+                enabled = enabled,
                 modifier = Modifier
                     .weight(1f)
                     .height(48.dp),

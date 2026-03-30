@@ -24,12 +24,12 @@ import com.brokentelephone.game.domain.use_case.MarkPostAsNotInterestedUseCase
 import com.brokentelephone.game.domain.use_case.RemoveFriendUseCase
 import com.brokentelephone.game.domain.use_case.ReportPostUseCase
 import com.brokentelephone.game.domain.use_case.ReportUserUseCase
+import com.brokentelephone.game.domain.use_case.SendFriendRequestUseCase
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.user_details.model.UserDetailsSideEffect
 import com.brokentelephone.game.features.user_details.model.UserDetailsState
 import com.brokentelephone.game.features.user_details.use_case.GetFriendshipActionStateUseCase
 import com.brokentelephone.game.features.user_details.use_case.GetUserByIdUseCase
-import com.brokentelephone.game.features.user_details.use_case.SendFriendRequestUseCase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
