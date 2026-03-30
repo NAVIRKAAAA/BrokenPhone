@@ -36,3 +36,4 @@ local.properties
 /features/user_details/build/
 /features/friends/build/
 /features/add_friend/build/
+/features/welcome/build/

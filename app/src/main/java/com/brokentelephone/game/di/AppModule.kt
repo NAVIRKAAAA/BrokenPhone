@@ -93,8 +93,6 @@ import com.brokentelephone.game.features.sign_up.use_case.SignUpUseCase
 import com.brokentelephone.game.features.sign_up.use_case.ValidateSignUpUseCase
 import com.brokentelephone.game.features.theme.ThemeViewModel
 import com.brokentelephone.game.features.theme.use_case.UpdateThemeUseCase
-import com.brokentelephone.game.features.welcome.WelcomeViewModel
-import com.brokentelephone.game.features.welcome.use_case.SignInAnonymouslyUseCase
 import com.brokentelephone.game.main.MainViewModel
 import com.brokentelephone.game.main.use_case.ApplyEmailChangeUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
@@ -151,9 +149,7 @@ val appModule = module {
     factoryOf(::SubmitDescriptionUseCase)
     factoryOf(::CancelSessionUseCase)
     factoryOf(::GetChainByPostIdUseCase)
-    factoryOf(::SignInAnonymouslyUseCase)
-    viewModelOf(::WelcomeViewModel)
-    factoryOf(::SignUpValidator)
+factoryOf(::SignUpValidator)
     factoryOf(::ValidateSignUpUseCase)
     factoryOf(::SignUpUseCase)
     factoryOf(::SignInWithEmailPasswordUseCase)

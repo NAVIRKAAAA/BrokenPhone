@@ -23,6 +23,7 @@ rootProject.name = "BrokenTelephone"
 include(":app")
 include(":essentials")
 include(":domain")
+include(":features:welcome")
 include(":features:forgot_password")
 include(":features:edit_email")
 include(":features:user_details")

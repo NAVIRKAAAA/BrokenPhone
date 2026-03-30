@@ -52,6 +52,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":essentials"))
     implementation(project(":domain"))
+    implementation(project(":features:welcome"))
     implementation(project(":features:forgot_password"))
     implementation(project(":features:edit_email"))
     implementation(project(":features:user_details"))
