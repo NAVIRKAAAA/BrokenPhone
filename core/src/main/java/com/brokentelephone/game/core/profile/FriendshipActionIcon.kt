@@ -20,10 +20,11 @@ import com.brokentelephone.game.domain.model.friend.FriendshipActionState
 @Composable
 fun FriendshipActionIcon(
     state: FriendshipActionState?,
-    onAddFriendClick: () -> Unit,
-    onCancelRequestClick: () -> Unit,
-    onRemoveFriendClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onAddFriendClick: () -> Unit = {},
+    onCancelRequestClick: () -> Unit = {},
+    onRemoveFriendClick: () -> Unit = {},
+    onAcceptRequestClick: () -> Unit = {},
     isLoading: Boolean = false,
 ) {
     if (isLoading) {
@@ -68,11 +69,23 @@ fun FriendshipActionIcon(
             modifier = modifier,
         ) {
             Icon(
-                painter = painterResource(R.drawable.ic_person_remove),
+                painter = painterResource(R.drawable.ic_close),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
+        
+        FriendshipActionState.INVITE_RECEIVED -> IconButton(
+            onClick = onAcceptRequestClick,
+            modifier = modifier,
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_check),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
 
         else -> return
     }
@@ -84,12 +97,12 @@ private fun FriendshipActionIconPreview() {
     BrokenTelephoneTheme(darkTheme = true) {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
             FriendshipActionIcon(
-                state = FriendshipActionState.FRIENDS,
+                state = FriendshipActionState.INVITE_RECEIVED,
                 onAddFriendClick = {},
                 onCancelRequestClick = {},
                 onRemoveFriendClick = {},
                 modifier = Modifier.align(Alignment.Center),
-                isLoading = true
+                isLoading = false
             )
         }
     }

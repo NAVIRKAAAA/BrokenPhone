@@ -65,14 +65,9 @@ fun FriendRequestItem(
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                Text(
-                    text = stringResource(R.string.profile_member_since, memberSince),
-                    fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                    fontSize = 13.sp,
-                    lineHeight = 20.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+                UserBioDisplayAsSingleLine(
+                    bio = user.bio,
+                    createdAt = user.createdAt
                 )
             }
         }

@@ -33,7 +33,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.R
+import com.brokentelephone.game.core.model.user.AddFriendUserUi
 import com.brokentelephone.game.core.model.user.UserUi
+import com.brokentelephone.game.core.profile.AddFriendUserItem
 import com.brokentelephone.game.core.profile.FriendRequestItem
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.shimmer.ShimmerContent
@@ -45,7 +47,6 @@ import com.brokentelephone.game.core.top_bar.EditProfileTopBar
 import com.brokentelephone.game.domain.model.friend.FriendshipActionState
 import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.features.add_friend.model.AddFriendState
-import com.brokentelephone.game.features.add_friend.model.AddFriendUserUi
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -149,12 +150,12 @@ fun AddFriendContent(
                                     }
                                 }
                             }
-                            stickyHeader(key = "received_header") {
+
+                            item(key = "received_header") {
                                 AddFriendPendingHeader(
                                     count = state.receivedPendingInvites.size,
                                     title = stringResource(R.string.add_friend_received_invites),
                                 )
-
                             }
 
                             itemsIndexed(
@@ -191,7 +192,7 @@ fun AddFriendContent(
                                 }
                             }
 
-                            stickyHeader(key = "pending_header") {
+                            item(key = "pending_header") {
                                 AddFriendPendingHeader(count = state.pendingInvites.size)
                             }
 

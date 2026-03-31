@@ -133,6 +133,8 @@
     <string name="settings_dialog_logout_body">Leaving already? We\'ll assume you\'re just switching accounts.</string>
     <string name="settings_dialog_logout_confirm">Logout</string>
 
+    <string name="bio_more">more</string>
+
     <!-- Edit Bio -->
     <string name="edit_bio_title">Edit Bio</string>
     <string name="edit_bio_button_save">Save</string>
@@ -210,6 +212,7 @@
     <string name="friends_search_placeholder">Search friends</string>
     <string name="friends_empty_title">No friends yet</string>
     <string name="friends_empty_body">Add friends to see them here</string>
+    <string name="friends_suggested">People you may know</string>
     <string name="search_text_field_clear">Clear search</string>
     <string name="sign_up_password_hide">Hide password</string>
 

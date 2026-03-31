@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.add_friend.content
+package com.brokentelephone.game.core.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
@@ -22,13 +21,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.avatar.AvatarComponent
+import com.brokentelephone.game.core.model.user.AddFriendUserUi
 import com.brokentelephone.game.core.model.user.UserUi
-import com.brokentelephone.game.core.profile.FriendshipActionIcon
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.core.utils.rememberMemberSince
 import com.brokentelephone.game.domain.model.friend.FriendshipActionState
 import com.brokentelephone.game.domain.user.AuthProvider
-import com.brokentelephone.game.features.add_friend.model.AddFriendUserUi
 
 @Composable
 fun AddFriendUserItem(
@@ -36,10 +33,11 @@ fun AddFriendUserItem(
     onAddFriendClick: () -> Unit,
     onCancelRequestClick: () -> Unit,
     onRemoveFriendClick: () -> Unit,
+    onAcceptRequestClick: () -> Unit = {},
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
 ) {
-    val memberSince = rememberMemberSince(item.user.createdAt)
+    val user = item.user
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -65,14 +63,9 @@ fun AddFriendUserItem(
 
             Spacer(modifier = Modifier.height(2.dp))
 
-            Text(
-                text = stringResource(R.string.profile_member_since, memberSince),
-                fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                fontSize = 13.sp,
-                lineHeight = 20.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+            UserBioDisplayAsSingleLine(
+                bio = user.bio,
+                createdAt = user.createdAt
             )
         }
 
@@ -81,6 +74,7 @@ fun AddFriendUserItem(
             onAddFriendClick = onAddFriendClick,
             onCancelRequestClick = onCancelRequestClick,
             onRemoveFriendClick = onRemoveFriendClick,
+            onAcceptRequestClick = onAcceptRequestClick,
             isLoading = isLoading,
         )
     }
@@ -106,6 +100,7 @@ private fun AddFriendUserItemPreview() {
                 onAddFriendClick = {},
                 onCancelRequestClick = {},
                 onRemoveFriendClick = {},
+                onAcceptRequestClick = {},
             )
         }
     }

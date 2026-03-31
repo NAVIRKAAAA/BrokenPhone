@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
@@ -27,7 +26,6 @@ import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.avatar.AvatarComponent
 import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.core.utils.rememberMemberSince
 import com.brokentelephone.game.domain.user.AuthProvider
 
 @Composable
@@ -36,8 +34,6 @@ fun FriendItem(
     onRemoveClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val memberSince = rememberMemberSince(user.createdAt)
-
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -62,14 +58,9 @@ fun FriendItem(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            Text(
-                text = stringResource(R.string.profile_member_since, memberSince),
-                fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                fontSize = 13.sp,
-                lineHeight = 20.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+            UserBioDisplayAsSingleLine(
+                bio = user.bio,
+                createdAt = user.createdAt
             )
         }
 
@@ -96,6 +87,7 @@ private fun FriendItemDarkPreview() {
                     avatarUrl = null,
                     createdAt = 1740000000000L,
                     authProvider = AuthProvider.EMAIL,
+                    bio = "I love drawing, creative games, and exploring new ideas. Always up for a challenge and meeting new people through fun activities!",
                 ),
                 onRemoveClick = {},
             )

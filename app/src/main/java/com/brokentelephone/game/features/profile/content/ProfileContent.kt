@@ -175,11 +175,15 @@ fun ProfileContent(
                         AccountInfoSection(
                             username = state.user?.username.orEmpty(),
                             avatarUrl = state.user?.avatarUrl,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp),
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp)
+                                .padding(top = 16.dp),
                             postsCount = state.myPosts.size,
                             contributions = state.myContributions.size,
                             friends = state.user?.friendIds?.size ?: 0,
                             isAuth = state.isAuth,
+                            bio = state.user?.bio.orEmpty(),
+                            createdAt = state.user?.createdAt,
                             onFriendsClick = onFriendsClick,
                         )
                     }
@@ -317,7 +321,8 @@ fun ProfileContentPreview() {
                     username = "Alex",
                     avatarUrl = null,
                     email = "",
-                    createdAt = 0
+                    createdAt = System.currentTimeMillis(),
+//                    bio = "I love drawing, creative games, and exploring new ideas. Always up for a challenge and meeting new people through fun activities!",
                 ),
 //                myPosts = MockPostRepository.mockList.map { it.toUi() },
 //                myContributions = MockPostRepository.mockList.map { it.toUi() },

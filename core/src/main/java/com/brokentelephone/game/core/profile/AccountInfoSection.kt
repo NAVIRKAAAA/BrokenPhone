@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -34,56 +35,68 @@ fun AccountInfoSection(
     contributions: Int = 0,
     friends: Int = 0,
     avatarUrl: String? = null,
+    bio: String = "",
+    createdAt: Long? = null,
     onFriendsClick: () -> Unit = {},
 ) {
-    Row(modifier = modifier.fillMaxWidth()) {
-        AvatarComponent(avatarUrl = avatarUrl, size = 64.dp)
+    Column(modifier = modifier.fillMaxWidth()) {
+        Row {
+            AvatarComponent(avatarUrl = avatarUrl, size = 64.dp)
 
-        Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(12.dp))
 
-        Column {
-            Text(
-                text = username,
-                textAlign = TextAlign.Start,
-                fontFamily = FontFamily(Font(R.font.nunito_extra_bold)),
-                fontSize = 19.sp,
-                lineHeight = 28.sp,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 2,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
+            Column {
+                Text(
+                    text = username,
+                    textAlign = TextAlign.Start,
+                    fontFamily = FontFamily(Font(R.font.nunito_extra_bold)),
+                    fontSize = 19.sp,
+                    lineHeight = 28.sp,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 2,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
 
-            if (isAuth) {
-                Spacer(modifier = Modifier.height(12.dp))
+                if (isAuth) {
+                    Spacer(modifier = Modifier.height(12.dp))
 
-                Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-                    StatInfo(
-                        value = postsCount,
-                        name = stringResource(R.string.profile_posts),
-                    )
-                    StatInfo(
-                        value = contributions,
-                        name = stringResource(R.string.profile_contributions),
-                    )
-                    StatInfo(
-                        value = friends,
-                        name = stringResource(R.string.profile_friends),
-                        enabled = true,
-                        onClick = onFriendsClick,
+                    Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+                        StatInfo(
+                            value = postsCount,
+                            name = stringResource(R.string.profile_posts),
+                        )
+                        StatInfo(
+                            value = contributions,
+                            name = stringResource(R.string.profile_contributions),
+                        )
+                        StatInfo(
+                            value = friends,
+                            name = stringResource(R.string.profile_friends),
+                            enabled = true,
+                            onClick = onFriendsClick,
+                        )
+                    }
+                } else {
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "Sign up to save your posts and\njoin the fun!",
+                        textAlign = TextAlign.Start,
+                        fontFamily = FontFamily(Font(R.font.nunito_regular)),
+                        fontSize = 14.sp,
+                        lineHeight = 21.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-            } else {
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Sign up to save your posts and\njoin the fun!",
-                    textAlign = TextAlign.Start,
-                    fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                    fontSize = 14.sp,
-                    lineHeight = 21.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
             }
+        }
+
+        if (isAuth && createdAt != null) {
+            UserBioDisplay(
+                bio = bio,
+                createdAt = createdAt,
+                modifier = Modifier.padding(vertical = 12.dp)
+            )
         }
     }
 }
@@ -93,7 +106,11 @@ fun AccountInfoSection(
 private fun AccountInfoSectionPreview() {
     BrokenTelephoneTheme(darkTheme = true) {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
-            AccountInfoSection(username = "Alex", isAuth = true)
+            AccountInfoSection(
+                username = "Alex", isAuth = true,
+                bio = "I love drawing, creative games, and exploring new ideas. Always up for a challenge and meeting new people through fun activities!",
+                createdAt = System.currentTimeMillis()
+            )
         }
     }
 }

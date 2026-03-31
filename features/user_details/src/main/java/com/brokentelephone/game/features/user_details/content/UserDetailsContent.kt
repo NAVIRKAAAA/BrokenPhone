@@ -38,7 +38,6 @@ import com.brokentelephone.game.core.model.profile.ProfileTab
 import com.brokentelephone.game.core.profile.AccountInfoSection
 import com.brokentelephone.game.core.profile.AccountInfoSectionShimmer
 import com.brokentelephone.game.core.profile.FriendshipActionButton
-import com.brokentelephone.game.core.profile.MemberSinceText
 import com.brokentelephone.game.core.profile.ProfilePostsPage
 import com.brokentelephone.game.core.profile.ProfileTabRow
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
@@ -145,23 +144,11 @@ fun UserDetailsContent(
                     ShimmerContent(
                         isLoading = user == null,
                         shimmerContent = {
-                            Column(
-                                modifier = Modifier.fillMaxSize(),
-                            ) {
-
-                                AccountInfoSectionShimmer(
-                                    modifier = Modifier
-                                        .padding(horizontal = 16.dp)
-                                        .padding(top = 16.dp, bottom = 24.dp),
-                                )
-
-                                MemberSinceText(
-                                    createdAt = null,
-                                    modifier = Modifier
-                                        .padding(horizontal = 16.dp)
-                                        .padding(bottom = 8.dp),
-                                )
-                            }
+                            AccountInfoSectionShimmer(
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp)
+                                    .padding(top = 16.dp),
+                            )
                         },
                         content = {
                             if (user != null) {
@@ -172,20 +159,14 @@ fun UserDetailsContent(
                                         username = user.username,
                                         avatarUrl = user.avatarUrl,
                                         modifier = Modifier
-                                            .padding(
-                                                horizontal = 16.dp,
-                                            )
-                                            .padding(top = 16.dp, bottom = 24.dp),
+                                            .padding(horizontal = 16.dp)
+                                            .padding(top = 16.dp),
                                         postsCount = state.myPosts.size,
                                         contributions = state.myContributions.size,
                                         friends = user.friendIds.size,
-                                        isAuth = true
-                                    )
-
-                                    MemberSinceText(
+                                        isAuth = true,
+                                        bio = user.bio,
                                         createdAt = user.createdAt,
-                                        modifier = Modifier
-                                            .padding(horizontal = 16.dp)
                                     )
 
                                     Row(
@@ -287,7 +268,8 @@ private fun UserDetailsContentPreview() {
 //                    username = "Alex",
 //                    avatarUrl = null,
 //                    email = "",
-//                    createdAt = 0
+//                    createdAt = System.currentTimeMillis(),
+//                    bio = "I love drawing, creative games, and exploring new ideas. Always up for a challenge and meeting new people through fun activities!",
 //                ),
             ),
             onBackClick = {},

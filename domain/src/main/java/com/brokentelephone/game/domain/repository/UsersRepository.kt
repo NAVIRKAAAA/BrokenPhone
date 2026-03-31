@@ -15,4 +15,6 @@ interface UsersRepository {
     )
 
     suspend fun createUser(id: String)
+
+    suspend fun getSuggestedUsers(excludeIds: List<String>): List<User>
 }

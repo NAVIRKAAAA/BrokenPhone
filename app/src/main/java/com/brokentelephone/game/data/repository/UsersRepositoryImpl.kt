@@ -138,6 +138,29 @@ class UsersRepositoryImpl(
         }
     }
 
+    override suspend fun getSuggestedUsers(excludeIds: List<String>): List<User> {
+        try {
+            val snapshot = collection
+                .orderBy(User.FIELD_UPDATED_AT, com.google.firebase.firestore.Query.Direction.DESCENDING)
+                .limit(10 + excludeIds.size.toLong())
+                .get()
+                .await()
+
+            return snapshot.documents
+                .mapNotNull { it.data?.let { data -> User.fromMap(data) } }
+                .filter { it.id !in excludeIds }
+                .take(10)
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (e: FirebaseFirestoreException) {
+            Log.d("LOG_TAG", "Error: $e")
+            throw e.toAppException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "Error: $e")
+            throw UnknownAuthException()
+        }
+    }
+
     override suspend fun createUser(id: String) {
         val now = System.currentTimeMillis()
 

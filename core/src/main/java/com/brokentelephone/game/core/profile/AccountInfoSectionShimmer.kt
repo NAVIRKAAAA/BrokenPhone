@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -29,49 +30,60 @@ import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 fun AccountInfoSectionShimmer(
     modifier: Modifier = Modifier,
 ) {
-    Row(modifier = modifier.fillMaxWidth()) {
-        Box(
-            modifier = Modifier
-                .size(64.dp)
-                .clip(CircleShape)
-                .shimmer(cornerRadius = 32.dp)
-        )
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        Column {
-            Text(
-                text = "Username pl",
-                fontFamily = FontFamily(Font(R.font.nunito_extra_bold)),
-                fontSize = 19.sp,
-                lineHeight = 19.sp,
-                modifier = Modifier.shimmer(cornerRadius = 4.dp)
+    Column() {
+        Row(modifier = modifier.fillMaxWidth()) {
+            Box(
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(CircleShape)
+                    .shimmer(cornerRadius = 32.dp)
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.width(12.dp))
 
-            Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-                repeat(3) {
-                    Column {
-                        Text(
-                            text = "00",
-                            fontFamily = FontFamily(Font(R.font.nunito_extra_bold)),
-                            fontSize = 17.sp,
-                            lineHeight = 17.sp,
-                            modifier = Modifier.shimmer(cornerRadius = 4.dp)
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = "LabelLabe",
-                            fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                            fontSize = 12.sp,
-                            lineHeight = 12.sp,
-                            modifier = Modifier.shimmer(cornerRadius = 4.dp)
-                        )
+            Column {
+                Text(
+                    text = "Username pl",
+                    fontFamily = FontFamily(Font(R.font.nunito_extra_bold)),
+                    fontSize = 19.sp,
+                    lineHeight = 19.sp,
+                    modifier = Modifier.shimmer(cornerRadius = 4.dp)
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+                    repeat(3) {
+                        Column {
+                            Text(
+                                text = "00",
+                                fontFamily = FontFamily(Font(R.font.nunito_extra_bold)),
+                                fontSize = 17.sp,
+                                lineHeight = 17.sp,
+                                modifier = Modifier.shimmer(cornerRadius = 4.dp)
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = "LabelLabe",
+                                fontFamily = FontFamily(Font(R.font.nunito_regular)),
+                                fontSize = 12.sp,
+                                lineHeight = 12.sp,
+                                modifier = Modifier.shimmer(cornerRadius = 4.dp)
+                            )
+                        }
                     }
                 }
             }
         }
+
+        Text(
+            text = "Member since Jan 2026",
+            fontFamily = FontFamily(Font(R.font.nunito_regular)),
+            fontSize = 14.sp,
+            lineHeight = 14.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = modifier.padding(vertical = 12.dp).shimmer(cornerRadius = 4.dp),
+        )
     }
 }
 

@@ -1,5 +1,7 @@
 package com.brokentelephone.game.features.add_friend.model
 
+import com.brokentelephone.game.core.model.user.AddFriendUserUi
+
 data class AddFriendState(
     val searchQuery: String = "",
     val results: List<AddFriendUserUi> = emptyList(),

@@ -1,5 +1,6 @@
 package com.brokentelephone.game.features.add_friend.use_case
 
+import com.brokentelephone.game.core.model.user.AddFriendUserUi
 import com.brokentelephone.game.core.model.user.toUi
 import com.brokentelephone.game.domain.api_handler.ApiHandler
 import com.brokentelephone.game.domain.api_handler.AppResult
@@ -8,7 +9,6 @@ import com.brokentelephone.game.domain.repository.FriendsRepository
 import com.brokentelephone.game.domain.repository.UsersRepository
 import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.essentials.exceptions.auth.UnauthorizedException
-import com.brokentelephone.game.features.add_friend.model.AddFriendUserUi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 

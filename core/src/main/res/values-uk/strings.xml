@@ -62,6 +62,8 @@
     <string name="edit_avatar_current">Твій аватар</string>
     <string name="edit_avatar_choose">Обери свій аватар</string>
 
+    <string name="bio_more">більше</string>
+
     <string name="edit_bio_title">Редагувати біо</string>
     <string name="edit_bio_button_save">Зберегти</string>
     <string name="edit_bio_label">Біо</string>
@@ -236,6 +238,7 @@
     <string name="friends_search_placeholder">Пошук друзів</string>
     <string name="friends_empty_title">Поки немає друзів</string>
     <string name="friends_empty_body">Додай друзів, щоб побачити їх тут</string>
+    <string name="friends_suggested">Можливо, ви знайомі</string>
     <string name="search_text_field_clear">Очистити пошук</string>
 
     <!-- Add Friend -->

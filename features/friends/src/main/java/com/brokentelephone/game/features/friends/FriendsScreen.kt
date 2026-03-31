@@ -52,6 +52,9 @@ fun FriendsScreen(
         onUserClick = onUserClick,
         onRemoveFriendClick = viewModel::onRemoveFriendClick,
         onAddFriendClick = onAddFriendClick,
+        onSuggestedAddFriendClick = viewModel::onSuggestedAddFriendClick,
+        onAcceptRequestClick = viewModel::onAcceptRequestClick,
+        onCancelRequestClick = viewModel::onCancelRequestClick,
         listState = listState,
         modifier = modifier,
     )
@@ -65,6 +68,18 @@ fun FriendsScreen(
             onDismiss = viewModel::onRemoveFriendDialogDismiss,
             onConfirm = viewModel::onRemoveFriendConfirm,
             isLoading = state.isRemoveFriendLoading,
+        )
+    }
+
+    if (state.cancelRequestDialogUserId != null) {
+        ConfirmDialog(
+            title = stringResource(R.string.common_dialog_cancel_request_title),
+            body = stringResource(R.string.common_dialog_cancel_request_body),
+            cancelText = stringResource(R.string.common_cancel),
+            confirmText = stringResource(R.string.common_dialog_cancel_request_confirm),
+            onDismiss = viewModel::onCancelRequestDialogDismiss,
+            onConfirm = viewModel::onCancelRequestConfirm,
+            isLoading = state.isCancelRequestLoading,
         )
     }
 
