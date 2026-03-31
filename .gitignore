@@ -37,3 +37,5 @@ local.properties
 /features/friends/build/
 /features/add_friend/build/
 /features/welcome/build/
+/features/sign_up/build/
+/features/edit_bio/build/

@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.brokentelephone.game.features.welcome"
+    namespace = "com.brokentelephone.game.features.edit_bio"
     compileSdk = 36
 
     defaultConfig {

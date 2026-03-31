@@ -6,12 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
+import com.brokentelephone.game.domain.use_case.GetPrivacyPolicyLinkUseCase
+import com.brokentelephone.game.domain.use_case.GetTermsOfServiceLinkUseCase
 import com.brokentelephone.game.domain.use_case.SignInWithGoogleUseCase
 import com.brokentelephone.game.essentials.exceptions.auth.GoogleSignInCancelledException
 import com.brokentelephone.game.essentials.exceptions.auth.InvalidCredentialsException
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
-import com.brokentelephone.game.features.settings.use_case.GetPrivacyPolicyLinkUseCase
-import com.brokentelephone.game.features.settings.use_case.GetTermsOfServiceLinkUseCase
 import com.brokentelephone.game.features.sign_in.model.SignInSideEffect
 import com.brokentelephone.game.features.sign_in.model.SignInState
 import com.brokentelephone.game.features.sign_in.use_case.SignInWithEmailPasswordUseCase

@@ -156,6 +156,25 @@ class UserSessionImpl(
         }
     }
 
+    override suspend fun updateBio(bio: String) {
+        val uid = firebaseAuth.currentUser?.uid ?: throw UnauthorizedException()
+        try {
+            firestore.collection(COLLECTION_USERS)
+                .document(uid)
+                .update(
+                    User.FIELD_BIO,
+                    bio,
+                    User.FIELD_UPDATED_AT,
+                    System.currentTimeMillis()
+                )
+                .await()
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
+
     override suspend fun updateAvatar(avatarUrl: String) {
         val uid = firebaseAuth.currentUser?.uid ?: throw UnauthorizedException()
         try {

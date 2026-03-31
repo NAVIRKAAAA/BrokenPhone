@@ -31,6 +31,7 @@ import com.brokentelephone.game.features.dashboard.DashboardViewModel
 import com.brokentelephone.game.features.describe_drawing.DescribeDrawingScreen
 import com.brokentelephone.game.features.draw.DrawScreen
 import com.brokentelephone.game.features.edit_avatar.EditAvatarScreen
+import com.brokentelephone.game.features.edit_bio.EditBioScreen
 import com.brokentelephone.game.features.edit_email.EditEmailScreen
 import com.brokentelephone.game.features.edit_profile.EditProfileScreen
 import com.brokentelephone.game.features.edit_username.EditUsernameScreen
@@ -544,7 +545,7 @@ fun AppNavGraph(
                     val route = targetState.destination.route
                     if (route?.contains("EditUsername") == true || route?.contains("EditAvatar") == true || route?.contains(
                             "EditEmail"
-                        ) == true
+                        ) == true || route?.contains("EditBio") == true
                     ) {
                         slideOutHorizontally(
                             targetOffsetX = { -it / 3 },
@@ -558,7 +559,7 @@ fun AppNavGraph(
                     val route = initialState.destination.route
                     if (route?.contains("EditUsername") == true || route?.contains("EditAvatar") == true || route?.contains(
                             "EditEmail"
-                        ) == true
+                        ) == true || route?.contains("EditBio") == true
                     ) {
                         slideInHorizontally(
                             initialOffsetX = { -it / 3 },
@@ -583,6 +584,9 @@ fun AppNavGraph(
                     onEditUsernameClick = {
                         navController.navigateSingle(Routes.EditUsername)
                     },
+                    onEditBioClick = {
+                        navController.navigateSingle(Routes.EditBio)
+                    },
                     onEditEmailClick = {
                         navController.navigateSingle(Routes.EditEmail)
                     },
@@ -604,6 +608,25 @@ fun AppNavGraph(
                 }
             ) {
                 EditUsernameScreen(
+                    onBackClick = navController::safePopBackStack,
+                )
+            }
+
+            composable<Routes.EditBio>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) {
+                EditBioScreen(
                     onBackClick = navController::safePopBackStack,
                 )
             }

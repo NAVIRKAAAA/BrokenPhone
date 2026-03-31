@@ -7,6 +7,7 @@ interface UserSession {
     val authState: Flow<AuthState>
     suspend fun initialize()
     suspend fun updateUsername(username: String)
+    suspend fun updateBio(bio: String)
     suspend fun updateAvatar(avatarUrl: String)
     suspend fun completeAvatarStep(avatarUrl: String)
     suspend fun completeUsernameStep(username: String)

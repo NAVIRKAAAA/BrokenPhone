@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.settings.use_case
+package com.brokentelephone.game.domain.use_case
 
 import com.brokentelephone.game.domain.link.LinkProvider
 

@@ -133,6 +133,12 @@
     <string name="settings_dialog_logout_body">Leaving already? We\'ll assume you\'re just switching accounts.</string>
     <string name="settings_dialog_logout_confirm">Logout</string>
 
+    <!-- Edit Bio -->
+    <string name="edit_bio_title">Edit Bio</string>
+    <string name="edit_bio_button_save">Save</string>
+    <string name="edit_bio_label">Bio</string>
+    <string name="edit_bio_hint">Tell something about yourself</string>
+
     <!-- Edit Username -->
     <string name="edit_username_title">Edit Username</string>
     <string name="edit_username_button_save">Save</string>
@@ -165,6 +171,7 @@
     <string name="edit_profile_title">Edit Profile</string>
     <string name="edit_profile_field_avatar">Avatar</string>
     <string name="edit_profile_field_username">Username</string>
+    <string name="edit_profile_field_bio">Bio</string>
     <string name="edit_profile_field_email">Email</string>
 
     <!-- Dashboard -->

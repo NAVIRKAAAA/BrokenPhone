@@ -40,6 +40,9 @@ fun SignUpTextFieldValue(
     isPasswordVisible: Boolean = false,
     onPasswordVisibilityToggle: (() -> Unit)? = null,
     imeAction: ImeAction = ImeAction.Done,
+    maxLines: Int = 1,
+    minLines: Int = 1,
+    singleLine: Boolean = true,
     onImeAction: () -> Unit = {},
 ) {
     val supportingText: @Composable (() -> Unit)? = when {
@@ -94,9 +97,9 @@ fun SignUpTextFieldValue(
             fontSize = 15.sp,
             lineHeight = 22.sp
         ),
-        minLines = 1,
-        maxLines = 1,
-        singleLine = true,
+        minLines = minLines,
+        maxLines = maxLines,
+        singleLine = singleLine,
         label = {
             Text(
                 text = label,

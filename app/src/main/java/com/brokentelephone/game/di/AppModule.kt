@@ -30,6 +30,8 @@ import com.brokentelephone.game.domain.use_case.BlockUserUseCase
 import com.brokentelephone.game.domain.use_case.DeletePostUseCase
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.domain.use_case.GetPostLinkByIdUseCase
+import com.brokentelephone.game.domain.use_case.GetPrivacyPolicyLinkUseCase
+import com.brokentelephone.game.domain.use_case.GetTermsOfServiceLinkUseCase
 import com.brokentelephone.game.domain.use_case.GetUserContributionsUseCase
 import com.brokentelephone.game.domain.use_case.GetUserPostsUseCase
 import com.brokentelephone.game.domain.use_case.GetUsersByIdsUseCase
@@ -39,7 +41,6 @@ import com.brokentelephone.game.domain.use_case.ReportPostUseCase
 import com.brokentelephone.game.domain.use_case.ReportUserUseCase
 import com.brokentelephone.game.domain.use_case.SignInWithGoogleUseCase
 import com.brokentelephone.game.domain.user.UserSession
-import com.brokentelephone.game.essentials.validation.SignUpValidator
 import com.brokentelephone.game.features.account_settings.AccountSettingsViewModel
 import com.brokentelephone.game.features.account_settings.use_case.DeleteAccountUseCase
 import com.brokentelephone.game.features.account_settings.use_case.SendEmailVerificationUseCase
@@ -83,14 +84,9 @@ import com.brokentelephone.game.features.post_details.use_case.JoinSessionUseCas
 import com.brokentelephone.game.features.profile.ProfileViewModel
 import com.brokentelephone.game.features.settings.SettingsViewModel
 import com.brokentelephone.game.features.settings.use_case.GetAuthStateUseCase
-import com.brokentelephone.game.features.settings.use_case.GetPrivacyPolicyLinkUseCase
-import com.brokentelephone.game.features.settings.use_case.GetTermsOfServiceLinkUseCase
 import com.brokentelephone.game.features.settings.use_case.GetVersionInfoUseCase
 import com.brokentelephone.game.features.sign_in.SignInViewModel
 import com.brokentelephone.game.features.sign_in.use_case.SignInWithEmailPasswordUseCase
-import com.brokentelephone.game.features.sign_up.SignUpViewModel
-import com.brokentelephone.game.features.sign_up.use_case.SignUpUseCase
-import com.brokentelephone.game.features.sign_up.use_case.ValidateSignUpUseCase
 import com.brokentelephone.game.features.theme.ThemeViewModel
 import com.brokentelephone.game.features.theme.use_case.UpdateThemeUseCase
 import com.brokentelephone.game.main.MainViewModel
@@ -149,9 +145,6 @@ val appModule = module {
     factoryOf(::SubmitDescriptionUseCase)
     factoryOf(::CancelSessionUseCase)
     factoryOf(::GetChainByPostIdUseCase)
-factoryOf(::SignUpValidator)
-    factoryOf(::ValidateSignUpUseCase)
-    factoryOf(::SignUpUseCase)
     factoryOf(::SignInWithEmailPasswordUseCase)
     factoryOf(::SignInWithGoogleUseCase)
     factoryOf(::GetCurrentUserUseCase)
@@ -169,7 +162,6 @@ factoryOf(::SignUpValidator)
     viewModelOf(::DrawViewModel)
     viewModelOf(::DescribeDrawingViewModel)
     viewModelOf(::ChainDetailsViewModel)
-    viewModelOf(::SignUpViewModel)
     viewModelOf(::SignInViewModel)
     viewModelOf(::ProfileViewModel)
     viewModelOf(::EditUsernameViewModel)

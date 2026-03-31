@@ -41,6 +41,9 @@ sealed class Routes {
     data object Profile : Routes()
 
     @Serializable
+    data object EditBio : Routes()
+
+    @Serializable
     data object EditUsername : Routes()
 
     @Serializable

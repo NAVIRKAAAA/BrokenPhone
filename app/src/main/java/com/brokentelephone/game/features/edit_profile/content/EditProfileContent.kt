@@ -26,6 +26,7 @@ fun EditProfileContent(
     onBackClick: () -> Unit,
     onEditPhotoClick: () -> Unit,
     onEditUsernameClick: () -> Unit,
+    onEditBioClick: () -> Unit,
     onEditEmailClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -59,6 +60,14 @@ fun EditProfileContent(
 //        HorizontalDivider(color = MaterialTheme.appColors.divider)
 
         AccountTextInfoItem(
+            name = stringResource(R.string.edit_profile_field_bio),
+            value = state.user?.bio.orEmpty(),
+            modifier = Modifier.clickable(onClick = onEditBioClick).padding(horizontal = 16.dp)
+        )
+
+//        HorizontalDivider(color = MaterialTheme.appColors.divider)
+
+        AccountTextInfoItem(
             name = stringResource(R.string.edit_profile_field_email),
             value = state.user?.email.orEmpty(),
             modifier = Modifier.clickable(onClick = onEditEmailClick).padding(horizontal = 16.dp)
@@ -80,12 +89,14 @@ fun EditProfileContentPreview() {
                     username = "Alex",
                     email = "alex@example.com",
                     avatarUrl = null,
-                    createdAt = 0
+                    createdAt = 0,
+                    bio = "Lalala"
                 )
             ),
             onBackClick = {},
             onEditPhotoClick = {},
             onEditUsernameClick = {},
+            onEditBioClick = {},
             onEditEmailClick = {},
         )
     }

@@ -144,31 +144,6 @@ fun SignUpContent(
                 isLoading = state.isGoogleLoading,
                 enabled = !state.isLoading,
             )
-//            val primaryColor = MaterialTheme.colorScheme.primary
-//
-//            val signInText = buildAnnotatedString {
-//                append("${stringResource(R.string.sign_up_already_have_account)} ")
-//                withLink(
-//                    LinkAnnotation.Clickable(
-//                        tag = "SIGN_IN",
-//                        linkInteractionListener = { onSignInClick() },
-//                    )
-//                ) {
-//                    withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.None)) {
-//                        append(stringResource(R.string.sign_up_sign_in_link))
-//                    }
-//                }
-//            }
-//
-//            Text(
-//                text = signInText,
-//                textAlign = TextAlign.Center,
-//                fontFamily = FontFamily(Font(R.font.nunito_semi_bold)),
-//                fontSize = 14.sp,
-//                lineHeight = 21.sp,
-//                modifier = Modifier.padding(horizontal = 16.dp),
-//                color = MaterialTheme.colorScheme.onBackground,
-//            )
 
             Spacer(modifier = Modifier.weight(1f))
 

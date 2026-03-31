@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.brokentelephone.game.features.welcome"
+    namespace = "com.brokentelephone.game.features.sign_up"
     compileSdk = 36
 
     defaultConfig {

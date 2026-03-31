@@ -47,6 +47,7 @@
     <string name="edit_profile_title">Редагувати профіль</string>
     <string name="edit_profile_field_avatar">Аватар</string>
     <string name="edit_profile_field_username">Твоє імʼя</string>
+    <string name="edit_profile_field_bio">Біо</string>
     <string name="edit_profile_field_email">Ел. пошта</string>
 
     <string name="choose_avatar_title">Хто ти сьогодні?</string>
@@ -60,6 +61,11 @@
     <string name="edit_avatar_button_save">Зберегти</string>
     <string name="edit_avatar_current">Твій аватар</string>
     <string name="edit_avatar_choose">Обери свій аватар</string>
+
+    <string name="edit_bio_title">Редагувати біо</string>
+    <string name="edit_bio_button_save">Зберегти</string>
+    <string name="edit_bio_label">Біо</string>
+    <string name="edit_bio_hint">Розкажи щось про себе</string>
 
     <string name="edit_username_title">Змінити імʼя</string>
     <string name="edit_username_button_save">Зберегти</string>
