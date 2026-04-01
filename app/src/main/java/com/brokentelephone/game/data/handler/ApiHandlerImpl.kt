@@ -31,10 +31,10 @@ class ApiHandlerImpl(
             try {
                 val result = withTimeout(timeoutMs) { block() }
                 return@withContext AppResult.Success(result)
-            } catch (_: CancellationException) {
-                throw OperationCancelledException()
             } catch (_: TimeoutCancellationException) {
                 throw OperationCancelledException()
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 if (attempt == maxRetries) return@withContext AppResult.Error(e)
                 delay(currentDelay)
