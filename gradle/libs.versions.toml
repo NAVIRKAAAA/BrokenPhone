@@ -1,5 +1,5 @@
 [versions]
-agp = "9.0.0-beta05"
+agp = "9.0.1"
 googleServices = "4.4.2"
 firebaseBom = "33.6.0"
 coreKtx = "1.17.0"

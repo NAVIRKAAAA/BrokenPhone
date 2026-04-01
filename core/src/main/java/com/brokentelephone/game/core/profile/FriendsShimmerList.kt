@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.friends.content
+package com.brokentelephone.game.core.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -25,7 +25,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.profile.FriendItemShimmer
 import com.brokentelephone.game.core.text_field.SearchTextFieldHeight
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors

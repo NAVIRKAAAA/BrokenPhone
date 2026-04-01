@@ -90,4 +90,7 @@ sealed class Routes {
 
     @Serializable
     data object AddFriend : Routes()
+
+    @Serializable
+    data class UserFriends(val userId: String) : Routes()
 }

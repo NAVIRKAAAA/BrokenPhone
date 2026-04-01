@@ -58,6 +58,7 @@ fun UserDetailsContent(
     onRemoveFriendClick: () -> Unit,
     onPostClick: (postId: String) -> Unit,
     onMoreClick: (postId: String) -> Unit,
+    onFriendsClick: () -> Unit,
     onMoreVertClick: () -> Unit,
     listState: LazyListState = rememberLazyListState(),
     onRefresh: () -> Unit = {},
@@ -167,6 +168,7 @@ fun UserDetailsContent(
                                         isAuth = true,
                                         bio = user.bio,
                                         createdAt = user.createdAt,
+                                        onFriendsClick = onFriendsClick,
                                     )
 
                                     Row(
@@ -259,6 +261,7 @@ private fun UserDetailsContentPreview() {
             onAcceptRequestClick = {},
             onCancelRequestClick = {},
             onRemoveFriendClick = {},
+            onFriendsClick = {},
             onPostClick = {},
             onMoreClick = {},
             onMoreVertClick = {},

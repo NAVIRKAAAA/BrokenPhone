@@ -39,3 +39,4 @@ local.properties
 /features/welcome/build/
 /features/sign_up/build/
 /features/edit_bio/build/
+/features/user_friends/build/

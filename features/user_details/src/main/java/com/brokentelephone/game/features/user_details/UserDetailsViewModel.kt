@@ -17,6 +17,7 @@ import com.brokentelephone.game.domain.use_case.CancelFriendRequestUseCase
 import com.brokentelephone.game.domain.use_case.DeletePostUseCase
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.domain.use_case.GetPostLinkByIdUseCase
+import com.brokentelephone.game.domain.use_case.GetUserByIdUseCase
 import com.brokentelephone.game.domain.use_case.GetUserContributionsUseCase
 import com.brokentelephone.game.domain.use_case.GetUserLinkByIdUseCase
 import com.brokentelephone.game.domain.use_case.GetUserPostsUseCase
@@ -29,7 +30,6 @@ import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMap
 import com.brokentelephone.game.features.user_details.model.UserDetailsSideEffect
 import com.brokentelephone.game.features.user_details.model.UserDetailsState
 import com.brokentelephone.game.features.user_details.use_case.GetFriendshipActionStateUseCase
-import com.brokentelephone.game.features.user_details.use_case.GetUserByIdUseCase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay

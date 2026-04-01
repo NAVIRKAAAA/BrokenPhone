@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.user_details.use_case
+package com.brokentelephone.game.domain.use_case
 
 import com.brokentelephone.game.domain.api_handler.ApiHandler
 import com.brokentelephone.game.domain.api_handler.AppResult

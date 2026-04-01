@@ -29,6 +29,11 @@ class FriendsRepositoryImpl(
         targetUserId: String,
     ): FriendshipActionState {
         try {
+
+            if (currentUserId == targetUserId) {
+                return FriendshipActionState.IS_ME
+            }
+
             val userSnapshot = collection.firestore
                 .collection(USERS_COLLECTION)
                 .document(currentUserId)

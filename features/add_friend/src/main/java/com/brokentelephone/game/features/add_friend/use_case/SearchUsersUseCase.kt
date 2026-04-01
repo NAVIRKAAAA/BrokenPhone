@@ -1,6 +1,5 @@
 package com.brokentelephone.game.features.add_friend.use_case
 
-import android.util.Log
 import com.brokentelephone.game.core.model.user.AddFriendUserUi
 import com.brokentelephone.game.core.model.user.toUi
 import com.brokentelephone.game.domain.api_handler.ApiHandler
@@ -27,12 +26,8 @@ class SearchUsersUseCase(
             val currentUser = userSession.authState.first().getUserOrNull()
                 ?: throw UnauthorizedException()
 
-            Log.d("LOG_TAG", "SearchUsersUseCase currentUser: ${currentUser.id}")
-
             val users = usersRepository.searchByUsername(query)
                 .filter { it.id != currentUser.id }
-
-            Log.d("LOG_TAG", "SearchUsersUseCase users: ${users.size}")
 
             coroutineScope {
                 users.map { user ->

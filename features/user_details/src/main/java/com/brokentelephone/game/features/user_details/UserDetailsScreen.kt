@@ -35,6 +35,7 @@ fun UserDetailsScreen(
     userId: String,
     onBackClick: () -> Unit,
     onPostClick: (postId: String, userId: String) -> Unit,
+    onFriendsClick: (userId: String) -> Unit,
     onNavigateBackWithForceUpdate: () -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: UserDetailsViewModel = koinViewModel { parametersOf(userId) },
@@ -81,6 +82,7 @@ fun UserDetailsScreen(
         onAcceptRequestClick = viewModel::onAcceptRequestClick,
         onCancelRequestClick = viewModel::onCancelRequestClick,
         onRemoveFriendClick = viewModel::onRemoveFriendClick,
+        onFriendsClick = { onFriendsClick(userId) },
         onPostClick = { postId -> onPostClick(postId, userId) },
         onMoreClick = { postId ->
             val post = (state.myPosts + state.myContributions).find { it.id == postId }

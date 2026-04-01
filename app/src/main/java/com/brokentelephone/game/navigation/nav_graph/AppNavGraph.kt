@@ -47,6 +47,7 @@ import com.brokentelephone.game.features.sign_in.SignInScreen
 import com.brokentelephone.game.features.sign_up.SignUpScreen
 import com.brokentelephone.game.features.theme.ThemeScreen
 import com.brokentelephone.game.features.user_details.UserDetailsScreen
+import com.brokentelephone.game.features.user_friends.UserFriendsScreen
 import com.brokentelephone.game.features.welcome.WelcomeScreen
 import com.brokentelephone.game.navigation.routes.Routes
 import com.brokentelephone.game.navigation.utils.navigateSingle
@@ -883,16 +884,26 @@ fun AppNavGraph(
                     }
                 },
                 exitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
+                    val to = targetState.destination.route
+                    if (to?.contains("UserFriends") == true) {
+                        ExitTransition.None
+                    } else {
+                        slideOutHorizontally(
+                            targetOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeOut(animationSpec = tween(200))
+                    }
                 },
                 popEnterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
+                    val from = initialState.destination.route
+                    if (from?.contains("UserFriends") == true) {
+                        EnterTransition.None
+                    } else {
+                        slideInHorizontally(
+                            initialOffsetX = { -it / 3 },
+                            animationSpec = tween(250)
+                        ) + fadeIn(animationSpec = tween(200))
+                    }
                 },
                 popExitTransition = {
                     val to = targetState.destination.route
@@ -913,6 +924,9 @@ fun AppNavGraph(
                 UserDetailsScreen(
                     userId = route.userId,
                     onBackClick = navController::safePopBackStack,
+                    onFriendsClick = { userId ->
+                        navController.navigateSingle(Routes.UserFriends(userId = userId))
+                    },
                     onPostClick = { postId, userId ->
                         navController.navigateSingle(Routes.ChainDetails(postId = postId, userId = userId))
                     },
@@ -1009,6 +1023,32 @@ fun AppNavGraph(
                 }
             ) {
                 AddFriendScreen(
+                    onBackClick = navController::safePopBackStack,
+                    onUserClick = { userId ->
+                        navController.navigateSingle(Routes.UserDetails(userId = userId))
+                    },
+                )
+            }
+
+            composable<Routes.UserFriends>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeIn(animationSpec = tween(200))
+                },
+                exitTransition = { ExitTransition.None },
+                popEnterTransition = { EnterTransition.None },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) { backStackEntry ->
+                val route = backStackEntry.toRoute<Routes.UserFriends>()
+                UserFriendsScreen(
+                    userId = route.userId,
                     onBackClick = navController::safePopBackStack,
                     onUserClick = { userId ->
                         navController.navigateSingle(Routes.UserDetails(userId = userId))

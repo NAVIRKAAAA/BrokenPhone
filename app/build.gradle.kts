@@ -59,6 +59,7 @@ dependencies {
     implementation(project(":features:edit_email"))
     implementation(project(":features:user_details"))
     implementation(project(":features:friends"))
+    implementation(project(":features:user_friends"))
     implementation(project(":features:add_friend"))
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
