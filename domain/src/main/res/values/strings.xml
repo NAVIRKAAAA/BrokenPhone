@@ -10,7 +10,8 @@
 
     <!-- Notifications -->
     <string name="notifications_type_news">News</string>
-    <string name="notifications_type_chain_completed">Chain Completed</string>
+    <string name="notifications_type_chain">Chain</string>
+    <string name="notifications_type_friends">Friends</string>
 
     <!-- Dashboard Sort -->
     <string name="dashboard_sort_latest">Latest</string>

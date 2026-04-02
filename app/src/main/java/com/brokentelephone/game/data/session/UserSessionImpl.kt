@@ -297,7 +297,6 @@ class UserSessionImpl(
                 .get()
                 .await()
                 .documents
-                .also { Log.d("LOG_TAG", "getBlockedUsers: documents: ${it.size}") }
                 .mapNotNull { it.data?.let(BlockedUser::fromMap) }
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()

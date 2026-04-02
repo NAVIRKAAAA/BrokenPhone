@@ -8,7 +8,8 @@
     <string name="theme_dark">Темна</string>
 
     <string name="notifications_type_news">Новини</string>
-    <string name="notifications_type_chain_completed">Ланцюжок завершено</string>
+    <string name="notifications_type_chain">Ланцюжок</string>
+    <string name="notifications_type_friends">Друзі</string>
 
     <string name="dashboard_sort_almost_done">Майже готово</string>
     <string name="dashboard_sort_latest">Останні</string>

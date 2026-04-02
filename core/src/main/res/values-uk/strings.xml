@@ -150,6 +150,10 @@
     <string name="profile_friends">Друзі</string>
     <string name="profile_member_since">У додатку з %1$s</string>
 
+    <!-- Notifications -->
+    <string name="notification_friend_request_body">надіслав вам запит у друзі</string>
+    <string name="notification_friend_accepted_body">прийняв ваш запит у друзі</string>
+
     <!-- Friendship Action -->
     <string name="friendship_action_add">Додати в друзі</string>
     <string name="friendship_action_accept">Прийняти</string>

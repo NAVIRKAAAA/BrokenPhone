@@ -40,3 +40,4 @@ local.properties
 /features/sign_up/build/
 /features/edit_bio/build/
 /features/user_friends/build/
+/features/notifications/build/
