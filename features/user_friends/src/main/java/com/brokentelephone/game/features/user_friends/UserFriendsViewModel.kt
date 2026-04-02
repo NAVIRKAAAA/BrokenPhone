@@ -11,6 +11,7 @@ import com.brokentelephone.game.domain.model.friend.FriendshipActionState
 import com.brokentelephone.game.domain.use_case.AcceptFriendRequestUseCase
 import com.brokentelephone.game.domain.use_case.CancelFriendRequestUseCase
 import com.brokentelephone.game.domain.use_case.GetFriendsUseCase
+import com.brokentelephone.game.domain.use_case.GetSuggestedUsersUseCase
 import com.brokentelephone.game.domain.use_case.GetUserByIdUseCase
 import com.brokentelephone.game.domain.use_case.RemoveFriendUseCase
 import com.brokentelephone.game.domain.use_case.SendFriendRequestUseCase
@@ -39,6 +40,7 @@ class UserFriendsViewModel(
     private val sendFriendRequestUseCase: SendFriendRequestUseCase,
     private val cancelFriendRequestUseCase: CancelFriendRequestUseCase,
     private val acceptFriendRequestUseCase: AcceptFriendRequestUseCase,
+    private val getSuggestedUsersUseCase: GetSuggestedUsersUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
 
@@ -73,9 +75,11 @@ class UserFriendsViewModel(
 
             val user = async { fetchUser() }
             val friends = async { fetchFriends() }
+            val suggestedUsers = async { fetchSuggestedUsers() }
 
             user.await()
             friends.await()
+            suggestedUsers.await()
 
             lastLoadedAt = System.currentTimeMillis()
 
@@ -92,9 +96,11 @@ class UserFriendsViewModel(
 
             val user = async { fetchUser() }
             val friends = async { fetchFriends() }
+            val suggestedUsers = async { fetchSuggestedUsers() }
 
             user.await()
             friends.await()
+            suggestedUsers.await()
 
             lastLoadedAt = System.currentTimeMillis()
 
@@ -133,6 +139,48 @@ class UserFriendsViewModel(
                 Log.d("LOG_TAG", "fetchFriends: onError ($exception)")
                 // TODO: handle
             }
+    }
+
+    private suspend fun fetchSuggestedUsers() {
+        getSuggestedUsersUseCase.execute().onSuccess { result ->
+
+            val suggestedUsers = result.map { (user, friendState) ->
+                AddFriendUserUi(user.toUi(), friendState)
+            }
+
+            _state.update { state ->
+                state.copy(suggestedUsers = suggestedUsers)
+            }
+        }.onError { exception ->
+            Log.d("LOG_TAG", "fetchSuggestedUsers: onError ($exception)")
+            // TODO: handle
+        }
+    }
+
+    fun onSuggestedAddFriendClick(userId: String) {
+        viewModelScope.launch {
+            _state.update { it.copy(sendingRequestUserIds = it.sendingRequestUserIds + userId) }
+            sendFriendRequestUseCase.execute(userId)
+                .onSuccess {
+                    _state.update {
+                        it.copy(
+                            sendingRequestUserIds = it.sendingRequestUserIds - userId,
+                            suggestedUsers = it.suggestedUsers.map { item ->
+                                if (item.user.id == userId) item.copy(friendshipState = FriendshipActionState.INVITE_SENT)
+                                else item
+                            },
+                        )
+                    }
+                }
+                .onError { error ->
+                    _state.update {
+                        it.copy(
+                            sendingRequestUserIds = it.sendingRequestUserIds - userId,
+                            globalError = exceptionToMessageMapper.map(error),
+                        )
+                    }
+                }
+        }
     }
 
     fun onSearchQueryChange(query: String) {

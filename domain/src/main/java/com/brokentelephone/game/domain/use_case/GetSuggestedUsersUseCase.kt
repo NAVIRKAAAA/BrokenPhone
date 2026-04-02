@@ -20,7 +20,9 @@ class GetSuggestedUsersUseCase(
     private val friendsRepository: FriendsRepository,
     private val handler: ApiHandler,
 ) {
-    suspend fun execute(): AppResult<List<Pair<User, FriendshipActionState>>> {
+    suspend fun execute(
+        additionalExcludeIds: List<String> = emptyList(),
+    ): AppResult<List<Pair<User, FriendshipActionState>>> {
         return handler.handle(Dispatchers.IO) {
             val currentUser =
                 userSession.authState.firstOrNull()?.getUserOrNull()
@@ -31,6 +33,7 @@ class GetSuggestedUsersUseCase(
                 addAll(currentUser.friendIds)
                 addAll(currentUser.blockedUserIds)
                 addAll(currentUser.blockedBy)
+                addAll(additionalExcludeIds)
             }
 
             val users = usersRepository.getSuggestedUsers(excludeIds)

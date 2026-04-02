@@ -238,7 +238,7 @@
     <string name="friends_search_placeholder">Пошук друзів</string>
     <string name="friends_empty_title">Поки немає друзів</string>
     <string name="friends_empty_body">Додай друзів, щоб побачити їх тут</string>
-    <string name="friends_suggested">Можливо, ви знайомі</string>
+    <string name="friends_suggested">Рекомендації</string>
     <string name="search_text_field_clear">Очистити пошук</string>
 
     <!-- Add Friend -->

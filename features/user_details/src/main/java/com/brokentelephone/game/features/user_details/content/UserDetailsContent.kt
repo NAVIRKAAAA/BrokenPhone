@@ -23,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +47,7 @@ import com.brokentelephone.game.core.shimmer.shimmer
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.top_bar.ProfileTopBar
 import com.brokentelephone.game.features.user_details.model.UserDetailsState
+import kotlinx.coroutines.launch
 
 @Composable
 fun UserDetailsContent(
@@ -65,6 +67,7 @@ fun UserDetailsContent(
     modifier: Modifier = Modifier,
 ) {
     val isScrolledPastAccountInfo by remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
+    val scope = rememberCoroutineScope()
 
     val user = state.user
 
@@ -115,11 +118,11 @@ fun UserDetailsContent(
                     )
                 }
             },
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            onTitleClick = { scope.launch { listState.animateScrollToItem(0) } },
         )
 
         val pullToRefreshState = rememberPullToRefreshState()
-
         val isRefreshing = state.isRefreshing
 
         PullToRefreshBox(
@@ -169,6 +172,18 @@ fun UserDetailsContent(
                                         bio = user.bio,
                                         createdAt = user.createdAt,
                                         onFriendsClick = onFriendsClick,
+                                        onPostsClick = {
+                                            onTabSelect(ProfileTab.POSTS)
+                                            scope.launch {
+                                                listState.animateScrollToItem(1)
+                                            }
+                                        },
+                                        onContributionsClick = {
+                                            onTabSelect(ProfileTab.CONTRIBUTIONS)
+                                            scope.launch {
+                                                listState.animateScrollToItem(1)
+                                            }
+                                        },
                                     )
 
                                     Row(

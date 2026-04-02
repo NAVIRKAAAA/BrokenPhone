@@ -56,6 +56,7 @@ fun UserFriendsScreen(
         onRemoveFriendClick = viewModel::onRemoveFriendClick,
         onCancelRequestClick = viewModel::onCancelRequestClick,
         onAcceptRequestClick = viewModel::onAcceptRequestClick,
+        onSuggestedAddFriendClick = viewModel::onSuggestedAddFriendClick,
         onUserClick = onUserClick,
     )
 

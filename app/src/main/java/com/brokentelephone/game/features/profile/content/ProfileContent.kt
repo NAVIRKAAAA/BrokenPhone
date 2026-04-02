@@ -185,6 +185,18 @@ fun ProfileContent(
                             bio = state.user?.bio.orEmpty(),
                             createdAt = state.user?.createdAt,
                             onFriendsClick = onFriendsClick,
+                            onPostsClick = {
+                                onTabSelect(ProfileTab.POSTS)
+                                scope.launch {
+                                    listState.animateScrollToItem(1)
+                                }
+                            },
+                            onContributionsClick = {
+                                onTabSelect(ProfileTab.CONTRIBUTIONS)
+                                scope.launch {
+                                    listState.animateScrollToItem(1)
+                                }
+                            },
                         )
                     }
 

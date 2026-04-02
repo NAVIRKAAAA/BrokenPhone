@@ -212,7 +212,7 @@
     <string name="friends_search_placeholder">Search friends</string>
     <string name="friends_empty_title">No friends yet</string>
     <string name="friends_empty_body">Add friends to see them here</string>
-    <string name="friends_suggested">People you may know</string>
+    <string name="friends_suggested">Recommendations</string>
     <string name="search_text_field_clear">Clear search</string>
     <string name="sign_up_password_hide">Hide password</string>
 

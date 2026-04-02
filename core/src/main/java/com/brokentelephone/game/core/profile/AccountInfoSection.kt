@@ -38,6 +38,8 @@ fun AccountInfoSection(
     bio: String = "",
     createdAt: Long? = null,
     onFriendsClick: () -> Unit = {},
+    onPostsClick: () -> Unit = {},
+    onContributionsClick: () -> Unit = {},
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Row {
@@ -64,10 +66,14 @@ fun AccountInfoSection(
                         StatInfo(
                             value = postsCount,
                             name = stringResource(R.string.profile_posts),
+                            enabled = true,
+                            onClick = onPostsClick,
                         )
                         StatInfo(
                             value = contributions,
                             name = stringResource(R.string.profile_contributions),
+                            enabled = true,
+                            onClick = onContributionsClick,
                         )
                         StatInfo(
                             value = friends,

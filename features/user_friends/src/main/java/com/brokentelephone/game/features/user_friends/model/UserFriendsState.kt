@@ -16,4 +16,6 @@ data class UserFriendsState(
     val cancelRequestDialogUserId: String? = null,
     val isCancelRequestLoading: Boolean = false,
     val acceptingUserIds: Set<String> = emptySet(),
+    val suggestedUsers: List<AddFriendUserUi> = emptyList(),
+    val sendingRequestUserIds: Set<String> = emptySet(),
 )

@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.profile.AddFriendUserItem
 import com.brokentelephone.game.core.profile.FriendItem
+import com.brokentelephone.game.core.profile.FriendsSectionHeader
 import com.brokentelephone.game.core.profile.FriendsShimmerList
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.shimmer.ShimmerContent

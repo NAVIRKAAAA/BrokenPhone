@@ -35,6 +35,7 @@ import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.model.user.AddFriendUserUi
 import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.profile.AddFriendUserItem
+import com.brokentelephone.game.core.profile.FriendsSectionHeader
 import com.brokentelephone.game.core.profile.FriendsShimmerList
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.shimmer.ShimmerContent
@@ -58,6 +59,7 @@ fun UserFriendsContent(
     onCancelRequestClick: (userId: String) -> Unit,
     onRemoveFriendClick: (userId: String) -> Unit,
     onAcceptRequestClick: (userId: String) -> Unit,
+    onSuggestedAddFriendClick: (userId: String) -> Unit,
     listState: LazyListState = rememberLazyListState(),
     modifier: Modifier = Modifier,
 ) {
@@ -86,7 +88,7 @@ fun UserFriendsContent(
 
         val pullToRefreshState = rememberPullToRefreshState()
         val isRefreshing =
-            state.isRefreshing || (state.isLoading && state.filteredFriends.isNotEmpty())
+            state.isRefreshing || (state.isLoading && state.filteredFriends.isNotEmpty() && state.suggestedUsers.isNotEmpty())
 
         Box(modifier = Modifier.fillMaxSize()) {
             PullToRefreshBox(
@@ -105,7 +107,7 @@ fun UserFriendsContent(
                 },
             ) {
                 ShimmerContent(
-                    isLoading = state.isLoading && state.filteredFriends.isEmpty(),
+                    isLoading = state.isLoading && state.filteredFriends.isEmpty() && state.suggestedUsers.isEmpty(),
                     shimmerContent = { FriendsShimmerList() },
                     content = {
                         LazyColumn(
@@ -145,6 +147,49 @@ fun UserFriendsContent(
                                         isLoading = item.user.id in state.addingFriendUserIds,
                                     )
                                     if (index != state.filteredFriends.lastIndex) {
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                        HorizontalDivider(color = MaterialTheme.appColors.divider)
+                                    } else {
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                    }
+                                }
+                            }
+
+                            item {
+                                FriendsSectionHeader(title = stringResource(R.string.friends_suggested))
+                            }
+
+                            itemsIndexed(
+                                items = state.suggestedUsers,
+                                key = { _, item -> "suggested_${item.user.id}" },
+                            ) { index, item ->
+                                Column(
+                                    modifier = Modifier
+                                        .animateItem()
+                                        .clickable(
+                                            onClick = { onUserClick(item.user.id) },
+                                            indication = null,
+                                            interactionSource = remember { MutableInteractionSource() }
+                                        )
+                                ) {
+                                    if (index != 0) {
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                    }
+
+                                    AddFriendUserItem(
+                                        item = item,
+                                        onAddFriendClick = { onSuggestedAddFriendClick(item.user.id) },
+                                        onRemoveFriendClick = {
+                                            return@AddFriendUserItem
+                                        },
+                                        onCancelRequestClick = { onCancelRequestClick(item.user.id) },
+                                        onAcceptRequestClick = { onAcceptRequestClick(item.user.id) },
+                                        isLoading = item.user.id in state.acceptingUserIds || item.user.id in state.sendingRequestUserIds,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp),
+                                    )
+                                    if (index != state.suggestedUsers.lastIndex) {
                                         Spacer(modifier = Modifier.height(16.dp))
                                         HorizontalDivider(color = MaterialTheme.appColors.divider)
                                     }
@@ -229,7 +274,8 @@ private fun UserFriendsContentPreview() {
             onAddFriendClick = {},
             onRemoveFriendClick = {},
             onCancelRequestClick = {},
-            onAcceptRequestClick = {}
+            onAcceptRequestClick = {},
+            onSuggestedAddFriendClick = {}
         )
     }
 }

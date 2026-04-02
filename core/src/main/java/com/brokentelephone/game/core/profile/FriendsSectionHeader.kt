@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.friends.content
+package com.brokentelephone.game.core.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
