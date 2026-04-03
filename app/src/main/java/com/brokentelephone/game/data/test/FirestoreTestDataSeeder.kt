@@ -1,6 +1,8 @@
 package com.brokentelephone.game.data.test
 
 import com.brokentelephone.game.data.mapper.toMap
+import com.brokentelephone.game.domain.model.notification.Notification
+import com.brokentelephone.game.domain.model.notification.NotificationData
 import com.brokentelephone.game.domain.model.post.Post
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
@@ -19,6 +21,7 @@ class FirestoreTestDataSeeder(
 ) {
     private val postsCollection get() = firestore.collection("posts")
     private val usersCollection get() = firestore.collection("users")
+    private val notificationsCollection get() = firestore.collection("notifications")
 
     suspend fun seedUsers() {
         FAKE_AUTHORS.forEach { (id, username) ->
@@ -35,6 +38,20 @@ class FirestoreTestDataSeeder(
                 onboardingStep = OnboardingStep.COMPLETED,
             )
             usersCollection.document(id).set(user.toMap()).await()
+        }
+    }
+
+    suspend fun seedNotifications(targetUserId: String = "Va9OfTygaXOH3OLRWPMjOs4TR5y2") {
+        val now = System.currentTimeMillis()
+        FAKE_NOTIFICATIONS.forEachIndexed { index: Int, data: NotificationData ->
+            val docRef = notificationsCollection.document()
+            val notification = Notification(
+                id = docRef.id,
+                receiversIds = listOf(targetUserId),
+                data = data,
+                createdAt = now - index * 10 * 60 * 1000L,
+            )
+            docRef.set(notification.toMap()).await()
         }
     }
 
@@ -106,6 +123,39 @@ class FirestoreTestDataSeeder(
     }
 
     private companion object {
+        val FAKE_NOTIFICATIONS: List<NotificationData> = listOf(
+            NotificationData.Friends(requestId = "req_001", userId = "user_001", username = "Alex", userAvatarUrl = null, type = NotificationData.FriendsType.INVITE_RECEIVED),
+            NotificationData.Friends(requestId = "req_002", userId = "user_002", username = "Maria", userAvatarUrl = null, type = NotificationData.FriendsType.INVITE_RECEIVED),
+            NotificationData.Friends(requestId = "req_003", userId = "user_003", username = "John", userAvatarUrl = null, type = NotificationData.FriendsType.INVITE_RECEIVED),
+            NotificationData.Friends(requestId = "req_004", userId = "user_004", username = "Sofia", userAvatarUrl = null, type = NotificationData.FriendsType.INVITE_ACCEPTED),
+            NotificationData.Friends(requestId = "req_005", userId = "user_005", username = "Dmytro", userAvatarUrl = null, type = NotificationData.FriendsType.INVITE_ACCEPTED),
+            NotificationData.Friends(requestId = "req_006", userId = "user_006", username = "Olena", userAvatarUrl = null, type = NotificationData.FriendsType.INVITE_RECEIVED),
+            NotificationData.Friends(requestId = "req_007", userId = "user_007", username = "Vitaliy", userAvatarUrl = null, type = NotificationData.FriendsType.INVITE_ACCEPTED),
+            NotificationData.Friends(requestId = "req_008", userId = "user_008", username = "Nataliya", userAvatarUrl = null, type = NotificationData.FriendsType.INVITE_RECEIVED),
+            NotificationData.Friends(requestId = "req_009", userId = "user_009", username = "Andriy", userAvatarUrl = null, type = NotificationData.FriendsType.INVITE_ACCEPTED),
+            NotificationData.Friends(requestId = "req_010", userId = "user_010", username = "Daryna", userAvatarUrl = null, type = NotificationData.FriendsType.INVITE_RECEIVED),
+            NotificationData.ChainInfo(chainId = "chain_001", postId = "post_001", title = "Chain completed!", body = "A cat is sitting on a windowsill — see the full chain"),
+            NotificationData.ChainInfo(chainId = "chain_002", postId = "post_002", title = "Chain completed!", body = "Two astronauts playing chess — see the full chain"),
+            NotificationData.ChainInfo(chainId = "chain_003", postId = "post_003", title = "Chain completed!", body = "A dragon learning to bake croissants — see the full chain"),
+            NotificationData.ChainInfo(chainId = "chain_004", postId = "post_004", title = "Chain completed!", body = "Three penguins trying to hail a taxi — see the full chain"),
+            NotificationData.ChainInfo(chainId = "chain_005", postId = "post_005", title = "Chain completed!", body = "A wizard forgot where he put his wand — see the full chain"),
+            NotificationData.ChainInfo(chainId = "chain_006", postId = "post_006", title = "Chain completed!", body = "A bear opening a honey-themed coffee shop — see the full chain"),
+            NotificationData.ChainInfo(chainId = "chain_007", postId = "post_007", title = "Chain completed!", body = "Space cowboys herding asteroids — see the full chain"),
+            NotificationData.ChainInfo(chainId = "chain_008", postId = "post_008", title = "Chain completed!", body = "A detective interrogating a suspicious houseplant — see the full chain"),
+            NotificationData.ChainInfo(chainId = "chain_009", postId = "post_009", title = "Chain completed!", body = "A mermaid applying for a job at an aquarium — see the full chain"),
+            NotificationData.ChainInfo(chainId = "chain_010", postId = "post_010", title = "Chain completed!", body = "A grandmother teaching her dog to play piano — see the full chain"),
+            NotificationData.News(title = "Welcome to BrokenTelephone!", body = "Invite your friends and start your first chain today."),
+            NotificationData.News(title = "New feature: Chain history", body = "You can now browse the full history of every chain you participated in."),
+            NotificationData.News(title = "Weekend challenge", body = "Complete 3 chains this weekend and earn a special badge."),
+            NotificationData.News(title = "Bug fix update", body = "We fixed the drawing canvas lag. Drawing is now smoother than ever!"),
+            NotificationData.News(title = "Dark mode is here", body = "Switch to dark mode in Settings → Theme."),
+            NotificationData.News(title = "Community milestone", body = "Together we completed 10,000 chains. Thank you!"),
+            NotificationData.News(title = "New avatars available", body = "Check out the new avatar collection in your profile settings."),
+            NotificationData.News(title = "Tip: describe precisely", body = "The more precise your description, the funnier the next drawing will be!"),
+            NotificationData.News(title = "Scheduled maintenance", body = "The app will be briefly unavailable on Sunday at 3:00 AM UTC."),
+            NotificationData.News(title = "Happy New Year!", body = "Wishing you a year full of creativity and laughter. Start a chain to celebrate!"),
+        )
+
         val FAKE_AUTHORS = listOf(
             "user_001" to "Alex",
             "user_002" to "Maria",

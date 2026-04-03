@@ -48,6 +48,7 @@ fun DashboardContent(
     onUserClick: (userId: String) -> Unit,
     onSortSelected: (DashboardSort) -> Unit,
     onTitleClick: () -> Unit,
+    onNotificationsClick: () -> Unit,
     onRefresh: () -> Unit,
     onLoadMore: () -> Unit,
     modifier: Modifier = Modifier,
@@ -62,6 +63,7 @@ fun DashboardContent(
             selectedSort = state.selectedSort,
             onSortSelected = onSortSelected,
             onTitleClick = onTitleClick,
+            onNotificationsClick = onNotificationsClick,
         )
 
         val pullToRefreshState = rememberPullToRefreshState()
@@ -172,6 +174,7 @@ fun DashboardContentPreview() {
                 onUserClick = {},
                 onSortSelected = {},
                 onTitleClick = {},
+                onNotificationsClick = {},
                 onRefresh = {},
                 onLoadMore = {},
                 listState = rememberLazyListState(),

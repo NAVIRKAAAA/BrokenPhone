@@ -42,6 +42,7 @@ fun DashboardTopBar(
     selectedSort: DashboardSort,
     onSortSelected: (DashboardSort) -> Unit,
     onTitleClick: () -> Unit,
+    onNotificationsClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var isSortMenuVisible by remember { mutableStateOf(false) }
@@ -79,50 +80,63 @@ fun DashboardTopBar(
                 ),
         )
 
-        Box(
+        Row(
             modifier = Modifier
                 .statusBarsPadding()
-                .padding(vertical = 8.dp)
+                .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            IconButton(onClick = { isSortMenuVisible = true }) {
+
+
+            Box {
+                IconButton(onClick = { isSortMenuVisible = true }) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_sort),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = isSortMenuVisible,
+                    onDismissRequest = { isSortMenuVisible = false },
+                    containerColor = MaterialTheme.colorScheme.background,
+                ) {
+                    DashboardSort.entries.forEach { sort ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = stringResource(sort.labelResId),
+                                    fontFamily = FontFamily(Font(R.font.nunito_semi_bold)),
+                                    fontSize = 15.sp,
+                                    color = if (sort == selectedSort) MaterialTheme.colorScheme.primary
+                                    else MaterialTheme.colorScheme.onBackground,
+                                )
+                            },
+                            trailingIcon = {
+                                if (sort == selectedSort) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.ic_check),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                    )
+                                }
+                            },
+                            onClick = {
+                                onSortSelected(sort)
+                                isSortMenuVisible = false
+                            },
+                        )
+                    }
+                }
+            }
+
+            IconButton(onClick = onNotificationsClick) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_sort),
+                    painter = painterResource(R.drawable.ic_notifications),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onBackground,
                 )
-            }
-
-            DropdownMenu(
-                expanded = isSortMenuVisible,
-                onDismissRequest = { isSortMenuVisible = false },
-                containerColor = MaterialTheme.colorScheme.background,
-            ) {
-                DashboardSort.entries.forEach { sort ->
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                text = stringResource(sort.labelResId),
-                                fontFamily = FontFamily(Font(R.font.nunito_semi_bold)),
-                                fontSize = 15.sp,
-                                color = if (sort == selectedSort) MaterialTheme.colorScheme.primary
-                                else MaterialTheme.colorScheme.onBackground,
-                            )
-                        },
-                        trailingIcon = {
-                            if (sort == selectedSort) {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_check),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary,
-                                )
-                            }
-                        },
-                        onClick = {
-                            onSortSelected(sort)
-                            isSortMenuVisible = false
-                        },
-                    )
-                }
             }
         }
     }
@@ -138,6 +152,7 @@ private fun DashboardTopBarPreview() {
                 selectedSort = DashboardSort.LATEST,
                 onSortSelected = {},
                 onTitleClick = {},
+                onNotificationsClick = {},
             )
         }
     }
@@ -153,6 +168,7 @@ private fun DashboardTopBarScrolledPreview() {
                 selectedSort = DashboardSort.LATEST,
                 onSortSelected = {},
                 onTitleClick = {},
+                onNotificationsClick = {},
             )
         }
     }

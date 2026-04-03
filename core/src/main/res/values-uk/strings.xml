@@ -153,6 +153,11 @@
     <!-- Notifications -->
     <string name="notification_friend_request_body">надіслав вам запит у друзі</string>
     <string name="notification_friend_accepted_body">прийняв ваш запит у друзі</string>
+    <string name="notification_group_today">Сьогодні</string>
+    <string name="notification_group_yesterday">Вчора</string>
+    <string name="notification_group_last_7_days">Останні 7 днів</string>
+    <string name="notification_group_last_30_days">Останні 30 днів</string>
+    <string name="notification_group_earlier">Раніше</string>
 
     <!-- Friendship Action -->
     <string name="friendship_action_add">Додати в друзі</string>

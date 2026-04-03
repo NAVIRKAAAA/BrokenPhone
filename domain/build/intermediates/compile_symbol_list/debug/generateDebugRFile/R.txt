@@ -6,7 +6,13 @@ int string dashboard_sort_latest 0x0
 int string dashboard_sort_longest_chain 0x0
 int string language_english 0x0
 int string language_ukrainian 0x0
-int string notifications_type_chain_completed 0x0
+int string notification_filter_all 0x0
+int string notification_filter_chain 0x0
+int string notification_filter_friends 0x0
+int string notification_filter_news 0x0
+int string notification_filter_unread 0x0
+int string notifications_type_chain 0x0
+int string notifications_type_friends 0x0
 int string notifications_type_news 0x0
 int string report_post_bottom_sheet_offensive_content 0x0
 int string report_post_bottom_sheet_other 0x0

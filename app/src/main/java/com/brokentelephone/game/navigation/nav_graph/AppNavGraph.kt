@@ -38,6 +38,7 @@ import com.brokentelephone.game.features.edit_username.EditUsernameScreen
 import com.brokentelephone.game.features.forgot_password.ForgotPasswordScreen
 import com.brokentelephone.game.features.friends.FriendsScreen
 import com.brokentelephone.game.features.language.LanguageScreen
+import com.brokentelephone.game.features.notifications.NotificationSettingsScreen
 import com.brokentelephone.game.features.notifications.NotificationsScreen
 import com.brokentelephone.game.features.post_details.PostDetailsScreen
 import com.brokentelephone.game.features.post_details.PostDetailsViewModel
@@ -324,6 +325,9 @@ fun AppNavGraph(
                     },
                     onUserClick = { userId ->
                         navController.navigateSingle(Routes.UserDetails(userId = userId))
+                    },
+                    onNotificationsClick = {
+                        navController.navigateSingle(Routes.Notifications)
                     }
                 )
             }
@@ -660,7 +664,7 @@ fun AppNavGraph(
                 },
                 exitTransition = {
                     val route = targetState.destination.route
-                    if (route?.contains("AccountSettings") == true || route?.contains("Notifications") == true || route?.contains(
+                    if (route?.contains("AccountSettings") == true || route?.contains("NotificationSettings") == true || route?.contains(
                             "Language"
                         ) == true || route?.contains("Theme") == true || route?.contains("BlockedUsers") == true
                     ) {
@@ -674,7 +678,7 @@ fun AppNavGraph(
                 },
                 popEnterTransition = {
                     val route = initialState.destination.route
-                    if (route?.contains("AccountSettings") == true || route?.contains("Notifications") == true || route?.contains(
+                    if (route?.contains("AccountSettings") == true || route?.contains("NotificationSettings") == true || route?.contains(
                             "Language"
                         ) == true || route?.contains("Theme") == true || route?.contains("BlockedUsers") == true
                     ) {
@@ -704,7 +708,7 @@ fun AppNavGraph(
                         navController.navigateSingle(Routes.AccountSettings)
                     },
                     onNotificationsClick = {
-                        navController.navigateSingle(Routes.Notifications)
+                        navController.navigateSingle(Routes.NotificationSettings)
                     },
                     onLanguageClick = {
                         navController.navigateSingle(Routes.Language)
@@ -831,6 +835,27 @@ fun AppNavGraph(
 
             composable<Routes.Notifications>(
                 enterTransition = {
+                    slideInVertically(
+                        initialOffsetY = { it },
+                        animationSpec = tween(300)
+                    )
+                },
+                exitTransition = { ExitTransition.None },
+                popEnterTransition = { EnterTransition.None },
+                popExitTransition = {
+                    slideOutVertically(
+                        targetOffsetY = { it },
+                        animationSpec = tween(300)
+                    ) + fadeOut(animationSpec = tween(200))
+                }
+            ) {
+                NotificationsScreen(
+                    onBackClick = navController::safePopBackStack,
+                )
+            }
+
+            composable<Routes.NotificationSettings>(
+                enterTransition = {
                     slideInHorizontally(
                         initialOffsetX = { it },
                         animationSpec = tween(250)
@@ -843,7 +868,7 @@ fun AppNavGraph(
                     ) + fadeOut(animationSpec = tween(200))
                 }
             ) {
-                NotificationsScreen(
+                NotificationSettingsScreen(
                     onBackClick = navController::safePopBackStack,
                 )
             }

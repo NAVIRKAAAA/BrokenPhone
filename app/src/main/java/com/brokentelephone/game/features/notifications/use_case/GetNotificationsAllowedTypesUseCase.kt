@@ -5,7 +5,7 @@ import com.brokentelephone.game.domain.user.UserSession
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class GetNotificationsUseCase(
+class GetNotificationsAllowedTypesUseCase(
     private val userSession: UserSession,
 ) {
     operator fun invoke(): Flow<List<NotificationType>> {

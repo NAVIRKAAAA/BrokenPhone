@@ -2,6 +2,7 @@ package com.brokentelephone.game.features.notifications.content
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,21 +29,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
+import com.brokentelephone.game.core.model.notification.NotificationUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.utils.rememberRelativeTime
-import com.brokentelephone.game.features.notifications.model.NotificationUi
 
 @Composable
 fun ChainNotificationItem(
-    item: NotificationUi.Chain,
+    item: NotificationUi.ChainCompleted,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val timestamp = rememberRelativeTime(item.timestamp)
+    val timestamp = rememberRelativeTime(item.createdAt)
 
     Row(
         modifier = modifier
-            .clickable(onClick = onClick)
+            .clickable(
+                onClick = onClick,
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+            )
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -111,20 +117,22 @@ fun ChainNotificationItem(
     }
 }
 
-private val previewUnread = NotificationUi.Chain(
+private val previewUnread = NotificationUi.ChainCompleted(
     id = "1",
-    timestamp = System.currentTimeMillis() - 10 * 60 * 1000L,
+    createdAt = System.currentTimeMillis() - 10 * 60 * 1000L,
     isRead = false,
     chainId = "c1",
+    postId = "p1",
     title = "Your chain is complete!",
     body = "Someone finished the chain you started. Tap to see the result.",
 )
 
-private val previewRead = NotificationUi.Chain(
+private val previewRead = NotificationUi.ChainCompleted(
     id = "2",
-    timestamp = System.currentTimeMillis() - 3 * 60 * 60 * 1000L,
+    createdAt = System.currentTimeMillis() - 3 * 60 * 60 * 1000L,
     isRead = true,
     chainId = "c2",
+    postId = "p2",
     title = "New step in your chain",
     body = "A player added a drawing to your chain.",
 )

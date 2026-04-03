@@ -21,11 +21,11 @@ import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.core.top_bar.EditProfileTopBar
 import com.brokentelephone.game.domain.model.settings.NotificationType
 import com.brokentelephone.game.features.edit_profile.content.AccountTextInfoItem
-import com.brokentelephone.game.features.notifications.model.NotificationsState
+import com.brokentelephone.game.features.notifications.model.NotificationSettingsState
 
 @Composable
-fun NotificationsContent(
-    state: NotificationsState,
+fun NotificationSettingsContent(
+    state: NotificationSettingsState,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
     onNotificationPermissionClick: () -> Unit = {},
@@ -75,10 +75,10 @@ fun NotificationsContent(
 
 @Preview
 @Composable
-fun NotificationsContentPreview() {
+fun NotificationSettingsContentPreview() {
     BrokenTelephoneTheme(
         darkTheme = true
     ) {
-        NotificationsContent(state = NotificationsState())
+        NotificationSettingsContent(state = NotificationSettingsState())
     }
 }

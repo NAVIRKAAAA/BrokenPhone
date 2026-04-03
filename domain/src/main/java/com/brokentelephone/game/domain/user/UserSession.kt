@@ -1,5 +1,6 @@
 package com.brokentelephone.game.domain.user
 
+import com.brokentelephone.game.domain.model.settings.Language
 import com.brokentelephone.game.domain.model.settings.NotificationType
 import kotlinx.coroutines.flow.Flow
 
@@ -15,6 +16,7 @@ interface UserSession {
     suspend fun blockUser(userId: String)
     suspend fun unblockUser(userId: String)
     suspend fun updateNotifications(notifications: List<NotificationType>)
+    suspend fun updateLanguage(language: Language)
     suspend fun signOut()
     suspend fun deleteAccount()
     suspend fun getBlockedUsers(): List<BlockedUser>

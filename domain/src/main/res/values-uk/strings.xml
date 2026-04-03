@@ -10,6 +10,11 @@
     <string name="notifications_type_news">Новини</string>
     <string name="notifications_type_chain">Ланцюжок</string>
     <string name="notifications_type_friends">Друзі</string>
+    <string name="notification_filter_all">Всі</string>
+    <string name="notification_filter_unread">Непрочитані</string>
+    <string name="notification_filter_news">Новини</string>
+    <string name="notification_filter_friends">Друзі</string>
+    <string name="notification_filter_chain">Ланцюжок</string>
 
     <string name="dashboard_sort_almost_done">Майже готово</string>
     <string name="dashboard_sort_latest">Останні</string>

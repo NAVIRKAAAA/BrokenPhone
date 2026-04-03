@@ -34,7 +34,9 @@ fun CreatePostTopBar(
 ) {
 
     Row(
-        modifier = modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 8.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp, horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

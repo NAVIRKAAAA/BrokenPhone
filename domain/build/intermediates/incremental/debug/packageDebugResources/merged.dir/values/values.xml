@@ -8,7 +8,13 @@
     <string name="dashboard_sort_longest_chain">Longest Chain</string>
     <string name="language_english">English</string>
     <string name="language_ukrainian">Українська</string>
-    <string name="notifications_type_chain_completed">Chain Completed</string>
+    <string name="notification_filter_all">All</string>
+    <string name="notification_filter_chain">Chain</string>
+    <string name="notification_filter_friends">Friends</string>
+    <string name="notification_filter_news">News</string>
+    <string name="notification_filter_unread">Unread</string>
+    <string name="notifications_type_chain">Chain</string>
+    <string name="notifications_type_friends">Friends</string>
     <string name="notifications_type_news">News</string>
     <string name="report_post_bottom_sheet_offensive_content">Offensive content</string>
     <string name="report_post_bottom_sheet_other">Other</string>

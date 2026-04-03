@@ -8,6 +8,7 @@ import com.brokentelephone.game.data.repository.AuthRepositoryImpl
 import com.brokentelephone.game.data.repository.FriendsRepositoryImpl
 import com.brokentelephone.game.data.repository.GameSessionRepositoryImpl
 import com.brokentelephone.game.data.repository.MockAppInfoRepositoryImpl
+import com.brokentelephone.game.data.repository.NotificationsRepositoryImpl
 import com.brokentelephone.game.data.repository.PostsRepositoryImpl
 import com.brokentelephone.game.data.repository.ReportsRepositoryImpl
 import com.brokentelephone.game.data.repository.UserSettingsRepositoryImpl
@@ -21,6 +22,7 @@ import com.brokentelephone.game.domain.repository.AppInfoRepository
 import com.brokentelephone.game.domain.repository.AuthRepository
 import com.brokentelephone.game.domain.repository.FriendsRepository
 import com.brokentelephone.game.domain.repository.GameSessionRepository
+import com.brokentelephone.game.domain.repository.NotificationsRepository
 import com.brokentelephone.game.domain.repository.PostRepository
 import com.brokentelephone.game.domain.repository.ReportsRepository
 import com.brokentelephone.game.domain.repository.UserSettingsRepository
@@ -73,10 +75,10 @@ import com.brokentelephone.game.features.edit_profile.EditProfileViewModel
 import com.brokentelephone.game.features.edit_username.EditUsernameViewModel
 import com.brokentelephone.game.features.edit_username.use_case.UpdateUsernameUseCase
 import com.brokentelephone.game.features.language.LanguageViewModel
-import com.brokentelephone.game.features.language.use_case.InitializeLanguageUseCase
+import com.brokentelephone.game.features.language.use_case.SetupFirstAppLaunchUseCase
 import com.brokentelephone.game.features.language.use_case.UpdateLanguageUseCase
-import com.brokentelephone.game.features.notifications.NotificationsViewModel
-import com.brokentelephone.game.features.notifications.use_case.GetNotificationsUseCase
+import com.brokentelephone.game.features.notifications.NotificationSettingsViewModel
+import com.brokentelephone.game.features.notifications.use_case.GetNotificationsAllowedTypesUseCase
 import com.brokentelephone.game.features.notifications.use_case.UpdateNotificationsUseCase
 import com.brokentelephone.game.features.post_details.PostDetailsViewModel
 import com.brokentelephone.game.features.post_details.use_case.GetPostByIdUseCase
@@ -128,6 +130,7 @@ val appModule = module {
     single<UserSettingsRepository> { UserSettingsRepositoryImpl(androidContext()) }
     single<UsersRepository> { UsersRepositoryImpl(get()) }
     single<FriendsRepository> { FriendsRepositoryImpl(get()) }
+    single<NotificationsRepository> { NotificationsRepositoryImpl(get()) }
 
     single { DrawingBitmapSaver(androidContext()) }
     factoryOf(::CountdownTimer)
@@ -186,11 +189,11 @@ val appModule = module {
     factoryOf(::GetPrivacyPolicyLinkUseCase)
     factoryOf(::GetLanguageUseCase)
     factoryOf(::GetThemeUseCase)
-    factoryOf(::GetNotificationsUseCase)
+    factoryOf(::GetNotificationsAllowedTypesUseCase)
     factoryOf(::UpdateNotificationsUseCase)
-    viewModelOf(::NotificationsViewModel)
+    viewModelOf(::NotificationSettingsViewModel)
     factoryOf(::UpdateLanguageUseCase)
-    factoryOf(::InitializeLanguageUseCase)
+    factoryOf(::SetupFirstAppLaunchUseCase)
     viewModelOf(::LanguageViewModel)
     factoryOf(::UpdateThemeUseCase)
     viewModelOf(::ThemeViewModel)

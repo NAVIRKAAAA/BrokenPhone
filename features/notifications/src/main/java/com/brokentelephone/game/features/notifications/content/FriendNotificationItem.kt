@@ -2,6 +2,7 @@ package com.brokentelephone.game.features.notifications.content
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,10 +32,10 @@ import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.avatar.AvatarComponent
 import com.brokentelephone.game.core.button.WelcomeButton
+import com.brokentelephone.game.core.model.notification.NotificationUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.utils.rememberRelativeTime
-import com.brokentelephone.game.features.notifications.model.FriendNotificationType
-import com.brokentelephone.game.features.notifications.model.NotificationUi
+import com.brokentelephone.game.domain.model.notification.NotificationData
 
 @Composable
 fun FriendNotificationItem(
@@ -43,11 +45,15 @@ fun FriendNotificationItem(
     onDeclineClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val timestamp = rememberRelativeTime(item.timestamp)
+    val timestamp = rememberRelativeTime(item.createdAt)
 
     Row(
         modifier = modifier
-            .clickable(onClick = onClick)
+            .clickable(
+                onClick = onClick,
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+            )
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.Top,
     ) {
@@ -82,7 +88,12 @@ fun FriendNotificationItem(
                         }
                         append(" ")
                         withStyle(SpanStyle(fontFamily = FontFamily(Font(R.font.nunito_regular)))) {
-                            append(stringResource(item.type.textResId))
+                            append(stringResource(
+                                if (item.type == NotificationData.FriendsType.INVITE_RECEIVED)
+                                    R.string.notification_friend_request_body
+                                else
+                                    R.string.notification_friend_accepted_body
+                            ))
                         }
                     },
                     fontSize = 15.sp,
@@ -102,7 +113,7 @@ fun FriendNotificationItem(
                 )
             }
 
-            if (item.type == FriendNotificationType.INVITE_RECEIVED) {
+            if (item.type == NotificationData.FriendsType.INVITE_RECEIVED) {
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Row {
@@ -113,7 +124,7 @@ fun FriendNotificationItem(
                         containerColor = MaterialTheme.colorScheme.surfaceVariant,
                         modifier = Modifier
                             .weight(1f)
-                            .height(48.dp),
+                            .height(36.dp),
                     )
 
                     Spacer(modifier = Modifier.width(8.dp))
@@ -125,7 +136,7 @@ fun FriendNotificationItem(
                         containerColor = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .weight(1f)
-                            .height(48.dp),
+                            .height(36.dp),
                     )
                 }
             }
@@ -135,22 +146,24 @@ fun FriendNotificationItem(
 
 private val previewUnread = NotificationUi.Friends(
     id = "1",
-    timestamp = System.currentTimeMillis() - 5 * 60 * 1000L,
+    createdAt = System.currentTimeMillis() - 5 * 60 * 1000L,
     isRead = false,
+    requestId = "req_1",
     userId = "u1",
     username = "alex_doe",
     userAvatarUrl = null,
-    type = FriendNotificationType.INVITE_RECEIVED,
+    type = NotificationData.FriendsType.INVITE_RECEIVED,
 )
 
 private val previewRead = NotificationUi.Friends(
     id = "2",
-    timestamp = System.currentTimeMillis() - 2 * 60 * 60 * 1000L,
+    createdAt = System.currentTimeMillis() - 2 * 60 * 60 * 1000L,
     isRead = true,
+    requestId = "req_2",
     userId = "u2",
     username = "alexander_the_great",
     userAvatarUrl = null,
-    type = FriendNotificationType.INVITE_ACCEPTED,
+    type = NotificationData.FriendsType.INVITE_ACCEPTED,
 )
 
 @Preview(showBackground = true)

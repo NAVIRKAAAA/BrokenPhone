@@ -2,6 +2,7 @@ package com.brokentelephone.game.features.notifications.content
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,9 +28,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
+import com.brokentelephone.game.core.model.notification.NotificationUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.utils.rememberRelativeTime
-import com.brokentelephone.game.features.notifications.model.NotificationUi
 
 @Composable
 fun NewsNotificationItem(
@@ -36,11 +38,15 @@ fun NewsNotificationItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val timestamp = rememberRelativeTime(item.timestamp)
+    val timestamp = rememberRelativeTime(item.createdAt)
 
     Row(
         modifier = modifier
-            .clickable(onClick = onClick)
+            .clickable(
+                onClick = onClick,
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+            )
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -114,7 +120,7 @@ private val previewUnread = NotificationUi.News(
     id = "1",
     title = "New feature dropped",
     body = "You can now use 3 new brush types in the drawing screen.",
-    timestamp = System.currentTimeMillis() - 2 * 60 * 60 * 1000L,
+    createdAt =System.currentTimeMillis() - 2 * 60 * 60 * 1000L,
     isRead = false,
 )
 
@@ -122,7 +128,7 @@ private val previewRead = NotificationUi.News(
     id = "2",
     title = "App update available",
     body = "Version 2.1 brings performance improvements and bug fixes.",
-    timestamp = System.currentTimeMillis() - 24 * 60 * 60 * 1000L,
+    createdAt =System.currentTimeMillis() - 24 * 60 * 60 * 1000L,
     isRead = true,
 )
 
@@ -130,7 +136,7 @@ private val previewLongBody = NotificationUi.News(
     id = "3",
     title = "Big announcement",
     body = "We have some exciting news to share with the community. Stay tuned for more details coming very soon!",
-    timestamp = System.currentTimeMillis() - 3 * 24 * 60 * 60 * 1000L,
+    createdAt =System.currentTimeMillis() - 3 * 24 * 60 * 60 * 1000L,
     isRead = false,
 )
 

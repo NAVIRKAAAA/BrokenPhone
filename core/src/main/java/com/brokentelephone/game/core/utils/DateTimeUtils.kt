@@ -32,7 +32,13 @@ fun rememberRelativeTime(timestamp: Long): String {
             val hours = minutes / 60
             val days = hours / 24
 
-            val formatter = RelativeDateTimeFormatter.getInstance(locale)
+            val uLocale = android.icu.util.ULocale.forLocale(locale)
+            val formatter = RelativeDateTimeFormatter.getInstance(
+                uLocale,
+                null,
+                RelativeDateTimeFormatter.Style.SHORT,
+                android.icu.text.DisplayContext.CAPITALIZATION_FOR_STANDALONE,
+            )
 
             when {
                 seconds < 60 ->

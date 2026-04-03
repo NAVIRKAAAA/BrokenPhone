@@ -8,7 +8,13 @@ string dashboard_sort_latest
 string dashboard_sort_longest_chain
 string language_english
 string language_ukrainian
-string notifications_type_chain_completed
+string notification_filter_all
+string notification_filter_chain
+string notification_filter_friends
+string notification_filter_news
+string notification_filter_unread
+string notifications_type_chain
+string notifications_type_friends
 string notifications_type_news
 string report_post_bottom_sheet_offensive_content
 string report_post_bottom_sheet_other

@@ -20,15 +20,15 @@ import com.brokentelephone.game.core.dialog.ConfirmDialog
 import com.brokentelephone.game.core.utils.findActivity
 import com.brokentelephone.game.core.utils.isPostNotificationsGranted
 import com.brokentelephone.game.core.utils.openNotificationSettings
-import com.brokentelephone.game.features.notifications.content.NotificationsContent
-import com.brokentelephone.game.features.notifications.model.NotificationsSideEffect
+import com.brokentelephone.game.features.notifications.content.NotificationSettingsContent
+import com.brokentelephone.game.features.notifications.model.NotificationSettingsSideEffect
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun NotificationsScreen(
+fun NotificationSettingsScreen(
     onBackClick: () -> Unit = {},
     modifier: Modifier = Modifier,
-    viewModel: NotificationsViewModel = koinViewModel(),
+    viewModel: NotificationSettingsViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -46,21 +46,21 @@ fun NotificationsScreen(
     LaunchedEffect(Unit) {
         viewModel.sideEffects.collect { effect ->
             when (effect) {
-                NotificationsSideEffect.RequestPermission -> {
+                NotificationSettingsSideEffect.RequestPermission -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                     } else {
                         context.openNotificationSettings()
                     }
                 }
-                NotificationsSideEffect.OpenNotificationSettings -> {
+                NotificationSettingsSideEffect.OpenNotificationSettings -> {
                     context.openNotificationSettings()
                 }
             }
         }
     }
 
-    NotificationsContent(
+    NotificationSettingsContent(
         state = state,
         onBackClick = onBackClick,
         onNotificationPermissionClick = {

@@ -12,6 +12,11 @@
     <string name="notifications_type_news">News</string>
     <string name="notifications_type_chain">Chain</string>
     <string name="notifications_type_friends">Friends</string>
+    <string name="notification_filter_all">All</string>
+    <string name="notification_filter_unread">Unread</string>
+    <string name="notification_filter_news">News</string>
+    <string name="notification_filter_friends">Friends</string>
+    <string name="notification_filter_chain">Chain</string>
 
     <!-- Dashboard Sort -->
     <string name="dashboard_sort_latest">Latest</string>

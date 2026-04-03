@@ -15,7 +15,7 @@ import com.brokentelephone.game.essentials.exceptions.auth.SessionDataException
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.app_preferences.use_case.GetLanguageUseCase
 import com.brokentelephone.game.features.app_preferences.use_case.GetThemeUseCase
-import com.brokentelephone.game.features.language.use_case.InitializeLanguageUseCase
+import com.brokentelephone.game.features.language.use_case.SetupFirstAppLaunchUseCase
 import com.brokentelephone.game.features.post_details.use_case.GetPostByIdUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailChangeUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
@@ -38,7 +38,7 @@ import kotlinx.coroutines.launch
 class MainViewModel(
     private val getThemeUseCase: GetThemeUseCase,
     private val getLanguageUseCase: GetLanguageUseCase,
-    private val initializeLanguageUseCase: InitializeLanguageUseCase,
+    private val setupFirstAppLaunchUseCase: SetupFirstAppLaunchUseCase,
     private val initializeSessionUseCase: InitializeSessionUseCase,
     private val getActiveSessionUseCase: GetActiveSessionUseCase,
     private val getPostByIdUseCase: GetPostByIdUseCase,
@@ -60,6 +60,13 @@ class MainViewModel(
         observeTheme()
         observeLanguage()
         initializeSession()
+        setupFirstLaunch()
+    }
+
+    private fun setupFirstLaunch() {
+        viewModelScope.launch {
+            setupFirstAppLaunchUseCase.execute()
+        }
     }
 
     private fun observeTheme() {
@@ -187,12 +194,6 @@ class MainViewModel(
 
     fun onPendingRoutesConsumed() {
         _state.update { it.copy(pendingRoutes = emptyList()) }
-    }
-
-    fun initializeDefaultLanguage(deviceLanguageTag: String) {
-        viewModelScope.launch {
-            initializeLanguageUseCase(deviceLanguageTag)
-        }
     }
 
     fun handleAuthLink(uri: Uri) {

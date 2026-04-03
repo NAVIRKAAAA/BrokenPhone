@@ -1,5 +1,6 @@
 package com.brokentelephone.game.domain.user
 
+import com.brokentelephone.game.domain.model.settings.Language
 import com.brokentelephone.game.domain.model.settings.NotificationType
 
 data class User(
@@ -19,6 +20,7 @@ data class User(
     val notInterestedPostIds: List<String> = emptyList(),
     val sessionId: String? = null,
     val isEmailVerified: Boolean = false,
+    val language: Language = Language.ENGLISH,
 ) {
 
     fun toMap(): Map<String, Any?> = mapOf(
@@ -38,6 +40,7 @@ data class User(
         FIELD_NOT_INTERESTED_POST_IDS to notInterestedPostIds,
         FIELD_SESSION_ID to sessionId,
         FIELD_IS_EMAIL_VERIFIED to isEmailVerified,
+        FIELD_LANGUAGE to language.name,
     )
 
     companion object {
@@ -57,6 +60,7 @@ data class User(
         const val FIELD_NOT_INTERESTED_POST_IDS = "notInterestedPostIds"
         const val FIELD_SESSION_ID = "sessionId"
         const val FIELD_IS_EMAIL_VERIFIED = "isEmailVerified"
+        const val FIELD_LANGUAGE = "language"
 
         @Suppress("UNCHECKED_CAST")
         fun fromMap(map: Map<String, Any?>): User? {
@@ -82,6 +86,9 @@ data class User(
                     notInterestedPostIds = (map[FIELD_NOT_INTERESTED_POST_IDS] as? List<String>) ?: emptyList(),
                     sessionId = map[FIELD_SESSION_ID] as? String,
                     isEmailVerified = map[FIELD_IS_EMAIL_VERIFIED] as? Boolean ?: false,
+                    language = runCatching {
+                        Language.valueOf(map[FIELD_LANGUAGE] as? String ?: "")
+                    }.getOrDefault(Language.ENGLISH),
                 )
             } catch (_: Exception) {
                 null

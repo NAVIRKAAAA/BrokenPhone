@@ -2,7 +2,6 @@ package com.brokentelephone.game.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -39,7 +38,6 @@ import com.brokentelephone.game.navigation.utils.navigateSingle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
@@ -53,13 +51,12 @@ class MainActivity : AppCompatActivity() {
 
         enableEdgeToEdge()
 
-        mainViewModel.initializeDefaultLanguage(Locale.getDefault().language)
         intent.data?.let { mainViewModel.handleAuthLink(it) }
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
 //        lifecycleScope.launch(Dispatchers.IO) {
-//            FirestoreTestDataSeeder(FirebaseFirestore.getInstance()).seedFriends()
+//            FirestoreTestDataSeeder(FirebaseFirestore.getInstance()).seedNotifications()
 //        }
 
         setContent {
@@ -169,7 +166,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        Log.d("LOG_TAG", "onNewIntent()")
         intent.data?.let { mainViewModel.handleAuthLink(it) }
     }
 }

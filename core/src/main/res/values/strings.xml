@@ -234,6 +234,11 @@
     <!-- Notifications -->
     <string name="notification_friend_request_body">sent you a friend request</string>
     <string name="notification_friend_accepted_body">accepted your friend request</string>
+    <string name="notification_group_today">Today</string>
+    <string name="notification_group_yesterday">Yesterday</string>
+    <string name="notification_group_last_7_days">Last 7 days</string>
+    <string name="notification_group_last_30_days">Last 30 days</string>
+    <string name="notification_group_earlier">Earlier</string>
 
     <!-- Friendship Action -->
     <string name="friendship_action_add">Add Friend</string>

@@ -1,5 +1,6 @@
 package com.brokentelephone.game.core.model.user
 
+import com.brokentelephone.game.domain.model.settings.Language
 import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.domain.user.User
 
@@ -15,6 +16,7 @@ data class UserUi(
     val friendIds: List<String> = listOf(),
     val blockedUsersIds: List<String> = listOf(),
     val isEmailVerified: Boolean = false,
+    val language: Language = Language.ENGLISH,
 )
 
 fun User.toUi() = UserUi(
@@ -29,4 +31,5 @@ fun User.toUi() = UserUi(
     friendIds = friendIds,
     blockedUsersIds = blockedUserIds,
     isEmailVerified = isEmailVerified,
+    language = language,
 )

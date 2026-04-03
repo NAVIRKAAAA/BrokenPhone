@@ -2,6 +2,7 @@ package com.brokentelephone.game.data.session
 
 import android.util.Log
 import com.brokentelephone.game.data.ext.toAuthProvider
+import com.brokentelephone.game.domain.model.settings.Language
 import com.brokentelephone.game.domain.model.settings.NotificationType
 import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.domain.user.AuthState
@@ -26,6 +27,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.util.Locale
 
 class UserSessionImpl(
     private val firebaseAuth: FirebaseAuth,
@@ -87,6 +89,7 @@ class UserSessionImpl(
                     scope.launch { syncEmailIfNeeded(uid, user.email) }
                     scope.launch { syncAuthProviderIfNeeded(uid, user.authProvider) }
                     scope.launch { syncIsEmailVerifiedIfNeeded(uid, user.isEmailVerified) }
+                    scope.launch { syncAppLanguageIfNeeded(uid, user.language) }
                 }
             }
     }
@@ -98,6 +101,20 @@ class UserSessionImpl(
             firestore.collection(COLLECTION_USERS)
                 .document(uid)
                 .update(User.FIELD_IS_EMAIL_VERIFIED, authIsEmailVerified)
+                .await()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // best-effort sync, ignore failures
+        }
+    }
+
+    private suspend fun syncAppLanguageIfNeeded(uid: String, firestoreLanguage: Language) {
+        val deviceLanguage = if (Locale.getDefault().language.startsWith("uk")) Language.UKRAINIAN else Language.ENGLISH
+        if (deviceLanguage == firestoreLanguage) return
+        try {
+            firestore.collection(COLLECTION_USERS)
+                .document(uid)
+                .update(User.FIELD_LANGUAGE, deviceLanguage.name)
                 .await()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -285,6 +302,25 @@ class UserSessionImpl(
         }
     }
     override suspend fun updateNotifications(notifications: List<NotificationType>) = Unit
+
+    override suspend fun updateLanguage(language: Language) {
+        val uid = firebaseAuth.currentUser?.uid ?: throw UnauthorizedException()
+        try {
+            firestore.collection(COLLECTION_USERS)
+                .document(uid)
+                .update(
+                    User.FIELD_LANGUAGE,
+                    language.name,
+                    User.FIELD_UPDATED_AT,
+                    System.currentTimeMillis()
+                )
+                .await()
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
     override suspend fun signOut() = firebaseAuth.signOut()
     override suspend fun deleteAccount() = Unit
 

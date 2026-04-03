@@ -71,6 +71,9 @@ sealed class Routes {
     data object Notifications : Routes()
 
     @Serializable
+    data object NotificationSettings : Routes()
+
+    @Serializable
     data object Language : Routes()
 
     @Serializable
