@@ -18,4 +18,5 @@ data class DashboardState(
     val isBlockDialogVisible: Boolean = false,
     val isBlockLoading: Boolean = false,
     val globalError: String? = null,
+    val unreadNotificationsCount: Int = 0,
 )

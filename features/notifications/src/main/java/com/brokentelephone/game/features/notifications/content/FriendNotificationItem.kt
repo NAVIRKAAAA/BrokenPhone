@@ -1,5 +1,6 @@
 package com.brokentelephone.game.features.notifications.content
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -83,17 +84,17 @@ fun FriendNotificationItem(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = buildAnnotatedString {
-                        withStyle(SpanStyle(fontFamily = FontFamily(Font(R.font.nunito_bold)))) {
-                            append(item.username)
-                        }
-                        append(" ")
-                        withStyle(SpanStyle(fontFamily = FontFamily(Font(R.font.nunito_regular)))) {
-                            append(stringResource(
-                                if (item.type == NotificationData.FriendsType.INVITE_RECEIVED)
-                                    R.string.notification_friend_request_body
-                                else
-                                    R.string.notification_friend_accepted_body
-                            ))
+                        val bodyText = stringResource(item.type.bodyResId())
+                        val bold = SpanStyle(fontFamily = FontFamily(Font(R.font.nunito_bold)))
+                        val regular = SpanStyle(fontFamily = FontFamily(Font(R.font.nunito_regular)))
+                        if (item.type.isActionFirst()) {
+                            withStyle(regular) { append(bodyText) }
+                            append(" ")
+                            withStyle(bold) { append(item.username) }
+                        } else {
+                            withStyle(bold) { append(item.username) }
+                            append(" ")
+                            withStyle(regular) { append(bodyText) }
                         }
                     },
                     fontSize = 15.sp,
@@ -144,6 +145,20 @@ fun FriendNotificationItem(
     }
 }
 
+@StringRes
+private fun NotificationData.FriendsType.bodyResId(): Int = when (this) {
+    NotificationData.FriendsType.INVITE_RECEIVED -> R.string.notification_friend_request_body
+    NotificationData.FriendsType.INVITE_ACCEPTED -> R.string.notification_friend_accepted_body
+    NotificationData.FriendsType.INVITE_ACCEPTED_BY_ME -> R.string.notification_friend_accepted_by_me_body
+    NotificationData.FriendsType.INVITE_DECLINED_BY_ME -> R.string.notification_friend_declined_by_me_body
+}
+
+private fun NotificationData.FriendsType.isActionFirst(): Boolean = when (this) {
+    NotificationData.FriendsType.INVITE_ACCEPTED_BY_ME,
+    NotificationData.FriendsType.INVITE_DECLINED_BY_ME -> true
+    else -> false
+}
+
 private val previewUnread = NotificationUi.Friends(
     id = "1",
     createdAt = System.currentTimeMillis() - 5 * 60 * 1000L,
@@ -164,6 +179,28 @@ private val previewRead = NotificationUi.Friends(
     username = "alexander_the_great",
     userAvatarUrl = null,
     type = NotificationData.FriendsType.INVITE_ACCEPTED,
+)
+
+private val previewAcceptedByMe = NotificationUi.Friends(
+    id = "3",
+    createdAt = System.currentTimeMillis() - 30 * 60 * 1000L,
+    isRead = true,
+    requestId = "req_3",
+    userId = "u3",
+    username = "maria_k",
+    userAvatarUrl = null,
+    type = NotificationData.FriendsType.INVITE_ACCEPTED_BY_ME,
+)
+
+private val previewDeclinedByMe = NotificationUi.Friends(
+    id = "4",
+    createdAt = System.currentTimeMillis() - 3 * 60 * 60 * 1000L,
+    isRead = true,
+    requestId = "req_4",
+    userId = "u4",
+    username = "john_doe",
+    userAvatarUrl = null,
+    type = NotificationData.FriendsType.INVITE_DECLINED_BY_ME,
 )
 
 @Preview(showBackground = true)
@@ -209,6 +246,40 @@ private fun FriendNotificationItemLightPreview() {
             .fillMaxWidth()) {
             FriendNotificationItem(
                 item = previewUnread,
+                onClick = {},
+                onAcceptClick = {},
+                onDeclineClick = {},
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun FriendNotificationItemAcceptedByMePreview() {
+    BrokenTelephoneTheme(darkTheme = true) {
+        Box(modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxWidth()) {
+            FriendNotificationItem(
+                item = previewAcceptedByMe,
+                onClick = {},
+                onAcceptClick = {},
+                onDeclineClick = {},
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun FriendNotificationItemDeclinedByMePreview() {
+    BrokenTelephoneTheme(darkTheme = true) {
+        Box(modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxWidth()) {
+            FriendNotificationItem(
+                item = previewDeclinedByMe,
                 onClick = {},
                 onAcceptClick = {},
                 onDeclineClick = {},

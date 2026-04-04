@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -36,6 +38,7 @@ fun NotificationsContent(
     onDeclineFriendClick: (NotificationUi.Friends) -> Unit,
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
+    listState: LazyListState = rememberLazyListState(),
 ) {
     Column(
         modifier = modifier
@@ -71,8 +74,8 @@ fun NotificationsContent(
                 emptyContent = {},
                 shimmerContent = { NotificationsShimmerList() },
                 content = {
-                    LazyColumn(modifier = Modifier.fillMaxSize()) {
-                        item(key = "filter_row") {
+                    LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
+                        stickyHeader(key = "filter_row") {
                             NotificationsFilterRow(
                                 selectedFilter = state.selectedFilter,
                                 onFilterSelected = onFilterSelected,
@@ -80,7 +83,7 @@ fun NotificationsContent(
                         }
 
                         state.groupedNotifications.forEach { (group, notifications) ->
-                            stickyHeader(key = group.name) {
+                            item(key = group.name) {
                                 NotificationsDateHeader(group = group)
                             }
                             items(

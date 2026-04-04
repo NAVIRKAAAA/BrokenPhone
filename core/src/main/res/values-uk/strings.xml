@@ -153,6 +153,8 @@
     <!-- Notifications -->
     <string name="notification_friend_request_body">надіслав вам запит у друзі</string>
     <string name="notification_friend_accepted_body">прийняв ваш запит у друзі</string>
+    <string name="notification_friend_accepted_by_me_body">Ви прийняли запит у друзі від</string>
+    <string name="notification_friend_declined_by_me_body">Ви відхилили запит у друзі від</string>
     <string name="notification_group_today">Сьогодні</string>
     <string name="notification_group_yesterday">Вчора</string>
     <string name="notification_group_last_7_days">Останні 7 днів</string>

@@ -34,6 +34,7 @@ import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.domain.use_case.GetPostLinkByIdUseCase
 import com.brokentelephone.game.domain.use_case.GetPrivacyPolicyLinkUseCase
 import com.brokentelephone.game.domain.use_case.GetTermsOfServiceLinkUseCase
+import com.brokentelephone.game.domain.use_case.GetUnreadNotificationsCountUseCase
 import com.brokentelephone.game.domain.use_case.GetUserContributionsUseCase
 import com.brokentelephone.game.domain.use_case.GetUserPostsUseCase
 import com.brokentelephone.game.domain.use_case.GetUsersByIdsUseCase
@@ -151,6 +152,7 @@ val appModule = module {
     factoryOf(::SignInWithEmailPasswordUseCase)
     factoryOf(::SignInWithGoogleUseCase)
     factoryOf(::GetCurrentUserUseCase)
+    factoryOf(::GetUnreadNotificationsCountUseCase)
     factoryOf(::GetUsersByIdsUseCase)
     factoryOf(::UpdateUsernameUseCase)
     factoryOf(::UpdateAvatarUseCase)

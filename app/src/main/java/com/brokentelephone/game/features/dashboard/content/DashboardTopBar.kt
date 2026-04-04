@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -44,6 +46,7 @@ fun DashboardTopBar(
     onTitleClick: () -> Unit,
     onNotificationsClick: () -> Unit,
     modifier: Modifier = Modifier,
+    unreadNotificationsCount: Int = 0,
 ) {
     var isSortMenuVisible by remember { mutableStateOf(false) }
 
@@ -132,11 +135,19 @@ fun DashboardTopBar(
             }
 
             IconButton(onClick = onNotificationsClick) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_notifications),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground,
-                )
+                BadgedBox(
+                    badge = {
+                        if (unreadNotificationsCount > 0) {
+                            Badge()
+                        }
+                    }
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_notifications),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
             }
         }
     }
@@ -145,7 +156,7 @@ fun DashboardTopBar(
 @Preview
 @Composable
 private fun DashboardTopBarPreview() {
-    BrokenTelephoneTheme(darkTheme = true) {
+    BrokenTelephoneTheme(darkTheme = false) {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
             DashboardTopBar(
                 name = "Alex",
@@ -153,6 +164,7 @@ private fun DashboardTopBarPreview() {
                 onSortSelected = {},
                 onTitleClick = {},
                 onNotificationsClick = {},
+                unreadNotificationsCount = 44
             )
         }
     }

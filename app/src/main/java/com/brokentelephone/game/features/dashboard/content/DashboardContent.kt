@@ -28,7 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.brokentelephone.game.core.banner.ActiveSessionBanner
 import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.pagination.LoadMoreIndicator
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
@@ -64,6 +63,7 @@ fun DashboardContent(
             onSortSelected = onSortSelected,
             onTitleClick = onTitleClick,
             onNotificationsClick = onNotificationsClick,
+            unreadNotificationsCount = state.unreadNotificationsCount,
         )
 
         val pullToRefreshState = rememberPullToRefreshState()
@@ -167,7 +167,8 @@ fun DashboardContentPreview() {
                         avatarUrl = "",
                         createdAt = 0
                     ),
-                    isInitialLoading = true
+                    isInitialLoading = true,
+                    unreadNotificationsCount = 4
                 ),
                 onPostClick = {},
                 onMoreClick = {},
@@ -180,15 +181,15 @@ fun DashboardContentPreview() {
                 listState = rememberLazyListState(),
             )
 
-            ActiveSessionBanner(
-                visible = true,
-                formattedTime = "00:29",
-                progress = 0.65f,
-                onContinueClick = {},
-                onDismiss = {},
-                isLoading = false,
-                modifier = Modifier.align(Alignment.TopCenter),
-            )
+//            ActiveSessionBanner(
+//                visible = true,
+//                formattedTime = "00:29",
+//                progress = 0.65f,
+//                onContinueClick = {},
+//                onDismiss = {},
+//                isLoading = false,
+//                modifier = Modifier.align(Alignment.TopCenter),
+//            )
         }
     }
 }

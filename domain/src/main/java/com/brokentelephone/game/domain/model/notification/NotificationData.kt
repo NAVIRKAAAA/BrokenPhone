@@ -5,6 +5,8 @@ sealed class NotificationData {
     enum class FriendsType {
         INVITE_RECEIVED,
         INVITE_ACCEPTED,
+        INVITE_ACCEPTED_BY_ME,
+        INVITE_DECLINED_BY_ME,
     }
 
     data class Friends(

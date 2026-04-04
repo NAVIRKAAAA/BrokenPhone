@@ -13,6 +13,7 @@ import com.brokentelephone.game.domain.model.sort.DashboardSort
 import com.brokentelephone.game.domain.use_case.BlockUserUseCase
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.domain.use_case.GetPostLinkByIdUseCase
+import com.brokentelephone.game.domain.use_case.GetUnreadNotificationsCountUseCase
 import com.brokentelephone.game.domain.use_case.MarkPostAsNotInterestedUseCase
 import com.brokentelephone.game.domain.use_case.ReportPostUseCase
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
@@ -35,6 +36,7 @@ class DashboardViewModel(
     private val loadInitialPostsUseCase: LoadInitialPostsUseCase,
     private val loadNextPostsUseCase: LoadNextPostsUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val getUnreadNotificationsCountUseCase: GetUnreadNotificationsCountUseCase,
     private val getPostLinkByIdUseCase: GetPostLinkByIdUseCase,
     private val blockUserUseCase: BlockUserUseCase,
     private val markPostAsNotInterestedUseCase: MarkPostAsNotInterestedUseCase,
@@ -54,6 +56,10 @@ class DashboardViewModel(
     init {
         getCurrentUserUseCase()
             .onEach { user -> _state.update { it.copy(user = user?.toUi()) } }
+            .launchIn(viewModelScope)
+
+        getUnreadNotificationsCountUseCase.execute()
+            .onEach { count -> _state.update { it.copy(unreadNotificationsCount = count) } }
             .launchIn(viewModelScope)
     }
 

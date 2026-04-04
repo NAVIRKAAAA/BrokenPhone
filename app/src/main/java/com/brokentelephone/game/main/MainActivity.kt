@@ -56,7 +56,11 @@ class MainActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
 //        lifecycleScope.launch(Dispatchers.IO) {
-//            FirestoreTestDataSeeder(FirebaseFirestore.getInstance()).seedNotifications()
+//            try {
+//                FirestoreTestDataSeeder(FirebaseFirestore.getInstance()).seedNotifications()
+//            } catch (e: Exception) {
+//                Log.d("LOG_TAG", "E: $e")
+//            }
 //        }
 
         setContent {

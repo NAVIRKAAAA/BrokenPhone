@@ -15,6 +15,7 @@ data class UserUi(
     val sessionId: String? = null,
     val friendIds: List<String> = listOf(),
     val blockedUsersIds: List<String> = listOf(),
+    val readNotificationIds: List<String> = listOf(),
     val isEmailVerified: Boolean = false,
     val language: Language = Language.ENGLISH,
 )
@@ -30,6 +31,7 @@ fun User.toUi() = UserUi(
     sessionId = sessionId,
     friendIds = friendIds,
     blockedUsersIds = blockedUserIds,
+    readNotificationIds = readNotificationIds,
     isEmailVerified = isEmailVerified,
     language = language,
 )

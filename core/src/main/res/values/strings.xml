@@ -234,6 +234,8 @@
     <!-- Notifications -->
     <string name="notification_friend_request_body">sent you a friend request</string>
     <string name="notification_friend_accepted_body">accepted your friend request</string>
+    <string name="notification_friend_accepted_by_me_body">You accepted a friend request from</string>
+    <string name="notification_friend_declined_by_me_body">You declined a friend request from</string>
     <string name="notification_group_today">Today</string>
     <string name="notification_group_yesterday">Yesterday</string>
     <string name="notification_group_last_7_days">Last 7 days</string>
