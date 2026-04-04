@@ -5,24 +5,24 @@ import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.brokentelephone.game.choose_avatar_api.ChooseAvatarNavigationApi
-import com.brokentelephone.game.choose_username_api.ChooseUsernameNavigationApi
+import com.brokentelephone.game.choose_avatar_api.ChooseAvatarRoute
+import com.brokentelephone.game.choose_username_api.ChooseUsernameRoute
 import com.brokentelephone.game.dashboard_api.MainGraph
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.session.GameSession
 import com.brokentelephone.game.domain.model.session.GameSessionStatus
+import com.brokentelephone.game.domain.use_case.GetActiveSessionUseCase
+import com.brokentelephone.game.domain.use_case.GetPostByIdUseCase
 import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.essentials.exceptions.auth.SessionDataException
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.app_preferences.use_case.GetLanguageUseCase
 import com.brokentelephone.game.features.app_preferences.use_case.GetThemeUseCase
 import com.brokentelephone.game.features.language.use_case.SetupFirstAppLaunchUseCase
-import com.brokentelephone.game.features.post_details.use_case.GetPostByIdUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailChangeUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
-import com.brokentelephone.game.main.use_case.GetActiveSessionUseCase
 import com.brokentelephone.game.main.use_case.GetPendingEmailUseCase
 import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
 import com.brokentelephone.game.navigation.nav_graph.AuthGraph
@@ -50,8 +50,6 @@ class MainViewModel(
     private val applyEmailVerificationUseCase: ApplyEmailVerificationUseCase,
     private val getPendingEmailUseCase: GetPendingEmailUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
-    private val chooseUsernameNavigationApi: ChooseUsernameNavigationApi,
-    private val chooseAvatarNavigationApi: ChooseAvatarNavigationApi
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MainState())
@@ -95,11 +93,11 @@ class MainViewModel(
 
                 val (destination, pendingRoutes) = when (user?.onboardingStep) {
                     OnboardingStep.CHOOSE_AVATAR -> AuthGraph to listOf(
-                        chooseAvatarNavigationApi.route
+                        ChooseAvatarRoute
                     )
                     OnboardingStep.CHOOSE_USERNAME -> AuthGraph to listOf(
-                        chooseAvatarNavigationApi.route,
-                        chooseUsernameNavigationApi.route
+                        ChooseAvatarRoute,
+                        ChooseUsernameRoute
                     )
 
                     OnboardingStep.COMPLETED -> MainGraph to emptyList()

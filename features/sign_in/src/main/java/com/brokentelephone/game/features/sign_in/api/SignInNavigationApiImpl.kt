@@ -11,27 +11,16 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.brokentelephone.game.choose_avatar_api.ChooseAvatarNavigationApi
-import com.brokentelephone.game.dashboard_api.DashboardNavigationApi
+import com.brokentelephone.game.choose_avatar_api.ChooseAvatarRoute
+import com.brokentelephone.game.dashboard_api.DashboardRoute
 import com.brokentelephone.game.features.sign_in.SignInScreen
-import com.brokentelephone.game.forgot_password_api.ForgotPasswordNavigationApi
-import com.brokentelephone.game.nav_api.NavigationRoute
+import com.brokentelephone.game.forgot_password_api.ForgotPasswordRoute
 import com.brokentelephone.game.nav_api.navigateSingle
 import com.brokentelephone.game.nav_api.safePopBackStack
 import com.brokentelephone.game.sign_in_api.SignInNavigationApi
 import com.brokentelephone.game.sign_in_api.SignInRoute
 
-class SignInNavigationApiImpl(
-    private val forgotPasswordNavigationApi: ForgotPasswordNavigationApi,
-    private val dashboardNavigationApi: DashboardNavigationApi,
-    private val chooseAvatarNavigationApi: ChooseAvatarNavigationApi
-) : SignInNavigationApi {
-
-    override val route: NavigationRoute = SignInRoute()
-
-    override fun createRoute(email: String): SignInRoute {
-        return SignInRoute(email)
-    }
+class SignInNavigationApiImpl : SignInNavigationApi {
 
     override fun screen(
         navController: NavController,
@@ -80,18 +69,17 @@ class SignInNavigationApiImpl(
                 initialEmail = route.email,
                 onBackClick = navController::safePopBackStack,
                 onSignedIn = {
-                    navController.navigateSingle(dashboardNavigationApi.route) {
+                    navController.navigateSingle(DashboardRoute) {
                         popUpTo(0) { inclusive = true }
                     }
                 },
                 onNavigateToChooseAvatar = {
-                    navController.navigateSingle(chooseAvatarNavigationApi.route) {
+                    navController.navigateSingle(ChooseAvatarRoute) {
                         popUpTo(0) { inclusive = true }
                     }
                 },
                 onForgotPasswordClick = { email ->
-                    val route = forgotPasswordNavigationApi.createRoute(email)
-                    navController.navigateSingle(route)
+                    navController.navigateSingle(ForgotPasswordRoute(email))
                 },
             )
         }

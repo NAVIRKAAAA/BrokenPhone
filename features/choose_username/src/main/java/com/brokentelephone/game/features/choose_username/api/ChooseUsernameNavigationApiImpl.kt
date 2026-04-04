@@ -10,16 +10,12 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.brokentelephone.game.choose_username_api.ChooseUsernameNavigationApi
 import com.brokentelephone.game.choose_username_api.ChooseUsernameRoute
-import com.brokentelephone.game.dashboard_api.DashboardNavigationApi
+import com.brokentelephone.game.dashboard_api.DashboardRoute
 import com.brokentelephone.game.features.choose_username.ChooseUsernameScreen
 import com.brokentelephone.game.nav_api.navigateSingle
 import com.brokentelephone.game.nav_api.safePopBackStack
 
-class ChooseUsernameNavigationApiImpl(
-    private val dashboardNavigationApi: DashboardNavigationApi
-) : ChooseUsernameNavigationApi {
-
-    override val route = ChooseUsernameRoute
+class ChooseUsernameNavigationApiImpl : ChooseUsernameNavigationApi {
 
     override fun screen(
         navController: NavController,
@@ -42,7 +38,7 @@ class ChooseUsernameNavigationApiImpl(
             ChooseUsernameScreen(
                 onBackClick = navController::safePopBackStack,
                 navigateToFeed = {
-                    navController.navigateSingle(dashboardNavigationApi.route) {
+                    navController.navigateSingle(DashboardRoute) {
                         popUpTo(0) { inclusive = true }
                     }
                 },

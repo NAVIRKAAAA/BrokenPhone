@@ -23,8 +23,10 @@ android {
 dependencies {
     implementation(project(":domain"))
     api(platform(libs.androidx.compose.bom))
+    api(libs.androidx.activity.compose)
     api(libs.androidx.compose.ui)
     api(libs.androidx.appcompat)
+    api(libs.androidx.core.ktx)
     implementation(libs.androidx.compose.ui.graphics)
     api(libs.androidx.compose.ui.tooling.preview)
     api(libs.androidx.compose.material3)

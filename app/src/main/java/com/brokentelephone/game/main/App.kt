@@ -9,11 +9,14 @@ import com.brokentelephone.game.features.bottom_nav_bar.di.bottomNavBarModule
 import com.brokentelephone.game.features.choose_avatar.di.chooseAvatarModule
 import com.brokentelephone.game.features.choose_username.di.chooseUsernameModule
 import com.brokentelephone.game.features.dashboard.di.dashboardModule
+import com.brokentelephone.game.features.draw.di.drawModule
 import com.brokentelephone.game.features.edit_bio.di.editBioModule
 import com.brokentelephone.game.features.edit_email.di.editEmailModule
 import com.brokentelephone.game.features.forgot_password.di.forgotPasswordModule
 import com.brokentelephone.game.features.friends.di.friendsModule
 import com.brokentelephone.game.features.notifications.di.notificationsModule
+import com.brokentelephone.game.features.post_details.di.postDetailsModule
+import com.brokentelephone.game.features.profile.di.profileModule
 import com.brokentelephone.game.features.sign_in.di.signInModule
 import com.brokentelephone.game.features.sign_up.di.signUpModule
 import com.brokentelephone.game.features.user_details.di.userDetailsModule
@@ -46,7 +49,10 @@ class App : Application() {
                 friendsModule,
                 userFriendsModule,
                 addFriendModule,
-                notificationsModule
+                notificationsModule,
+                profileModule,
+                postDetailsModule,
+                drawModule
             )
         }
     }

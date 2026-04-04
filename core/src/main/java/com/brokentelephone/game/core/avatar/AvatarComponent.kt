@@ -25,7 +25,6 @@ fun AvatarComponent(
     size: Dp = 40.dp,
 ) {
     val context = LocalContext.current
-
     Box(
         modifier = modifier
             .size(size)

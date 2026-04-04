@@ -16,8 +16,6 @@ import com.brokentelephone.game.nav_api.safePopBackStack
 
 class ForgotPasswordNavigationApiImpl : ForgotPasswordNavigationApi {
 
-    override val route = ForgotPasswordRoute()
-
     override fun createRoute(email: String): ForgotPasswordRoute {
         return ForgotPasswordRoute(email)
     }

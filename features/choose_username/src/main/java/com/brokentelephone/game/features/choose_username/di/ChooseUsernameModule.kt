@@ -11,6 +11,6 @@ import org.koin.dsl.module
 val chooseUsernameModule = module {
     factoryOf(::CompleteUsernameStepUseCase)
     viewModelOf(::ChooseUsernameViewModel)
-    single<ChooseUsernameNavigationApi> { ChooseUsernameNavigationApiImpl(get()) }
+    single<ChooseUsernameNavigationApi> { ChooseUsernameNavigationApiImpl() }
 
 }

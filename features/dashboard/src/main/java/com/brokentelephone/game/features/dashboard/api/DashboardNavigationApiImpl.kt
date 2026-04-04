@@ -11,10 +11,11 @@ import com.brokentelephone.game.dashboard_api.DashboardRoute
 import com.brokentelephone.game.features.dashboard.DashboardScreen
 import com.brokentelephone.game.features.dashboard.DashboardViewModel
 import com.brokentelephone.game.nav_api.KEY_FORCE_REFRESH
+import com.brokentelephone.game.nav_api.navigateSingle
+import com.brokentelephone.game.post_details_api.PostDetailsRoute
 import org.koin.compose.viewmodel.koinViewModel
 
 class DashboardNavigationApiImpl : DashboardNavigationApi {
-    override val route = DashboardRoute
 
     override fun screen(
         navController: NavController,
@@ -41,7 +42,7 @@ class DashboardNavigationApiImpl : DashboardNavigationApi {
             DashboardScreen(
                 viewModel = viewModel,
                 onPostClick = { postId ->
-//                        navController.navigateSingle(Routes.PostDetails(postId = postId))
+                    navController.navigateSingle(PostDetailsRoute(postId = postId))
                 },
                 onUserClick = { userId ->
 //                        navController.navigateSingle(Routes.UserDetails(userId = userId))

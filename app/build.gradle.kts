@@ -69,6 +69,15 @@ dependencies {
 
     implementation(project(":features:bottom_nav_bar"))
 
+    implementation(project(":features:profile"))
+    implementation(project(":features:profile_api"))
+
+    implementation(project(":features:post_details"))
+    implementation(project(":features:post_details_api"))
+
+    implementation(project(":features:draw"))
+    implementation(project(":features:draw_api"))
+
     implementation(project(":features:edit_bio"))
     implementation(project(":features:edit_email"))
     implementation(project(":features:user_details"))
@@ -76,14 +85,9 @@ dependencies {
     implementation(project(":features:user_friends"))
     implementation(project(":features:add_friend"))
     implementation(project(":features:notifications"))
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
@@ -104,5 +108,4 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     testImplementation(libs.paparazzi)
-
 }

@@ -10,14 +10,11 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.brokentelephone.game.choose_avatar_api.ChooseAvatarNavigationApi
 import com.brokentelephone.game.choose_avatar_api.ChooseAvatarRoute
-import com.brokentelephone.game.choose_username_api.ChooseUsernameNavigationApi
+import com.brokentelephone.game.choose_username_api.ChooseUsernameRoute
 import com.brokentelephone.game.features.choose_avatar.ChooseAvatarScreen
 import com.brokentelephone.game.nav_api.navigateSingle
 
-class ChooseAvatarNavigationApiImpl(
-    private val chooseUsernameNavigationApi: ChooseUsernameNavigationApi
-) : ChooseAvatarNavigationApi {
-    override val route = ChooseAvatarRoute
+class ChooseAvatarNavigationApiImpl : ChooseAvatarNavigationApi {
 
     override fun screen(
         navController: NavController,
@@ -45,7 +42,7 @@ class ChooseAvatarNavigationApiImpl(
         ) {
             ChooseAvatarScreen(
                 navigateToChooseUsername = {
-                    navController.navigateSingle(chooseUsernameNavigationApi.route)
+                    navController.navigateSingle(ChooseUsernameRoute)
                 },
             )
         }

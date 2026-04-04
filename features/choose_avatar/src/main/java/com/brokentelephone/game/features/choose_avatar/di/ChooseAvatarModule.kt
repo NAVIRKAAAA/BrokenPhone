@@ -11,5 +11,5 @@ import org.koin.dsl.module
 val chooseAvatarModule = module {
     factoryOf(::CompleteAvatarStepUseCase)
     viewModelOf(::ChooseAvatarViewModel)
-    single<ChooseAvatarNavigationApi> { ChooseAvatarNavigationApiImpl(get()) }
+    single<ChooseAvatarNavigationApi> { ChooseAvatarNavigationApiImpl() }
 }

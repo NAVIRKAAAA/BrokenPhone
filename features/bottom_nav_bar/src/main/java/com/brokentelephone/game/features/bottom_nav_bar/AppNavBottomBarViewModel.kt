@@ -10,6 +10,7 @@ import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.features.bottom_nav_bar.model.BottomNavBar
 import com.brokentelephone.game.features.bottom_nav_bar.model.BottomNavBarEvent
 import com.brokentelephone.game.features.bottom_nav_bar.model.BottomNavBarState
+import com.brokentelephone.game.profile_api.ProfileRoute
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -41,8 +42,8 @@ class AppNavBottomBarViewModel(
     }
 
     fun shouldShowBottomBar(entry: NavBackStackEntry): Boolean {
-        return entry.destination.hasRoute<DashboardRoute>()
-//                entry.destination.hasRoute<Routes.Profile>()
+        return entry.destination.hasRoute<DashboardRoute>() ||
+                entry.destination.hasRoute<ProfileRoute>()
     }
 
     fun updateSelectedItem(entry: NavBackStackEntry) {

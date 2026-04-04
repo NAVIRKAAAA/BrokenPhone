@@ -54,6 +54,7 @@ import com.brokentelephone.game.dashboard_api.MainGraph
 import com.brokentelephone.game.features.bottom_nav_bar.model.BottomNavBar
 import com.brokentelephone.game.features.bottom_nav_bar.model.BottomNavBarEvent
 import com.brokentelephone.game.nav_api.navigateSaved
+import com.brokentelephone.game.profile_api.ProfileRoute
 import org.koin.compose.koinInject
 
 @Composable
@@ -90,7 +91,7 @@ fun AppNavBottomBar(
                 }
 
                 BottomNavBarEvent.NavigateToProfile -> {
-//                    navController.navigateSaved(Routes.Profile)
+                    navController.navigateSaved(ProfileRoute, MainGraph)
                 }
 
                 else -> return@collect

@@ -10,20 +10,15 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.brokentelephone.game.choose_avatar_api.ChooseAvatarNavigationApi
-import com.brokentelephone.game.dashboard_api.DashboardNavigationApi
+import com.brokentelephone.game.choose_avatar_api.ChooseAvatarRoute
+import com.brokentelephone.game.dashboard_api.DashboardRoute
 import com.brokentelephone.game.features.sign_up.SignUpScreen
 import com.brokentelephone.game.features.sign_up_api.SignUpNavigationApi
 import com.brokentelephone.game.features.sign_up_api.SignUpRoute
 import com.brokentelephone.game.nav_api.navigateSingle
 import com.brokentelephone.game.nav_api.safePopBackStack
 
-class SignUpNavigationApiImpl(
-    private val chooseAvatarNavigationApi: ChooseAvatarNavigationApi,
-    private val dashboardNavigationApi: DashboardNavigationApi
-) : SignUpNavigationApi {
-
-    override val route = SignUpRoute
+class SignUpNavigationApiImpl : SignUpNavigationApi {
 
     override fun screen(navController: NavController, builder: NavGraphBuilder) {
         builder.composable<SignUpRoute>(
@@ -63,12 +58,12 @@ class SignUpNavigationApiImpl(
             SignUpScreen(
                 onBackClick = navController::safePopBackStack,
                 onSignedUp = {
-                    navController.navigateSingle(dashboardNavigationApi.route) {
+                    navController.navigateSingle(DashboardRoute) {
                         popUpTo(0) { inclusive = true }
                     }
                 },
                 onNavigateToChooseAvatar = {
-                    navController.navigateSingle(chooseAvatarNavigationApi.route) {
+                    navController.navigateSingle(ChooseAvatarRoute) {
                         popUpTo(0) { inclusive = true }
                     }
                 },

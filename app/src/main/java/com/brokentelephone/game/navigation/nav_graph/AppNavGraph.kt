@@ -20,7 +20,9 @@ import androidx.navigation.toRoute
 import com.brokentelephone.game.choose_avatar_api.ChooseAvatarNavigationApi
 import com.brokentelephone.game.choose_username_api.ChooseUsernameNavigationApi
 import com.brokentelephone.game.dashboard_api.DashboardNavigationApi
+import com.brokentelephone.game.dashboard_api.DashboardRoute
 import com.brokentelephone.game.dashboard_api.MainGraph
+import com.brokentelephone.game.draw_api.DrawNavigationApi
 import com.brokentelephone.game.features.account_settings.AccountSettingsScreen
 import com.brokentelephone.game.features.add_friend.AddFriendScreen
 import com.brokentelephone.game.features.blocked_users.BlockedUsersScreen
@@ -28,7 +30,6 @@ import com.brokentelephone.game.features.chain_details.ChainDetailsScreen
 import com.brokentelephone.game.features.chain_details.ChainDetailsViewModel
 import com.brokentelephone.game.features.create_post.CreatePostScreen
 import com.brokentelephone.game.features.describe_drawing.DescribeDrawingScreen
-import com.brokentelephone.game.features.draw.DrawScreen
 import com.brokentelephone.game.features.edit_avatar.EditAvatarScreen
 import com.brokentelephone.game.features.edit_bio.EditBioScreen
 import com.brokentelephone.game.features.edit_email.EditEmailScreen
@@ -38,20 +39,20 @@ import com.brokentelephone.game.features.friends.FriendsScreen
 import com.brokentelephone.game.features.language.LanguageScreen
 import com.brokentelephone.game.features.notifications.NotificationSettingsScreen
 import com.brokentelephone.game.features.notifications.NotificationsScreen
-import com.brokentelephone.game.features.post_details.PostDetailsScreen
-import com.brokentelephone.game.features.post_details.PostDetailsViewModel
-import com.brokentelephone.game.features.profile.ProfileScreen
 import com.brokentelephone.game.features.settings.SettingsScreen
 import com.brokentelephone.game.features.sign_up_api.SignUpNavigationApi
 import com.brokentelephone.game.features.theme.ThemeScreen
 import com.brokentelephone.game.features.user_details.UserDetailsScreen
 import com.brokentelephone.game.features.user_friends.UserFriendsScreen
 import com.brokentelephone.game.features.welcome_api.WelcomeNavigationApi
+import com.brokentelephone.game.features.welcome_api.WelcomeRoute
 import com.brokentelephone.game.forgot_password_api.ForgotPasswordNavigationApi
 import com.brokentelephone.game.nav_api.KEY_FORCE_REFRESH
 import com.brokentelephone.game.nav_api.NavigationRoute
 import com.brokentelephone.game.nav_api.safePopBackStack
 import com.brokentelephone.game.navigation.routes.Routes
+import com.brokentelephone.game.post_details_api.PostDetailsNavigationApi
+import com.brokentelephone.game.profile_api.ProfileNavigationApi
 import com.brokentelephone.game.sign_in_api.SignInNavigationApi
 import kotlinx.serialization.Serializable
 import org.koin.compose.koinInject
@@ -76,7 +77,9 @@ fun AppNavGraph(
     val chooseUsernameNavigationApi: ChooseUsernameNavigationApi = koinInject()
 
     val dashboardNavigationApi: DashboardNavigationApi = koinInject()
-
+    val profileNavigationApi: ProfileNavigationApi = koinInject()
+    val postDetailsNavigationApi: PostDetailsNavigationApi = koinInject()
+    val drawNavigationApi: DrawNavigationApi = koinInject()
 
     NavHost(
         navController = navController,
@@ -84,7 +87,7 @@ fun AppNavGraph(
         modifier = modifier,
     ) {
 
-        navigation<AuthGraph>(startDestination = welcomeNavigationApi.route) {
+        navigation<AuthGraph>(startDestination = WelcomeRoute) {
             welcomeNavigationApi.screen(navController, this)
             signUpNavigationApi.screen(navController, this)
             signInNavigationApi.screen(navController, this)
@@ -93,100 +96,12 @@ fun AppNavGraph(
             chooseUsernameNavigationApi.screen(navController, this)
         }
 
-        navigation<MainGraph>(startDestination = dashboardNavigationApi.route) {
+        navigation<MainGraph>(startDestination = DashboardRoute) {
 
             dashboardNavigationApi.screen(navController, this)
-
-            composable<Routes.PostDetails>(
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                },
-                exitTransition = {
-                    val route = targetState.destination.route
-                    if (route?.contains("Draw") == true || route?.contains("ChainDetails") == true) {
-                        slideOutHorizontally(
-                            targetOffsetX = { -it / 3 },
-                            animationSpec = tween(250)
-                        ) + fadeOut(animationSpec = tween(200))
-                    } else {
-                        ExitTransition.None
-                    }
-                },
-                popEnterTransition = {
-                    val route = initialState.destination.route
-                    if (route?.contains("Draw") == true || route?.contains("ChainDetails") == true) {
-                        slideInHorizontally(
-                            initialOffsetX = { -it / 3 },
-                            animationSpec = tween(250)
-                        ) + fadeIn(animationSpec = tween(200))
-                    } else {
-                        EnterTransition.None
-                    }
-                },
-                popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                }
-            ) { backStackEntry ->
-                val route = backStackEntry.toRoute<Routes.PostDetails>()
-                val viewModel: PostDetailsViewModel = koinViewModel { parametersOf(route.postId) }
-                PostDetailsScreen(
-                    viewModel = viewModel,
-                    onBackClick = navController::safePopBackStack,
-                    navigateBackWithForceUpdate = {
-                        navController.getBackStackEntry(Routes.Dashboard)
-                            .savedStateHandle[KEY_FORCE_REFRESH] = true
-
-                        navController.safePopBackStack()
-                    },
-                    onDrawContinue = { sessionId ->
-//                        navController.navigateSingle(Routes.Draw(sessionId = sessionId))
-                        onBannerDismissed()
-                    },
-                    onDescribeDrawingContinue = { sessionId ->
-//                        navController.navigateSingle(Routes.DescribeDrawing(sessionId = sessionId))
-                        onBannerDismissed()
-                    },
-                    onViewHistoryClick = { postId ->
-//                        navController.navigateSingle(Routes.ChainDetails(postId = postId))
-                    },
-                    onUserClick = { userId ->
-//                        navController.navigateSingle(Routes.UserDetails(userId = userId))
-                    },
-                )
-            }
-
-            composable<Routes.Draw>(
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                },
-                popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                }
-            ) { backStackEntry ->
-                val route = backStackEntry.toRoute<Routes.Draw>()
-                DrawScreen(
-                    sessionId = route.sessionId,
-                    onBackClick = navController::safePopBackStack,
-                    onPostSubmitted = {
-                        navController.getBackStackEntry(Routes.Dashboard)
-                            .savedStateHandle[KEY_FORCE_REFRESH] = true
-
-                        navController.popBackStack(Routes.Dashboard, inclusive = false)
-                    }
-                )
-            }
+            profileNavigationApi.screen(navController, this)
+            postDetailsNavigationApi.screen(navController, this)
+            drawNavigationApi.screen(navController, this)
 
             composable<Routes.DescribeDrawing>(
                 enterTransition = {
@@ -240,66 +155,13 @@ fun AppNavGraph(
                 }
             ) { backStackEntry ->
                 val route = backStackEntry.toRoute<Routes.ChainDetails>()
-                val viewModel: ChainDetailsViewModel = koinViewModel { parametersOf(route.postId, route.userId) }
+                val viewModel: ChainDetailsViewModel =
+                    koinViewModel { parametersOf(route.postId, route.userId) }
                 ChainDetailsScreen(
                     viewModel = viewModel,
                     onBackClick = navController::safePopBackStack,
                     onUserClick = { userId ->
 //                        navController.navigateSingle(Routes.UserDetails(userId = userId))
-                    },
-                )
-            }
-
-            composable<Routes.Profile>(
-                enterTransition = { EnterTransition.None },
-                exitTransition = {
-                    val route = targetState.destination.route
-                    if (route?.contains("PostDetails") == true || route?.contains("EditProfile") == true || route?.contains(
-                            "Settings"
-                        ) == true
-                    ) {
-                        slideOutHorizontally(
-                            targetOffsetX = { -it / 3 },
-                            animationSpec = tween(250)
-                        ) + fadeOut(animationSpec = tween(200))
-                    } else {
-                        ExitTransition.None
-                    }
-                },
-                popEnterTransition = {
-                    val route = initialState.destination.route
-                    if (route?.contains("PostDetails") == true || route?.contains("EditProfile") == true || route?.contains(
-                            "Settings"
-                        ) == true
-                    ) {
-                        slideInHorizontally(
-                            initialOffsetX = { -it / 3 },
-                            animationSpec = tween(250)
-                        ) + fadeIn(animationSpec = tween(200))
-                    } else {
-                        EnterTransition.None
-                    }
-                },
-                popExitTransition = { ExitTransition.None }
-            ) {
-                ProfileScreen(
-                    onPostClick = { postId, userId ->
-//                        navController.navigateSingle(Routes.ChainDetails(postId = postId, userId = userId))
-                    },
-                    onSignInClick = {
-//                        navController.navigateSingle(Routes.SignIn())
-                    },
-                    onGetStartedClick = {
-//                        navController.navigateSingle(Routes.SignUp)
-                    },
-                    onFriendsClick = {
-//                        navController.navigateSingle(Routes.Friends)
-                    },
-                    onEditClick = {
-//                        navController.navigateSingle(Routes.EditProfile)
-                    },
-                    onSettingsClick = {
-//                        navController.navigateSingle(Routes.Settings)
                     },
                 )
             }
@@ -661,7 +523,10 @@ fun AppNavGraph(
             composable<Routes.UserDetails>(
                 enterTransition = {
                     val from = initialState.destination.route
-                    if (from?.contains("Dashboard") == true || from?.contains("PostDetails") == true || from?.contains("ChainDetails") == true || from?.contains("Friends") == true || from?.contains("AddFriend") == true) {
+                    if (from?.contains("Dashboard") == true || from?.contains("PostDetails") == true || from?.contains(
+                            "ChainDetails"
+                        ) == true || from?.contains("Friends") == true || from?.contains("AddFriend") == true
+                    ) {
                         slideInVertically(
                             initialOffsetY = { it },
                             animationSpec = tween(300)
@@ -697,7 +562,10 @@ fun AppNavGraph(
                 },
                 popExitTransition = {
                     val to = targetState.destination.route
-                    if (to?.contains("Dashboard") == true || to?.contains("PostDetails") == true || to?.contains("ChainDetails") == true || to?.contains("Friends") == true || to?.contains("AddFriend") == true) {
+                    if (to?.contains("Dashboard") == true || to?.contains("PostDetails") == true || to?.contains(
+                            "ChainDetails"
+                        ) == true || to?.contains("Friends") == true || to?.contains("AddFriend") == true
+                    ) {
                         slideOutVertically(
                             targetOffsetY = { it },
                             animationSpec = tween(300)
