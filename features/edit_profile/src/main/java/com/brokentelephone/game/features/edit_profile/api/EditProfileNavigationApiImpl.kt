@@ -10,9 +10,14 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.brokentelephone.game.edit_avatar_api.EditAvatarRoute
+import com.brokentelephone.game.edit_bio_api.EditBioRoute
+import com.brokentelephone.game.edit_email_api.EditEmailRoute
 import com.brokentelephone.game.edit_profile_api.EditProfileNavigationApi
 import com.brokentelephone.game.edit_profile_api.EditProfileRoute
+import com.brokentelephone.game.edit_username_api.EditUsernameRoute
 import com.brokentelephone.game.features.edit_profile.EditProfileScreen
+import com.brokentelephone.game.nav_api.navigateSingle
 import com.brokentelephone.game.nav_api.safePopBackStack
 
 class EditProfileNavigationApiImpl : EditProfileNavigationApi {
@@ -67,16 +72,16 @@ class EditProfileNavigationApiImpl : EditProfileNavigationApi {
             EditProfileScreen(
                 onBackClick = navController::safePopBackStack,
                 onEditPhotoClick = {
-//                        navController.navigateSingle(Routes.EditAvatar)
+                    navController.navigateSingle(EditAvatarRoute)
                 },
                 onEditUsernameClick = {
-//                        navController.navigateSingle(Routes.EditUsername)
+                    navController.navigateSingle(EditUsernameRoute)
                 },
                 onEditBioClick = {
-//                        navController.navigateSingle(Routes.EditBio)
+                    navController.navigateSingle(EditBioRoute)
                 },
                 onEditEmailClick = {
-//                        navController.navigateSingle(Routes.EditEmail)
+                    navController.navigateSingle(EditEmailRoute)
                 },
             )
         }

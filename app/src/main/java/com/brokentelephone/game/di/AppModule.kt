@@ -30,11 +30,9 @@ import com.brokentelephone.game.features.blocked_users.use_case.UnblockUserUseCa
 import com.brokentelephone.game.features.create_post.CreatePostViewModel
 import com.brokentelephone.game.features.create_post.use_case.CreatePostUseCase
 
-import com.brokentelephone.game.features.edit_avatar.EditAvatarViewModel
-import com.brokentelephone.game.features.edit_avatar.use_case.UpdateAvatarUseCase
 
-import com.brokentelephone.game.features.edit_username.EditUsernameViewModel
-import com.brokentelephone.game.features.edit_username.use_case.UpdateUsernameUseCase
+
+
 import com.brokentelephone.game.features.language.LanguageViewModel
 import com.brokentelephone.game.features.language.use_case.SetupFirstAppLaunchUseCase
 import com.brokentelephone.game.features.language.use_case.UpdateLanguageUseCase
@@ -68,14 +66,10 @@ val appModule = module {
     factoryOf(::GetCurrentUserUseCase)
     factoryOf(::GetUnreadNotificationsCountUseCase)
     factoryOf(::GetUsersByIdsUseCase)
-    factoryOf(::UpdateUsernameUseCase)
-    factoryOf(::UpdateAvatarUseCase)
     factoryOf(::GetUserPostsUseCase)
     factoryOf(::GetUserContributionsUseCase)
 
     viewModelOf(::CreatePostViewModel)
-    viewModelOf(::EditUsernameViewModel)
-    viewModelOf(::EditAvatarViewModel)
 
     factoryOf(::GetVersionInfoUseCase)
     factoryOf(::LogoutUseCase)

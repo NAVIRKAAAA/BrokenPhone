@@ -25,15 +25,15 @@ import com.brokentelephone.game.dashboard_api.DashboardRoute
 import com.brokentelephone.game.dashboard_api.MainGraph
 import com.brokentelephone.game.describe_drawing_api.DescribeDrawingNavigationApi
 import com.brokentelephone.game.draw_api.DrawNavigationApi
+import com.brokentelephone.game.edit_avatar_api.EditAvatarNavigationApi
+import com.brokentelephone.game.edit_bio_api.EditBioNavigationApi
+import com.brokentelephone.game.edit_email_api.EditEmailNavigationApi
 import com.brokentelephone.game.edit_profile_api.EditProfileNavigationApi
+import com.brokentelephone.game.edit_username_api.EditUsernameNavigationApi
 import com.brokentelephone.game.features.account_settings.AccountSettingsScreen
 import com.brokentelephone.game.features.add_friend.AddFriendScreen
 import com.brokentelephone.game.features.blocked_users.BlockedUsersScreen
 import com.brokentelephone.game.features.create_post.CreatePostScreen
-import com.brokentelephone.game.features.edit_avatar.EditAvatarScreen
-import com.brokentelephone.game.features.edit_bio.EditBioScreen
-import com.brokentelephone.game.features.edit_email.EditEmailScreen
-import com.brokentelephone.game.features.edit_username.EditUsernameScreen
 import com.brokentelephone.game.features.friends.FriendsScreen
 import com.brokentelephone.game.features.language.LanguageScreen
 import com.brokentelephone.game.features.notifications.NotificationSettingsScreen
@@ -89,6 +89,10 @@ fun AppNavGraph(
     val describeDrawingNavigationApi: DescribeDrawingNavigationApi = koinInject()
     val chainDetailsNavigationApi: ChainDetailsNavigationApi = koinInject()
     val editProfileNavigationApi: EditProfileNavigationApi = koinInject()
+    val editAvatarNavigationApi: EditAvatarNavigationApi = koinInject()
+    val editUsernameNavigationApi: EditUsernameNavigationApi = koinInject()
+    val editBioNavigationApi: EditBioNavigationApi = koinInject()
+    val editEmailNavigationApi: EditEmailNavigationApi = koinInject()
 
     val mainGraphRoutes = listOf(
         dashboardNavigationApi,
@@ -97,8 +101,13 @@ fun AppNavGraph(
         drawNavigationApi,
         describeDrawingNavigationApi,
         chainDetailsNavigationApi,
-        editProfileNavigationApi
+        editProfileNavigationApi,
+        editAvatarNavigationApi,
+        editUsernameNavigationApi,
+        editBioNavigationApi,
+        editEmailNavigationApi
     )
+
     NavHost(
         navController = navController,
         startDestination = startDestination,
@@ -116,63 +125,6 @@ fun AppNavGraph(
 
             mainGraphRoutes.forEach {
                 it.screen(navController, this)
-            }
-
-            composable<Routes.EditUsername>(
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                },
-                popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                }
-            ) {
-                EditUsernameScreen(
-                    onBackClick = navController::safePopBackStack,
-                )
-            }
-
-            composable<Routes.EditBio>(
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                },
-                popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                }
-            ) {
-                EditBioScreen(
-                    onBackClick = navController::safePopBackStack,
-                )
-            }
-
-            composable<Routes.EditAvatar>(
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                },
-                popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                }
-            ) {
-                EditAvatarScreen(
-                    onBackClick = navController::safePopBackStack,
-                )
             }
 
             composable<Routes.Settings>(
@@ -293,25 +245,6 @@ fun AppNavGraph(
                             popUpTo(0) { inclusive = true }
                         }
                     }
-                )
-            }
-
-            composable<Routes.EditEmail>(
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                },
-                popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                }
-            ) {
-                EditEmailScreen(
-                    onBackClick = navController::safePopBackStack,
                 )
             }
 

@@ -87,8 +87,18 @@ dependencies {
     implementation(project(":features:edit_profile"))
     implementation(project(":features:edit_profile_api"))
 
+    implementation(project(":features:edit_avatar"))
+    implementation(project(":features:edit_avatar_api"))
+
+    implementation(project(":features:edit_username"))
+    implementation(project(":features:edit_username_api"))
+
     implementation(project(":features:edit_bio"))
+    implementation(project(":features:edit_bio_api"))
+
     implementation(project(":features:edit_email"))
+    implementation(project(":features:edit_email_api"))
+
     implementation(project(":features:user_details"))
     implementation(project(":features:friends"))
     implementation(project(":features:user_friends"))

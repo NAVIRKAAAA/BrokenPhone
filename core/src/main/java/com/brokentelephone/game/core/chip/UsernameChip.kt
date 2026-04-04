@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.choose_username.content
+package com.brokentelephone.game.core.chip
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

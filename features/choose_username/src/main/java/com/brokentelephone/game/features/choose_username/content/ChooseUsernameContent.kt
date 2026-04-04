@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.button.AuthButton
+import com.brokentelephone.game.core.chip.UsernameChip
 import com.brokentelephone.game.core.text_field.SignUpTextFieldValue
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.top_bar.AuthTopBar
