@@ -27,6 +27,8 @@ dependencies {
     implementation(project(":features:post_details_api"))
     implementation(project(":features:dashboard_api"))
     implementation(project(":features:draw_api"))
+    implementation(project(":features:describe_drawing_api"))
+    implementation(project(":features:chain_details_api"))
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.koin.android)
     implementation(libs.koin.compose.viewmodel)

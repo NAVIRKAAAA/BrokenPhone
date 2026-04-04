@@ -11,7 +11,9 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.brokentelephone.game.chain_details_api.ChainDetailsRoute
 import com.brokentelephone.game.dashboard_api.DashboardRoute
+import com.brokentelephone.game.describe_drawing_api.DescribeDrawingRoute
 import com.brokentelephone.game.draw_api.DrawRoute
 import com.brokentelephone.game.features.post_details.PostDetailsScreen
 import com.brokentelephone.game.features.post_details.PostDetailsViewModel
@@ -81,11 +83,11 @@ class PostDetailsNavigationApiImpl : PostDetailsNavigationApi {
 //                    onBannerDismissed()
                 },
                 onDescribeDrawingContinue = { sessionId ->
-//                        navController.navigateSingle(Routes.DescribeDrawing(sessionId = sessionId))
+                        navController.navigateSingle(DescribeDrawingRoute(sessionId = sessionId))
 //                    onBannerDismissed()
                 },
                 onViewHistoryClick = { postId ->
-//                        navController.navigateSingle(Routes.ChainDetails(postId = postId))
+                        navController.navigateSingle(ChainDetailsRoute(postId = postId))
                 },
                 onUserClick = { userId ->
 //                        navController.navigateSingle(Routes.UserDetails(userId = userId))

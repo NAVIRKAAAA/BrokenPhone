@@ -78,6 +78,15 @@ dependencies {
     implementation(project(":features:draw"))
     implementation(project(":features:draw_api"))
 
+    implementation(project(":features:describe_drawing"))
+    implementation(project(":features:describe_drawing_api"))
+
+    implementation(project(":features:chain_details"))
+    implementation(project(":features:chain_details_api"))
+
+    implementation(project(":features:edit_profile"))
+    implementation(project(":features:edit_profile_api"))
+
     implementation(project(":features:edit_bio"))
     implementation(project(":features:edit_email"))
     implementation(project(":features:user_details"))

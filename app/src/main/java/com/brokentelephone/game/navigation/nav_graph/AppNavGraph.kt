@@ -17,23 +17,22 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.brokentelephone.game.chain_details_api.ChainDetailsNavigationApi
 import com.brokentelephone.game.choose_avatar_api.ChooseAvatarNavigationApi
 import com.brokentelephone.game.choose_username_api.ChooseUsernameNavigationApi
 import com.brokentelephone.game.dashboard_api.DashboardNavigationApi
 import com.brokentelephone.game.dashboard_api.DashboardRoute
 import com.brokentelephone.game.dashboard_api.MainGraph
+import com.brokentelephone.game.describe_drawing_api.DescribeDrawingNavigationApi
 import com.brokentelephone.game.draw_api.DrawNavigationApi
+import com.brokentelephone.game.edit_profile_api.EditProfileNavigationApi
 import com.brokentelephone.game.features.account_settings.AccountSettingsScreen
 import com.brokentelephone.game.features.add_friend.AddFriendScreen
 import com.brokentelephone.game.features.blocked_users.BlockedUsersScreen
-import com.brokentelephone.game.features.chain_details.ChainDetailsScreen
-import com.brokentelephone.game.features.chain_details.ChainDetailsViewModel
 import com.brokentelephone.game.features.create_post.CreatePostScreen
-import com.brokentelephone.game.features.describe_drawing.DescribeDrawingScreen
 import com.brokentelephone.game.features.edit_avatar.EditAvatarScreen
 import com.brokentelephone.game.features.edit_bio.EditBioScreen
 import com.brokentelephone.game.features.edit_email.EditEmailScreen
-import com.brokentelephone.game.features.edit_profile.EditProfileScreen
 import com.brokentelephone.game.features.edit_username.EditUsernameScreen
 import com.brokentelephone.game.features.friends.FriendsScreen
 import com.brokentelephone.game.features.language.LanguageScreen
@@ -56,8 +55,6 @@ import com.brokentelephone.game.profile_api.ProfileNavigationApi
 import com.brokentelephone.game.sign_in_api.SignInNavigationApi
 import kotlinx.serialization.Serializable
 import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @Serializable
 object AuthGraph : NavigationRoute()
@@ -76,11 +73,32 @@ fun AppNavGraph(
     val chooseAvatarNavigationApi: ChooseAvatarNavigationApi = koinInject()
     val chooseUsernameNavigationApi: ChooseUsernameNavigationApi = koinInject()
 
+    val authGraphRoutes = listOf(
+        welcomeNavigationApi,
+        signUpNavigationApi,
+        signInNavigationApi,
+        forgotPasswordNavigationApi,
+        chooseAvatarNavigationApi,
+        chooseUsernameNavigationApi
+    )
+
     val dashboardNavigationApi: DashboardNavigationApi = koinInject()
     val profileNavigationApi: ProfileNavigationApi = koinInject()
     val postDetailsNavigationApi: PostDetailsNavigationApi = koinInject()
     val drawNavigationApi: DrawNavigationApi = koinInject()
+    val describeDrawingNavigationApi: DescribeDrawingNavigationApi = koinInject()
+    val chainDetailsNavigationApi: ChainDetailsNavigationApi = koinInject()
+    val editProfileNavigationApi: EditProfileNavigationApi = koinInject()
 
+    val mainGraphRoutes = listOf(
+        dashboardNavigationApi,
+        profileNavigationApi,
+        postDetailsNavigationApi,
+        drawNavigationApi,
+        describeDrawingNavigationApi,
+        chainDetailsNavigationApi,
+        editProfileNavigationApi
+    )
     NavHost(
         navController = navController,
         startDestination = startDestination,
@@ -88,141 +106,16 @@ fun AppNavGraph(
     ) {
 
         navigation<AuthGraph>(startDestination = WelcomeRoute) {
-            welcomeNavigationApi.screen(navController, this)
-            signUpNavigationApi.screen(navController, this)
-            signInNavigationApi.screen(navController, this)
-            forgotPasswordNavigationApi.screen(navController, this)
-            chooseAvatarNavigationApi.screen(navController, this)
-            chooseUsernameNavigationApi.screen(navController, this)
+
+            authGraphRoutes.forEach {
+                it.screen(navController, this)
+            }
         }
 
         navigation<MainGraph>(startDestination = DashboardRoute) {
 
-            dashboardNavigationApi.screen(navController, this)
-            profileNavigationApi.screen(navController, this)
-            postDetailsNavigationApi.screen(navController, this)
-            drawNavigationApi.screen(navController, this)
-
-            composable<Routes.DescribeDrawing>(
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                },
-                popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                }
-            ) { backStackEntry ->
-                val route = backStackEntry.toRoute<Routes.DescribeDrawing>()
-                DescribeDrawingScreen(
-                    sessionId = route.sessionId,
-                    onBackClick = navController::safePopBackStack,
-                    onPostSubmitted = {
-                        navController.getBackStackEntry(Routes.Dashboard)
-                            .savedStateHandle[KEY_FORCE_REFRESH] = true
-
-                        navController.popBackStack(Routes.Dashboard, inclusive = false)
-                    }
-                )
-            }
-
-            composable<Routes.ChainDetails>(
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                },
-                popEnterTransition = {
-                    if (initialState.destination.route?.contains("UserDetails") == true) {
-                        EnterTransition.None
-                    } else {
-                        slideInHorizontally(
-                            initialOffsetX = { -it / 3 },
-                            animationSpec = tween(250)
-                        ) + fadeIn(animationSpec = tween(200))
-                    }
-                },
-                popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                }
-            ) { backStackEntry ->
-                val route = backStackEntry.toRoute<Routes.ChainDetails>()
-                val viewModel: ChainDetailsViewModel =
-                    koinViewModel { parametersOf(route.postId, route.userId) }
-                ChainDetailsScreen(
-                    viewModel = viewModel,
-                    onBackClick = navController::safePopBackStack,
-                    onUserClick = { userId ->
-//                        navController.navigateSingle(Routes.UserDetails(userId = userId))
-                    },
-                )
-            }
-
-            composable<Routes.EditProfile>(
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                },
-                exitTransition = {
-                    val route = targetState.destination.route
-                    if (route?.contains("EditUsername") == true || route?.contains("EditAvatar") == true || route?.contains(
-                            "EditEmail"
-                        ) == true || route?.contains("EditBio") == true
-                    ) {
-                        slideOutHorizontally(
-                            targetOffsetX = { -it / 3 },
-                            animationSpec = tween(250)
-                        ) + fadeOut(animationSpec = tween(200))
-                    } else {
-                        ExitTransition.None
-                    }
-                },
-                popEnterTransition = {
-                    val route = initialState.destination.route
-                    if (route?.contains("EditUsername") == true || route?.contains("EditAvatar") == true || route?.contains(
-                            "EditEmail"
-                        ) == true || route?.contains("EditBio") == true
-                    ) {
-                        slideInHorizontally(
-                            initialOffsetX = { -it / 3 },
-                            animationSpec = tween(250)
-                        ) + fadeIn(animationSpec = tween(200))
-                    } else {
-                        EnterTransition.None
-                    }
-                },
-                popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                }
-            ) {
-                EditProfileScreen(
-                    onBackClick = navController::safePopBackStack,
-                    onEditPhotoClick = {
-//                        navController.navigateSingle(Routes.EditAvatar)
-                    },
-                    onEditUsernameClick = {
-//                        navController.navigateSingle(Routes.EditUsername)
-                    },
-                    onEditBioClick = {
-//                        navController.navigateSingle(Routes.EditBio)
-                    },
-                    onEditEmailClick = {
-//                        navController.navigateSingle(Routes.EditEmail)
-                    },
-                )
+            mainGraphRoutes.forEach {
+                it.screen(navController, this)
             }
 
             composable<Routes.EditUsername>(

@@ -33,7 +33,9 @@ import com.brokentelephone.game.core.theme.LocalAppLanguage
 import com.brokentelephone.game.domain.model.settings.AppTheme
 import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBar
 import com.brokentelephone.game.features.welcome_api.WelcomeRoute
+import com.brokentelephone.game.nav_api.navigateSingle
 import com.brokentelephone.game.navigation.nav_graph.AppNavGraph
+import com.brokentelephone.game.sign_in_api.SignInRoute
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -70,19 +72,19 @@ class MainActivity : AppCompatActivity() {
                 mainViewModel.sideEffects.collectLatest { effect ->
                     when (effect) {
                         is MainSideEffect.NavigateToDraw -> {
-//                            navController.navigateSingle(effect.route)
+                            navController.navigateSingle(effect.route)
                         }
 
                         is MainSideEffect.NavigateToDescribeDrawing -> {
-//                            navController.navigateSingle(effect.route)
+                            navController.navigateSingle(effect.route)
                         }
 
                         is MainSideEffect.NavigateToSignIn -> {
-//                            navController.navigate(Routes.Welcome) {
-//                                popUpTo(0) { inclusive = true }
-//                            }
-//
-//                            navController.navigate(Routes.SignIn(email = effect.email))
+                            navController.navigate(WelcomeRoute) {
+                                popUpTo(0) { inclusive = true }
+                            }
+
+                            navController.navigate(SignInRoute(email = effect.email))
                         }
                     }
                 }

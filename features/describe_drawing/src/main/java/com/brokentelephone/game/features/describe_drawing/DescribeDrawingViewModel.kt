@@ -6,13 +6,13 @@ import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.core.model.post.toUi
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
+import com.brokentelephone.game.domain.use_case.CancelSessionUseCase
 import com.brokentelephone.game.domain.use_case.GetActiveSessionUseCase
 import com.brokentelephone.game.domain.use_case.GetPostByIdUseCase
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.describe_drawing.model.DescribeDrawingSideEffect
 import com.brokentelephone.game.features.describe_drawing.model.DescribeDrawingState
 import com.brokentelephone.game.features.describe_drawing.use_case.SubmitDescriptionUseCase
-import com.brokentelephone.game.features.draw.use_case.CancelSessionUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay

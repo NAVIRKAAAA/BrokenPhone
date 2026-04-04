@@ -10,9 +10,14 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.brokentelephone.game.chain_details_api.ChainDetailsRoute
+import com.brokentelephone.game.edit_profile_api.EditProfileRoute
 import com.brokentelephone.game.features.profile.ProfileScreen
+import com.brokentelephone.game.features.sign_up_api.SignUpRoute
+import com.brokentelephone.game.nav_api.navigateSingle
 import com.brokentelephone.game.profile_api.ProfileNavigationApi
 import com.brokentelephone.game.profile_api.ProfileRoute
+import com.brokentelephone.game.sign_in_api.SignInRoute
 
 class ProfileNavigationApiImpl : ProfileNavigationApi {
 
@@ -54,19 +59,24 @@ class ProfileNavigationApiImpl : ProfileNavigationApi {
         ) {
             ProfileScreen(
                 onPostClick = { postId, userId ->
-//                        navController.navigateSingle(Routes.ChainDetails(postId = postId, userId = userId))
+                    navController.navigateSingle(
+                        ChainDetailsRoute(
+                            postId = postId,
+                            userId = userId
+                        )
+                    )
                 },
                 onSignInClick = {
-//                        navController.navigateSingle(Routes.SignIn())
+                    navController.navigateSingle(SignInRoute())
                 },
                 onGetStartedClick = {
-//                        navController.navigateSingle(Routes.SignUp)
+                    navController.navigateSingle(SignUpRoute)
                 },
                 onFriendsClick = {
 //                        navController.navigateSingle(Routes.Friends)
                 },
                 onEditClick = {
-//                        navController.navigateSingle(Routes.EditProfile)
+                    navController.navigateSingle(EditProfileRoute)
                 },
                 onSettingsClick = {
 //                        navController.navigateSingle(Routes.Settings)

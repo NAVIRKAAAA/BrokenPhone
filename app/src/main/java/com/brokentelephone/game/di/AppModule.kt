@@ -26,15 +26,13 @@ import com.brokentelephone.game.features.app_preferences.use_case.GetThemeUseCas
 import com.brokentelephone.game.features.blocked_users.BlockedUsersViewModel
 import com.brokentelephone.game.features.blocked_users.use_case.GetBlockedUsersUseCase
 import com.brokentelephone.game.features.blocked_users.use_case.UnblockUserUseCase
-import com.brokentelephone.game.features.chain_details.ChainDetailsViewModel
-import com.brokentelephone.game.features.chain_details.use_case.GetChainByPostIdUseCase
+
 import com.brokentelephone.game.features.create_post.CreatePostViewModel
 import com.brokentelephone.game.features.create_post.use_case.CreatePostUseCase
-import com.brokentelephone.game.features.describe_drawing.DescribeDrawingViewModel
-import com.brokentelephone.game.features.describe_drawing.use_case.SubmitDescriptionUseCase
+
 import com.brokentelephone.game.features.edit_avatar.EditAvatarViewModel
 import com.brokentelephone.game.features.edit_avatar.use_case.UpdateAvatarUseCase
-import com.brokentelephone.game.features.edit_profile.EditProfileViewModel
+
 import com.brokentelephone.game.features.edit_username.EditUsernameViewModel
 import com.brokentelephone.game.features.edit_username.use_case.UpdateUsernameUseCase
 import com.brokentelephone.game.features.language.LanguageViewModel
@@ -66,8 +64,6 @@ val appModule = module {
     factoryOf(::BlockUserUseCase)
     factoryOf(::MarkPostAsNotInterestedUseCase)
     factoryOf(::CreatePostUseCase)
-    factoryOf(::SubmitDescriptionUseCase)
-    factoryOf(::GetChainByPostIdUseCase)
     factoryOf(::SignInWithGoogleUseCase)
     factoryOf(::GetCurrentUserUseCase)
     factoryOf(::GetUnreadNotificationsCountUseCase)
@@ -78,10 +74,7 @@ val appModule = module {
     factoryOf(::GetUserContributionsUseCase)
 
     viewModelOf(::CreatePostViewModel)
-    viewModelOf(::DescribeDrawingViewModel)
-    viewModelOf(::ChainDetailsViewModel)
     viewModelOf(::EditUsernameViewModel)
-    viewModelOf(::EditProfileViewModel)
     viewModelOf(::EditAvatarViewModel)
 
     factoryOf(::GetVersionInfoUseCase)

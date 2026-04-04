@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.choose_avatar_api.ChooseAvatarRoute
 import com.brokentelephone.game.choose_username_api.ChooseUsernameRoute
 import com.brokentelephone.game.dashboard_api.MainGraph
+import com.brokentelephone.game.describe_drawing_api.DescribeDrawingRoute
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.model.post.PostContent
@@ -16,6 +17,7 @@ import com.brokentelephone.game.domain.model.session.GameSessionStatus
 import com.brokentelephone.game.domain.use_case.GetActiveSessionUseCase
 import com.brokentelephone.game.domain.use_case.GetPostByIdUseCase
 import com.brokentelephone.game.domain.user.OnboardingStep
+import com.brokentelephone.game.draw_api.DrawRoute
 import com.brokentelephone.game.essentials.exceptions.auth.SessionDataException
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.app_preferences.use_case.GetLanguageUseCase
@@ -26,7 +28,6 @@ import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
 import com.brokentelephone.game.main.use_case.GetPendingEmailUseCase
 import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
 import com.brokentelephone.game.navigation.nav_graph.AuthGraph
-import com.brokentelephone.game.navigation.routes.Routes
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -182,9 +183,9 @@ class MainViewModel(
         viewModelScope.launch {
             getPostByIdUseCase.executeWithResult(session.postId).onSuccess { post ->
                 val effect = when (post.content) {
-                    is PostContent.Text -> MainSideEffect.NavigateToDraw(Routes.Draw(session.id))
+                    is PostContent.Text -> MainSideEffect.NavigateToDraw(DrawRoute(session.id))
                     is PostContent.Drawing -> MainSideEffect.NavigateToDescribeDrawing(
-                        Routes.DescribeDrawing(session.id)
+                        DescribeDrawingRoute(session.id)
                     )
                 }
                 _sideEffects.send(effect)

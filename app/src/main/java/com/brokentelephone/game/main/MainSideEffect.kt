@@ -1,9 +1,10 @@
 package com.brokentelephone.game.main
 
-import com.brokentelephone.game.navigation.routes.Routes
+import com.brokentelephone.game.describe_drawing_api.DescribeDrawingRoute
+import com.brokentelephone.game.draw_api.DrawRoute
 
 sealed interface MainSideEffect {
-    data class NavigateToDraw(val route: Routes.Draw) : MainSideEffect
-    data class NavigateToDescribeDrawing(val route: Routes.DescribeDrawing) : MainSideEffect
+    data class NavigateToDraw(val route: DrawRoute) : MainSideEffect
+    data class NavigateToDescribeDrawing(val route: DescribeDrawingRoute) : MainSideEffect
     data class NavigateToSignIn(val email: String) : MainSideEffect
 }

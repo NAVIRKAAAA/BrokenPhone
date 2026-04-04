@@ -52,7 +52,7 @@ import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.core.top_bar.PostTopBar
 import com.brokentelephone.game.domain.model.post.PostContent
-import com.brokentelephone.game.features.create_post.model.CreatePostState
+
 import com.brokentelephone.game.features.describe_drawing.model.DescribeDrawingState
 import kotlinx.coroutines.delay
 
@@ -206,7 +206,7 @@ fun DescribeDrawingContent(
 
 
                         Text(
-                            text = "${state.text.length}/${CreatePostState.MAX_TEXT_LENGTH}",
+                            text = "${state.text.length}/${140}",
                             textAlign = TextAlign.Center,
                             fontFamily = FontFamily(Font(R.font.nunito_bold)),
                             fontSize = 14.sp,
