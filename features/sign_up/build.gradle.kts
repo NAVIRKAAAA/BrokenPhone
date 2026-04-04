@@ -25,6 +25,8 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":essentials"))
     implementation(project(":features:sign_up_api"))
+    implementation(project(":features:choose_avatar_api"))
+    implementation(project(":features:dashboard_api"))
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.koin.android)
     implementation(libs.koin.compose.viewmodel)

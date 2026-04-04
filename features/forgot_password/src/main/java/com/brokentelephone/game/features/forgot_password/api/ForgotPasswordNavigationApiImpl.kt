@@ -10,23 +10,23 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.brokentelephone.game.features.forgot_password.ForgotPasswordScreen
-import com.brokentelephone.game.forgot_password_api.ForgotPassword
 import com.brokentelephone.game.forgot_password_api.ForgotPasswordNavigationApi
+import com.brokentelephone.game.forgot_password_api.ForgotPasswordRoute
 import com.brokentelephone.game.nav_api.safePopBackStack
 
 class ForgotPasswordNavigationApiImpl : ForgotPasswordNavigationApi {
 
-    override val route = ForgotPassword()
+    override val route = ForgotPasswordRoute()
 
-    override fun createRoute(email: String): ForgotPassword {
-        return ForgotPassword(email)
+    override fun createRoute(email: String): ForgotPasswordRoute {
+        return ForgotPasswordRoute(email)
     }
 
     override fun screen(
         navController: NavController,
         builder: NavGraphBuilder
     ) {
-        builder.composable<ForgotPassword>(
+        builder.composable<ForgotPasswordRoute>(
             enterTransition = {
                 slideInHorizontally(
                     initialOffsetX = { it },
@@ -40,7 +40,7 @@ class ForgotPasswordNavigationApiImpl : ForgotPasswordNavigationApi {
                 ) + fadeOut(animationSpec = tween(200))
             }
         ) { backStackEntry ->
-            val route = backStackEntry.toRoute<ForgotPassword>()
+            val route = backStackEntry.toRoute<ForgotPasswordRoute>()
 
             ForgotPasswordScreen(
                 initialEmail = route.email,

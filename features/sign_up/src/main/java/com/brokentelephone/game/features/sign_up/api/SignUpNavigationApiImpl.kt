@@ -10,12 +10,18 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.brokentelephone.game.choose_avatar_api.ChooseAvatarNavigationApi
+import com.brokentelephone.game.dashboard_api.DashboardNavigationApi
 import com.brokentelephone.game.features.sign_up.SignUpScreen
 import com.brokentelephone.game.features.sign_up_api.SignUpNavigationApi
 import com.brokentelephone.game.features.sign_up_api.SignUpRoute
+import com.brokentelephone.game.nav_api.navigateSingle
 import com.brokentelephone.game.nav_api.safePopBackStack
 
-class SignUpNavigationApiImpl : SignUpNavigationApi {
+class SignUpNavigationApiImpl(
+    private val chooseAvatarNavigationApi: ChooseAvatarNavigationApi,
+    private val dashboardNavigationApi: DashboardNavigationApi
+) : SignUpNavigationApi {
 
     override val route = SignUpRoute
 
@@ -56,8 +62,16 @@ class SignUpNavigationApiImpl : SignUpNavigationApi {
         ) {
             SignUpScreen(
                 onBackClick = navController::safePopBackStack,
-                onSignedUp = {  },
-                onNavigateToChooseAvatar = { },
+                onSignedUp = {
+                    navController.navigateSingle(dashboardNavigationApi.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
+                onNavigateToChooseAvatar = {
+                    navController.navigateSingle(chooseAvatarNavigationApi.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
             )
         }
     }

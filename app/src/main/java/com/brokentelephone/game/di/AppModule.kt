@@ -3,6 +3,7 @@ package com.brokentelephone.game.di
 import com.brokentelephone.game.core.timer.CountdownTimer
 import com.brokentelephone.game.domain.use_case.BlockUserUseCase
 import com.brokentelephone.game.domain.use_case.DeletePostUseCase
+import com.brokentelephone.game.domain.use_case.GetAuthStateUseCase
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.domain.use_case.GetPostLinkByIdUseCase
 import com.brokentelephone.game.domain.use_case.GetPrivacyPolicyLinkUseCase
@@ -24,18 +25,10 @@ import com.brokentelephone.game.features.app_preferences.use_case.GetThemeUseCas
 import com.brokentelephone.game.features.blocked_users.BlockedUsersViewModel
 import com.brokentelephone.game.features.blocked_users.use_case.GetBlockedUsersUseCase
 import com.brokentelephone.game.features.blocked_users.use_case.UnblockUserUseCase
-import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBarViewModel
 import com.brokentelephone.game.features.chain_details.ChainDetailsViewModel
 import com.brokentelephone.game.features.chain_details.use_case.GetChainByPostIdUseCase
-import com.brokentelephone.game.features.choose_avatar.ChooseAvatarViewModel
-import com.brokentelephone.game.features.choose_avatar.use_case.CompleteAvatarStepUseCase
-import com.brokentelephone.game.features.choose_username.ChooseUsernameViewModel
-import com.brokentelephone.game.features.choose_username.use_case.CompleteUsernameStepUseCase
 import com.brokentelephone.game.features.create_post.CreatePostViewModel
 import com.brokentelephone.game.features.create_post.use_case.CreatePostUseCase
-import com.brokentelephone.game.features.dashboard.DashboardViewModel
-import com.brokentelephone.game.features.dashboard.use_case.LoadInitialPostsUseCase
-import com.brokentelephone.game.features.dashboard.use_case.LoadNextPostsUseCase
 import com.brokentelephone.game.features.describe_drawing.DescribeDrawingViewModel
 import com.brokentelephone.game.features.describe_drawing.use_case.SubmitDescriptionUseCase
 import com.brokentelephone.game.features.draw.DrawViewModel
@@ -58,7 +51,6 @@ import com.brokentelephone.game.features.post_details.use_case.GetPostByIdUseCas
 import com.brokentelephone.game.features.post_details.use_case.JoinSessionUseCase
 import com.brokentelephone.game.features.profile.ProfileViewModel
 import com.brokentelephone.game.features.settings.SettingsViewModel
-import com.brokentelephone.game.features.settings.use_case.GetAuthStateUseCase
 import com.brokentelephone.game.features.settings.use_case.GetVersionInfoUseCase
 import com.brokentelephone.game.features.theme.ThemeViewModel
 import com.brokentelephone.game.features.theme.use_case.UpdateThemeUseCase
@@ -100,9 +92,6 @@ val appModule = module {
     factoryOf(::GetUserContributionsUseCase)
 
     viewModelOf(::CreatePostViewModel)
-    factoryOf(::LoadInitialPostsUseCase)
-    factoryOf(::LoadNextPostsUseCase)
-    viewModelOf(::DashboardViewModel)
     viewModelOf(::PostDetailsViewModel)
     viewModelOf(::DrawViewModel)
     viewModelOf(::DescribeDrawingViewModel)
@@ -110,10 +99,6 @@ val appModule = module {
     viewModelOf(::ProfileViewModel)
     viewModelOf(::EditUsernameViewModel)
     viewModelOf(::EditProfileViewModel)
-    viewModelOf(::ChooseUsernameViewModel)
-    factoryOf(::CompleteAvatarStepUseCase)
-    factoryOf(::CompleteUsernameStepUseCase)
-    viewModelOf(::ChooseAvatarViewModel)
     viewModelOf(::EditAvatarViewModel)
 
     factoryOf(::GetVersionInfoUseCase)
@@ -144,6 +129,5 @@ val appModule = module {
     factoryOf(::ApplyEmailChangeUseCase)
     factoryOf(::ApplyEmailVerificationUseCase)
     factoryOf(::GetPendingEmailUseCase)
-    single { AppNavBottomBarViewModel(get(), get()) }
     viewModelOf(::MainViewModel)
 }

@@ -46,3 +46,4 @@ local.properties
 /features/welcome_api/build/
 /features/sign_up_api/build/
 /features/sign_in/build/
+/features/choose_avatar/build/

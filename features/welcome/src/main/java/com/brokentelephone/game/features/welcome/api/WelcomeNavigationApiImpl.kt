@@ -10,6 +10,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.brokentelephone.game.dashboard_api.DashboardNavigationApi
 import com.brokentelephone.game.features.sign_up_api.SignUpNavigationApi
 import com.brokentelephone.game.features.welcome.WelcomeScreen
 import com.brokentelephone.game.features.welcome_api.WelcomeNavigationApi
@@ -19,7 +20,8 @@ import com.brokentelephone.game.sign_in_api.SignInNavigationApi
 
 class WelcomeNavigationApiImpl(
     private val signUpNavigationApi: SignUpNavigationApi,
-    private val signInNavigationApi: SignInNavigationApi
+    private val signInNavigationApi: SignInNavigationApi,
+    private val dashboardNavigationApi: DashboardNavigationApi
 ) : WelcomeNavigationApi {
 
     override val route = WelcomeRoute
@@ -58,7 +60,11 @@ class WelcomeNavigationApiImpl(
                 onSignIn = {
                     navController.navigateSingle(signInNavigationApi.route)
                 },
-                onNavigateToDashboard = { },
+                onNavigateToDashboard = {
+                    navController.navigateSingle(dashboardNavigationApi.route) {
+                        popUpTo(WelcomeRoute) { inclusive = true }
+                    }
+                },
             )
         }
     }

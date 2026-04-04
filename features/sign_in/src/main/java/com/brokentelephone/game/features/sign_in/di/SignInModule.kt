@@ -9,7 +9,9 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val signInModule = module {
-    single<SignInNavigationApi> { SignInNavigationApiImpl(get()) }
+    single<SignInNavigationApi> {
+        SignInNavigationApiImpl(get(), get(), get())
+    }
     factoryOf(::SignInWithEmailPasswordUseCase)
     viewModelOf(::SignInViewModel)
 }

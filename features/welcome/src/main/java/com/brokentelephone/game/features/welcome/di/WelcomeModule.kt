@@ -13,6 +13,6 @@ val welcomeModule = module {
     viewModelOf(::WelcomeViewModel)
 
     single<WelcomeNavigationApi> {
-        WelcomeNavigationApiImpl(get(), get())
+        WelcomeNavigationApiImpl(get(), get(), get())
     }
 }

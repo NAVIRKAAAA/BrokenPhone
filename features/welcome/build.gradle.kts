@@ -27,6 +27,7 @@ dependencies {
     implementation(project(":features:welcome_api"))
     implementation(project(":features:sign_up_api"))
     implementation(project(":features:sign_in_api"))
+    implementation(project(":features:dashboard_api"))
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.koin.android)
     implementation(libs.koin.compose.viewmodel)

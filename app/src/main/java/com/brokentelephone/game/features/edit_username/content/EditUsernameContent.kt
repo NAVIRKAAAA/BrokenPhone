@@ -33,8 +33,8 @@ import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.text_field.SignUpTextFieldValue
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.top_bar.SaveTopBar
+import com.brokentelephone.game.core.username.SuggestedUsernames
 import com.brokentelephone.game.features.choose_username.content.UsernameChip
-import com.brokentelephone.game.features.choose_username.model.SuggestedUsernames
 import com.brokentelephone.game.features.edit_username.EditUsernameViewModel
 import com.brokentelephone.game.features.edit_username.model.EditUsernameState
 import kotlinx.coroutines.delay

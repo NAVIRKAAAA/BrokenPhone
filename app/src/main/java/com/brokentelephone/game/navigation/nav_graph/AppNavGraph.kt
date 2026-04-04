@@ -10,7 +10,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -18,16 +17,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.brokentelephone.game.choose_avatar_api.ChooseAvatarNavigationApi
+import com.brokentelephone.game.choose_username_api.ChooseUsernameNavigationApi
+import com.brokentelephone.game.dashboard_api.DashboardNavigationApi
+import com.brokentelephone.game.dashboard_api.MainGraph
 import com.brokentelephone.game.features.account_settings.AccountSettingsScreen
 import com.brokentelephone.game.features.add_friend.AddFriendScreen
 import com.brokentelephone.game.features.blocked_users.BlockedUsersScreen
 import com.brokentelephone.game.features.chain_details.ChainDetailsScreen
 import com.brokentelephone.game.features.chain_details.ChainDetailsViewModel
-import com.brokentelephone.game.features.choose_avatar.ChooseAvatarScreen
-import com.brokentelephone.game.features.choose_username.ChooseUsernameScreen
 import com.brokentelephone.game.features.create_post.CreatePostScreen
-import com.brokentelephone.game.features.dashboard.DashboardScreen
-import com.brokentelephone.game.features.dashboard.DashboardViewModel
 import com.brokentelephone.game.features.describe_drawing.DescribeDrawingScreen
 import com.brokentelephone.game.features.draw.DrawScreen
 import com.brokentelephone.game.features.edit_avatar.EditAvatarScreen
@@ -49,6 +48,7 @@ import com.brokentelephone.game.features.user_details.UserDetailsScreen
 import com.brokentelephone.game.features.user_friends.UserFriendsScreen
 import com.brokentelephone.game.features.welcome_api.WelcomeNavigationApi
 import com.brokentelephone.game.forgot_password_api.ForgotPasswordNavigationApi
+import com.brokentelephone.game.nav_api.KEY_FORCE_REFRESH
 import com.brokentelephone.game.nav_api.NavigationRoute
 import com.brokentelephone.game.nav_api.safePopBackStack
 import com.brokentelephone.game.navigation.routes.Routes
@@ -57,8 +57,6 @@ import kotlinx.serialization.Serializable
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-
-private const val KEY_FORCE_REFRESH = "force_refresh"
 
 @Serializable
 object AuthGraph : NavigationRoute()
@@ -74,6 +72,11 @@ fun AppNavGraph(
     val signUpNavigationApi: SignUpNavigationApi = koinInject()
     val signInNavigationApi: SignInNavigationApi = koinInject()
     val forgotPasswordNavigationApi: ForgotPasswordNavigationApi = koinInject()
+    val chooseAvatarNavigationApi: ChooseAvatarNavigationApi = koinInject()
+    val chooseUsernameNavigationApi: ChooseUsernameNavigationApi = koinInject()
+
+    val dashboardNavigationApi: DashboardNavigationApi = koinInject()
+
 
     NavHost(
         navController = navController,
@@ -86,95 +89,13 @@ fun AppNavGraph(
             signUpNavigationApi.screen(navController, this)
             signInNavigationApi.screen(navController, this)
             forgotPasswordNavigationApi.screen(navController, this)
+            chooseAvatarNavigationApi.screen(navController, this)
+            chooseUsernameNavigationApi.screen(navController, this)
         }
 
-//        navigation<Routes.AuthGraph>(startDestination = Routes.Welcome) {}
-            composable<Routes.ChooseAvatar>(
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                },
-                exitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                },
-                popEnterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { -it / 3 },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                },
-            ) {
-                ChooseAvatarScreen(
-                    navigateToChooseUsername = {
-//                        navController.navigateSingle(Routes.ChooseUsername)
-                    },
-                )
-            }
+        navigation<MainGraph>(startDestination = dashboardNavigationApi.route) {
 
-            composable<Routes.ChooseUsername>(
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                },
-                popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                },
-            ) {
-                ChooseUsernameScreen(
-                    onBackClick = navController::safePopBackStack,
-                    navigateToFeed = {
-//                        navController.navigateSingle(Routes.Dashboard) {
-//                            popUpTo(0) { inclusive = true }
-//                        }
-                    },
-                )
-            }
-
-//        }
-
-        navigation<Routes.MainGraph>(startDestination = Routes.Dashboard) {
-
-            composable<Routes.Dashboard>(
-                enterTransition = { EnterTransition.None },
-                exitTransition = { ExitTransition.None },
-                popEnterTransition = { EnterTransition.None },
-                popExitTransition = { ExitTransition.None }
-            ) {
-
-                val viewModel: DashboardViewModel = koinViewModel()
-                val savedStateHandle = it.savedStateHandle
-
-                LaunchedEffect(Unit) {
-                    val isForceRefresh = savedStateHandle.remove<Boolean>(KEY_FORCE_REFRESH) == true
-
-                    if (isForceRefresh) {
-                        viewModel.onRefresh()
-                    }
-                }
-
-                DashboardScreen(
-                    viewModel = viewModel,
-                    onPostClick = { postId ->
-//                        navController.navigateSingle(Routes.PostDetails(postId = postId))
-                    },
-                    onUserClick = { userId ->
-//                        navController.navigateSingle(Routes.UserDetails(userId = userId))
-                    },
-                    onNotificationsClick = {
-//                        navController.navigateSingle(Routes.Notifications)
-                    }
-                )
-            }
+            dashboardNavigationApi.screen(navController, this)
 
             composable<Routes.PostDetails>(
                 enterTransition = {

@@ -5,6 +5,9 @@ import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.brokentelephone.game.choose_avatar_api.ChooseAvatarNavigationApi
+import com.brokentelephone.game.choose_username_api.ChooseUsernameNavigationApi
+import com.brokentelephone.game.dashboard_api.MainGraph
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.model.post.PostContent
@@ -22,7 +25,6 @@ import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
 import com.brokentelephone.game.main.use_case.GetActiveSessionUseCase
 import com.brokentelephone.game.main.use_case.GetPendingEmailUseCase
 import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
-import com.brokentelephone.game.nav_api.NavigationRoute
 import com.brokentelephone.game.navigation.nav_graph.AuthGraph
 import com.brokentelephone.game.navigation.routes.Routes
 import kotlinx.coroutines.Job
@@ -48,6 +50,8 @@ class MainViewModel(
     private val applyEmailVerificationUseCase: ApplyEmailVerificationUseCase,
     private val getPendingEmailUseCase: GetPendingEmailUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
+    private val chooseUsernameNavigationApi: ChooseUsernameNavigationApi,
+    private val chooseAvatarNavigationApi: ChooseAvatarNavigationApi
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MainState())
@@ -89,14 +93,18 @@ class MainViewModel(
             initializeSessionUseCase.execute().onSuccess { authState ->
                 val user = authState.getUserOrNull()
 
-//                val (destination, pendingRoutes) = when (user?.onboardingStep) {
-//                    null -> AuthGraph to emptyList()
-//                    OnboardingStep.CHOOSE_AVATAR -> Routes.AuthGraph to emptyList()
-//                    OnboardingStep.CHOOSE_USERNAME -> Routes.AuthGraph to listOf(Routes.ChooseUsername)
-//                    OnboardingStep.COMPLETED -> Routes.MainGraph to emptyList()
-//                }
+                val (destination, pendingRoutes) = when (user?.onboardingStep) {
+                    OnboardingStep.CHOOSE_AVATAR -> AuthGraph to listOf(
+                        chooseAvatarNavigationApi.route
+                    )
+                    OnboardingStep.CHOOSE_USERNAME -> AuthGraph to listOf(
+                        chooseAvatarNavigationApi.route,
+                        chooseUsernameNavigationApi.route
+                    )
 
-                val (destination, pendingRoutes) = AuthGraph to emptyList<NavigationRoute>()
+                    OnboardingStep.COMPLETED -> MainGraph to emptyList()
+                    null -> AuthGraph to emptyList()
+                }
 
                 _state.update {
                     it.copy(

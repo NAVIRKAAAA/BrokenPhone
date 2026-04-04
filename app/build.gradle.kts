@@ -55,8 +55,19 @@ dependencies {
     implementation(project(":features:sign_in"))
     implementation(project(":features:sign_in_api"))
 
+    implementation(project(":features:choose_avatar"))
+    implementation(project(":features:choose_avatar_api"))
+
     implementation(project(":features:forgot_password"))
     implementation(project(":features:forgot_password_api"))
+
+    implementation(project(":features:choose_username"))
+    implementation(project(":features:choose_username_api"))
+
+    implementation(project(":features:dashboard"))
+    implementation(project(":features:dashboard_api"))
+
+    implementation(project(":features:bottom_nav_bar"))
 
     implementation(project(":features:edit_bio"))
     implementation(project(":features:edit_email"))

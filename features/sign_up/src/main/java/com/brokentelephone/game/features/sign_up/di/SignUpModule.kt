@@ -11,7 +11,7 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val signUpModule = module {
-    single<SignUpNavigationApi> { SignUpNavigationApiImpl() }
+    single<SignUpNavigationApi> { SignUpNavigationApiImpl(get(), get()) }
     factoryOf(::SignUpValidator)
     factoryOf(::ValidateSignUpUseCase)
     factoryOf(::SignUpUseCase)

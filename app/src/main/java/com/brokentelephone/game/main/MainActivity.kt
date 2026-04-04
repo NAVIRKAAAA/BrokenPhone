@@ -32,6 +32,7 @@ import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.LocalAppLanguage
 import com.brokentelephone.game.domain.model.settings.AppTheme
 import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBar
+import com.brokentelephone.game.features.welcome_api.WelcomeRoute
 import com.brokentelephone.game.navigation.nav_graph.AppNavGraph
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -107,7 +108,15 @@ class MainActivity : AppCompatActivity() {
                     state.startDestination?.let { startDestination ->
                         LaunchedEffect(state.pendingRoutes) {
                             if (state.pendingRoutes.isNotEmpty()) {
-                                state.pendingRoutes.forEach { route -> navController.navigate(route) }
+                                state.pendingRoutes.forEachIndexed { index, route ->
+                                if (index == 0) {
+                                        navController.navigate(route) {
+                                            popUpTo<WelcomeRoute> { inclusive = true }
+                                        }
+                                    } else {
+                                        navController.navigate(route)
+                                    }
+                                }
                                 delay(350)
                                 mainViewModel.onPendingRoutesConsumed()
                             }
