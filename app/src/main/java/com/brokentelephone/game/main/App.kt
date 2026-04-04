@@ -2,6 +2,7 @@ package com.brokentelephone.game.main
 
 import android.app.Application
 import com.brokentelephone.game.di.appModule
+import com.brokentelephone.game.di.dataModule
 import com.brokentelephone.game.essentials.di.essentialsModule
 import com.brokentelephone.game.features.add_friend.di.addFriendModule
 import com.brokentelephone.game.features.edit_bio.di.editBioModule
@@ -24,6 +25,7 @@ class App : Application() {
             androidContext(this@App)
             modules(
                 essentialsModule,
+                dataModule,
                 appModule,
                 welcomeModule,
                 signUpModule,

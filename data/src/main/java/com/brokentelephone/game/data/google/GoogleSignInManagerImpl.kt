@@ -6,7 +6,7 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.ClearCredentialException
 import androidx.credentials.exceptions.GetCredentialCancellationException
-import com.brokentelephone.game.BuildConfig
+import com.brokentelephone.game.data.BuildConfig
 import com.brokentelephone.game.domain.google.GoogleSignInManager
 import com.brokentelephone.game.essentials.exceptions.auth.GoogleSignInCancelledException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption

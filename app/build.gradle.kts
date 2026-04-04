@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -7,11 +5,6 @@ plugins {
     alias(libs.plugins.google.services)
 
     id ("app.cash.paparazzi") version "2.0.0-alpha04"
-}
-
-val localProperties = Properties().apply {
-    val file = rootProject.file("local.properties")
-    if (file.exists()) load(file.inputStream())
 }
 
 android {
@@ -26,7 +19,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "WEB_CLIENT_ID", "\"${localProperties["WEB_CLIENT_ID"]}\"")
     }
 
     buildTypes {
@@ -49,6 +41,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":data"))
     implementation(project(":core"))
     implementation(project(":essentials"))
     implementation(project(":domain"))
@@ -80,15 +73,8 @@ dependencies {
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.browser)
     implementation(libs.androidx.startup)
-    implementation(libs.androidx.datastore.preferences)
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.firestore)
-    implementation(libs.firebase.storage)
     implementation(libs.firebase.analytics)
-    implementation(libs.androidx.credentials)
-    implementation(libs.androidx.credentials.play.services)
-    implementation(libs.googleid)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

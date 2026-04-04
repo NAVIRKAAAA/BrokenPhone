@@ -1,21 +1,17 @@
-package com.brokentelephone.game.main.use_case
+package com.brokentelephone.game.domain.use_case
 
 import com.brokentelephone.game.domain.api_handler.ApiHandler
 import com.brokentelephone.game.domain.api_handler.AppResult
-import com.brokentelephone.game.domain.user.AuthState
 import com.brokentelephone.game.domain.user.UserSession
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 
-class InitializeSessionUseCase(
+class UpdateFcmTokenUseCase(
     private val userSession: UserSession,
     private val handler: ApiHandler,
 ) {
-    suspend fun execute(): AppResult<AuthState> {
+    suspend fun execute(token: String): AppResult<Unit> {
         return handler.handle(Dispatchers.IO) {
-            userSession.initialize()
-            val authState = userSession.authState.first()
-            authState
+            userSession.updateFcmToken(token)
         }
     }
 }

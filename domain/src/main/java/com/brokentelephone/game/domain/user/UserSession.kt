@@ -17,6 +17,7 @@ interface UserSession {
     suspend fun unblockUser(userId: String)
     suspend fun updateNotifications(notifications: List<NotificationType>)
     suspend fun updateLanguage(language: Language)
+    suspend fun updateFcmToken(token: String)
     suspend fun signOut()
     suspend fun deleteAccount()
     suspend fun getBlockedUsers(): List<BlockedUser>

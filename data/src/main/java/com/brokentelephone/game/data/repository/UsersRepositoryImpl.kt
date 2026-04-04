@@ -9,8 +9,7 @@ import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.domain.user.User
 import com.brokentelephone.game.essentials.exceptions.auth.NetworkException
 import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
-import com.brokentelephone.game.features.choose_username.model.SuggestedUsernames
-import com.brokentelephone.game.features.edit_avatar.model.Avatars
+
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
@@ -161,14 +160,14 @@ class UsersRepositoryImpl(
         }
     }
 
-    override suspend fun createUser(id: String) {
+    override suspend fun createUser(id: String, username: String, avatarUrl: String) {
         val now = System.currentTimeMillis()
 
         val user = User(
             id = id,
-            username = SuggestedUsernames.random(),
+            username = username,
             email = "",
-            avatarUrl = Avatars.all.random().url,
+            avatarUrl = avatarUrl,
             authProvider = AuthProvider.GUEST,
             createdAt = now,
             updatedAt = now,

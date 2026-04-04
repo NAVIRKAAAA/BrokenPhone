@@ -41,3 +41,4 @@ local.properties
 /features/edit_bio/build/
 /features/user_friends/build/
 /features/notifications/build/
+/data/build/

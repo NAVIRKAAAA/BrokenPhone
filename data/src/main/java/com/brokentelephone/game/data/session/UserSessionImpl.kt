@@ -321,6 +321,19 @@ class UserSessionImpl(
             throw UnknownAuthException()
         }
     }
+    override suspend fun updateFcmToken(token: String) {
+        val uid = firebaseAuth.currentUser?.uid ?: throw UnauthorizedException()
+        try {
+            firestore.collection(COLLECTION_USERS)
+                .document(uid)
+                .update(User.FIELD_FCM_TOKEN, token)
+                .await()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // best-effort, ignore failures
+        }
+    }
+
     override suspend fun signOut() = firebaseAuth.signOut()
     override suspend fun deleteAccount() = Unit
 

@@ -1,33 +1,6 @@
 package com.brokentelephone.game.di
 
 import com.brokentelephone.game.core.timer.CountdownTimer
-import com.brokentelephone.game.data.google.GoogleSignInManagerImpl
-import com.brokentelephone.game.data.handler.ApiHandlerImpl
-import com.brokentelephone.game.data.link.LinkProviderImpl
-import com.brokentelephone.game.data.repository.AuthRepositoryImpl
-import com.brokentelephone.game.data.repository.FriendsRepositoryImpl
-import com.brokentelephone.game.data.repository.GameSessionRepositoryImpl
-import com.brokentelephone.game.data.repository.MockAppInfoRepositoryImpl
-import com.brokentelephone.game.data.repository.NotificationsRepositoryImpl
-import com.brokentelephone.game.data.repository.PostsRepositoryImpl
-import com.brokentelephone.game.data.repository.ReportsRepositoryImpl
-import com.brokentelephone.game.data.repository.UserSettingsRepositoryImpl
-import com.brokentelephone.game.data.repository.UsersRepositoryImpl
-import com.brokentelephone.game.data.session.UserSessionImpl
-import com.brokentelephone.game.data.storage.FirebaseImageStorage
-import com.brokentelephone.game.domain.api_handler.ApiHandler
-import com.brokentelephone.game.domain.google.GoogleSignInManager
-import com.brokentelephone.game.domain.link.LinkProvider
-import com.brokentelephone.game.domain.repository.AppInfoRepository
-import com.brokentelephone.game.domain.repository.AuthRepository
-import com.brokentelephone.game.domain.repository.FriendsRepository
-import com.brokentelephone.game.domain.repository.GameSessionRepository
-import com.brokentelephone.game.domain.repository.NotificationsRepository
-import com.brokentelephone.game.domain.repository.PostRepository
-import com.brokentelephone.game.domain.repository.ReportsRepository
-import com.brokentelephone.game.domain.repository.UserSettingsRepository
-import com.brokentelephone.game.domain.repository.UsersRepository
-import com.brokentelephone.game.domain.storage.ImageStorage
 import com.brokentelephone.game.domain.use_case.BlockUserUseCase
 import com.brokentelephone.game.domain.use_case.DeletePostUseCase
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
@@ -43,7 +16,6 @@ import com.brokentelephone.game.domain.use_case.MarkPostAsNotInterestedUseCase
 import com.brokentelephone.game.domain.use_case.ReportPostUseCase
 import com.brokentelephone.game.domain.use_case.ReportUserUseCase
 import com.brokentelephone.game.domain.use_case.SignInWithGoogleUseCase
-import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.features.account_settings.AccountSettingsViewModel
 import com.brokentelephone.game.features.account_settings.use_case.DeleteAccountUseCase
 import com.brokentelephone.game.features.account_settings.use_case.SendEmailVerificationUseCase
@@ -98,41 +70,12 @@ import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
 import com.brokentelephone.game.main.use_case.GetActiveSessionUseCase
 import com.brokentelephone.game.main.use_case.GetPendingEmailUseCase
 import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestoreSettings
-import com.google.firebase.firestore.memoryCacheSettings
-import com.google.firebase.storage.FirebaseStorage
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val appModule = module {
-    single<LinkProvider> { LinkProviderImpl() }
-    single<AppInfoRepository> { MockAppInfoRepositoryImpl() }
-    single { FirebaseStorage.getInstance() }
-    single<ImageStorage> { FirebaseImageStorage(get()) }
-    single<PostRepository> { PostsRepositoryImpl(get()) }
-    single<GameSessionRepository> { GameSessionRepositoryImpl(get()) }
-    single<AuthRepository> { AuthRepositoryImpl(get(), androidContext()) }
-    single<GoogleSignInManager> { GoogleSignInManagerImpl(androidContext()) }
-    single { FirebaseAuth.getInstance() }
-    single {
-        FirebaseFirestore.getInstance().apply {
-            firestoreSettings = firestoreSettings {
-                setLocalCacheSettings(memoryCacheSettings {})
-            }
-        }
-    }
-    single<ApiHandler> { ApiHandlerImpl() }
-    single<UserSession> { UserSessionImpl(get(), get()) }
-    single<ReportsRepository> { ReportsRepositoryImpl(get()) }
-    single<UserSettingsRepository> { UserSettingsRepositoryImpl(androidContext()) }
-    single<UsersRepository> { UsersRepositoryImpl(get()) }
-    single<FriendsRepository> { FriendsRepositoryImpl(get()) }
-    single<NotificationsRepository> { NotificationsRepositoryImpl(get()) }
-
     single { DrawingBitmapSaver(androidContext()) }
     factoryOf(::CountdownTimer)
 

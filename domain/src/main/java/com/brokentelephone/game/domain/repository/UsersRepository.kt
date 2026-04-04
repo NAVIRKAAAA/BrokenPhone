@@ -14,7 +14,7 @@ interface UsersRepository {
         authProvider: AuthProvider
     )
 
-    suspend fun createUser(id: String)
+    suspend fun createUser(id: String, username: String, avatarUrl: String)
 
     suspend fun getSuggestedUsers(excludeIds: List<String>): List<User>
 }

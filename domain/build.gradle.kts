@@ -18,6 +18,6 @@ android {
 
 dependencies {
     implementation(project(":essentials"))
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.firestore)
+    api(platform(libs.firebase.bom))
+    api(libs.firebase.firestore)
 }

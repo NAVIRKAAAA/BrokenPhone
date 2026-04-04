@@ -23,6 +23,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.Source
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -46,7 +47,7 @@ class PostsRepositoryImpl(
             val snapshot = collection
                 .applySorting(sort)
                 .limit(pageSize.toLong())
-                .get()
+                .get(Source.SERVER)
                 .await()
 
             val posts = snapshot.documents.mapNotNull { it.data?.toPost() }
@@ -88,7 +89,7 @@ class PostsRepositoryImpl(
                 .applySorting(sort)
                 .startAfter(afterDoc)
                 .limit(pageSize.toLong())
-                .get()
+                .get(Source.SERVER)
                 .await()
 
             val posts = snapshot.documents.mapNotNull { it.data?.toPost() }

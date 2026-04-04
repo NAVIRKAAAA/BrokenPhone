@@ -21,6 +21,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "BrokenTelephone"
 include(":app")
+include(":data")
 include(":essentials")
 include(":domain")
 include(":features:welcome")

@@ -1,5 +1,7 @@
 package com.brokentelephone.game.features.welcome.use_case
 
+import com.brokentelephone.game.core.avatar.Avatars
+import com.brokentelephone.game.core.username.SuggestedUsernames
 import com.brokentelephone.game.domain.api_handler.ApiHandler
 import com.brokentelephone.game.domain.api_handler.AppResult
 import com.brokentelephone.game.domain.repository.AuthRepository
@@ -14,8 +16,10 @@ class SignInAnonymouslyUseCase(
     suspend fun execute(): AppResult<Unit> {
         return handler.handle(Dispatchers.IO) {
             val userId = authRepository.signInAnonymously()
+            val username = SuggestedUsernames.random()
+            val avatarUrl = Avatars.all.random().url
 
-            usersRepository.createUser(id = userId)
+            usersRepository.createUser(userId, username, avatarUrl)
         }
     }
 }

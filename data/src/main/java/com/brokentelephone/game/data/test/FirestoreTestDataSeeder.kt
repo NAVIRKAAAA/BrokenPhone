@@ -10,8 +10,6 @@ import com.brokentelephone.game.domain.model.settings.NotificationType
 import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.domain.user.User
-import com.brokentelephone.game.features.choose_username.model.SuggestedUsernames
-import com.brokentelephone.game.features.edit_avatar.model.Avatars
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -30,7 +28,7 @@ class FirestoreTestDataSeeder(
                 id = id,
                 username = username,
                 email = "$username@test.com".lowercase(),
-                avatarUrl = Avatars.all.random().url,
+                avatarUrl = "",
                 authProvider = AuthProvider.EMAIL,
                 createdAt = now,
                 updatedAt = now,
@@ -59,7 +57,7 @@ class FirestoreTestDataSeeder(
                 username = user.username,
                 userAvatarUrl = user.avatarUrl,
                 type = if (idx % 2 == 0) NotificationData.FriendsType.INVITE_RECEIVED
-                       else NotificationData.FriendsType.INVITE_ACCEPTED,
+                else NotificationData.FriendsType.INVITE_ACCEPTED,
             )
         }
 
@@ -93,18 +91,21 @@ class FirestoreTestDataSeeder(
         }
     }
 
-    suspend fun seedFriends(targetUserId: String = "Va9OfTygaXOH3OLRWPMjOs4TR5y2", count: Int = 100) {
+    suspend fun seedFriends(
+        targetUserId: String = "Va9OfTygaXOH3OLRWPMjOs4TR5y2",
+        count: Int = 100
+    ) {
         val now = System.currentTimeMillis()
         val friendIds = mutableListOf<String>()
 
         repeat(count) {
             val docRef = usersCollection.document()
-            val username = SuggestedUsernames.random()
+            val username = ""
             val user = User(
                 id = docRef.id,
                 username = username,
                 email = "${username.replace(" ", "").lowercase()}_${it}@test.com",
-                avatarUrl = Avatars.all.random().url,
+                avatarUrl = "",
                 authProvider = AuthProvider.EMAIL,
                 createdAt = now,
                 updatedAt = now,
@@ -127,7 +128,7 @@ class FirestoreTestDataSeeder(
             val now = System.currentTimeMillis() - (0..30L * 24 * 60 * 60 * 1000).random()
             val author = FAKE_AUTHORS.random()
             val text = FAKE_TEXTS.random()
-            val avatarUrl = Avatars.all.random().url
+            val avatarUrl = "Avatars.all.random().url"
 
             val post = Post(
                 id = docRef.id,
@@ -162,17 +163,51 @@ class FirestoreTestDataSeeder(
 
     private companion object {
         val FAKE_CHAIN_NOTIFICATIONS: List<NotificationData.ChainInfo> = listOf(
-            NotificationData.ChainInfo(chainId = "chain_001", postId = "post_001", title = "Chain completed!", body = "A cat is sitting on a windowsill — see the full chain"),
-            NotificationData.ChainInfo(chainId = "chain_002", postId = "post_002", title = "Chain completed!", body = "Two astronauts playing chess — see the full chain"),
-            NotificationData.ChainInfo(chainId = "chain_003", postId = "post_003", title = "Chain completed!", body = "A dragon learning to bake croissants — see the full chain"),
-            NotificationData.ChainInfo(chainId = "chain_004", postId = "post_004", title = "Chain completed!", body = "Three penguins trying to hail a taxi — see the full chain"),
-            NotificationData.ChainInfo(chainId = "chain_005", postId = "post_005", title = "Chain completed!", body = "A wizard forgot where he put his wand — see the full chain"),
+            NotificationData.ChainInfo(
+                chainId = "chain_001",
+                postId = "post_001",
+                title = "Chain completed!",
+                body = "A cat is sitting on a windowsill — see the full chain"
+            ),
+            NotificationData.ChainInfo(
+                chainId = "chain_002",
+                postId = "post_002",
+                title = "Chain completed!",
+                body = "Two astronauts playing chess — see the full chain"
+            ),
+            NotificationData.ChainInfo(
+                chainId = "chain_003",
+                postId = "post_003",
+                title = "Chain completed!",
+                body = "A dragon learning to bake croissants — see the full chain"
+            ),
+            NotificationData.ChainInfo(
+                chainId = "chain_004",
+                postId = "post_004",
+                title = "Chain completed!",
+                body = "Three penguins trying to hail a taxi — see the full chain"
+            ),
+            NotificationData.ChainInfo(
+                chainId = "chain_005",
+                postId = "post_005",
+                title = "Chain completed!",
+                body = "A wizard forgot where he put his wand — see the full chain"
+            ),
         )
 
         val FAKE_NEWS_NOTIFICATIONS: List<NotificationData.News> = listOf(
-            NotificationData.News(title = "Welcome to BrokenTelephone!", body = "Invite your friends and start your first chain today."),
-            NotificationData.News(title = "New feature: Chain history", body = "You can now browse the full history of every chain you participated in."),
-            NotificationData.News(title = "Weekend challenge", body = "Complete 3 chains this weekend and earn a special badge."),
+            NotificationData.News(
+                title = "Welcome to BrokenTelephone!",
+                body = "Invite your friends and start your first chain today."
+            ),
+            NotificationData.News(
+                title = "New feature: Chain history",
+                body = "You can now browse the full history of every chain you participated in."
+            ),
+            NotificationData.News(
+                title = "Weekend challenge",
+                body = "Complete 3 chains this weekend and earn a special badge."
+            ),
         )
 
         val FAKE_AUTHORS = listOf(

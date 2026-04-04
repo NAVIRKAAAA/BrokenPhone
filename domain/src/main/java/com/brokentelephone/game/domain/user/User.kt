@@ -19,6 +19,7 @@ data class User(
     val blockedBy: List<String> = emptyList(),
     val notInterestedPostIds: List<String> = emptyList(),
     val readNotificationIds: List<String> = emptyList(),
+    val fcmToken: String? = null,
     val sessionId: String? = null,
     val isEmailVerified: Boolean = false,
     val language: Language = Language.ENGLISH,
@@ -40,6 +41,7 @@ data class User(
         FIELD_BLOCKED_BY to blockedBy,
         FIELD_NOT_INTERESTED_POST_IDS to notInterestedPostIds,
         FIELD_READ_NOTIFICATION_IDS to readNotificationIds,
+        FIELD_FCM_TOKEN to fcmToken,
         FIELD_SESSION_ID to sessionId,
         FIELD_IS_EMAIL_VERIFIED to isEmailVerified,
         FIELD_LANGUAGE to language.name,
@@ -61,6 +63,7 @@ data class User(
         const val FIELD_BLOCKED_BY = "blockedBy"
         const val FIELD_NOT_INTERESTED_POST_IDS = "notInterestedPostIds"
         const val FIELD_READ_NOTIFICATION_IDS = "readNotificationIds"
+        const val FIELD_FCM_TOKEN = "fcmToken"
         const val FIELD_SESSION_ID = "sessionId"
         const val FIELD_IS_EMAIL_VERIFIED = "isEmailVerified"
         const val FIELD_LANGUAGE = "language"
@@ -88,6 +91,7 @@ data class User(
                     blockedBy = (map[FIELD_BLOCKED_BY] as? List<String>) ?: emptyList(),
                     notInterestedPostIds = (map[FIELD_NOT_INTERESTED_POST_IDS] as? List<String>) ?: emptyList(),
                     readNotificationIds = (map[FIELD_READ_NOTIFICATION_IDS] as? List<String>) ?: emptyList(),
+                    fcmToken = map[FIELD_FCM_TOKEN] as? String,
                     sessionId = map[FIELD_SESSION_ID] as? String,
                     isEmailVerified = map[FIELD_IS_EMAIL_VERIFIED] as? Boolean ?: false,
                     language = runCatching {
