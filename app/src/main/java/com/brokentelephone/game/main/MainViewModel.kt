@@ -22,6 +22,8 @@ import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
 import com.brokentelephone.game.main.use_case.GetActiveSessionUseCase
 import com.brokentelephone.game.main.use_case.GetPendingEmailUseCase
 import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
+import com.brokentelephone.game.nav_api.NavigationRoute
+import com.brokentelephone.game.navigation.nav_graph.AuthGraph
 import com.brokentelephone.game.navigation.routes.Routes
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -87,12 +89,14 @@ class MainViewModel(
             initializeSessionUseCase.execute().onSuccess { authState ->
                 val user = authState.getUserOrNull()
 
-                val (destination, pendingRoutes) = when (user?.onboardingStep) {
-                    null -> Routes.AuthGraph to emptyList()
-                    OnboardingStep.CHOOSE_AVATAR -> Routes.AuthGraph to emptyList()
-                    OnboardingStep.CHOOSE_USERNAME -> Routes.AuthGraph to listOf(Routes.ChooseUsername)
-                    OnboardingStep.COMPLETED -> Routes.MainGraph to emptyList()
-                }
+//                val (destination, pendingRoutes) = when (user?.onboardingStep) {
+//                    null -> AuthGraph to emptyList()
+//                    OnboardingStep.CHOOSE_AVATAR -> Routes.AuthGraph to emptyList()
+//                    OnboardingStep.CHOOSE_USERNAME -> Routes.AuthGraph to listOf(Routes.ChooseUsername)
+//                    OnboardingStep.COMPLETED -> Routes.MainGraph to emptyList()
+//                }
+
+                val (destination, pendingRoutes) = AuthGraph to emptyList<NavigationRoute>()
 
                 _state.update {
                     it.copy(
@@ -112,7 +116,7 @@ class MainViewModel(
                 _state.update {
                     it.copy(
                         isSessionLoading = false,
-                        startDestination = Routes.AuthGraph
+                        startDestination = AuthGraph
                     )
                 }
 
@@ -189,7 +193,7 @@ class MainViewModel(
     }
 
     fun onSessionErrorDismissed() {
-        _state.update { it.copy(sessionDataError = null, startDestination = Routes.AuthGraph) }
+        _state.update { it.copy(sessionDataError = null, startDestination = AuthGraph) }
     }
 
     fun onPendingRoutesConsumed() {
@@ -218,7 +222,7 @@ class MainViewModel(
             applyEmailVerificationUseCase.execute(oobCode).onSuccess {
                 Log.d("LOG_TAG", "handleEmailVerification(): onSuccess")
                 // TODO: Show success banner
-            }.onError {exception ->
+            }.onError { exception ->
                 Log.d("LOG_TAG", "handleEmailVerification(): onError: $exception")
             }
             _state.update { it.copy(isLoading = false) }

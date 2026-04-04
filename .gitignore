@@ -42,3 +42,7 @@ local.properties
 /features/user_friends/build/
 /features/notifications/build/
 /data/build/
+/nav_api/build/
+/features/welcome_api/build/
+/features/sign_up_api/build/
+/features/sign_in/build/

@@ -60,8 +60,6 @@ import com.brokentelephone.game.features.profile.ProfileViewModel
 import com.brokentelephone.game.features.settings.SettingsViewModel
 import com.brokentelephone.game.features.settings.use_case.GetAuthStateUseCase
 import com.brokentelephone.game.features.settings.use_case.GetVersionInfoUseCase
-import com.brokentelephone.game.features.sign_in.SignInViewModel
-import com.brokentelephone.game.features.sign_in.use_case.SignInWithEmailPasswordUseCase
 import com.brokentelephone.game.features.theme.ThemeViewModel
 import com.brokentelephone.game.features.theme.use_case.UpdateThemeUseCase
 import com.brokentelephone.game.main.MainViewModel
@@ -92,7 +90,6 @@ val appModule = module {
     factoryOf(::SubmitDescriptionUseCase)
     factoryOf(::CancelSessionUseCase)
     factoryOf(::GetChainByPostIdUseCase)
-    factoryOf(::SignInWithEmailPasswordUseCase)
     factoryOf(::SignInWithGoogleUseCase)
     factoryOf(::GetCurrentUserUseCase)
     factoryOf(::GetUnreadNotificationsCountUseCase)
@@ -110,7 +107,6 @@ val appModule = module {
     viewModelOf(::DrawViewModel)
     viewModelOf(::DescribeDrawingViewModel)
     viewModelOf(::ChainDetailsViewModel)
-    viewModelOf(::SignInViewModel)
     viewModelOf(::ProfileViewModel)
     viewModelOf(::EditUsernameViewModel)
     viewModelOf(::EditProfileViewModel)

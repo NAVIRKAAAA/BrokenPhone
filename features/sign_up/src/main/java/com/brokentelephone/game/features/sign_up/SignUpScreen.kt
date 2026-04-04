@@ -18,7 +18,6 @@ fun SignUpScreen(
     onBackClick: () -> Unit,
     onSignedUp: () -> Unit = {},
     onNavigateToChooseAvatar: () -> Unit = {},
-    onSignInClick: () -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: SignUpViewModel = koinViewModel(),
 ) {
@@ -46,7 +45,6 @@ fun SignUpScreen(
         onTogglePasswordVisibility = viewModel::onTogglePasswordVisibility,
         onToggleConfirmPasswordVisibility = viewModel::onToggleConfirmPasswordVisibility,
         onSignUpClick = viewModel::onSignUpClick,
-        onSignInClick = onSignInClick,
         onTermsClick = viewModel::onTermsClick,
         onPrivacyPolicyClick = viewModel::onPrivacyPolicyClick,
         onGoogleSignInClick = viewModel::onGoogleSignInClick,

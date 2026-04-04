@@ -1,16 +1,15 @@
-package com.brokentelephone.game.navigation.utils
+package com.brokentelephone.game.nav_api
 
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
-import com.brokentelephone.game.navigation.routes.Routes
 
 fun NavController.navigateSingle(
-    routes: Routes,
+    route: NavigationRoute,
     builder: NavOptionsBuilder.() -> Unit = {},
 ) {
     if (currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
-        navigate(routes) { builder() }
+        navigate(route) { builder() }
     }
 }
 
@@ -20,9 +19,9 @@ fun NavController.safePopBackStack() {
     }
 }
 
-fun NavController.navigateSaved(route: Routes) {
-    this.navigate(route) {
-        popUpTo(Routes.MainGraph) {
+fun NavController.navigateSaved(route: NavigationRoute, mainGraphRoute: NavigationRoute) {
+    navigate(route) {
+        popUpTo(mainGraphRoute) {
             saveState = true
         }
         launchSingleTop = true

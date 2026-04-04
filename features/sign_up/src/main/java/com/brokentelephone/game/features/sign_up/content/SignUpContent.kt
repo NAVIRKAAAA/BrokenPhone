@@ -46,7 +46,6 @@ fun SignUpContent(
     onTogglePasswordVisibility: () -> Unit = {},
     onToggleConfirmPasswordVisibility: () -> Unit = {},
     onSignUpClick: () -> Unit = {},
-    onSignInClick: () -> Unit = {},
     onTermsClick: () -> Unit = {},
     onPrivacyPolicyClick: () -> Unit = {},
     onGoogleSignInClick: () -> Unit = {},

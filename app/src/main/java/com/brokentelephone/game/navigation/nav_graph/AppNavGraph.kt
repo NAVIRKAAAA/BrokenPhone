@@ -35,7 +35,6 @@ import com.brokentelephone.game.features.edit_bio.EditBioScreen
 import com.brokentelephone.game.features.edit_email.EditEmailScreen
 import com.brokentelephone.game.features.edit_profile.EditProfileScreen
 import com.brokentelephone.game.features.edit_username.EditUsernameScreen
-import com.brokentelephone.game.features.forgot_password.ForgotPasswordScreen
 import com.brokentelephone.game.features.friends.FriendsScreen
 import com.brokentelephone.game.features.language.LanguageScreen
 import com.brokentelephone.game.features.notifications.NotificationSettingsScreen
@@ -44,207 +43,52 @@ import com.brokentelephone.game.features.post_details.PostDetailsScreen
 import com.brokentelephone.game.features.post_details.PostDetailsViewModel
 import com.brokentelephone.game.features.profile.ProfileScreen
 import com.brokentelephone.game.features.settings.SettingsScreen
-import com.brokentelephone.game.features.sign_in.SignInScreen
-import com.brokentelephone.game.features.sign_up.SignUpScreen
+import com.brokentelephone.game.features.sign_up_api.SignUpNavigationApi
 import com.brokentelephone.game.features.theme.ThemeScreen
 import com.brokentelephone.game.features.user_details.UserDetailsScreen
 import com.brokentelephone.game.features.user_friends.UserFriendsScreen
-import com.brokentelephone.game.features.welcome.WelcomeScreen
+import com.brokentelephone.game.features.welcome_api.WelcomeNavigationApi
+import com.brokentelephone.game.forgot_password_api.ForgotPasswordNavigationApi
+import com.brokentelephone.game.nav_api.NavigationRoute
+import com.brokentelephone.game.nav_api.safePopBackStack
 import com.brokentelephone.game.navigation.routes.Routes
-import com.brokentelephone.game.navigation.utils.navigateSingle
-import com.brokentelephone.game.navigation.utils.safePopBackStack
+import com.brokentelephone.game.sign_in_api.SignInNavigationApi
+import kotlinx.serialization.Serializable
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 private const val KEY_FORCE_REFRESH = "force_refresh"
 
+@Serializable
+object AuthGraph : NavigationRoute()
+
 @Composable
 fun AppNavGraph(
-    startDestination: Routes,
+    startDestination: NavigationRoute,
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     onBannerDismissed: () -> Unit = {},
 ) {
+    val welcomeNavigationApi: WelcomeNavigationApi = koinInject()
+    val signUpNavigationApi: SignUpNavigationApi = koinInject()
+    val signInNavigationApi: SignInNavigationApi = koinInject()
+    val forgotPasswordNavigationApi: ForgotPasswordNavigationApi = koinInject()
+
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier,
     ) {
 
-        navigation<Routes.AuthGraph>(startDestination = Routes.Welcome) {
-            composable<Routes.Welcome>(
-                enterTransition = { EnterTransition.None },
-                exitTransition = {
-                    val route = targetState.destination.route
-                    if (route?.contains("SignUp") == true || route?.contains("SignIn") == true) {
-                        slideOutHorizontally(
-                            targetOffsetX = { -it / 3 },
-                            animationSpec = tween(250)
-                        ) + fadeOut(animationSpec = tween(200))
-                    } else {
-                        ExitTransition.None
-                    }
-                },
-                popEnterTransition = {
-                    val route = initialState.destination.route
-                    if (route?.contains("SignUp") == true || route?.contains("SignIn") == true) {
-                        slideInHorizontally(
-                            initialOffsetX = { -it / 3 },
-                            animationSpec = tween(250)
-                        ) + fadeIn(animationSpec = tween(200))
-                    } else {
-                        EnterTransition.None
-                    }
-                },
-                popExitTransition = { ExitTransition.None }
-            ) {
-                WelcomeScreen(
-                    onGetStarted = {
-                        navController.navigateSingle(Routes.SignUp)
-                    },
-                    onSignIn = {
-                        navController.navigateSingle(Routes.SignIn())
-                    },
-                    onNavigateToDashboard = {
-                        navController.navigateSingle(Routes.Dashboard) {
-                            popUpTo(Routes.Welcome) { inclusive = true }
-                        }
-                    }
-                )
-            }
+        navigation<AuthGraph>(startDestination = welcomeNavigationApi.route) {
+            welcomeNavigationApi.screen(navController, this)
+            signUpNavigationApi.screen(navController, this)
+            signInNavigationApi.screen(navController, this)
+            forgotPasswordNavigationApi.screen(navController, this)
+        }
 
-            composable<Routes.SignIn>(
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                },
-                exitTransition = {
-                    val route = targetState.destination.route
-                    if (route?.contains("SignUp") == true || route?.contains("ForgotPassword") == true) {
-                        slideOutHorizontally(
-                            targetOffsetX = { -it / 3 },
-                            animationSpec = tween(250)
-                        ) + fadeOut(animationSpec = tween(200))
-                    } else {
-                        ExitTransition.None
-                    }
-                },
-                popEnterTransition = {
-                    val route = initialState.destination.route
-                    if (route?.contains("SignUp") == true || route?.contains("ForgotPassword") == true) {
-                        slideInHorizontally(
-                            initialOffsetX = { -it / 3 },
-                            animationSpec = tween(250)
-                        ) + fadeIn(animationSpec = tween(200))
-                    } else {
-                        EnterTransition.None
-                    }
-                },
-                popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                }
-            ) { backStackEntry ->
-                val route = backStackEntry.toRoute<Routes.SignIn>()
-                SignInScreen(
-                    initialEmail = route.email,
-                    onBackClick = navController::safePopBackStack,
-                    onSignedIn = {
-                        navController.navigateSingle(Routes.Dashboard) {
-                            popUpTo(0) { inclusive = true }
-                        }
-                    },
-                    onNavigateToChooseAvatar = {
-                        navController.navigateSingle(Routes.ChooseAvatar) {
-                            popUpTo(0) { inclusive = true }
-                        }
-                    },
-                    onSignUpClick = {
-                        navController.navigateSingle(Routes.SignUp)
-                    },
-                    onForgotPasswordClick = { email ->
-                        navController.navigateSingle(Routes.ForgotPassword(email = email))
-                    },
-                )
-            }
-
-            composable<Routes.ForgotPassword>(
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                },
-                popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                }
-            ) { backStackEntry ->
-                val route = backStackEntry.toRoute<Routes.ForgotPassword>()
-                ForgotPasswordScreen(
-                    initialEmail = route.email,
-                    onBackClick = navController::safePopBackStack,
-                )
-            }
-
-            composable<Routes.SignUp>(
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                },
-                exitTransition = {
-                    if (targetState.destination.route?.contains("SignIn") == true) {
-                        slideOutHorizontally(
-                            targetOffsetX = { -it / 3 },
-                            animationSpec = tween(250)
-                        ) + fadeOut(animationSpec = tween(200))
-                    } else {
-                        ExitTransition.None
-                    }
-                },
-                popEnterTransition = {
-                    if (initialState.destination.route?.contains("SignIn") == true) {
-                        slideInHorizontally(
-                            initialOffsetX = { -it / 3 },
-                            animationSpec = tween(250)
-                        ) + fadeIn(animationSpec = tween(200))
-                    } else {
-                        EnterTransition.None
-                    }
-                },
-                popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                }
-            ) {
-                SignUpScreen(
-                    onBackClick = navController::safePopBackStack,
-                    onSignedUp = {
-                        navController.navigateSingle(Routes.Dashboard) {
-                            popUpTo(0) { inclusive = true }
-                        }
-                    },
-                    onNavigateToChooseAvatar = {
-                        navController.navigateSingle(Routes.ChooseAvatar) {
-                            popUpTo(0) { inclusive = true }
-                        }
-                    },
-                    onSignInClick = {
-                        navController.navigateSingle(Routes.SignIn())
-                    },
-                )
-            }
-
+//        navigation<Routes.AuthGraph>(startDestination = Routes.Welcome) {}
             composable<Routes.ChooseAvatar>(
                 enterTransition = {
                     slideInHorizontally(
@@ -267,7 +111,7 @@ fun AppNavGraph(
             ) {
                 ChooseAvatarScreen(
                     navigateToChooseUsername = {
-                        navController.navigateSingle(Routes.ChooseUsername)
+//                        navController.navigateSingle(Routes.ChooseUsername)
                     },
                 )
             }
@@ -289,14 +133,14 @@ fun AppNavGraph(
                 ChooseUsernameScreen(
                     onBackClick = navController::safePopBackStack,
                     navigateToFeed = {
-                        navController.navigateSingle(Routes.Dashboard) {
-                            popUpTo(0) { inclusive = true }
-                        }
+//                        navController.navigateSingle(Routes.Dashboard) {
+//                            popUpTo(0) { inclusive = true }
+//                        }
                     },
                 )
             }
 
-        }
+//        }
 
         navigation<Routes.MainGraph>(startDestination = Routes.Dashboard) {
 
@@ -321,13 +165,13 @@ fun AppNavGraph(
                 DashboardScreen(
                     viewModel = viewModel,
                     onPostClick = { postId ->
-                        navController.navigateSingle(Routes.PostDetails(postId = postId))
+//                        navController.navigateSingle(Routes.PostDetails(postId = postId))
                     },
                     onUserClick = { userId ->
-                        navController.navigateSingle(Routes.UserDetails(userId = userId))
+//                        navController.navigateSingle(Routes.UserDetails(userId = userId))
                     },
                     onNotificationsClick = {
-                        navController.navigateSingle(Routes.Notifications)
+//                        navController.navigateSingle(Routes.Notifications)
                     }
                 )
             }
@@ -380,18 +224,18 @@ fun AppNavGraph(
                         navController.safePopBackStack()
                     },
                     onDrawContinue = { sessionId ->
-                        navController.navigateSingle(Routes.Draw(sessionId = sessionId))
+//                        navController.navigateSingle(Routes.Draw(sessionId = sessionId))
                         onBannerDismissed()
                     },
                     onDescribeDrawingContinue = { sessionId ->
-                        navController.navigateSingle(Routes.DescribeDrawing(sessionId = sessionId))
+//                        navController.navigateSingle(Routes.DescribeDrawing(sessionId = sessionId))
                         onBannerDismissed()
                     },
                     onViewHistoryClick = { postId ->
-                        navController.navigateSingle(Routes.ChainDetails(postId = postId))
+//                        navController.navigateSingle(Routes.ChainDetails(postId = postId))
                     },
                     onUserClick = { userId ->
-                        navController.navigateSingle(Routes.UserDetails(userId = userId))
+//                        navController.navigateSingle(Routes.UserDetails(userId = userId))
                     },
                 )
             }
@@ -480,7 +324,7 @@ fun AppNavGraph(
                     viewModel = viewModel,
                     onBackClick = navController::safePopBackStack,
                     onUserClick = { userId ->
-                        navController.navigateSingle(Routes.UserDetails(userId = userId))
+//                        navController.navigateSingle(Routes.UserDetails(userId = userId))
                     },
                 )
             }
@@ -519,22 +363,22 @@ fun AppNavGraph(
             ) {
                 ProfileScreen(
                     onPostClick = { postId, userId ->
-                        navController.navigateSingle(Routes.ChainDetails(postId = postId, userId = userId))
+//                        navController.navigateSingle(Routes.ChainDetails(postId = postId, userId = userId))
                     },
                     onSignInClick = {
-                        navController.navigateSingle(Routes.SignIn())
+//                        navController.navigateSingle(Routes.SignIn())
                     },
                     onGetStartedClick = {
-                        navController.navigateSingle(Routes.SignUp)
+//                        navController.navigateSingle(Routes.SignUp)
                     },
                     onFriendsClick = {
-                        navController.navigateSingle(Routes.Friends)
+//                        navController.navigateSingle(Routes.Friends)
                     },
                     onEditClick = {
-                        navController.navigateSingle(Routes.EditProfile)
+//                        navController.navigateSingle(Routes.EditProfile)
                     },
                     onSettingsClick = {
-                        navController.navigateSingle(Routes.Settings)
+//                        navController.navigateSingle(Routes.Settings)
                     },
                 )
             }
@@ -584,16 +428,16 @@ fun AppNavGraph(
                 EditProfileScreen(
                     onBackClick = navController::safePopBackStack,
                     onEditPhotoClick = {
-                        navController.navigateSingle(Routes.EditAvatar)
+//                        navController.navigateSingle(Routes.EditAvatar)
                     },
                     onEditUsernameClick = {
-                        navController.navigateSingle(Routes.EditUsername)
+//                        navController.navigateSingle(Routes.EditUsername)
                     },
                     onEditBioClick = {
-                        navController.navigateSingle(Routes.EditBio)
+//                        navController.navigateSingle(Routes.EditBio)
                     },
                     onEditEmailClick = {
-                        navController.navigateSingle(Routes.EditEmail)
+//                        navController.navigateSingle(Routes.EditEmail)
                     },
                 )
             }
@@ -705,26 +549,26 @@ fun AppNavGraph(
                         }
                     },
                     onAccountSettingsClick = {
-                        navController.navigateSingle(Routes.AccountSettings)
+//                        navController.navigateSingle(Routes.AccountSettings)
                     },
                     onNotificationsClick = {
-                        navController.navigateSingle(Routes.NotificationSettings)
+//                        navController.navigateSingle(Routes.NotificationSettings)
                     },
                     onLanguageClick = {
-                        navController.navigateSingle(Routes.Language)
+//                        navController.navigateSingle(Routes.Language)
                     },
                     onThemeClick = {
-                        navController.navigateSingle(Routes.Theme)
+//                        navController.navigateSingle(Routes.Theme)
                     },
                     onBlockedUsersClick = {
-                        navController.navigateSingle(Routes.BlockedUsers)
+//                        navController.navigateSingle(Routes.BlockedUsers)
                     },
                     onNavigateToDraw = { route ->
-                        navController.navigateSingle(route)
+//                        navController.navigateSingle(route)
                         onBannerDismissed()
                     },
                     onNavigateToDescribeDrawing = { route ->
-                        navController.navigateSingle(route)
+//                        navController.navigateSingle(route)
                         onBannerDismissed()
                     },
                 )
@@ -950,10 +794,10 @@ fun AppNavGraph(
                     userId = route.userId,
                     onBackClick = navController::safePopBackStack,
                     onFriendsClick = { userId ->
-                        navController.navigateSingle(Routes.UserFriends(userId = userId))
+//                        navController.navigateSingle(Routes.UserFriends(userId = userId))
                     },
                     onPostClick = { postId, userId ->
-                        navController.navigateSingle(Routes.ChainDetails(postId = postId, userId = userId))
+//                        navController.navigateSingle(Routes.ChainDetails(postId = postId, userId = userId))
                     },
                     onNavigateBackWithForceUpdate = {
                         val isDashboardInBackStack = navController.previousBackStackEntry
@@ -1005,10 +849,10 @@ fun AppNavGraph(
                 FriendsScreen(
                     onBackClick = navController::safePopBackStack,
                     onUserClick = { userId ->
-                        navController.navigateSingle(Routes.UserDetails(userId = userId))
+//                        navController.navigateSingle(Routes.UserDetails(userId = userId))
                     },
                     onAddFriendClick = {
-                        navController.navigateSingle(Routes.AddFriend)
+//                        navController.navigateSingle(Routes.AddFriend)
                     },
                 )
             }
@@ -1050,7 +894,7 @@ fun AppNavGraph(
                 AddFriendScreen(
                     onBackClick = navController::safePopBackStack,
                     onUserClick = { userId ->
-                        navController.navigateSingle(Routes.UserDetails(userId = userId))
+//                        navController.navigateSingle(Routes.UserDetails(userId = userId))
                     },
                 )
             }
@@ -1074,9 +918,10 @@ fun AppNavGraph(
                 val route = backStackEntry.toRoute<Routes.UserFriends>()
                 UserFriendsScreen(
                     userId = route.userId,
-                    onBackClick = navController::safePopBackStack,
+                    onBackClick = {},
+//                    onBackClick = navController::safePopBackStack,
                     onUserClick = { userId ->
-                        navController.navigateSingle(Routes.UserDetails(userId = userId))
+//                        navController.navigateSingle(Routes.UserDetails(userId = userId))
                     },
                 )
             }
@@ -1100,10 +945,12 @@ fun AppNavGraph(
                 }
             ) {
                 CreatePostScreen(
-                    onBackClick = navController::safePopBackStack,
-                    onPostCreated = navController::safePopBackStack
+//                    onBackClick = navController::safePopBackStack,
+//                    onPostCreated = navController::safePopBackStack
                 )
             }
         }
     }
 }
+
+// 1111

@@ -4,13 +4,13 @@ import com.brokentelephone.game.domain.model.session.GameSession
 import com.brokentelephone.game.domain.model.session.GameSessionStatus
 import com.brokentelephone.game.domain.model.settings.AppTheme
 import com.brokentelephone.game.domain.model.settings.Language
-import com.brokentelephone.game.navigation.routes.Routes
+import com.brokentelephone.game.nav_api.NavigationRoute
 
 data class MainState(
     val theme: AppTheme = AppTheme.SYSTEM,
     val language: Language = Language.ENGLISH,
-    val startDestination: Routes? = null,
-    val pendingRoutes: List<Routes> = emptyList(),
+    val startDestination: NavigationRoute? = null,
+    val pendingRoutes: List<NavigationRoute> = emptyList(),
     val sessionDataError: String? = null,
     val isSessionLoading: Boolean = false,
     val isLoading: Boolean = false,

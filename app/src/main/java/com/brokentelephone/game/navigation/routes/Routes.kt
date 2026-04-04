@@ -4,8 +4,8 @@ import kotlinx.serialization.Serializable
 
 sealed class Routes {
 
-    @Serializable
-    data object AuthGraph : Routes()
+//    @Serializable
+//    data object AuthGraph : Routes()
 
     @Serializable
     data object MainGraph : Routes()

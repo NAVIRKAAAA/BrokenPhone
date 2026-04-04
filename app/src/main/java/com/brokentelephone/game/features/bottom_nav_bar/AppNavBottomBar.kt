@@ -51,9 +51,6 @@ import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.utils.coloredShadow
 import com.brokentelephone.game.features.bottom_nav_bar.model.BottomNavBar
 import com.brokentelephone.game.features.bottom_nav_bar.model.BottomNavBarEvent
-import com.brokentelephone.game.navigation.routes.Routes
-import com.brokentelephone.game.navigation.utils.navigateSaved
-import com.brokentelephone.game.navigation.utils.navigateSingle
 import org.koin.compose.koinInject
 
 @Composable
@@ -82,15 +79,15 @@ fun AppNavBottomBar(
         viewModel.event.collect { event ->
             when (event) {
                 BottomNavBarEvent.NavigateToCreate -> {
-                    navController.navigateSingle(Routes.CreatePost)
+//                    navController.navigateSingle(Routes.CreatePost)
                 }
 
                 BottomNavBarEvent.NavigateToDashboard -> {
-                    navController.navigateSaved(Routes.Dashboard)
+//                    navController.navigateSaved(Routes.Dashboard)
                 }
 
                 BottomNavBarEvent.NavigateToProfile -> {
-                    navController.navigateSaved(Routes.Profile)
+//                    navController.navigateSaved(Routes.Profile)
                 }
 
                 else -> return@collect

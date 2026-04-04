@@ -45,9 +45,19 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":essentials"))
     implementation(project(":domain"))
+
     implementation(project(":features:welcome"))
+    implementation(project(":features:welcome_api"))
+
     implementation(project(":features:sign_up"))
+    implementation(project(":features:sign_up_api"))
+
+    implementation(project(":features:sign_in"))
+    implementation(project(":features:sign_in_api"))
+
     implementation(project(":features:forgot_password"))
+    implementation(project(":features:forgot_password_api"))
+
     implementation(project(":features:edit_bio"))
     implementation(project(":features:edit_email"))
     implementation(project(":features:user_details"))

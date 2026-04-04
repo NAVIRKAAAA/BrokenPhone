@@ -46,7 +46,6 @@ fun SignInContent(
     onPasswordChanged: (String) -> Unit = {},
     onTogglePasswordVisibility: () -> Unit = {},
     onSignInClick: () -> Unit = {},
-    onSignUpClick: () -> Unit = {},
     onForgotPasswordClick: () -> Unit = {},
     onTermsClick: () -> Unit = {},
     onPrivacyPolicyClick: () -> Unit = {},
