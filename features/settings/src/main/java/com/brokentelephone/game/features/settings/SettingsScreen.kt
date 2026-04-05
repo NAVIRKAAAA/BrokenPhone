@@ -13,7 +13,7 @@ import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.browser.openCustomTab
 import com.brokentelephone.game.core.dialog.ConfirmDialog
 import com.brokentelephone.game.core.dialog.ErrorDialog
-import com.brokentelephone.game.core.utils.isPostNotificationsGranted
+import com.brokentelephone.game.core.utils.isNotificationsGranted
 import com.brokentelephone.game.describe_drawing_api.DescribeDrawingRoute
 import com.brokentelephone.game.draw_api.DrawRoute
 import com.brokentelephone.game.features.settings.content.SettingsContent
@@ -38,7 +38,7 @@ fun SettingsScreen(
     val context = LocalContext.current
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
-        viewModel.checkNotificationsPermission(context.isPostNotificationsGranted())
+        viewModel.checkNotificationsPermission(context.isNotificationsGranted())
     }
 
     LaunchedEffect(Unit) {

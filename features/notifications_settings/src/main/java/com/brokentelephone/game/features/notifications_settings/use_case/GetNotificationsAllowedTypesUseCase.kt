@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.map
 class GetNotificationsAllowedTypesUseCase(
     private val userSession: UserSession,
 ) {
-    operator fun invoke(): Flow<List<NotificationType>> {
+    fun execute(): Flow<List<NotificationType>> {
         return userSession.authState.map { authState ->
             authState.getUserOrNull()?.notifications ?: emptyList()
         }

@@ -1,5 +1,6 @@
 package com.brokentelephone.game.domain.user
 
+import com.brokentelephone.game.domain.model.permissions.UserPermissions
 import com.brokentelephone.game.domain.model.settings.Language
 import com.brokentelephone.game.domain.model.settings.NotificationType
 
@@ -23,6 +24,7 @@ data class User(
     val sessionId: String? = null,
     val isEmailVerified: Boolean = false,
     val language: Language = Language.ENGLISH,
+    val permissions: UserPermissions = UserPermissions(),
 ) {
 
     fun toMap(): Map<String, Any?> = mapOf(
@@ -45,6 +47,7 @@ data class User(
         FIELD_SESSION_ID to sessionId,
         FIELD_IS_EMAIL_VERIFIED to isEmailVerified,
         FIELD_LANGUAGE to language.name,
+        FIELD_PERMISSIONS to permissions.toMap(),
     )
 
     companion object {
@@ -67,6 +70,7 @@ data class User(
         const val FIELD_SESSION_ID = "sessionId"
         const val FIELD_IS_EMAIL_VERIFIED = "isEmailVerified"
         const val FIELD_LANGUAGE = "language"
+        const val FIELD_PERMISSIONS = "permissions"
 
         @Suppress("UNCHECKED_CAST")
         fun fromMap(map: Map<String, Any?>): User? {
@@ -97,6 +101,9 @@ data class User(
                     language = runCatching {
                         Language.valueOf(map[FIELD_LANGUAGE] as? String ?: "")
                     }.getOrDefault(Language.ENGLISH),
+                    permissions = (map[FIELD_PERMISSIONS] as? Map<String, Any?>)
+                        ?.let { UserPermissions.fromMap(it) }
+                        ?: UserPermissions(),
                 )
             } catch (_: Exception) {
                 null

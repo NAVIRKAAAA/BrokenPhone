@@ -2,6 +2,7 @@ package com.brokentelephone.game.data.session
 
 import android.util.Log
 import com.brokentelephone.game.data.ext.toAuthProvider
+import com.brokentelephone.game.domain.model.permissions.UserPermissions
 import com.brokentelephone.game.domain.model.settings.Language
 import com.brokentelephone.game.domain.model.settings.NotificationType
 import com.brokentelephone.game.domain.user.AuthProvider
@@ -301,7 +302,44 @@ class UserSessionImpl(
             throw UnknownAuthException()
         }
     }
-    override suspend fun updateNotifications(notifications: List<NotificationType>) = Unit
+    override suspend fun updateNotifications(notifications: List<NotificationType>) {
+        val uid = firebaseAuth.currentUser?.uid ?: throw UnauthorizedException()
+        try {
+            firestore.collection(COLLECTION_USERS)
+                .document(uid)
+                .update(
+                    User.FIELD_NOTIFICATIONS,
+                    notifications.map { it.name },
+                    User.FIELD_UPDATED_AT,
+                    System.currentTimeMillis()
+                )
+                .await()
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
+
+    override suspend fun updatePermissions(permissions: UserPermissions) {
+        val uid = firebaseAuth.currentUser?.uid ?: throw UnauthorizedException()
+
+        try {
+            firestore.collection(COLLECTION_USERS)
+                .document(uid)
+                .update(
+                    User.FIELD_PERMISSIONS,
+                    permissions.toMap(),
+                    User.FIELD_UPDATED_AT,
+                    System.currentTimeMillis()
+                )
+                .await()
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
 
     override suspend fun updateLanguage(language: Language) {
         val uid = firebaseAuth.currentUser?.uid ?: throw UnauthorizedException()

@@ -11,7 +11,7 @@ import android.provider.Settings
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 
-fun Context.isPostNotificationsGranted(): Boolean {
+fun Context.isNotificationsGranted(): Boolean {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         ContextCompat.checkSelfPermission(
             this,

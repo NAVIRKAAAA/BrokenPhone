@@ -4,7 +4,7 @@ import com.brokentelephone.game.domain.model.settings.Language
 import com.brokentelephone.game.domain.repository.UserSettingsRepository
 import java.util.Locale
 
-class SetupFirstAppLaunchUseCase(
+class InitializeFirstAppLaunchUseCase(
     private val repository: UserSettingsRepository,
     private val updateLanguageUseCase: UpdateLanguageUseCase,
 ) {

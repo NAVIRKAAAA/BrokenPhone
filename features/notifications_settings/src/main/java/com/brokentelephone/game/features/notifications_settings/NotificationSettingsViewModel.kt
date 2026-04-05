@@ -28,7 +28,7 @@ class NotificationSettingsViewModel(
     val sideEffects = _sideEffects.receiveAsFlow()
 
     init {
-        getNotificationsAllowedTypesUseCase()
+        getNotificationsAllowedTypesUseCase.execute()
             .onEach { notifications -> _state.update { it.copy(notifications = notifications) } }
             .launchIn(viewModelScope)
     }
@@ -61,7 +61,7 @@ class NotificationSettingsViewModel(
     fun onAllNotificationsToggle(enabled: Boolean) {
         val updated = if (enabled) NotificationType.entries.toList() else emptyList()
         viewModelScope.launch {
-            updateNotificationsUseCase(updated)
+            updateNotificationsUseCase.execute(updated)
         }
     }
 
@@ -69,7 +69,7 @@ class NotificationSettingsViewModel(
         val current = _state.value.notifications
         val updated = if (enabled) current + type else current - type
         viewModelScope.launch {
-            updateNotificationsUseCase(updated)
+            updateNotificationsUseCase.execute(updated)
         }
     }
 }

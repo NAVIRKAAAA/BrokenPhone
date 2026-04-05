@@ -11,6 +11,7 @@ import com.brokentelephone.game.dashboard_api.MainGraph
 import com.brokentelephone.game.describe_drawing_api.DescribeDrawingRoute
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
+import com.brokentelephone.game.domain.model.permissions.UserPermissions
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.session.GameSession
 import com.brokentelephone.game.domain.model.session.GameSessionStatus
@@ -22,7 +23,8 @@ import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.draw_api.DrawRoute
 import com.brokentelephone.game.essentials.exceptions.auth.SessionDataException
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
-import com.brokentelephone.game.features.language.use_case.SetupFirstAppLaunchUseCase
+import com.brokentelephone.game.features.language.use_case.InitializeFirstAppLaunchUseCase
+import com.brokentelephone.game.features.notifications_settings.use_case.UpdateUserPermissionsUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailChangeUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
 import com.brokentelephone.game.main.use_case.GetPendingEmailUseCase
@@ -43,13 +45,14 @@ import kotlinx.coroutines.launch
 class MainViewModel(
     private val getThemeUseCase: GetThemeUseCase,
     private val getLanguageUseCase: GetLanguageUseCase,
-    private val setupFirstAppLaunchUseCase: SetupFirstAppLaunchUseCase,
+    private val initializeFirstAppLaunchUseCase: InitializeFirstAppLaunchUseCase,
     private val initializeSessionUseCase: InitializeSessionUseCase,
     private val getActiveSessionUseCase: GetActiveSessionUseCase,
     private val getPostByIdUseCase: GetPostByIdUseCase,
     private val applyEmailChangeUseCase: ApplyEmailChangeUseCase,
     private val applyEmailVerificationUseCase: ApplyEmailVerificationUseCase,
     private val getPendingEmailUseCase: GetPendingEmailUseCase,
+    private val updateUserPermissionsUseCase: UpdateUserPermissionsUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
 
@@ -65,12 +68,18 @@ class MainViewModel(
         observeTheme()
         observeLanguage()
         initializeSession()
-        setupFirstLaunch()
+        initializeFirstLaunch()
     }
 
-    private fun setupFirstLaunch() {
+    fun onResume(isNotificationsGranted: Boolean) {
         viewModelScope.launch {
-            setupFirstAppLaunchUseCase.execute()
+            updateUserPermissionsUseCase.execute(UserPermissions(isNotificationsGranted = isNotificationsGranted))
+        }
+    }
+
+    private fun initializeFirstLaunch() {
+        viewModelScope.launch {
+            initializeFirstAppLaunchUseCase.execute()
         }
     }
 
@@ -96,6 +105,7 @@ class MainViewModel(
                     OnboardingStep.CHOOSE_AVATAR -> AuthGraph to listOf(
                         ChooseAvatarRoute
                     )
+
                     OnboardingStep.CHOOSE_USERNAME -> AuthGraph to listOf(
                         ChooseAvatarRoute,
                         ChooseUsernameRoute

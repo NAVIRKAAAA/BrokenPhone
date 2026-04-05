@@ -30,6 +30,7 @@ import com.brokentelephone.game.core.dialog.ConfirmDialog
 import com.brokentelephone.game.core.dialog.LoadingDialog
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.LocalAppLanguage
+import com.brokentelephone.game.core.utils.isNotificationsGranted
 import com.brokentelephone.game.domain.model.settings.AppTheme
 import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBar
 import com.brokentelephone.game.features.welcome_api.WelcomeRoute
@@ -43,6 +44,14 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class MainActivity : AppCompatActivity() {
 
     private val mainViewModel: MainViewModel by viewModel()
+
+    override fun onResume() {
+        super.onResume()
+
+        val isNotificationGranted = this.isNotificationsGranted()
+
+        mainViewModel.onResume(isNotificationGranted)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashscreen = installSplashScreen()
@@ -111,7 +120,7 @@ class MainActivity : AppCompatActivity() {
                         LaunchedEffect(state.pendingRoutes) {
                             if (state.pendingRoutes.isNotEmpty()) {
                                 state.pendingRoutes.forEachIndexed { index, route ->
-                                if (index == 0) {
+                                    if (index == 0) {
                                         navController.navigate(route) {
                                             popUpTo<WelcomeRoute> { inclusive = true }
                                         }
