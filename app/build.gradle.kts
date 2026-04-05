@@ -108,6 +108,15 @@ dependencies {
     implementation(project(":features:account_settings"))
     implementation(project(":features:account_settings_api"))
 
+    implementation(project(":features:blocked_users"))
+    implementation(project(":features:blocked_users_api"))
+
+    implementation(project(":features:language"))
+    implementation(project(":features:language_api"))
+
+    implementation(project(":features:theme"))
+    implementation(project(":features:theme_api"))
+
     implementation(project(":features:user_details"))
     implementation(project(":features:friends"))
     implementation(project(":features:user_friends"))

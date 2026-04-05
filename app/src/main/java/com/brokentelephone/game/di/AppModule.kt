@@ -19,17 +19,9 @@ import com.brokentelephone.game.domain.use_case.MarkPostAsNotInterestedUseCase
 import com.brokentelephone.game.domain.use_case.ReportPostUseCase
 import com.brokentelephone.game.domain.use_case.ReportUserUseCase
 import com.brokentelephone.game.domain.use_case.SignInWithGoogleUseCase
-import com.brokentelephone.game.features.blocked_users.BlockedUsersViewModel
-import com.brokentelephone.game.features.blocked_users.use_case.GetBlockedUsersUseCase
-import com.brokentelephone.game.features.blocked_users.use_case.UnblockUserUseCase
-import com.brokentelephone.game.features.language.LanguageViewModel
-import com.brokentelephone.game.features.language.use_case.SetupFirstAppLaunchUseCase
-import com.brokentelephone.game.features.language.use_case.UpdateLanguageUseCase
 import com.brokentelephone.game.features.notifications.NotificationSettingsViewModel
 import com.brokentelephone.game.features.notifications.use_case.GetNotificationsAllowedTypesUseCase
 import com.brokentelephone.game.features.notifications.use_case.UpdateNotificationsUseCase
-import com.brokentelephone.game.features.theme.ThemeViewModel
-import com.brokentelephone.game.features.theme.use_case.UpdateThemeUseCase
 import com.brokentelephone.game.main.MainViewModel
 import com.brokentelephone.game.main.use_case.ApplyEmailChangeUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
@@ -56,9 +48,6 @@ val appModule = module {
     factoryOf(::GetUserContributionsUseCase)
 
     factoryOf(::LogoutUseCase)
-    factoryOf(::GetBlockedUsersUseCase)
-    factoryOf(::UnblockUserUseCase)
-    viewModelOf(::BlockedUsersViewModel)
     factoryOf(::GetTermsOfServiceLinkUseCase)
     factoryOf(::GetPrivacyPolicyLinkUseCase)
     factoryOf(::GetLanguageUseCase)
@@ -66,12 +55,6 @@ val appModule = module {
     factoryOf(::GetNotificationsAllowedTypesUseCase)
     factoryOf(::UpdateNotificationsUseCase)
     viewModelOf(::NotificationSettingsViewModel)
-    factoryOf(::UpdateLanguageUseCase)
-    factoryOf(::SetupFirstAppLaunchUseCase)
-    viewModelOf(::LanguageViewModel)
-    factoryOf(::UpdateThemeUseCase)
-    viewModelOf(::ThemeViewModel)
-
     factoryOf(::InitializeSessionUseCase)
     factoryOf(::GetActiveSessionUseCase)
     factoryOf(::ApplyEmailChangeUseCase)

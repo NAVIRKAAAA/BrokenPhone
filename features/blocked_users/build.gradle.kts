@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.brokentelephone.game.features.settings"
+    namespace = "com.brokentelephone.game.features.blocked_users"
     compileSdk = 36
 
     defaultConfig {
@@ -24,14 +24,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":domain"))
     implementation(project(":essentials"))
-    implementation(project(":features:settings_api"))
-    implementation(project(":features:draw_api"))
-    implementation(project(":features:describe_drawing_api"))
-    implementation(project(":features:welcome_api"))
-    implementation(project(":features:account_settings_api"))
     implementation(project(":features:blocked_users_api"))
-    implementation(project(":features:language_api"))
-    implementation(project(":features:theme_api"))
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.koin.android)
     implementation(libs.koin.compose.viewmodel)

@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.language.content
+package com.brokentelephone.game.core.radio_button
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

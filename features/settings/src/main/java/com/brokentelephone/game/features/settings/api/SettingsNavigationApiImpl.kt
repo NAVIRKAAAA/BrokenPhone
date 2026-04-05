@@ -11,12 +11,15 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.brokentelephone.game.account_settings_api.AccountSettingsRoute
+import com.brokentelephone.game.blocked_users_api.BlockedUsersRoute
 import com.brokentelephone.game.features.settings.SettingsScreen
 import com.brokentelephone.game.features.welcome_api.WelcomeRoute
+import com.brokentelephone.game.language_api.LanguageRoute
 import com.brokentelephone.game.nav_api.navigateSingle
 import com.brokentelephone.game.nav_api.safePopBackStack
 import com.brokentelephone.game.settings_api.SettingsNavigationApi
 import com.brokentelephone.game.settings_api.SettingsRoute
+import com.brokentelephone.game.theme_api.ThemeRoute
 
 class SettingsNavigationApiImpl : SettingsNavigationApi {
 
@@ -84,13 +87,13 @@ class SettingsNavigationApiImpl : SettingsNavigationApi {
 //                    navController.navigate(NotificationSettingsRoute)
                 },
                 onLanguageClick = {
-//                    navController.navigate(LanguageRoute)
+                    navController.navigateSingle(LanguageRoute)
                 },
                 onThemeClick = {
-//                    navController.navigate(ThemeRoute)
+                    navController.navigate(ThemeRoute)
                 },
                 onBlockedUsersClick = {
-//                    navController.navigate(BlockedUsersRoute)
+                    navController.navigateSingle(BlockedUsersRoute)
                 },
                 onNavigateToDraw = { route ->
                     navController.navigateSingle(route)

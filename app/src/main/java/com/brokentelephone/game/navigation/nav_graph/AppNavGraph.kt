@@ -18,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.brokentelephone.game.account_settings_api.AccountSettingsNavigationApi
+import com.brokentelephone.game.blocked_users_api.BlockedUsersNavigationApi
 import com.brokentelephone.game.chain_details_api.ChainDetailsNavigationApi
 import com.brokentelephone.game.choose_avatar_api.ChooseAvatarNavigationApi
 import com.brokentelephone.game.choose_username_api.ChooseUsernameNavigationApi
@@ -33,18 +34,16 @@ import com.brokentelephone.game.edit_email_api.EditEmailNavigationApi
 import com.brokentelephone.game.edit_profile_api.EditProfileNavigationApi
 import com.brokentelephone.game.edit_username_api.EditUsernameNavigationApi
 import com.brokentelephone.game.features.add_friend.AddFriendScreen
-import com.brokentelephone.game.features.blocked_users.BlockedUsersScreen
 import com.brokentelephone.game.features.friends.FriendsScreen
-import com.brokentelephone.game.features.language.LanguageScreen
 import com.brokentelephone.game.features.notifications.NotificationSettingsScreen
 import com.brokentelephone.game.features.notifications.NotificationsScreen
 import com.brokentelephone.game.features.sign_up_api.SignUpNavigationApi
-import com.brokentelephone.game.features.theme.ThemeScreen
 import com.brokentelephone.game.features.user_details.UserDetailsScreen
 import com.brokentelephone.game.features.user_friends.UserFriendsScreen
 import com.brokentelephone.game.features.welcome_api.WelcomeNavigationApi
 import com.brokentelephone.game.features.welcome_api.WelcomeRoute
 import com.brokentelephone.game.forgot_password_api.ForgotPasswordNavigationApi
+import com.brokentelephone.game.language_api.LanguageNavigationApi
 import com.brokentelephone.game.nav_api.KEY_FORCE_REFRESH
 import com.brokentelephone.game.nav_api.NavigationRoute
 import com.brokentelephone.game.nav_api.safePopBackStack
@@ -53,6 +52,7 @@ import com.brokentelephone.game.post_details_api.PostDetailsNavigationApi
 import com.brokentelephone.game.profile_api.ProfileNavigationApi
 import com.brokentelephone.game.settings_api.SettingsNavigationApi
 import com.brokentelephone.game.sign_in_api.SignInNavigationApi
+import com.brokentelephone.game.theme_api.ThemeNavigationApi
 import kotlinx.serialization.Serializable
 import org.koin.compose.koinInject
 
@@ -86,6 +86,9 @@ fun AppNavGraph(
     val createPostNavigationApi: CreatePostNavigationApi = koinInject()
     val settingsNavigationApi: SettingsNavigationApi = koinInject()
     val accountSettingsNavigationApi: AccountSettingsNavigationApi = koinInject()
+    val blockedUsersNavigationApi: BlockedUsersNavigationApi = koinInject()
+    val languageNavigationApi: LanguageNavigationApi = koinInject()
+    val themeNavigationApi: ThemeNavigationApi = koinInject()
 
     val authGraphRoutes = listOf(
         welcomeNavigationApi,
@@ -110,7 +113,10 @@ fun AppNavGraph(
         editEmailNavigationApi,
         createPostNavigationApi,
         settingsNavigationApi,
-        accountSettingsNavigationApi
+        accountSettingsNavigationApi,
+        blockedUsersNavigationApi,
+        languageNavigationApi,
+        themeNavigationApi
     )
 
     NavHost(
@@ -130,44 +136,6 @@ fun AppNavGraph(
 
             mainGraphRoutes.forEach {
                 it.screen(navController, this)
-            }
-
-            composable<Routes.BlockedUsers>(
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                },
-                popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                }
-            ) {
-                BlockedUsersScreen(
-                    onBackClick = navController::safePopBackStack,
-                )
-            }
-
-            composable<Routes.Language>(
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                },
-                popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                }
-            ) {
-                LanguageScreen(
-                    onBackClick = navController::safePopBackStack,
-                )
             }
 
             composable<Routes.Notifications>(
@@ -209,26 +177,6 @@ fun AppNavGraph(
                     onBackClick = navController::safePopBackStack,
                 )
             }
-
-            composable<Routes.Theme>(
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                },
-                popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                }
-            ) {
-                ThemeScreen(
-                    onBackClick = navController::safePopBackStack,
-                )
-            }
-
 
             composable<Routes.UserDetails>(
                 enterTransition = {
