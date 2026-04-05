@@ -30,10 +30,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.badge.BadgeElement
+import com.brokentelephone.game.core.model.post.PostUi
+import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.core.top_bar.PostTopBar
 import com.brokentelephone.game.domain.model.post.PostContent
+import com.brokentelephone.game.domain.model.post.PostStatus
 import com.brokentelephone.game.features.draw.model.DrawState
 import com.brokentelephone.game.features.draw.model.DrawingAction
 
@@ -61,78 +64,90 @@ fun DrawContent(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        if (post != null) {
-            val content = post.content as? PostContent.Text ?: return@Column
+        ShimmerContent(
+            isLoading = post == null,
+            shimmerContent = {
+                DrawContentShimmer()
+            },
+            content = {
+                if (post != null) {
+                    val content = post.content as? PostContent.Text ?: return@ShimmerContent
+                    Column() {
+                        Text(
+                            text = content.text,
+                            fontFamily = FontFamily(Font(R.font.nunito_regular)),
+                            fontSize = 15.sp,
+                            lineHeight = 22.sp,
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
 
-            Text(
-                text = content.text,
-                fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                fontSize = 15.sp,
-                lineHeight = 22.sp,
-                modifier = Modifier.padding(horizontal = 16.dp),
-                color = MaterialTheme.colorScheme.onSurface,
-            )
+                        Spacer(modifier = Modifier.height(12.dp))
 
-            Spacer(modifier = Modifier.height(12.dp))
+                        HorizontalDivider(color = MaterialTheme.appColors.divider)
 
-            HorizontalDivider(color = MaterialTheme.appColors.divider)
+                        Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .aspectRatio(1f)
+                                .clip(RoundedCornerShape(14.dp))
+                                .border(
+                                    1.dp,
+                                    MaterialTheme.appColors.divider,
+                                    RoundedCornerShape(14.dp)
+                                )
+                        ) {
+                            DrawingCanvas(
+                                paths = state.paths,
+                                currentPath = state.currentPath,
+                                onAction = onDrawAction,
+                                enabled = !state.isTimerExpired,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .aspectRatio(1f)
-                    .clip(RoundedCornerShape(14.dp))
-                    .border(1.dp, MaterialTheme.appColors.divider, RoundedCornerShape(14.dp))
-            ) {
-                DrawingCanvas(
-                    paths = state.paths,
-                    currentPath = state.currentPath,
-                    onAction = onDrawAction,
-                    enabled = !state.isTimerExpired,
-                    modifier = Modifier.fillMaxSize()
-                )
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Row(
+                            modifier = Modifier.padding(start = 16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+
+                            BadgeElement(
+                                iconResId = R.drawable.ic_mutations,
+                                text = "${post.generation}/${post.maxGenerations}",
+                            )
+
+                            BadgeElement(
+                                iconResId = R.drawable.ic_clock,
+                                text = state.formattedTime,
+                            )
+
+                        }
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        HorizontalDivider(color = MaterialTheme.appColors.divider)
+
+                        DrawBottomBar(
+                            selectedBrushSize = state.selectedBrushSize,
+                            canUndo = state.canUndo,
+                            canRedo = state.canRedo,
+                            canClear = state.canUndo,
+                            onUndo = { onDrawAction(DrawingAction.OnUndoClick) },
+                            onRedo = { onDrawAction(DrawingAction.OnRedoClick) },
+                            onClear = { onDrawAction(DrawingAction.OnClearCanvasClick) },
+                            onBrushSizeChange = { onDrawAction(DrawingAction.OnBrushSizeChange(it)) },
+                            modifier = Modifier.navigationBarsPadding()
+                        )
+                    }
+                }
             }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Row(
-                modifier = Modifier.padding(start = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-
-                BadgeElement(
-                    iconResId = R.drawable.ic_mutations,
-                    text = "${post.generation}/${post.maxGenerations}",
-                )
-
-                BadgeElement(
-                    iconResId = R.drawable.ic_clock,
-                    text = state.formattedTime,
-                )
-
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            HorizontalDivider(color = MaterialTheme.appColors.divider)
-
-            DrawBottomBar(
-                selectedBrushSize = state.selectedBrushSize,
-                canUndo = state.canUndo,
-                canRedo = state.canRedo,
-                canClear = state.canUndo,
-                onUndo = { onDrawAction(DrawingAction.OnUndoClick) },
-                onRedo = { onDrawAction(DrawingAction.OnRedoClick) },
-                onClear = { onDrawAction(DrawingAction.OnClearCanvasClick) },
-                onBrushSizeChange = { onDrawAction(DrawingAction.OnBrushSizeChange(it)) },
-                modifier = Modifier.navigationBarsPadding()
-            )
-
-        }
+        )
 
     }
 
@@ -145,11 +160,24 @@ fun DrawContentPreview() {
         darkTheme = true
     ) {
         Box(
-            modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
         ) {
             DrawContent(
                 state = DrawState(
-//                    MockPostRepository.mockList[1].toUi()
+                    postUi = PostUi(
+                        id = "2",
+                        authorId = "user-1",
+                        authorName = "Alex",
+                        avatarUrl = null,
+                        content = PostContent.Text("Once upon a time there was a broken telephone that nobody could fix..."),
+                        createdAt = System.currentTimeMillis() - 7200000,
+                        generation = 10,
+                        maxGenerations = 10,
+                        status = PostStatus.AVAILABLE,
+                        nextTimeLimit = 30,
+                    )
                 ),
             )
         }

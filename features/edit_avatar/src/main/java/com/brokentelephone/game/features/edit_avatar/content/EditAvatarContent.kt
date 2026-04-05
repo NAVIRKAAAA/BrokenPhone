@@ -2,6 +2,7 @@ package com.brokentelephone.game.features.edit_avatar.content
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -13,14 +14,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -47,12 +49,14 @@ import com.brokentelephone.game.features.edit_avatar.model.AvatarUi
 import com.brokentelephone.game.features.edit_avatar.model.Avatars
 import com.brokentelephone.game.features.edit_avatar.model.EditAvatarState
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun EditAvatarContent(
     state: EditAvatarState,
     onBackClick: () -> Unit,
     onAvatarClick: (AvatarUi) -> Unit,
     modifier: Modifier = Modifier,
+    gridState: LazyGridState = rememberLazyGridState(),
 ) {
     Column(
         modifier = modifier
@@ -65,54 +69,56 @@ fun EditAvatarContent(
             onBackClick = onBackClick,
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Text(
-            text = stringResource(R.string.edit_avatar_current),
-            fontFamily = FontFamily(Font(R.font.nunito_regular)),
-            fontSize = 14.sp,
-            lineHeight = 21.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            textAlign = TextAlign.Start
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Crossfade(
-            targetState = Avatars.all.find { it.id == state.initialAvatarId }?.url,
-            animationSpec = tween(300),
-            label = "currentAvatar"
-        ) { avatarUrl ->
-            AvatarComponent(
-                avatarUrl = avatarUrl,
-                size = 120.dp,
-                modifier = Modifier.padding(start = 16.dp)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Text(
-            text = stringResource(R.string.edit_avatar_choose),
-            fontFamily = FontFamily(Font(R.font.nunito_regular)),
-            fontSize = 14.sp,
-            lineHeight = 21.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            textAlign = TextAlign.Start
-        )
-
         LazyVerticalGrid(
             columns = GridCells.Fixed(4),
+            state = gridState,
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            stickyHeader {
+                Text(
+                    text = stringResource(R.string.edit_avatar_current),
+                    fontFamily = FontFamily(Font(R.font.nunito_regular)),
+                    fontSize = 14.sp,
+                    lineHeight = 21.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(bottom = 12.dp),
+                    textAlign = TextAlign.Start
+                )
+            }
+
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                Crossfade(
+                    targetState = state.avatarUi,
+                    animationSpec = tween(300),
+                    label = "currentAvatar"
+                ) { avatarUi ->
+                    AvatarComponent(
+                        avatarUrl = avatarUi?.url,
+                        size = 120.dp,
+                    )
+                }
+            }
+
+            stickyHeader {
+                Text(
+                    text = stringResource(R.string.edit_avatar_choose),
+                    fontFamily = FontFamily(Font(R.font.nunito_regular)),
+                    fontSize = 14.sp,
+                    lineHeight = 21.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(vertical = 12.dp),
+                    textAlign = TextAlign.Start
+                )
+            }
+
             items(
                 items = Avatars.all,
                 key = { it.id }
@@ -163,7 +169,7 @@ fun EditAvatarContent(
 fun EditAvatarContentPreview() {
     BrokenTelephoneTheme(darkTheme = true) {
         EditAvatarContent(
-            state = EditAvatarState(initialAvatarId = Avatars.all[1].id),
+            state = EditAvatarState(avatarUi = Avatars.all[1]),
             onBackClick = {},
             onAvatarClick = {},
         )

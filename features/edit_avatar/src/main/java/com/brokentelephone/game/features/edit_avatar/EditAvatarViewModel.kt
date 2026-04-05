@@ -2,7 +2,6 @@ package com.brokentelephone.game.features.edit_avatar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.brokentelephone.game.core.model.user.toUi
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
@@ -16,7 +15,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -34,9 +32,10 @@ class EditAvatarViewModel(
 
     init {
         viewModelScope.launch {
-            val user = getCurrentUserUseCase().first()
-            val avatarId = Avatars.all.find { it.url == user?.avatarUrl }?.id
-            _state.update { it.copy(user = user?.toUi(), initialAvatarId = avatarId) }
+            getCurrentUserUseCase.invoke().collect { user ->
+                val avatarUi = Avatars.all.find { it.url == user?.avatarUrl }
+                _state.update { it.copy(avatarUi = avatarUi) }
+            }
         }
     }
 
@@ -47,9 +46,14 @@ class EditAvatarViewModel(
             val avatarUrl = Avatars.all.first { it.id == avatar.id }.url
             updateAvatarUseCase.execute(avatarUrl).onSuccess {
                 _state.update { it.copy(loadingAvatarId = null) }
-                _event.emit(EditAvatarEvent.NavigateBack)
+                _event.emit(EditAvatarEvent.ScrollToTop)
             }.onError { error ->
-                _state.update { it.copy(loadingAvatarId = null, globalError = exceptionToMessageMapper.map(error)) }
+                _state.update {
+                    it.copy(
+                        loadingAvatarId = null,
+                        globalError = exceptionToMessageMapper.map(error)
+                    )
+                }
             }
         }
     }

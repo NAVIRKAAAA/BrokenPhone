@@ -48,11 +48,11 @@ import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.badge.BadgeElement
 import com.brokentelephone.game.core.post.DrawPostImage
+import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.core.top_bar.PostTopBar
 import com.brokentelephone.game.domain.model.post.PostContent
-
 import com.brokentelephone.game.features.describe_drawing.model.DescribeDrawingState
 import kotlinx.coroutines.delay
 
@@ -68,11 +68,6 @@ fun DescribeDrawingContent(
     val post = state.postUi
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
-
-    LaunchedEffect(Unit) {
-        delay(150)
-        focusRequester.requestFocus()
-    }
 
     Column(
         modifier = modifier
@@ -96,129 +91,145 @@ fun DescribeDrawingContent(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            if (post != null) {
-                val content = post.content as? PostContent.Drawing ?: return@Column
+            ShimmerContent(
+                isLoading = post == null,
+                shimmerContent = {
+                    DescribeDrawingContentShimmer()
+                },
+                content = {
+                    if (post != null) {
+                        LaunchedEffect(Unit) {
+                            delay(150)
+                            focusRequester.requestFocus()
+                        }
 
-                BoxWithConstraints(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .padding(horizontal = 16.dp),
-                    contentAlignment = Alignment.TopCenter
-                ) {
-                    val imageSize = minOf(maxWidth, maxHeight)
-                    DrawPostImage(
-                        content = content,
-                        modifier = Modifier
-                            .size(imageSize)
-                            .clip(RoundedCornerShape(14.dp))
-                            .border(
-                                1.dp,
-                                MaterialTheme.colorScheme.outlineVariant,
-                                RoundedCornerShape(14.dp)
-                            ),
-                        contentScale = ContentScale.Crop
-                    )
-                }
+                        Column {
+                            val content =
+                                post.content as? PostContent.Drawing ?: return@ShimmerContent
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                HorizontalDivider(color = MaterialTheme.appColors.divider)
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                CompositionLocalProvider(
-                    LocalTextSelectionColors provides TextSelectionColors(
-                        handleColor = MaterialTheme.colorScheme.primary,
-                        backgroundColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
-                    )
-                ) {
-                    BasicTextField(
-                        value = state.text,
-                        onValueChange = onTextChanged,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .focusRequester(focusRequester),
-                        textStyle = TextStyle(
-                            fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                            fontSize = 15.sp,
-                            lineHeight = 22.sp,
-                            color = MaterialTheme.colorScheme.onBackground
-                        ),
-                        minLines = 3,
-                        maxLines = 3,
-                        keyboardActions = KeyboardActions(
-                            onDone = {
-                                focusManager.clearFocus()
-                                onPostClick()
-                            }
-                        ),
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                        cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
-                    ) { innerTextField ->
-                        Box(modifier = Modifier.fillMaxWidth()) {
-                            if (state.text.isEmpty()) {
-                                Text(
-                                    text = stringResource(R.string.describe_drawing_placeholder),
-                                    fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                                    fontSize = 15.sp,
-                                    lineHeight = 22.sp,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                            BoxWithConstraints(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f)
+                                    .padding(horizontal = 16.dp),
+                                contentAlignment = Alignment.TopCenter
+                            ) {
+                                val imageSize = minOf(maxWidth, maxHeight)
+                                DrawPostImage(
+                                    content = content,
+                                    modifier = Modifier
+                                        .size(imageSize)
+                                        .clip(RoundedCornerShape(14.dp))
+                                        .border(
+                                            1.dp,
+                                            MaterialTheme.colorScheme.outlineVariant,
+                                            RoundedCornerShape(14.dp)
+                                        ),
+                                    contentScale = ContentScale.Crop
                                 )
                             }
-                            innerTextField()
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            HorizontalDivider(color = MaterialTheme.appColors.divider)
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            CompositionLocalProvider(
+                                LocalTextSelectionColors provides TextSelectionColors(
+                                    handleColor = MaterialTheme.colorScheme.primary,
+                                    backgroundColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+                                )
+                            ) {
+                                BasicTextField(
+                                    value = state.text,
+                                    onValueChange = onTextChanged,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp)
+                                        .focusRequester(focusRequester),
+                                    textStyle = TextStyle(
+                                        fontFamily = FontFamily(Font(R.font.nunito_regular)),
+                                        fontSize = 15.sp,
+                                        lineHeight = 22.sp,
+                                        color = MaterialTheme.colorScheme.onBackground
+                                    ),
+                                    minLines = 3,
+                                    maxLines = 3,
+                                    keyboardActions = KeyboardActions(
+                                        onDone = {
+                                            focusManager.clearFocus()
+                                            onPostClick()
+                                        }
+                                    ),
+                                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
+                                ) { innerTextField ->
+                                    Box(modifier = Modifier.fillMaxWidth()) {
+                                        if (state.text.isEmpty()) {
+                                            Text(
+                                                text = stringResource(R.string.describe_drawing_placeholder),
+                                                fontFamily = FontFamily(Font(R.font.nunito_regular)),
+                                                fontSize = 15.sp,
+                                                lineHeight = 22.sp,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        }
+                                        innerTextField()
+                                    }
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            Row(
+                                modifier = Modifier.padding(start = 16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+
+                                BadgeElement(
+                                    iconResId = R.drawable.ic_mutations,
+                                    text = stringResource(
+                                        R.string.create_post_badge_generations,
+                                        post.maxGenerations
+                                    ),
+                                )
+
+                                BadgeElement(
+                                    iconResId = R.drawable.ic_clock,
+                                    text = state.formattedTime,
+                                )
+
+                                if (state.text.isNotBlank()) {
+
+                                    Text(
+                                        text = "|",
+                                        textAlign = TextAlign.Center,
+                                        fontFamily = FontFamily(Font(R.font.nunito_bold)),
+                                        fontSize = 14.sp,
+                                        lineHeight = 20.sp,
+                                        color = MaterialTheme.appColors.divider
+                                    )
+
+
+                                    Text(
+                                        text = "${state.text.length}/${140}",
+                                        textAlign = TextAlign.Center,
+                                        fontFamily = FontFamily(Font(R.font.nunito_bold)),
+                                        fontSize = 14.sp,
+                                        lineHeight = 20.sp,
+                                        color = if (state.isTextOverLimit) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+
+                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
                         }
                     }
                 }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Row(
-                    modifier = Modifier.padding(start = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-
-                    BadgeElement(
-                        iconResId = R.drawable.ic_mutations,
-                        text = stringResource(
-                            R.string.create_post_badge_generations,
-                            post.maxGenerations
-                        ),
-                    )
-
-                    BadgeElement(
-                        iconResId = R.drawable.ic_clock,
-                        text = state.formattedTime,
-                    )
-
-                    if (state.text.isNotBlank()) {
-
-                        Text(
-                            text = "|",
-                            textAlign = TextAlign.Center,
-                            fontFamily = FontFamily(Font(R.font.nunito_bold)),
-                            fontSize = 14.sp,
-                            lineHeight = 20.sp,
-                            color = MaterialTheme.appColors.divider
-                        )
-
-
-                        Text(
-                            text = "${state.text.length}/${140}",
-                            textAlign = TextAlign.Center,
-                            fontFamily = FontFamily(Font(R.font.nunito_bold)),
-                            fontSize = 14.sp,
-                            lineHeight = 20.sp,
-                            color = if (state.isTextOverLimit) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-            }
+            )
         }
     }
 
@@ -236,7 +247,18 @@ fun DescribeDrawingContentPreview() {
             DescribeDrawingContent(
                 state = DescribeDrawingState(
                     text = "",
-//                    postUi = MockPostRepository.mockList.last().toUi()
+//                    postUi = PostUi(
+//                        id = "2",
+//                        authorId = "user-1",
+//                        authorName = "Alex",
+//                        avatarUrl = null,
+//                        content = PostContent.Drawing("Once upon a time there was a broken telephone that nobody could fix..."),
+//                        createdAt = System.currentTimeMillis() - 7200000,
+//                        generation = 10,
+//                        maxGenerations = 10,
+//                        status = PostStatus.AVAILABLE,
+//                        nextTimeLimit = 30,
+//                    )
                 )
             )
         }
