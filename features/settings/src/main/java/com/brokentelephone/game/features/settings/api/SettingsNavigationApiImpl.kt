@@ -91,7 +91,7 @@ class SettingsNavigationApiImpl : SettingsNavigationApi {
                     navController.navigateSingle(LanguageRoute)
                 },
                 onThemeClick = {
-                    navController.navigate(ThemeRoute)
+                    navController.navigateSingle(ThemeRoute)
                 },
                 onBlockedUsersClick = {
                     navController.navigateSingle(BlockedUsersRoute)

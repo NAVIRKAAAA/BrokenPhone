@@ -24,6 +24,8 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":domain"))
     implementation(project(":essentials"))
+    implementation(project(":features:add_friend_api"))
+    implementation(project(":features:user_details_api"))
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling.preview)

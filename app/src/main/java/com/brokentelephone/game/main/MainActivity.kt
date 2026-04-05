@@ -132,7 +132,6 @@ class MainActivity : AppCompatActivity() {
                             AppNavGraph(
                                 startDestination = startDestination,
                                 navController = navController,
-                                onBannerDismissed = mainViewModel::onBannerDismissed,
                             )
 
                             AppNavBottomBar(

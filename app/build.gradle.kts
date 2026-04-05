@@ -130,7 +130,10 @@ dependencies {
     implementation(project(":features:friends_api"))
 
     implementation(project(":features:user_friends"))
+    implementation(project(":features:user_friends_api"))
+
     implementation(project(":features:add_friend"))
+    implementation(project(":features:add_friend_api"))
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(platform(libs.androidx.compose.bom))

@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.friends.api
+package com.brokentelephone.game.features.add_friend.api
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -10,18 +10,17 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.brokentelephone.game.add_friend_api.AddFriendNavigationApi
 import com.brokentelephone.game.add_friend_api.AddFriendRoute
-import com.brokentelephone.game.features.friends.FriendsScreen
-import com.brokentelephone.game.friends_api.FriendsNavigationApi
-import com.brokentelephone.game.friends_api.FriendsRoute
+import com.brokentelephone.game.features.add_friend.AddFriendScreen
 import com.brokentelephone.game.nav_api.navigateSingle
 import com.brokentelephone.game.nav_api.safePopBackStack
 import com.brokentelephone.game.user_details_api.UserDetailsRoute
 
-class FriendsNavigationApiImpl : FriendsNavigationApi {
+class AddFriendNavigationApiImpl : AddFriendNavigationApi {
 
     override fun screen(navController: NavController, builder: NavGraphBuilder) {
-        builder.composable<FriendsRoute>(
+        builder.composable<AddFriendRoute>(
             enterTransition = {
                 slideInHorizontally(
                     initialOffsetX = { it },
@@ -29,23 +28,23 @@ class FriendsNavigationApiImpl : FriendsNavigationApi {
                 ) + fadeIn(animationSpec = tween(200))
             },
             exitTransition = {
-                if (targetState.destination.route?.contains("AddFriend") == true) {
+                if (targetState.destination.route?.contains("UserDetails") == true) {
+                    ExitTransition.None
+                } else {
                     slideOutHorizontally(
                         targetOffsetX = { -it / 3 },
                         animationSpec = tween(250)
                     ) + fadeOut(animationSpec = tween(200))
-                } else {
-                    ExitTransition.None
                 }
             },
             popEnterTransition = {
-                if (initialState.destination.route?.contains("AddFriend") == true) {
+                if (initialState.destination.route?.contains("UserDetails") == true) {
+                    EnterTransition.None
+                } else {
                     slideInHorizontally(
                         initialOffsetX = { -it / 3 },
                         animationSpec = tween(250)
                     ) + fadeIn(animationSpec = tween(200))
-                } else {
-                    EnterTransition.None
                 }
             },
             popExitTransition = {
@@ -55,13 +54,10 @@ class FriendsNavigationApiImpl : FriendsNavigationApi {
                 ) + fadeOut(animationSpec = tween(200))
             }
         ) {
-            FriendsScreen(
+            AddFriendScreen(
                 onBackClick = navController::safePopBackStack,
                 onUserClick = { userId ->
                     navController.navigateSingle(UserDetailsRoute(userId = userId))
-                },
-                onAddFriendClick = {
-                    navController.navigateSingle(AddFriendRoute)
                 },
             )
         }

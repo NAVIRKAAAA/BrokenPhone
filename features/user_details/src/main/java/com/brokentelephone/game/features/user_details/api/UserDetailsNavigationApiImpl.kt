@@ -21,6 +21,7 @@ import com.brokentelephone.game.nav_api.navigateSingle
 import com.brokentelephone.game.nav_api.safePopBackStack
 import com.brokentelephone.game.user_details_api.UserDetailsNavigationApi
 import com.brokentelephone.game.user_details_api.UserDetailsRoute
+import com.brokentelephone.game.user_friends_api.UserFriendsRoute
 
 class UserDetailsNavigationApiImpl : UserDetailsNavigationApi {
 
@@ -88,7 +89,7 @@ class UserDetailsNavigationApiImpl : UserDetailsNavigationApi {
                 userId = route.userId,
                 onBackClick = navController::safePopBackStack,
                 onFriendsClick = { userId ->
-//                    navController.navigateSingle(UserFriendsRoute(userId = userId))
+                    navController.navigateSingle(UserFriendsRoute(userId = userId))
                 },
                 onPostClick = { postId, userId ->
                     navController.navigateSingle(

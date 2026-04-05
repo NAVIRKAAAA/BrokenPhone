@@ -80,18 +80,18 @@ class PostDetailsNavigationApiImpl : PostDetailsNavigationApi {
                     navController.safePopBackStack()
                 },
                 onDrawContinue = { sessionId ->
-                        navController.navigateSingle(DrawRoute(sessionId = sessionId))
-//                    onBannerDismissed()
+                    navController.navigateSingle(DrawRoute(sessionId = sessionId))
+                    // TODO: onBannerDismissed
                 },
                 onDescribeDrawingContinue = { sessionId ->
-                        navController.navigateSingle(DescribeDrawingRoute(sessionId = sessionId))
-//                    onBannerDismissed()
+                    navController.navigateSingle(DescribeDrawingRoute(sessionId = sessionId))
+                    // TODO: onBannerDismissed
                 },
                 onViewHistoryClick = { postId ->
-                        navController.navigateSingle(ChainDetailsRoute(postId = postId))
+                    navController.navigateSingle(ChainDetailsRoute(postId = postId))
                 },
                 onUserClick = { userId ->
-                        navController.navigateSingle(UserDetailsRoute(userId = userId))
+                    navController.navigateSingle(UserDetailsRoute(userId = userId))
                 },
             )
         }
