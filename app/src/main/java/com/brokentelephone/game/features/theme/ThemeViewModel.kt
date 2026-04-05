@@ -3,7 +3,7 @@ package com.brokentelephone.game.features.theme
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.domain.model.settings.AppTheme
-import com.brokentelephone.game.features.app_preferences.use_case.GetThemeUseCase
+import com.brokentelephone.game.domain.use_case.GetThemeUseCase
 import com.brokentelephone.game.features.theme.model.ThemeState
 import com.brokentelephone.game.features.theme.use_case.UpdateThemeUseCase
 import kotlinx.coroutines.flow.MutableStateFlow

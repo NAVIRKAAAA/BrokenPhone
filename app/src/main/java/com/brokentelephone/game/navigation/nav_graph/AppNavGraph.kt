@@ -17,9 +17,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.brokentelephone.game.account_settings_api.AccountSettingsNavigationApi
 import com.brokentelephone.game.chain_details_api.ChainDetailsNavigationApi
 import com.brokentelephone.game.choose_avatar_api.ChooseAvatarNavigationApi
 import com.brokentelephone.game.choose_username_api.ChooseUsernameNavigationApi
+import com.brokentelephone.game.create_post_api.CreatePostNavigationApi
 import com.brokentelephone.game.dashboard_api.DashboardNavigationApi
 import com.brokentelephone.game.dashboard_api.DashboardRoute
 import com.brokentelephone.game.dashboard_api.MainGraph
@@ -30,15 +32,12 @@ import com.brokentelephone.game.edit_bio_api.EditBioNavigationApi
 import com.brokentelephone.game.edit_email_api.EditEmailNavigationApi
 import com.brokentelephone.game.edit_profile_api.EditProfileNavigationApi
 import com.brokentelephone.game.edit_username_api.EditUsernameNavigationApi
-import com.brokentelephone.game.features.account_settings.AccountSettingsScreen
 import com.brokentelephone.game.features.add_friend.AddFriendScreen
 import com.brokentelephone.game.features.blocked_users.BlockedUsersScreen
-import com.brokentelephone.game.features.create_post.CreatePostScreen
 import com.brokentelephone.game.features.friends.FriendsScreen
 import com.brokentelephone.game.features.language.LanguageScreen
 import com.brokentelephone.game.features.notifications.NotificationSettingsScreen
 import com.brokentelephone.game.features.notifications.NotificationsScreen
-import com.brokentelephone.game.features.settings.SettingsScreen
 import com.brokentelephone.game.features.sign_up_api.SignUpNavigationApi
 import com.brokentelephone.game.features.theme.ThemeScreen
 import com.brokentelephone.game.features.user_details.UserDetailsScreen
@@ -52,6 +51,7 @@ import com.brokentelephone.game.nav_api.safePopBackStack
 import com.brokentelephone.game.navigation.routes.Routes
 import com.brokentelephone.game.post_details_api.PostDetailsNavigationApi
 import com.brokentelephone.game.profile_api.ProfileNavigationApi
+import com.brokentelephone.game.settings_api.SettingsNavigationApi
 import com.brokentelephone.game.sign_in_api.SignInNavigationApi
 import kotlinx.serialization.Serializable
 import org.koin.compose.koinInject
@@ -72,16 +72,6 @@ fun AppNavGraph(
     val forgotPasswordNavigationApi: ForgotPasswordNavigationApi = koinInject()
     val chooseAvatarNavigationApi: ChooseAvatarNavigationApi = koinInject()
     val chooseUsernameNavigationApi: ChooseUsernameNavigationApi = koinInject()
-
-    val authGraphRoutes = listOf(
-        welcomeNavigationApi,
-        signUpNavigationApi,
-        signInNavigationApi,
-        forgotPasswordNavigationApi,
-        chooseAvatarNavigationApi,
-        chooseUsernameNavigationApi
-    )
-
     val dashboardNavigationApi: DashboardNavigationApi = koinInject()
     val profileNavigationApi: ProfileNavigationApi = koinInject()
     val postDetailsNavigationApi: PostDetailsNavigationApi = koinInject()
@@ -93,6 +83,18 @@ fun AppNavGraph(
     val editUsernameNavigationApi: EditUsernameNavigationApi = koinInject()
     val editBioNavigationApi: EditBioNavigationApi = koinInject()
     val editEmailNavigationApi: EditEmailNavigationApi = koinInject()
+    val createPostNavigationApi: CreatePostNavigationApi = koinInject()
+    val settingsNavigationApi: SettingsNavigationApi = koinInject()
+    val accountSettingsNavigationApi: AccountSettingsNavigationApi = koinInject()
+
+    val authGraphRoutes = listOf(
+        welcomeNavigationApi,
+        signUpNavigationApi,
+        signInNavigationApi,
+        forgotPasswordNavigationApi,
+        chooseAvatarNavigationApi,
+        chooseUsernameNavigationApi
+    )
 
     val mainGraphRoutes = listOf(
         dashboardNavigationApi,
@@ -105,7 +107,10 @@ fun AppNavGraph(
         editAvatarNavigationApi,
         editUsernameNavigationApi,
         editBioNavigationApi,
-        editEmailNavigationApi
+        editEmailNavigationApi,
+        createPostNavigationApi,
+        settingsNavigationApi,
+        accountSettingsNavigationApi
     )
 
     NavHost(
@@ -125,127 +130,6 @@ fun AppNavGraph(
 
             mainGraphRoutes.forEach {
                 it.screen(navController, this)
-            }
-
-            composable<Routes.Settings>(
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                },
-                exitTransition = {
-                    val route = targetState.destination.route
-                    if (route?.contains("AccountSettings") == true || route?.contains("NotificationSettings") == true || route?.contains(
-                            "Language"
-                        ) == true || route?.contains("Theme") == true || route?.contains("BlockedUsers") == true
-                    ) {
-                        slideOutHorizontally(
-                            targetOffsetX = { -it / 3 },
-                            animationSpec = tween(250)
-                        ) + fadeOut(animationSpec = tween(200))
-                    } else {
-                        ExitTransition.None
-                    }
-                },
-                popEnterTransition = {
-                    val route = initialState.destination.route
-                    if (route?.contains("AccountSettings") == true || route?.contains("NotificationSettings") == true || route?.contains(
-                            "Language"
-                        ) == true || route?.contains("Theme") == true || route?.contains("BlockedUsers") == true
-                    ) {
-                        slideInHorizontally(
-                            initialOffsetX = { -it / 3 },
-                            animationSpec = tween(250)
-                        ) + fadeIn(animationSpec = tween(200))
-                    } else {
-                        EnterTransition.None
-                    }
-                },
-                popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                }
-            ) {
-                SettingsScreen(
-                    onBackClick = navController::safePopBackStack,
-                    onNavigateToWelcome = {
-                        navController.navigate(Routes.Welcome) {
-                            popUpTo(0) { inclusive = true }
-                        }
-                    },
-                    onAccountSettingsClick = {
-//                        navController.navigateSingle(Routes.AccountSettings)
-                    },
-                    onNotificationsClick = {
-//                        navController.navigateSingle(Routes.NotificationSettings)
-                    },
-                    onLanguageClick = {
-//                        navController.navigateSingle(Routes.Language)
-                    },
-                    onThemeClick = {
-//                        navController.navigateSingle(Routes.Theme)
-                    },
-                    onBlockedUsersClick = {
-//                        navController.navigateSingle(Routes.BlockedUsers)
-                    },
-                    onNavigateToDraw = { route ->
-//                        navController.navigateSingle(route)
-                        onBannerDismissed()
-                    },
-                    onNavigateToDescribeDrawing = { route ->
-//                        navController.navigateSingle(route)
-                        onBannerDismissed()
-                    },
-                )
-            }
-
-            composable<Routes.AccountSettings>(
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeIn(animationSpec = tween(200))
-                },
-                exitTransition = {
-                    val route = targetState.destination.route
-                    if (route?.contains("BlockedUsers") == true) {
-                        slideOutHorizontally(
-                            targetOffsetX = { -it / 3 },
-                            animationSpec = tween(250)
-                        ) + fadeOut(animationSpec = tween(200))
-                    } else {
-                        ExitTransition.None
-                    }
-                },
-                popEnterTransition = {
-                    val route = initialState.destination.route
-                    if (route?.contains("BlockedUsers") == true) {
-                        slideInHorizontally(
-                            initialOffsetX = { -it / 3 },
-                            animationSpec = tween(250)
-                        ) + fadeIn(animationSpec = tween(200))
-                    } else {
-                        EnterTransition.None
-                    }
-                },
-                popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { it },
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(200))
-                }
-            ) {
-                AccountSettingsScreen(
-                    onBackClick = navController::safePopBackStack,
-                    onNavigateToWelcome = {
-                        navController.navigate(Routes.Welcome) {
-                            popUpTo(0) { inclusive = true }
-                        }
-                    }
-                )
             }
 
             composable<Routes.BlockedUsers>(
@@ -541,29 +425,6 @@ fun AppNavGraph(
                 )
             }
 
-            composable<Routes.CreatePost>(
-                enterTransition = {
-                    slideInVertically(
-                        initialOffsetY = { it },
-                        animationSpec = tween(300)
-                    )
-                },
-                exitTransition = { ExitTransition.None },
-                popEnterTransition = { EnterTransition.None },
-                popExitTransition = {
-                    slideOutVertically(
-                        targetOffsetY = { it },
-                        animationSpec = tween(300)
-                    ) + fadeOut(
-                        animationSpec = tween(200)
-                    )
-                }
-            ) {
-                CreatePostScreen(
-//                    onBackClick = navController::safePopBackStack,
-//                    onPostCreated = navController::safePopBackStack
-                )
-            }
         }
     }
 }

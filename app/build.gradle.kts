@@ -99,6 +99,15 @@ dependencies {
     implementation(project(":features:edit_email"))
     implementation(project(":features:edit_email_api"))
 
+    implementation(project(":features:create_post"))
+    implementation(project(":features:create_post_api"))
+
+    implementation(project(":features:settings"))
+    implementation(project(":features:settings_api"))
+
+    implementation(project(":features:account_settings"))
+    implementation(project(":features:account_settings_api"))
+
     implementation(project(":features:user_details"))
     implementation(project(":features:friends"))
     implementation(project(":features:user_friends"))

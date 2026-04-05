@@ -49,11 +49,13 @@ import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.avatar.AvatarComponent
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.utils.coloredShadow
+import com.brokentelephone.game.create_post_api.CreatePostRoute
 import com.brokentelephone.game.dashboard_api.DashboardRoute
 import com.brokentelephone.game.dashboard_api.MainGraph
 import com.brokentelephone.game.features.bottom_nav_bar.model.BottomNavBar
 import com.brokentelephone.game.features.bottom_nav_bar.model.BottomNavBarEvent
 import com.brokentelephone.game.nav_api.navigateSaved
+import com.brokentelephone.game.nav_api.navigateSingle
 import com.brokentelephone.game.profile_api.ProfileRoute
 import org.koin.compose.koinInject
 
@@ -83,7 +85,7 @@ fun AppNavBottomBar(
         viewModel.event.collect { event ->
             when (event) {
                 BottomNavBarEvent.NavigateToCreate -> {
-//                    navController.navigateSingle(Routes.CreatePost)
+                    navController.navigateSingle(CreatePostRoute)
                 }
 
                 BottomNavBarEvent.NavigateToDashboard -> {

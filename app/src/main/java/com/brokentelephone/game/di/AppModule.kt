@@ -4,11 +4,12 @@ import com.brokentelephone.game.core.timer.CountdownTimer
 import com.brokentelephone.game.domain.use_case.BlockUserUseCase
 import com.brokentelephone.game.domain.use_case.DeletePostUseCase
 import com.brokentelephone.game.domain.use_case.GetActiveSessionUseCase
-import com.brokentelephone.game.domain.use_case.GetAuthStateUseCase
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
+import com.brokentelephone.game.domain.use_case.GetLanguageUseCase
 import com.brokentelephone.game.domain.use_case.GetPostLinkByIdUseCase
 import com.brokentelephone.game.domain.use_case.GetPrivacyPolicyLinkUseCase
 import com.brokentelephone.game.domain.use_case.GetTermsOfServiceLinkUseCase
+import com.brokentelephone.game.domain.use_case.GetThemeUseCase
 import com.brokentelephone.game.domain.use_case.GetUnreadNotificationsCountUseCase
 import com.brokentelephone.game.domain.use_case.GetUserContributionsUseCase
 import com.brokentelephone.game.domain.use_case.GetUserPostsUseCase
@@ -18,29 +19,15 @@ import com.brokentelephone.game.domain.use_case.MarkPostAsNotInterestedUseCase
 import com.brokentelephone.game.domain.use_case.ReportPostUseCase
 import com.brokentelephone.game.domain.use_case.ReportUserUseCase
 import com.brokentelephone.game.domain.use_case.SignInWithGoogleUseCase
-import com.brokentelephone.game.features.account_settings.AccountSettingsViewModel
-import com.brokentelephone.game.features.account_settings.use_case.DeleteAccountUseCase
-import com.brokentelephone.game.features.account_settings.use_case.SendEmailVerificationUseCase
-import com.brokentelephone.game.features.app_preferences.use_case.GetLanguageUseCase
-import com.brokentelephone.game.features.app_preferences.use_case.GetThemeUseCase
 import com.brokentelephone.game.features.blocked_users.BlockedUsersViewModel
 import com.brokentelephone.game.features.blocked_users.use_case.GetBlockedUsersUseCase
 import com.brokentelephone.game.features.blocked_users.use_case.UnblockUserUseCase
-
-import com.brokentelephone.game.features.create_post.CreatePostViewModel
-import com.brokentelephone.game.features.create_post.use_case.CreatePostUseCase
-
-
-
-
 import com.brokentelephone.game.features.language.LanguageViewModel
 import com.brokentelephone.game.features.language.use_case.SetupFirstAppLaunchUseCase
 import com.brokentelephone.game.features.language.use_case.UpdateLanguageUseCase
 import com.brokentelephone.game.features.notifications.NotificationSettingsViewModel
 import com.brokentelephone.game.features.notifications.use_case.GetNotificationsAllowedTypesUseCase
 import com.brokentelephone.game.features.notifications.use_case.UpdateNotificationsUseCase
-import com.brokentelephone.game.features.settings.SettingsViewModel
-import com.brokentelephone.game.features.settings.use_case.GetVersionInfoUseCase
 import com.brokentelephone.game.features.theme.ThemeViewModel
 import com.brokentelephone.game.features.theme.use_case.UpdateThemeUseCase
 import com.brokentelephone.game.main.MainViewModel
@@ -61,7 +48,6 @@ val appModule = module {
     factoryOf(::ReportUserUseCase)
     factoryOf(::BlockUserUseCase)
     factoryOf(::MarkPostAsNotInterestedUseCase)
-    factoryOf(::CreatePostUseCase)
     factoryOf(::SignInWithGoogleUseCase)
     factoryOf(::GetCurrentUserUseCase)
     factoryOf(::GetUnreadNotificationsCountUseCase)
@@ -69,18 +55,10 @@ val appModule = module {
     factoryOf(::GetUserPostsUseCase)
     factoryOf(::GetUserContributionsUseCase)
 
-    viewModelOf(::CreatePostViewModel)
-
-    factoryOf(::GetVersionInfoUseCase)
     factoryOf(::LogoutUseCase)
-    factoryOf(::GetAuthStateUseCase)
-    viewModelOf(::SettingsViewModel)
-    factoryOf(::DeleteAccountUseCase)
-    factoryOf(::SendEmailVerificationUseCase)
     factoryOf(::GetBlockedUsersUseCase)
     factoryOf(::UnblockUserUseCase)
     viewModelOf(::BlockedUsersViewModel)
-    viewModelOf(::AccountSettingsViewModel)
     factoryOf(::GetTermsOfServiceLinkUseCase)
     factoryOf(::GetPrivacyPolicyLinkUseCase)
     factoryOf(::GetLanguageUseCase)

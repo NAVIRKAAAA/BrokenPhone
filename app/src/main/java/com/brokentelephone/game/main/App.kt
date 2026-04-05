@@ -4,11 +4,13 @@ import android.app.Application
 import com.brokentelephone.game.di.appModule
 import com.brokentelephone.game.di.dataModule
 import com.brokentelephone.game.essentials.di.essentialsModule
+import com.brokentelephone.game.features.account_settings.di.accountSettingsModule
 import com.brokentelephone.game.features.add_friend.di.addFriendModule
 import com.brokentelephone.game.features.bottom_nav_bar.di.bottomNavBarModule
 import com.brokentelephone.game.features.chain_details.di.chainDetailsModule
 import com.brokentelephone.game.features.choose_avatar.di.chooseAvatarModule
 import com.brokentelephone.game.features.choose_username.di.chooseUsernameModule
+import com.brokentelephone.game.features.create_post.di.createPostModule
 import com.brokentelephone.game.features.dashboard.di.dashboardModule
 import com.brokentelephone.game.features.describe_drawing.di.describeDrawingModule
 import com.brokentelephone.game.features.draw.di.drawModule
@@ -22,6 +24,7 @@ import com.brokentelephone.game.features.friends.di.friendsModule
 import com.brokentelephone.game.features.notifications.di.notificationsModule
 import com.brokentelephone.game.features.post_details.di.postDetailsModule
 import com.brokentelephone.game.features.profile.di.profileModule
+import com.brokentelephone.game.features.settings.di.settingsModule
 import com.brokentelephone.game.features.sign_in.di.signInModule
 import com.brokentelephone.game.features.sign_up.di.signUpModule
 import com.brokentelephone.game.features.user_details.di.userDetailsModule
@@ -62,7 +65,10 @@ class App : Application() {
                 chainDetailsModule,
                 editProfileModule,
                 editAvatarModule,
-                editUsernameModule
+                editUsernameModule,
+                createPostModule,
+                settingsModule,
+                accountSettingsModule
             )
         }
     }

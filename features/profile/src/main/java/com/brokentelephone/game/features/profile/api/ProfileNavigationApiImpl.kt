@@ -17,6 +17,7 @@ import com.brokentelephone.game.features.sign_up_api.SignUpRoute
 import com.brokentelephone.game.nav_api.navigateSingle
 import com.brokentelephone.game.profile_api.ProfileNavigationApi
 import com.brokentelephone.game.profile_api.ProfileRoute
+import com.brokentelephone.game.settings_api.SettingsRoute
 import com.brokentelephone.game.sign_in_api.SignInRoute
 
 class ProfileNavigationApiImpl : ProfileNavigationApi {
@@ -79,7 +80,7 @@ class ProfileNavigationApiImpl : ProfileNavigationApi {
                     navController.navigateSingle(EditProfileRoute)
                 },
                 onSettingsClick = {
-//                        navController.navigateSingle(Routes.Settings)
+                    navController.navigateSingle(SettingsRoute)
                 },
             )
         }

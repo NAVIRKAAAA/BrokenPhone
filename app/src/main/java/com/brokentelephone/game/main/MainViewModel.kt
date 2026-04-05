@@ -15,13 +15,13 @@ import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.session.GameSession
 import com.brokentelephone.game.domain.model.session.GameSessionStatus
 import com.brokentelephone.game.domain.use_case.GetActiveSessionUseCase
+import com.brokentelephone.game.domain.use_case.GetLanguageUseCase
 import com.brokentelephone.game.domain.use_case.GetPostByIdUseCase
+import com.brokentelephone.game.domain.use_case.GetThemeUseCase
 import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.draw_api.DrawRoute
 import com.brokentelephone.game.essentials.exceptions.auth.SessionDataException
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
-import com.brokentelephone.game.features.app_preferences.use_case.GetLanguageUseCase
-import com.brokentelephone.game.features.app_preferences.use_case.GetThemeUseCase
 import com.brokentelephone.game.features.language.use_case.SetupFirstAppLaunchUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailChangeUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
