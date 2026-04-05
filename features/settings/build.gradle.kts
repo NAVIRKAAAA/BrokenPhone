@@ -32,6 +32,7 @@ dependencies {
     implementation(project(":features:blocked_users_api"))
     implementation(project(":features:language_api"))
     implementation(project(":features:theme_api"))
+    implementation(project(":features:notifications_settings_api"))
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.koin.android)
     implementation(libs.koin.compose.viewmodel)

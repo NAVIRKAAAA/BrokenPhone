@@ -24,6 +24,7 @@ import com.brokentelephone.game.features.forgot_password.di.forgotPasswordModule
 import com.brokentelephone.game.features.friends.di.friendsModule
 import com.brokentelephone.game.features.language.di.languageModule
 import com.brokentelephone.game.features.notifications.di.notificationsModule
+import com.brokentelephone.game.features.notifications_settings.di.notificationsSettingsModule
 import com.brokentelephone.game.features.post_details.di.postDetailsModule
 import com.brokentelephone.game.features.profile.di.profileModule
 import com.brokentelephone.game.features.settings.di.settingsModule
@@ -61,6 +62,7 @@ class App : Application() {
                 userFriendsModule,
                 addFriendModule,
                 notificationsModule,
+                notificationsSettingsModule,
                 profileModule,
                 postDetailsModule,
                 drawModule,

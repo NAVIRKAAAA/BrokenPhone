@@ -12,7 +12,9 @@ import com.brokentelephone.game.features.dashboard.DashboardScreen
 import com.brokentelephone.game.features.dashboard.DashboardViewModel
 import com.brokentelephone.game.nav_api.KEY_FORCE_REFRESH
 import com.brokentelephone.game.nav_api.navigateSingle
+import com.brokentelephone.game.notifications_api.NotificationsRoute
 import com.brokentelephone.game.post_details_api.PostDetailsRoute
+import com.brokentelephone.game.user_details_api.UserDetailsRoute
 import org.koin.compose.viewmodel.koinViewModel
 
 class DashboardNavigationApiImpl : DashboardNavigationApi {
@@ -45,10 +47,10 @@ class DashboardNavigationApiImpl : DashboardNavigationApi {
                     navController.navigateSingle(PostDetailsRoute(postId = postId))
                 },
                 onUserClick = { userId ->
-//                        navController.navigateSingle(Routes.UserDetails(userId = userId))
+                    navController.navigateSingle(UserDetailsRoute(userId = userId))
                 },
                 onNotificationsClick = {
-//                        navController.navigateSingle(Routes.Notifications)
+                    navController.navigateSingle(NotificationsRoute)
                 }
             )
         }

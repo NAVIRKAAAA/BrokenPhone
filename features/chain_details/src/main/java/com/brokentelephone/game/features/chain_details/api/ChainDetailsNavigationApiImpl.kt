@@ -14,7 +14,9 @@ import com.brokentelephone.game.chain_details_api.ChainDetailsNavigationApi
 import com.brokentelephone.game.chain_details_api.ChainDetailsRoute
 import com.brokentelephone.game.features.chain_details.ChainDetailsScreen
 import com.brokentelephone.game.features.chain_details.ChainDetailsViewModel
+import com.brokentelephone.game.nav_api.navigateSingle
 import com.brokentelephone.game.nav_api.safePopBackStack
+import com.brokentelephone.game.user_details_api.UserDetailsRoute
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -55,7 +57,7 @@ class ChainDetailsNavigationApiImpl : ChainDetailsNavigationApi {
                 viewModel = viewModel,
                 onBackClick = navController::safePopBackStack,
                 onUserClick = { userId ->
-//                        navController.navigateSingle(Routes.UserDetails(userId = userId))
+                    navController.navigateSingle(UserDetailsRoute(userId = userId))
                 },
             )
         }

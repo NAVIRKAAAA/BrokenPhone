@@ -14,6 +14,7 @@ import com.brokentelephone.game.chain_details_api.ChainDetailsRoute
 import com.brokentelephone.game.edit_profile_api.EditProfileRoute
 import com.brokentelephone.game.features.profile.ProfileScreen
 import com.brokentelephone.game.features.sign_up_api.SignUpRoute
+import com.brokentelephone.game.friends_api.FriendsRoute
 import com.brokentelephone.game.nav_api.navigateSingle
 import com.brokentelephone.game.profile_api.ProfileNavigationApi
 import com.brokentelephone.game.profile_api.ProfileRoute
@@ -74,7 +75,7 @@ class ProfileNavigationApiImpl : ProfileNavigationApi {
                     navController.navigateSingle(SignUpRoute)
                 },
                 onFriendsClick = {
-//                        navController.navigateSingle(Routes.Friends)
+                    navController.navigateSingle(FriendsRoute)
                 },
                 onEditClick = {
                     navController.navigateSingle(EditProfileRoute)

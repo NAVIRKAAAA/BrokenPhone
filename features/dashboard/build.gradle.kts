@@ -27,6 +27,8 @@ dependencies {
     implementation(project(":features:dashboard_api"))
     implementation(project(":features:bottom_nav_bar"))
     implementation(project(":features:post_details_api"))
+    implementation(project(":features:notifications_api"))
+    implementation(project(":features:user_details_api"))
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.koin.android)
     implementation(libs.koin.compose.viewmodel)

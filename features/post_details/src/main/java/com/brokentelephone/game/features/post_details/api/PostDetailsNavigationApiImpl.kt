@@ -22,6 +22,7 @@ import com.brokentelephone.game.nav_api.navigateSingle
 import com.brokentelephone.game.nav_api.safePopBackStack
 import com.brokentelephone.game.post_details_api.PostDetailsNavigationApi
 import com.brokentelephone.game.post_details_api.PostDetailsRoute
+import com.brokentelephone.game.user_details_api.UserDetailsRoute
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -90,7 +91,7 @@ class PostDetailsNavigationApiImpl : PostDetailsNavigationApi {
                         navController.navigateSingle(ChainDetailsRoute(postId = postId))
                 },
                 onUserClick = { userId ->
-//                        navController.navigateSingle(Routes.UserDetails(userId = userId))
+                        navController.navigateSingle(UserDetailsRoute(userId = userId))
                 },
             )
         }

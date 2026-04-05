@@ -17,6 +17,7 @@ import com.brokentelephone.game.features.welcome_api.WelcomeRoute
 import com.brokentelephone.game.language_api.LanguageRoute
 import com.brokentelephone.game.nav_api.navigateSingle
 import com.brokentelephone.game.nav_api.safePopBackStack
+import com.brokentelephone.game.notifications_settings_api.NotificationSettingsRoute
 import com.brokentelephone.game.settings_api.SettingsNavigationApi
 import com.brokentelephone.game.settings_api.SettingsRoute
 import com.brokentelephone.game.theme_api.ThemeRoute
@@ -84,7 +85,7 @@ class SettingsNavigationApiImpl : SettingsNavigationApi {
                     navController.navigateSingle(AccountSettingsRoute)
                 },
                 onNotificationsClick = {
-//                    navController.navigate(NotificationSettingsRoute)
+                    navController.navigateSingle(NotificationSettingsRoute)
                 },
                 onLanguageClick = {
                     navController.navigateSingle(LanguageRoute)

@@ -19,9 +19,6 @@ import com.brokentelephone.game.domain.use_case.MarkPostAsNotInterestedUseCase
 import com.brokentelephone.game.domain.use_case.ReportPostUseCase
 import com.brokentelephone.game.domain.use_case.ReportUserUseCase
 import com.brokentelephone.game.domain.use_case.SignInWithGoogleUseCase
-import com.brokentelephone.game.features.notifications.NotificationSettingsViewModel
-import com.brokentelephone.game.features.notifications.use_case.GetNotificationsAllowedTypesUseCase
-import com.brokentelephone.game.features.notifications.use_case.UpdateNotificationsUseCase
 import com.brokentelephone.game.main.MainViewModel
 import com.brokentelephone.game.main.use_case.ApplyEmailChangeUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
@@ -52,9 +49,6 @@ val appModule = module {
     factoryOf(::GetPrivacyPolicyLinkUseCase)
     factoryOf(::GetLanguageUseCase)
     factoryOf(::GetThemeUseCase)
-    factoryOf(::GetNotificationsAllowedTypesUseCase)
-    factoryOf(::UpdateNotificationsUseCase)
-    viewModelOf(::NotificationSettingsViewModel)
     factoryOf(::InitializeSessionUseCase)
     factoryOf(::GetActiveSessionUseCase)
     factoryOf(::ApplyEmailChangeUseCase)
