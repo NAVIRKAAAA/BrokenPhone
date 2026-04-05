@@ -12,7 +12,7 @@ val localProperties = Properties().apply {
 
 android {
     namespace = "com.brokentelephone.game.data"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 27

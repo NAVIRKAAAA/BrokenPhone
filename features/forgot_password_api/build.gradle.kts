@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.brokentelephone.game.forgot_password_api"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 27

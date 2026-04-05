@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.brokentelephone.game.features.user_details"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 27

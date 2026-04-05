@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "com.brokentelephone.game.domain"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 27
