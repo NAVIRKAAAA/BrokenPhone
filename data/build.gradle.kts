@@ -15,7 +15,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 27
 
         buildConfigField("String", "WEB_CLIENT_ID", "\"${localProperties["WEB_CLIENT_ID"]}\"")
     }
