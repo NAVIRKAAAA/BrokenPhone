@@ -16,11 +16,9 @@ class UpdateLanguageUseCase(
         repository.updateLanguage(language)
 
         handler.handle(Dispatchers.IO) {
-            val isAuth = userSession.authState.firstOrNull()?.isAuth() ?: false
+            userSession.authState.firstOrNull()?.getUserOrNull() ?: return@handle
 
-            if (isAuth) {
-                userSession.updateLanguage(language)
-            }
+            userSession.updateLanguage(language)
         }
     }
 }

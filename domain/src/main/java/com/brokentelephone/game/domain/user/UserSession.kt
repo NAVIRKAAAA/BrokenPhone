@@ -20,6 +20,8 @@ interface UserSession {
     suspend fun updatePermissions(permissions: UserPermissions)
     suspend fun updateLanguage(language: Language)
     suspend fun updateFcmToken(token: String)
+    suspend fun refreshFcmToken()
+    suspend fun deleteFcmToken()
     suspend fun signOut()
     suspend fun deleteAccount()
     suspend fun getBlockedUsers(): List<BlockedUser>

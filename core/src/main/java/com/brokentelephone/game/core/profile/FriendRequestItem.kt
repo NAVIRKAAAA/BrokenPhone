@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,7 +26,6 @@ import com.brokentelephone.game.core.avatar.AvatarComponent
 import com.brokentelephone.game.core.button.WelcomeButton
 import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.core.utils.rememberMemberSince
 import com.brokentelephone.game.domain.user.AuthProvider
 
 @Composable
@@ -38,8 +38,6 @@ fun FriendRequestItem(
     isDeclineLoading: Boolean = false,
     enabled: Boolean = true,
 ) {
-    val memberSince = rememberMemberSince(user.createdAt)
-
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -72,9 +70,12 @@ fun FriendRequestItem(
             }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
-        Row(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth()
+                .padding(start = 52.dp)
+        ) {
             WelcomeButton(
                 text = stringResource(R.string.friendship_action_decline),
                 onClick = onDeclineClick,
@@ -84,10 +85,10 @@ fun FriendRequestItem(
                 enabled = enabled,
                 modifier = Modifier
                     .weight(1f)
-                    .height(48.dp),
+                    .height(36.dp),
             )
 
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(8.dp))
 
             WelcomeButton(
                 text = stringResource(R.string.friendship_action_accept),
@@ -98,7 +99,7 @@ fun FriendRequestItem(
                 enabled = enabled,
                 modifier = Modifier
                     .weight(1f)
-                    .height(48.dp),
+                    .height(36.dp),
             )
         }
     }

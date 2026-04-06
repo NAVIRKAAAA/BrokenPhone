@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -72,6 +73,7 @@ class UserSessionImpl(
 
             if (user != null) {
                 observeFirestoreUser(uid = user.uid, isAnonymous = user.isAnonymous)
+                scope.launch { refreshFcmToken() }
             } else {
                 _authState.value = AuthState.NotAuth
             }
@@ -359,6 +361,29 @@ class UserSessionImpl(
             throw UnknownAuthException()
         }
     }
+    override suspend fun deleteFcmToken() {
+        val uid = firebaseAuth.currentUser?.uid ?: return
+        try {
+            firestore.collection(COLLECTION_USERS)
+                .document(uid)
+                .update(User.FIELD_FCM_TOKEN, null)
+                .await()
+            FirebaseMessaging.getInstance().deleteToken().await()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun refreshFcmToken() {
+        try {
+            val token = FirebaseMessaging.getInstance().token.await()
+            Log.d("LOG_TAG", "refreshFcmToken: $token")
+            updateFcmToken(token)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     override suspend fun updateFcmToken(token: String) {
         val uid = firebaseAuth.currentUser?.uid ?: throw UnauthorizedException()
         try {

@@ -35,6 +35,7 @@ data class PostDetailsState(
         val post = postUi ?: return PostDetailsButtonType.DRAW
         return when {
             post.isCompleted -> PostDetailsButtonType.COMPLETED
+            post.authorId == userUi?.id -> PostDetailsButtonType.OWN_POST
             post.sessionsHistory.isMyActiveSession(userUi?.sessionId) -> PostDetailsButtonType.MY_SESSION
             post.status != PostStatus.AVAILABLE -> PostDetailsButtonType.UNAVAILABLE
             cooldownRemainingSeconds > 0 -> PostDetailsButtonType.COOLDOWN

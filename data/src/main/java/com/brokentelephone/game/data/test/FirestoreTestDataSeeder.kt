@@ -39,7 +39,7 @@ class FirestoreTestDataSeeder(
         }
     }
 
-    suspend fun seedNotifications(targetUserId: String = "Va9OfTygaXOH3OLRWPMjOs4TR5y2") {
+    suspend fun seedNotifications(targetUserId: String = "gh9ppLO8wShGZ0NfinIGoutJHPD3") {
         val now = System.currentTimeMillis()
 
         val realUsers = usersCollection

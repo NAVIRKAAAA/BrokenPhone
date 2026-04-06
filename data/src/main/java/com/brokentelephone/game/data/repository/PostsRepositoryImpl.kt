@@ -288,7 +288,7 @@ class PostsRepositoryImpl(
                 userContributionRef
             }
 
-            if (post.generation == 1) {
+            if (post.generation == 0) {
                 collection.firestore.runBatch { batch ->
                     batch.delete(postRef)
                     batch.delete(chainRef)
