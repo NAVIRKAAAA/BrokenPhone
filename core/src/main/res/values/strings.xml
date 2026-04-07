@@ -241,6 +241,7 @@
     <string name="notification_group_last_7_days">Last 7 days</string>
     <string name="notification_group_last_30_days">Last 30 days</string>
     <string name="notification_group_earlier">Earlier</string>
+    <string name="notification_type_news">News</string>
 
     <!-- Friendship Action -->
     <string name="friendship_action_add">Add Friend</string>

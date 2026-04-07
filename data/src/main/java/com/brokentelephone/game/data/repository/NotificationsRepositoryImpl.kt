@@ -23,6 +23,21 @@ class NotificationsRepositoryImpl(
 
     override val collectionName = "notifications"
 
+    override suspend fun getNotificationById(notificationId: String): Notification? {
+        return try {
+            val snapshot = collection.document(notificationId).get().await()
+            snapshot.data?.toNotification()
+        } catch (_: FirebaseNetworkException) {
+            throw NetworkException()
+        } catch (e: FirebaseFirestoreException) {
+            Log.d("LOG_TAG", "getNotificationById error: $e")
+            throw e.toAppException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "getNotificationById error: $e")
+            throw UnknownAuthException()
+        }
+    }
+
     override suspend fun getNotifications(userId: String): List<Notification> {
         return try {
             collection

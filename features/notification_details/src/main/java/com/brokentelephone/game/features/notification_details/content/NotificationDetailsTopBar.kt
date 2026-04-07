@@ -20,12 +20,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
+import com.brokentelephone.game.core.shimmer.ShimmerContent
+import com.brokentelephone.game.core.shimmer.shimmer
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 
 @Composable
 fun NotificationDetailsTopBar(
-    title: String,
+    title: String?,
     onBackClick: () -> Unit,
+    onMoreClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -44,19 +47,47 @@ fun NotificationDetailsTopBar(
             )
         }
 
-        Text(
-            text = title,
-            textAlign = TextAlign.Center,
-            fontFamily = FontFamily(Font(R.font.nunito_bold)),
-            fontSize = 18.sp,
-            lineHeight = 24.sp,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .align(Alignment.Center)
-                .padding(horizontal = 56.dp),
+        ShimmerContent(
+            isLoading = title == null,
+            shimmerContent = {
+                Text(
+                    text = "New feature dropped",
+                    textAlign = TextAlign.Center,
+                    fontFamily = FontFamily(Font(R.font.nunito_bold)),
+                    fontSize = 18.sp,
+                    maxLines = 1,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .padding(horizontal = 56.dp)
+                        .shimmer(cornerRadius = 4.dp),
+                )
+            },
+            content = {
+                Text(
+                    text = title.orEmpty(),
+                    textAlign = TextAlign.Center,
+                    fontFamily = FontFamily(Font(R.font.nunito_bold)),
+                    fontSize = 18.sp,
+                    lineHeight = 24.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(horizontal = 56.dp),
+                )
+            },
+            modifier = Modifier.align(Alignment.Center),
         )
+
+        IconButton(
+            onClick = onMoreClick,
+            modifier = Modifier.align(Alignment.CenterEnd),
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_more_vert),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground,
+            )
+        }
     }
 }
 
@@ -66,14 +97,15 @@ private fun NotificationDetailsTopBarPreview() {
     BrokenTelephoneTheme(darkTheme = true) {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
             NotificationDetailsTopBar(
-                title = "New feature dropped",
+                title = null,
                 onBackClick = {},
+                onMoreClick = {},
             )
         }
     }
 }
 
-@Preview()
+@Preview(showBackground = true)
 @Composable
 private fun NotificationDetailsTopBarLongTitlePreview() {
     BrokenTelephoneTheme(darkTheme = true) {
@@ -81,6 +113,7 @@ private fun NotificationDetailsTopBarLongTitlePreview() {
             NotificationDetailsTopBar(
                 title = "This is a very long notification title that should be truncated",
                 onBackClick = {},
+                onMoreClick = {},
             )
         }
     }

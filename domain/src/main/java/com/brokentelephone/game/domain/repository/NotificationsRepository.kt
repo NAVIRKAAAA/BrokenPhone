@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface NotificationsRepository {
 
+    suspend fun getNotificationById(notificationId: String): Notification?
+
     suspend fun getNotifications(userId: String): List<Notification>
 
     suspend fun getNotifications(userId: String, filter: NotificationFilter): List<Notification>

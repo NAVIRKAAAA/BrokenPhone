@@ -30,6 +30,7 @@ import com.brokentelephone.game.forgot_password_api.ForgotPasswordNavigationApi
 import com.brokentelephone.game.friends_api.FriendsNavigationApi
 import com.brokentelephone.game.language_api.LanguageNavigationApi
 import com.brokentelephone.game.nav_api.NavigationRoute
+import com.brokentelephone.game.notification_details_api.NotificationDetailsNavigationApi
 import com.brokentelephone.game.notifications_api.NotificationsNavigationApi
 import com.brokentelephone.game.notifications_settings_api.NotificationsSettingsNavigationApi
 import com.brokentelephone.game.post_details_api.PostDetailsNavigationApi
@@ -80,6 +81,7 @@ fun AppNavGraph(
     val friendsNavigationApi: FriendsNavigationApi = koinInject()
     val addFriendNavigationApi: AddFriendNavigationApi = koinInject()
     val userFriendsNavigationApi: UserFriendsNavigationApi = koinInject()
+    val notificationDetailsNavigationApi: NotificationDetailsNavigationApi = koinInject()
 
     val authGraphRoutes = listOf(
         welcomeNavigationApi,
@@ -113,7 +115,8 @@ fun AppNavGraph(
         userDetailsNavigationApi,
         friendsNavigationApi,
         addFriendNavigationApi,
-        userFriendsNavigationApi
+        userFriendsNavigationApi,
+        notificationDetailsNavigationApi
     )
 
     NavHost(

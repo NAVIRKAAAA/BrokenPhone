@@ -74,6 +74,11 @@ class PostNotFoundException : AppException("Post not found") {
         stringProvider.getString(R.string.error_post_not_found)
 }
 
+class NotificationNotFoundException : AppException("Notification not found") {
+    override fun getLocalizedMessage(stringProvider: StringProvider): String =
+        stringProvider.getString(R.string.error_notification_not_found)
+}
+
 class UserNotFoundException : AppException("User not found") {
     override fun getLocalizedMessage(stringProvider: StringProvider): String =
         stringProvider.getString(R.string.error_user_not_found)

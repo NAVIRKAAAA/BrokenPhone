@@ -14,6 +14,7 @@ import com.brokentelephone.game.chain_details_api.ChainDetailsRoute
 import com.brokentelephone.game.features.notifications.NotificationsScreen
 import com.brokentelephone.game.nav_api.navigateSingle
 import com.brokentelephone.game.nav_api.safePopBackStack
+import com.brokentelephone.game.notification_details_api.NotificationDetailsRoute
 import com.brokentelephone.game.notifications_api.NotificationsNavigationApi
 import com.brokentelephone.game.notifications_api.NotificationsRoute
 import com.brokentelephone.game.user_details_api.UserDetailsRoute
@@ -30,7 +31,7 @@ class NotificationsNavigationApiImpl : NotificationsNavigationApi {
             },
             exitTransition = {
                 val to = targetState.destination.route
-                if (to?.contains("ChainDetails") == true) {
+                if (to?.contains("ChainDetails") == true || to?.contains("NotificationDetails") == true) {
                     slideOutHorizontally(
                         targetOffsetX = { -it / 3 },
                         animationSpec = tween(250)
@@ -41,7 +42,7 @@ class NotificationsNavigationApiImpl : NotificationsNavigationApi {
             },
             popEnterTransition = {
                 val from = initialState.destination.route
-                if (from?.contains("ChainDetails") == true || from?.contains("UserDetails") == true) {
+                if (from?.contains("ChainDetails") == true || from?.contains("UserDetails") == true || from?.contains("NotificationDetails") == true) {
                     EnterTransition.None
                 } else {
                     slideInVertically(
@@ -69,6 +70,9 @@ class NotificationsNavigationApiImpl : NotificationsNavigationApi {
                             userId = userId
                         )
                     )
+                },
+                onNavigateToNotificationDetails = { notificationId ->
+                    navController.navigateSingle(NotificationDetailsRoute(notificationId = notificationId))
                 },
             )
         }

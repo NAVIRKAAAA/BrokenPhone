@@ -160,6 +160,7 @@
     <string name="notification_group_last_7_days">Останні 7 днів</string>
     <string name="notification_group_last_30_days">Останні 30 днів</string>
     <string name="notification_group_earlier">Раніше</string>
+    <string name="notification_type_news">Новини</string>
 
     <!-- Friendship Action -->
     <string name="friendship_action_add">Додати в друзі</string>

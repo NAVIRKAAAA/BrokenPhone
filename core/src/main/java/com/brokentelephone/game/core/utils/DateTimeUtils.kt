@@ -88,3 +88,19 @@ fun rememberMemberSince(timestamp: Long): String {
         SimpleDateFormat("MMM yyyy", locale).format(Date(timestamp))
     }
 }
+
+@Composable
+fun rememberFormattedDate(timestamp: Long): String {
+    val language = LocalAppLanguage.current
+    val locale = when (language) {
+        Language.ENGLISH -> Locale.ENGLISH
+        Language.UKRAINIAN -> Locale.forLanguageTag("uk")
+    }
+    val pattern = when (language) {
+        Language.ENGLISH -> "MMM d, yyyy · h:mm a"
+        Language.UKRAINIAN -> "d MMM yyyy · HH:mm"
+    }
+    return remember(timestamp, language) {
+        SimpleDateFormat(pattern, locale).format(Date(timestamp))
+    }
+}

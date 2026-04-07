@@ -27,6 +27,7 @@ dependencies {
     implementation(project(":features:notifications_api"))
     implementation(project(":features:user_details_api"))
     implementation(project(":features:chain_details_api"))
+    implementation(project(":features:notification_details_api"))
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.koin.android)
     implementation(libs.koin.compose.viewmodel)

@@ -95,7 +95,8 @@ class NotificationsViewModel(
                     )
                 }
 
-                is NotificationUi.News -> Unit
+                is NotificationUi.News ->
+                    _sideEffects.send(NotificationsSideEffect.NavigateToNotificationDetails(notification.id))
             }
         }
     }

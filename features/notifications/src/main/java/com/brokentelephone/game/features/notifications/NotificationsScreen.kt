@@ -19,6 +19,7 @@ fun NotificationsScreen(
     onBackClick: () -> Unit,
     onNavigateToUserDetails: (userId: String) -> Unit,
     onNavigateToChainDetails: (postId: String, userId: String) -> Unit,
+    onNavigateToNotificationDetails: (notificationId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: NotificationsViewModel = koinViewModel(),
 ) {
@@ -43,6 +44,9 @@ fun NotificationsScreen(
                 }
                 is NotificationsSideEffect.NavigateToChainDetails -> {
                     onNavigateToChainDetails(effect.postId, effect.userId)
+                }
+                is NotificationsSideEffect.NavigateToNotificationDetails -> {
+                    onNavigateToNotificationDetails(effect.notificationId)
                 }
             }
         }
