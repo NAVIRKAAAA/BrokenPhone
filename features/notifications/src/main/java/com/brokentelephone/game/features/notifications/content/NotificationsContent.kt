@@ -99,7 +99,7 @@ fun NotificationsContent(
                                         modifier = Modifier.animateItem(),
                                     )
 
-                                    is NotificationUi.ChainCompleted -> ChainNotificationItem(
+                                    is NotificationUi.ChainInfo -> ChainNotificationItem(
                                         item = notification,
                                         onClick = { onNotificationClick(notification) },
                                         modifier = Modifier.animateItem(),
@@ -136,7 +136,7 @@ private fun NotificationsContentPreview() {
             userAvatarUrl = null,
             type = NotificationData.FriendsType.INVITE_RECEIVED,
         ),
-        NotificationUi.ChainCompleted(
+        NotificationUi.ChainInfo(
             id = "2",
             createdAt = System.currentTimeMillis() - 3 * 60 * 60 * 1000L,
             isRead = true,

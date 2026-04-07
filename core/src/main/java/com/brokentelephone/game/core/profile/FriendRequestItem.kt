@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.avatar.AvatarComponent
-import com.brokentelephone.game.core.button.WelcomeButton
+import com.brokentelephone.game.core.button.BTButton
 import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.domain.user.AuthProvider
@@ -76,7 +76,7 @@ fun FriendRequestItem(
             modifier = Modifier.fillMaxWidth()
                 .padding(start = 52.dp)
         ) {
-            WelcomeButton(
+            BTButton(
                 text = stringResource(R.string.friendship_action_decline),
                 onClick = onDeclineClick,
                 contentColor = MaterialTheme.colorScheme.onSurface,
@@ -90,7 +90,7 @@ fun FriendRequestItem(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            WelcomeButton(
+            BTButton(
                 text = stringResource(R.string.friendship_action_accept),
                 onClick = onAcceptClick,
                 contentColor = MaterialTheme.colorScheme.onPrimary,

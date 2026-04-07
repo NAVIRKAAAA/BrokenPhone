@@ -31,7 +31,7 @@ class UserDetailsNavigationApiImpl : UserDetailsNavigationApi {
                 val from = initialState.destination.route
                 if (from?.contains("Dashboard") == true || from?.contains("PostDetails") == true || from?.contains(
                         "ChainDetails"
-                    ) == true || from?.contains("Friends") == true || from?.contains("AddFriend") == true
+                    ) == true || from?.contains("Friends") == true || from?.contains("AddFriend") == true || from?.contains("Notifications") == true
                 ) {
                     slideInVertically(
                         initialOffsetY = { it },
@@ -70,7 +70,7 @@ class UserDetailsNavigationApiImpl : UserDetailsNavigationApi {
                 val to = targetState.destination.route
                 if (to?.contains("Dashboard") == true || to?.contains("PostDetails") == true || to?.contains(
                         "ChainDetails"
-                    ) == true || to?.contains("Friends") == true || to?.contains("AddFriend") == true
+                    ) == true || to?.contains("Friends") == true || to?.contains("AddFriend") == true || to?.contains("Notifications") == true
                 ) {
                     slideOutVertically(
                         targetOffsetY = { it },

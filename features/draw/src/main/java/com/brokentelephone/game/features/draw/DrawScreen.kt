@@ -29,7 +29,6 @@ fun DrawScreen(
     viewModel: DrawViewModel = koinViewModel { parametersOf(sessionId) },
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-
     BackHandler {
         viewModel.onDrawAction(DrawingAction.OnBackClick)
     }

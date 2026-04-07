@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 
 @Composable
-fun WelcomeButton(
+fun BTButton(
     text: String,
     onClick: () -> Unit,
     contentColor: Color,

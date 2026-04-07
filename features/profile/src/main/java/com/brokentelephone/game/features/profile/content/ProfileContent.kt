@@ -43,7 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.button.WelcomeButton
+import com.brokentelephone.game.core.button.BTButton
 import com.brokentelephone.game.core.model.profile.ProfileTab
 import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.profile.AccountInfoSection
@@ -272,7 +272,7 @@ fun ProfileContent(
                                         .fillMaxWidth()
                                         .padding(horizontal = 16.dp)
                                 ) {
-                                    WelcomeButton(
+                                    BTButton(
                                         text = stringResource(R.string.profile_sign_in),
                                         onClick = onSignInClick,
                                         contentColor = MaterialTheme.colorScheme.onSurface,
@@ -286,7 +286,7 @@ fun ProfileContent(
                                     Spacer(modifier = Modifier.width(12.dp))
 
 
-                                    WelcomeButton(
+                                    BTButton(
                                         text = stringResource(R.string.welcome_get_started),
                                         onClick = onGetStartedClick,
                                         contentColor = MaterialTheme.colorScheme.onPrimary,

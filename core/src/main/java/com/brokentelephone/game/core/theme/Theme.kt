@@ -264,12 +264,14 @@ fun BrokenTelephoneTheme(
             badgeComplete = badgeCompleteDark,
             badgeYou = primaryDark,
             divider = dividerDark,
+            canvasBg = Color.White
         )
     } else {
         AppColors(
             badgeComplete = badgeCompleteLight,
             badgeYou = primaryLight,
             divider = dividerLight,
+            canvasBg = surfaceContainerLight.copy(alpha = 0.3f)
         )
     }
 

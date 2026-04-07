@@ -123,6 +123,9 @@ dependencies {
     implementation(project(":features:notifications"))
     implementation(project(":features:notifications_api"))
 
+    implementation(project(":features:notification_details"))
+    implementation(project(":features:notification_details_api"))
+
     implementation(project(":features:user_details"))
     implementation(project(":features:user_details_api"))
 

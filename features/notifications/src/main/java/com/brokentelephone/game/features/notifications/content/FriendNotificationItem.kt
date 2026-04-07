@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.avatar.AvatarComponent
-import com.brokentelephone.game.core.button.WelcomeButton
+import com.brokentelephone.game.core.button.BTButton
 import com.brokentelephone.game.core.model.notification.NotificationUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.utils.rememberRelativeTime
@@ -118,7 +118,7 @@ fun FriendNotificationItem(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Row {
-                    WelcomeButton(
+                    BTButton(
                         text = stringResource(R.string.friendship_action_decline),
                         onClick = onDeclineClick,
                         contentColor = MaterialTheme.colorScheme.onSurface,
@@ -130,7 +130,7 @@ fun FriendNotificationItem(
 
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    WelcomeButton(
+                    BTButton(
                         text = stringResource(R.string.friendship_action_accept),
                         onClick = onAcceptClick,
                         contentColor = MaterialTheme.colorScheme.onPrimary,

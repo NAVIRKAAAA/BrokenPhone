@@ -35,7 +35,7 @@ import com.brokentelephone.game.core.utils.rememberRelativeTime
 
 @Composable
 fun ChainNotificationItem(
-    item: NotificationUi.ChainCompleted,
+    item: NotificationUi.ChainInfo,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -117,7 +117,7 @@ fun ChainNotificationItem(
     }
 }
 
-private val previewUnread = NotificationUi.ChainCompleted(
+private val previewUnread = NotificationUi.ChainInfo(
     id = "1",
     createdAt = System.currentTimeMillis() - 10 * 60 * 1000L,
     isRead = false,
@@ -127,7 +127,7 @@ private val previewUnread = NotificationUi.ChainCompleted(
     body = "Someone finished the chain you started. Tap to see the result.",
 )
 
-private val previewRead = NotificationUi.ChainCompleted(
+private val previewRead = NotificationUi.ChainInfo(
     id = "2",
     createdAt = System.currentTimeMillis() - 3 * 60 * 60 * 1000L,
     isRead = true,

@@ -3,6 +3,7 @@ package com.brokentelephone.game.features.draw.content
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -16,6 +17,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.util.fastForEach
+import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.features.draw.model.DrawingAction
 import com.brokentelephone.game.features.draw.model.PathData
 import kotlin.math.abs
@@ -31,7 +33,7 @@ fun DrawingCanvas(
     Canvas(
         modifier = modifier
             .clipToBounds()
-            .background(Color.White)
+            .background(MaterialTheme.appColors.canvasBg)
             .onSizeChanged { onAction(DrawingAction.OnCanvasSizeChanged(it)) }
             .then(
                 if (enabled) Modifier.pointerInput(Unit) {

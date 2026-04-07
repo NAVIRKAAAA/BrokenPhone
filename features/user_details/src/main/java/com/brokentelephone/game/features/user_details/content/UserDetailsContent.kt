@@ -36,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.model.profile.ProfileTab
+import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.profile.AccountInfoSection
 import com.brokentelephone.game.core.profile.AccountInfoSectionShimmer
 import com.brokentelephone.game.core.profile.FriendshipActionButton
@@ -46,6 +47,7 @@ import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.shimmer.shimmer
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.top_bar.ProfileTopBar
+import com.brokentelephone.game.domain.model.friend.FriendshipActionState
 import com.brokentelephone.game.features.user_details.model.UserDetailsState
 import kotlinx.coroutines.launch
 
@@ -201,12 +203,14 @@ fun UserDetailsContent(
                                             modifier = Modifier.weight(1f),
                                         )
 
-                                        Spacer(modifier = Modifier.width(12.dp))
+                                        if(state.friendshipActionState != FriendshipActionState.INVITE_RECEIVED) {
+                                            Spacer(modifier = Modifier.width(12.dp))
 
-                                        ShareProfileButton(
-                                            onClick = {},
-                                            isLoading = false
-                                        )
+                                            ShareProfileButton(
+                                                onClick = {},
+                                                isLoading = false
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -281,14 +285,15 @@ private fun UserDetailsContentPreview() {
             onMoreClick = {},
             onMoreVertClick = {},
             state = UserDetailsState(
-//                user = UserUi(
-//                    id = "user-1",
-//                    username = "Alex",
-//                    avatarUrl = null,
-//                    email = "",
-//                    createdAt = System.currentTimeMillis(),
-//                    bio = "I love drawing, creative games, and exploring new ideas. Always up for a challenge and meeting new people through fun activities!",
-//                ),
+                friendshipActionState = FriendshipActionState.INVITE_RECEIVED,
+                user = UserUi(
+                    id = "user-1",
+                    username = "Alex",
+                    avatarUrl = null,
+                    email = "",
+                    createdAt = System.currentTimeMillis(),
+                    bio = "I love drawing, creative games, and exploring new ideas. Always up for a challenge and meeting new people through fun activities!",
+                ),
             ),
             onBackClick = {},
             onTabSelect = {}

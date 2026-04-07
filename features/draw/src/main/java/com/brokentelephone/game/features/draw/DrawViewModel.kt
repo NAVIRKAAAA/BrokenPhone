@@ -253,7 +253,7 @@ class DrawViewModel(
     private fun renderToBitmap(paths: List<PathData>, width: Int, height: Int): Bitmap {
         val bitmap = createBitmap(width, height)
         val canvas = android.graphics.Canvas(bitmap)
-        canvas.drawColor(android.graphics.Color.WHITE)
+        canvas.drawColor(android.graphics.Color.TRANSPARENT)
 
         paths.forEach { pathData ->
             val paint = Paint().apply {

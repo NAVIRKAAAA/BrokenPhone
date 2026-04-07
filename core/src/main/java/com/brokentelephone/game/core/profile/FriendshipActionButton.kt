@@ -2,7 +2,11 @@ package com.brokentelephone.game.core.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -10,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.button.WelcomeButton
+import com.brokentelephone.game.core.button.BTButton
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.domain.model.friend.FriendshipActionState
@@ -26,7 +30,7 @@ fun FriendshipActionButton(
     isLoading: Boolean = false,
 ) {
     when (state) {
-        FriendshipActionState.IS_ME -> WelcomeButton(
+        FriendshipActionState.IS_ME -> BTButton(
             text = stringResource(R.string.friendship_action_add),
             onClick = {},
             enabled = false,
@@ -35,7 +39,7 @@ fun FriendshipActionButton(
             modifier = modifier.height(48.dp),
         )
 
-        FriendshipActionState.NOT_FRIENDS -> WelcomeButton(
+        FriendshipActionState.NOT_FRIENDS -> BTButton(
             text = stringResource(R.string.friendship_action_add),
             onClick = onAddFriendClick,
             contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -44,16 +48,34 @@ fun FriendshipActionButton(
             modifier = modifier.height(48.dp),
         )
 
-        FriendshipActionState.INVITE_RECEIVED -> WelcomeButton(
-            text = stringResource(R.string.friendship_action_accept),
-            onClick = onAcceptRequestClick,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            containerColor = MaterialTheme.colorScheme.primary,
-            isLoading = isLoading,
-            modifier = modifier.height(48.dp),
-        )
+        FriendshipActionState.INVITE_RECEIVED -> {
 
-        FriendshipActionState.INVITE_SENT -> WelcomeButton(
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                BTButton(
+                    text = stringResource(R.string.friendship_action_decline),
+                    onClick = {},
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    isLoading = isLoading,
+                    modifier = modifier.weight(1f).height(48.dp),
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                BTButton(
+                    text = stringResource(R.string.friendship_action_accept),
+                    onClick = onAcceptRequestClick,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    isLoading = isLoading,
+                    modifier = modifier.weight(1f).height(48.dp),
+                )
+            }
+        }
+
+        FriendshipActionState.INVITE_SENT -> BTButton(
             text = stringResource(R.string.friendship_action_invite_sent),
             onClick = onCancelRequestClick,
             contentColor = MaterialTheme.colorScheme.onSurface,
@@ -62,7 +84,7 @@ fun FriendshipActionButton(
             modifier = modifier.height(48.dp),
         )
 
-        FriendshipActionState.FRIENDS -> WelcomeButton(
+        FriendshipActionState.FRIENDS -> BTButton(
             text = stringResource(R.string.friendship_action_friends),
             onClick = onRemoveFriendClick,
             contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -71,7 +93,7 @@ fun FriendshipActionButton(
             modifier = modifier.height(48.dp),
         )
 
-        else -> WelcomeButton(
+        else -> BTButton(
             text = "",
             onClick = {},
             isLoading = true,
@@ -88,7 +110,7 @@ private fun FriendshipActionButtonNotFriendsPreview() {
     BrokenTelephoneTheme(darkTheme = true) {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
             FriendshipActionButton(
-                state = FriendshipActionState.NOT_FRIENDS,
+                state = FriendshipActionState.INVITE_RECEIVED,
                 onAddFriendClick = {},
                 onAcceptRequestClick = {},
                 onCancelRequestClick = {},

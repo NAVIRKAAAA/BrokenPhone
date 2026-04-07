@@ -1,7 +1,6 @@
 package com.brokentelephone.game.features.describe_drawing.content
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -47,12 +46,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.badge.BadgeElement
+import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.post.DrawPostImage
 import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.core.top_bar.PostTopBar
 import com.brokentelephone.game.domain.model.post.PostContent
+import com.brokentelephone.game.domain.model.post.PostStatus
 import com.brokentelephone.game.features.describe_drawing.model.DescribeDrawingState
 import kotlinx.coroutines.delay
 
@@ -119,12 +120,7 @@ fun DescribeDrawingContent(
                                     content = content,
                                     modifier = Modifier
                                         .size(imageSize)
-                                        .clip(RoundedCornerShape(14.dp))
-                                        .border(
-                                            1.dp,
-                                            MaterialTheme.colorScheme.outlineVariant,
-                                            RoundedCornerShape(14.dp)
-                                        ),
+                                        .clip(RoundedCornerShape(14.dp)),
                                     contentScale = ContentScale.Crop
                                 )
                             }
@@ -239,7 +235,7 @@ fun DescribeDrawingContent(
 @Composable
 fun DescribeDrawingContentPreview() {
     BrokenTelephoneTheme(
-        darkTheme = true
+        darkTheme = false
     ) {
         Box(
             modifier = Modifier.fillMaxSize()
@@ -247,18 +243,18 @@ fun DescribeDrawingContentPreview() {
             DescribeDrawingContent(
                 state = DescribeDrawingState(
                     text = "",
-//                    postUi = PostUi(
-//                        id = "2",
-//                        authorId = "user-1",
-//                        authorName = "Alex",
-//                        avatarUrl = null,
-//                        content = PostContent.Drawing("Once upon a time there was a broken telephone that nobody could fix..."),
-//                        createdAt = System.currentTimeMillis() - 7200000,
-//                        generation = 10,
-//                        maxGenerations = 10,
-//                        status = PostStatus.AVAILABLE,
-//                        nextTimeLimit = 30,
-//                    )
+                    postUi = PostUi(
+                        id = "2",
+                        authorId = "user-1",
+                        authorName = "Alex",
+                        avatarUrl = null,
+                        content = PostContent.Drawing("Once upon a time there was a broken telephone that nobody could fix..."),
+                        createdAt = System.currentTimeMillis() - 7200000,
+                        generation = 10,
+                        maxGenerations = 10,
+                        status = PostStatus.AVAILABLE,
+                        nextTimeLimit = 30,
+                    )
                 )
             )
         }

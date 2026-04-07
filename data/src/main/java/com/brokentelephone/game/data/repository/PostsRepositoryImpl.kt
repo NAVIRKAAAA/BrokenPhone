@@ -151,6 +151,7 @@ class PostsRepositoryImpl(
         }
     }
 
+    // TODO: /posts where user id = currentUserId
     override suspend fun loadUserPosts(userId: String): List<Post> {
         try {
             val snapshot = collection.firestore

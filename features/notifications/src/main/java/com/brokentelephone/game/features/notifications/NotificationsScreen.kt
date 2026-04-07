@@ -17,6 +17,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun NotificationsScreen(
     onBackClick: () -> Unit,
+    onNavigateToUserDetails: (userId: String) -> Unit,
+    onNavigateToChainDetails: (postId: String, userId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: NotificationsViewModel = koinViewModel(),
 ) {
@@ -36,6 +38,12 @@ fun NotificationsScreen(
                         listState.animateScrollToItem(0)
                     }
                 }
+                is NotificationsSideEffect.NavigateToUserDetails -> {
+                    onNavigateToUserDetails(effect.userId)
+                }
+                is NotificationsSideEffect.NavigateToChainDetails -> {
+                    onNavigateToChainDetails(effect.postId, effect.userId)
+                }
             }
         }
     }
@@ -45,7 +53,7 @@ fun NotificationsScreen(
         listState = listState,
         onBackClick = onBackClick,
         onFilterSelected = viewModel::onFilterSelected,
-        onNotificationClick = {},
+        onNotificationClick = viewModel::onNotificationClick,
         onAcceptFriendClick = {},
         onDeclineFriendClick = {},
         onRefresh = viewModel::onRefresh,

@@ -11,6 +11,7 @@ data class AppColors(
     val badgeComplete: Color,
     val badgeYou: Color,
     val divider: Color,
+    val canvasBg: Color
 )
 
 val LocalAppColors = staticCompositionLocalOf {
@@ -18,6 +19,7 @@ val LocalAppColors = staticCompositionLocalOf {
         badgeComplete = Color.Unspecified,
         badgeYou = Color.Unspecified,
         divider = Color.Unspecified,
+        canvasBg = Color.Unspecified
     )
 }
 

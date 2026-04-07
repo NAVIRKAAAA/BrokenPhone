@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.button.WelcomeButton
+import com.brokentelephone.game.core.button.BTButton
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.features.welcome.model.WelcomeState
 
@@ -45,7 +45,7 @@ fun WelcomeContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
-        WelcomeButton(
+        BTButton(
             text = stringResource(R.string.welcome_get_started),
             onClick = onGetStarted,
             contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -55,7 +55,7 @@ fun WelcomeContent(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        WelcomeButton(
+        BTButton(
             text = stringResource(R.string.welcome_sign_in),
             onClick = onSignIn,
             contentColor = MaterialTheme.colorScheme.onSurfaceVariant,

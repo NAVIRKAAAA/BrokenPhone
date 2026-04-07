@@ -6,10 +6,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
+import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.domain.model.post.PostContent
 import java.io.File
 
@@ -32,7 +34,7 @@ fun DrawPostImage(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.appColors.canvasBg)
     ) {
         SubcomposeAsyncImage(
             model = ImageRequest.Builder(context)
@@ -59,11 +61,13 @@ fun DrawPostImage(
 @Preview
 @Composable
 fun DrawPostImagePreview() {
-    DrawPostImage(
-        content = PostContent.Drawing(),
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .height(200.dp),
-    )
+    BrokenTelephoneTheme() {
+        DrawPostImage(
+            content = PostContent.Drawing(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .height(200.dp),
+        )
+    }
 }

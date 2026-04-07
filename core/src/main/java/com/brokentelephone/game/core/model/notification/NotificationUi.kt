@@ -19,7 +19,7 @@ sealed class NotificationUi {
         val type: NotificationData.FriendsType,
     ) : NotificationUi()
 
-    data class ChainCompleted(
+    data class ChainInfo(
         override val id: String,
         override val createdAt: Long,
         override val isRead: Boolean,
@@ -50,7 +50,7 @@ fun Notification.toUi(): NotificationUi {
             userAvatarUrl = d.userAvatarUrl,
             type = d.type,
         )
-        is NotificationData.ChainInfo -> NotificationUi.ChainCompleted(
+        is NotificationData.ChainInfo -> NotificationUi.ChainInfo(
             id = id,
             createdAt = createdAt,
             isRead = false,

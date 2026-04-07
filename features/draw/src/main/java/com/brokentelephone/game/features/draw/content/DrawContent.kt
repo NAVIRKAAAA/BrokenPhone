@@ -1,7 +1,6 @@
 package com.brokentelephone.game.features.draw.content
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,7 +47,6 @@ fun DrawContent(
     onBackClick: () -> Unit = {},
 ) {
     val post = state.postUi
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -94,11 +92,11 @@ fun DrawContent(
                                 .padding(horizontal = 16.dp)
                                 .aspectRatio(1f)
                                 .clip(RoundedCornerShape(14.dp))
-                                .border(
-                                    1.dp,
-                                    MaterialTheme.appColors.divider,
-                                    RoundedCornerShape(14.dp)
-                                )
+//                                .border(
+//                                    1.dp,
+//                                    MaterialTheme.appColors.divider,
+//                                    RoundedCornerShape(14.dp)
+//                                )
                         ) {
                             DrawingCanvas(
                                 paths = state.paths,
@@ -157,7 +155,7 @@ fun DrawContent(
 @Composable
 fun DrawContentPreview() {
     BrokenTelephoneTheme(
-        darkTheme = true
+        darkTheme = false
     ) {
         Box(
             modifier = Modifier
