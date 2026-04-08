@@ -23,7 +23,6 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.Source
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -47,8 +46,7 @@ class PostsRepositoryImpl(
             val snapshot = collection
                 .applySorting(sort)
                 .limit(pageSize.toLong())
-                .get(Source.SERVER)
-                .await()
+                .getFromServer()
 
             val posts = snapshot.documents.mapNotNull { it.data?.toPost() }
 
@@ -89,8 +87,7 @@ class PostsRepositoryImpl(
                 .applySorting(sort)
                 .startAfter(afterDoc)
                 .limit(pageSize.toLong())
-                .get(Source.SERVER)
-                .await()
+                .getFromServer()
 
             val posts = snapshot.documents.mapNotNull { it.data?.toPost() }
             val filteredPosts = posts
@@ -130,14 +127,13 @@ class PostsRepositoryImpl(
 
     override suspend fun getChainByPostId(postId: String): List<Post> {
         return try {
-            val post = collection.document(postId).get().await()
+            val post = collection.document(postId).getFromServer()
                 .data?.toPost() ?: throw PostNotFoundException()
 
             val snapshot = collection
                 .whereEqualTo(FIELD_CHAIN_ID, post.chainId)
                 .orderBy(FIELD_CREATED_AT, Query.Direction.ASCENDING)
-                .get()
-                .await()
+                .getFromServer()
 
             snapshot.documents.mapNotNull { it.data?.toPost() }
         } catch (_: FirebaseNetworkException) {
@@ -151,7 +147,6 @@ class PostsRepositoryImpl(
         }
     }
 
-    // TODO: /posts where user id = currentUserId
     override suspend fun loadUserPosts(userId: String): List<Post> {
         try {
             val snapshot = collection.firestore
@@ -159,8 +154,7 @@ class PostsRepositoryImpl(
                 .document(userId)
                 .collection(USER_POSTS_COLLECTION)
                 .orderBy(FIELD_CREATED_AT, Query.Direction.DESCENDING)
-                .get()
-                .await()
+                .getFromServer()
             return snapshot.documents.mapNotNull { it.data?.toPost() }
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
@@ -177,8 +171,7 @@ class PostsRepositoryImpl(
         try {
             val snapshot = contributionsCollection(userId)
                 .orderBy(FIELD_CREATED_AT, Query.Direction.DESCENDING)
-                .get()
-                .await()
+                .getFromServer()
             return snapshot.documents.mapNotNull { it.data?.toPost() }
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
@@ -254,14 +247,13 @@ class PostsRepositoryImpl(
 
     override suspend fun deletePost(postId: String) {
         try {
-            val post = collection.document(postId).get().await()
+            val post = collection.document(postId).getFromServer()
                 .data?.toPost() ?: throw PostNotFoundException()
 
             val chainGeneration = collection.firestore
                 .collection(CHAINS_COLLECTION)
                 .document(post.chainId)
-                .get()
-                .await()
+                .getFromServer()
                 .getLong(FIELD_GENERATION)?.toInt() ?: throw PostNotFoundException()
 
             if (post.status == PostStatus.IN_PROGRESS) throw PostInProgressException()
@@ -283,7 +275,7 @@ class PostsRepositoryImpl(
                 .collection(CONTRIBUTIONS_COLLECTION)
                 .document(postId)
 
-            val userDocRef = if (userPostRef.get().await().exists()) {
+            val userDocRef = if (userPostRef.getFromServer().exists()) {
                 userPostRef
             } else {
                 userContributionRef
@@ -299,8 +291,7 @@ class PostsRepositoryImpl(
                 val prevPostDoc = collection
                     .whereEqualTo(FIELD_CHAIN_ID, post.chainId)
                     .whereEqualTo(FIELD_GENERATION, post.generation - 1)
-                    .get()
-                    .await()
+                    .getFromServer()
                     .documents
                     .firstOrNull() ?: throw PostNotFoundException()
 
@@ -344,7 +335,6 @@ class PostsRepositoryImpl(
     }
 
     private companion object {
-        const val FIELD_ID = "id"
         const val FIELD_CHAIN_ID = "chainId"
         const val FIELD_CREATED_AT = "createdAt"
         const val FIELD_UPDATED_AT = "updatedAt"

@@ -24,7 +24,7 @@ class UsersRepositoryImpl(
 
     override suspend fun getUserById(id: String): User? {
         try {
-            val snapshot = collection.document(id).get().await()
+            val snapshot = collection.document(id).getFromServer()
             return snapshot.data?.let { User.fromMap(it) }
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
@@ -53,7 +53,7 @@ class UsersRepositoryImpl(
 
     override suspend fun getUserByEmail(email: String): User? {
         try {
-            val snapshot = collection.whereEqualTo(User.FIELD_EMAIL, email).get().await()
+            val snapshot = collection.whereEqualTo(User.FIELD_EMAIL, email).getFromServer()
             return snapshot.documents.firstOrNull()?.data?.let { User.fromMap(it) }
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
@@ -84,8 +84,7 @@ class UsersRepositoryImpl(
                         rangeFilter(lowercased)
                     )
                 )
-                .get()
-                .await()
+                .getFromServer()
 
             return snapshot.documents
                 .mapNotNull { it.data?.let { data -> User.fromMap(data) } }
@@ -142,8 +141,7 @@ class UsersRepositoryImpl(
             val snapshot = collection
                 .orderBy(User.FIELD_UPDATED_AT, com.google.firebase.firestore.Query.Direction.DESCENDING)
                 .limit(10 + excludeIds.size.toLong())
-                .get()
-                .await()
+                .getFromServer()
 
             return snapshot.documents
                 .mapNotNull { it.data?.let { data -> User.fromMap(data) } }

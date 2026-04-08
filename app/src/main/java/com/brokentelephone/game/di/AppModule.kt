@@ -1,6 +1,8 @@
 package com.brokentelephone.game.di
 
 import com.brokentelephone.game.core.timer.CountdownTimer
+import com.brokentelephone.game.data.banner.BannerManagerImpl
+import com.brokentelephone.game.domain.banner.BannerManager
 import com.brokentelephone.game.domain.use_case.BlockUserUseCase
 import com.brokentelephone.game.domain.use_case.DeletePostUseCase
 import com.brokentelephone.game.domain.use_case.GetActiveSessionUseCase
@@ -24,11 +26,16 @@ import com.brokentelephone.game.main.use_case.ApplyEmailChangeUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
 import com.brokentelephone.game.main.use_case.GetPendingEmailUseCase
 import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val appModule = module {
+    single { CoroutineScope(SupervisorJob() + Dispatchers.Main) }
+    single<BannerManager> { BannerManagerImpl(get()) }
     factoryOf(::CountdownTimer)
 
     factoryOf(::GetPostLinkByIdUseCase)

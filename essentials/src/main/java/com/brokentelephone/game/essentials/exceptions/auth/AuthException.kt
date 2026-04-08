@@ -80,8 +80,7 @@ class NotificationNotFoundException : AppException("Notification not found") {
 }
 
 class UserNotFoundException : AppException("User not found") {
-    override fun getLocalizedMessage(stringProvider: StringProvider): String =
-        stringProvider.getString(R.string.error_user_not_found)
+    override fun getLocalizedMessage(stringProvider: StringProvider): String = stringProvider.getString(R.string.error_user_not_found)
 }
 
 class FriendRequestNotFoundException : AppException("Friend request not found") {

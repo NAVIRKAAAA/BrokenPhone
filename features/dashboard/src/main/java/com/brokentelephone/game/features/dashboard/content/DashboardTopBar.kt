@@ -53,6 +53,7 @@ fun DashboardTopBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .statusBarsPadding()
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
@@ -73,8 +74,9 @@ fun DashboardTopBar(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier
+                .weight(1f)
                 .padding(vertical = 8.dp)
-                .statusBarsPadding()
+                .padding(end = 8.dp)
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
@@ -85,7 +87,6 @@ fun DashboardTopBar(
 
         Row(
             modifier = Modifier
-                .statusBarsPadding()
                 .padding(vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -159,7 +160,7 @@ private fun DashboardTopBarPreview() {
     BrokenTelephoneTheme(darkTheme = false) {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
             DashboardTopBar(
-                name = "Alex",
+                name = "Alex".repeat(44),
                 selectedSort = DashboardSort.LATEST,
                 onSortSelected = {},
                 onTitleClick = {},

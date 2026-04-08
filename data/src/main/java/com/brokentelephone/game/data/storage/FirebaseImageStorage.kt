@@ -12,6 +12,7 @@ class FirebaseImageStorage(
     private val storage: FirebaseStorage,
 ) : ImageStorage {
 
+    // TODO: Try with own request via Retrofit
     override suspend fun uploadImage(localPath: String): String {
         val start = System.currentTimeMillis()
 

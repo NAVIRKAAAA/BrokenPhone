@@ -15,7 +15,6 @@ import com.google.firebase.firestore.Query
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.tasks.await
 
 class NotificationsRepositoryImpl(
     firestore: FirebaseFirestore,
@@ -25,7 +24,7 @@ class NotificationsRepositoryImpl(
 
     override suspend fun getNotificationById(notificationId: String): Notification? {
         return try {
-            val snapshot = collection.document(notificationId).get().await()
+            val snapshot = collection.document(notificationId).getFromServer()
             snapshot.data?.toNotification()
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
@@ -43,8 +42,7 @@ class NotificationsRepositoryImpl(
             collection
                 .whereArrayContains(FIELD_RECEIVERS_IDS, userId)
                 .orderBy(FIELD_CREATED_AT, Query.Direction.DESCENDING)
-                .get()
-                .await()
+                .getFromServer()
                 .documents
                 .mapNotNull { it.data?.toNotification() }
         } catch (_: FirebaseNetworkException) {
@@ -73,8 +71,7 @@ class NotificationsRepositoryImpl(
                 .whereArrayContains(FIELD_RECEIVERS_IDS, userId)
                 .whereEqualTo(FIELD_TYPE, notificationType)
                 .orderBy(FIELD_CREATED_AT, Query.Direction.DESCENDING)
-                .get()
-                .await()
+                .getFromServer()
                 .documents
                 .mapNotNull { it.data?.toNotification() }
         } catch (_: FirebaseNetworkException) {

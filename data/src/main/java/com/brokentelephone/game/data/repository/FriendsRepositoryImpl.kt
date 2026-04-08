@@ -37,8 +37,7 @@ class FriendsRepositoryImpl(
             val userSnapshot = collection.firestore
                 .collection(USERS_COLLECTION)
                 .document(currentUserId)
-                .get()
-                .await()
+                .getFromServer()
 
             val user = userSnapshot.data?.let { User.fromMap(it) }
             val friendIds = user?.friendIds ?: listOf()
@@ -49,8 +48,7 @@ class FriendsRepositoryImpl(
                 .whereEqualTo(FIELD_SENDER_ID, currentUserId)
                 .whereEqualTo(FIELD_RECEIVER_ID, targetUserId)
                 .whereEqualTo(FIELD_STATUS, FriendRequestStatus.PENDING.name)
-                .get()
-                .await()
+                .getFromServer()
 
             if (!sentRequest.isEmpty) return FriendshipActionState.INVITE_SENT
 
@@ -58,8 +56,7 @@ class FriendsRepositoryImpl(
                 .whereEqualTo(FIELD_SENDER_ID, targetUserId)
                 .whereEqualTo(FIELD_RECEIVER_ID, currentUserId)
                 .whereEqualTo(FIELD_STATUS, FriendRequestStatus.PENDING.name)
-                .get()
-                .await()
+                .getFromServer()
 
             if (!receivedRequest.isEmpty) return FriendshipActionState.INVITE_RECEIVED
 
@@ -81,8 +78,7 @@ class FriendsRepositoryImpl(
                 .whereEqualTo(FIELD_SENDER_ID, senderId)
                 .whereEqualTo(FIELD_RECEIVER_ID, receiverId)
                 .whereEqualTo(FIELD_STATUS, FriendRequestStatus.PENDING.name)
-                .get()
-                .await()
+                .getFromServer()
             snapshot.documents.firstOrNull()?.id
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
@@ -197,8 +193,7 @@ class FriendsRepositoryImpl(
             val snapshot = collection
                 .whereEqualTo(FIELD_SENDER_ID, senderId)
                 .whereEqualTo(FIELD_STATUS, FriendRequestStatus.PENDING.name)
-                .get()
-                .await()
+                .getFromServer()
             snapshot.documents.mapNotNull { it.data?.toFriendRequest() }
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()
@@ -216,8 +211,7 @@ class FriendsRepositoryImpl(
             val snapshot = collection
                 .whereEqualTo(FIELD_RECEIVER_ID, receiverId)
                 .whereEqualTo(FIELD_STATUS, FriendRequestStatus.PENDING.name)
-                .get()
-                .await()
+                .getFromServer()
             snapshot.documents.mapNotNull { it.data?.toFriendRequest() }
         } catch (_: FirebaseNetworkException) {
             throw NetworkException()

@@ -25,42 +25,23 @@ class ReportsRepositoryImpl(
 
     override suspend fun reportPost(userId: String, postId: String, type: ReportPostType) {
         try {
-            val existingReport = collection.firestore
-                .collection(COLLECTION_USERS)
-                .document(userId)
-                .collection(collectionName)
+            val existingReport = collection
+                .whereEqualTo(FIELD_REPORTER_ID, userId)
                 .whereEqualTo(FIELD_TARGET_ID, postId)
                 .limit(1)
-                .get()
-                .await()
+                .getFromServer()
 
             if (!existingReport.isEmpty) throw AlreadyReportedPostException()
 
-            val reportDoc = collection.document()
-            val userReportDoc = reportDoc.firestore
-                .collection(COLLECTION_USERS)
-                .document(userId)
-                .collection(collectionName)
-                .document(reportDoc.id)
-            val postReportDoc = reportDoc.firestore
-                .collection(COLLECTION_POSTS)
-                .document(postId)
-                .collection(collectionName)
-                .document(reportDoc.id)
-
-            val data = mapOf(
-                FIELD_REPORTER_ID to userId,
-                FIELD_TARGET_ID to postId,
-                FIELD_TARGET_TYPE to ReportTargetType.POST.name,
-                FIELD_REPORT_SUBTYPE to type.name,
-                FIELD_CREATED_AT to System.currentTimeMillis().toTimestamp(),
-            )
-
-            reportDoc.firestore.runBatch { batch ->
-                batch.set(reportDoc, data)
-                batch.set(userReportDoc, data)
-                batch.set(postReportDoc, data)
-            }.await()
+            collection.document().set(
+                mapOf(
+                    FIELD_REPORTER_ID to userId,
+                    FIELD_TARGET_ID to postId,
+                    FIELD_TARGET_TYPE to ReportTargetType.POST.name,
+                    FIELD_REPORT_SUBTYPE to type.name,
+                    FIELD_CREATED_AT to System.currentTimeMillis().toTimestamp(),
+                )
+            ).await()
         } catch (e: AppException) {
             throw e
         } catch (_: FirebaseNetworkException) {
@@ -75,42 +56,23 @@ class ReportsRepositoryImpl(
 
     override suspend fun reportUser(userId: String, targetUserId: String, type: ReportUserType) {
         try {
-            val existingReport = collection.firestore
-                .collection(COLLECTION_USERS)
-                .document(userId)
-                .collection(collectionName)
+            val existingReport = collection
+                .whereEqualTo(FIELD_REPORTER_ID, userId)
                 .whereEqualTo(FIELD_TARGET_ID, targetUserId)
                 .limit(1)
-                .get()
-                .await()
+                .getFromServer()
 
             if (!existingReport.isEmpty) throw AlreadyReportedUserException()
 
-            val reportDoc = collection.document()
-            val userReportDoc = reportDoc.firestore
-                .collection(COLLECTION_USERS)
-                .document(userId)
-                .collection(collectionName)
-                .document(reportDoc.id)
-            val targetUserReportDoc = reportDoc.firestore
-                .collection(COLLECTION_USERS)
-                .document(targetUserId)
-                .collection(collectionName)
-                .document(reportDoc.id)
-
-            val data = mapOf(
-                FIELD_REPORTER_ID to userId,
-                FIELD_TARGET_ID to targetUserId,
-                FIELD_TARGET_TYPE to ReportTargetType.USER.name,
-                FIELD_REPORT_SUBTYPE to type.name,
-                FIELD_CREATED_AT to System.currentTimeMillis().toTimestamp(),
-            )
-
-            reportDoc.firestore.runBatch { batch ->
-                batch.set(reportDoc, data)
-                batch.set(userReportDoc, data)
-                batch.set(targetUserReportDoc, data)
-            }.await()
+            collection.document().set(
+                mapOf(
+                    FIELD_REPORTER_ID to userId,
+                    FIELD_TARGET_ID to targetUserId,
+                    FIELD_TARGET_TYPE to ReportTargetType.USER.name,
+                    FIELD_REPORT_SUBTYPE to type.name,
+                    FIELD_CREATED_AT to System.currentTimeMillis().toTimestamp(),
+                )
+            ).await()
         } catch (e: AppException) {
             throw e
         } catch (_: FirebaseNetworkException) {
@@ -121,11 +83,10 @@ class ReportsRepositoryImpl(
             Log.d("LOG_TAG", "reportUser(): $e")
             throw UnknownAuthException()
         }
+
     }
 
     private companion object {
-        const val COLLECTION_USERS = "users"
-        const val COLLECTION_POSTS = "posts"
         const val FIELD_REPORTER_ID = "reporterId"
         const val FIELD_TARGET_ID = "targetId"
         const val FIELD_TARGET_TYPE = "targetType"

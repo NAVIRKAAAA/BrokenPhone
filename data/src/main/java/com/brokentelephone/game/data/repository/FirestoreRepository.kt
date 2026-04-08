@@ -1,7 +1,10 @@
 package com.brokentelephone.game.data.repository
 
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.Source
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -25,7 +28,7 @@ abstract class FirestoreRepository(
             ids.chunked(10)
                 .map { chunk ->
                     async {
-                        collection.whereIn(field, chunk).get().await()
+                        collection.whereIn(field, chunk).getFromServer()
                             .documents
                             .mapNotNull { it.data?.let(mapper) }
                     }
@@ -34,4 +37,11 @@ abstract class FirestoreRepository(
                 .flatten()
         }
     }
+
+    protected suspend fun DocumentReference.getFromServer() =
+        get(Source.SERVER).await()
+
+    protected suspend fun Query.getFromServer() =
+        get(Source.SERVER).await()
+
 }

@@ -57,7 +57,7 @@ fun ChainDetailsContent(
 ) {
     val lazyListState = rememberLazyListState()
 
-    val chainSize = state.chain.size
+    val chainSize = state.chain.size - 1
     val maxGenerations = state.post?.maxGenerations ?: 0
 
     Column(
