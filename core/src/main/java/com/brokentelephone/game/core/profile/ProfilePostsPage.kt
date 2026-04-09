@@ -2,16 +2,14 @@ package com.brokentelephone.game.core.profile
 
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -20,7 +18,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.shimmer.ShimmerContent
-import com.brokentelephone.game.core.theme.appColors
 
 @Composable
 fun ProfilePostsPage(
@@ -48,35 +45,28 @@ fun ProfilePostsPage(
                 modifier = modifier
                     .fillMaxSize()
                     .nestedScroll(nestedScrollConnection),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                itemsIndexed(
+                items(
                     items = posts,
-                    key = { _, item -> item.id },
-                ) { index, post ->
-                    Column(
-                        modifier = Modifier.Companion.animateItem()
-                    ) {
-                        if (index != 0) {
-                            HorizontalDivider(color = MaterialTheme.appColors.divider)
-                        }
-
-                        ProfilePostElement(
-                            post = post,
-                            onMoreClick = { onMoreClick(post.id) },
-                            modifier = Modifier
-                                .combinedClickable(
-                                    onClick = {
-                                        onPostClick(post.id)
-                                    },
-                                    onLongClick = {
-                                        onMoreClick(post.id)
-                                    },
-                                    indication = null,
-                                    interactionSource = remember { MutableInteractionSource() }
-                                )
-                                .padding(horizontal = 16.dp, vertical = 16.dp),
-                        )
-                    }
+                    key = { it.id }
+                ) { post ->
+                    ProfilePostElement(
+                        post = post,
+                        onMoreClick = { onMoreClick(post.id) },
+                        modifier = Modifier
+                            .combinedClickable(
+                                onClick = {
+                                    onPostClick(post.id)
+                                },
+                                onLongClick = {
+                                    onMoreClick(post.id)
+                                },
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            )
+                    )
                 }
 
                 item {

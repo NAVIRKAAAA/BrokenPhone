@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,10 +32,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.badge.BadgeElement
+import com.brokentelephone.game.core.badge.PostChip
 import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.post.DrawPostImage
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
+import com.brokentelephone.game.core.utils.coloredShadow
 import com.brokentelephone.game.core.utils.rememberRelativeTime
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
@@ -46,8 +48,22 @@ fun ProfilePostElement(
     onMoreClick: () -> Unit = {},
 ) {
     val relativeTime = rememberRelativeTime(post.createdAt)
+    val shape = RoundedCornerShape(12.dp)
 
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .coloredShadow(
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                blurRadius = 32f,
+                offsetY = 0.dp,
+                offsetX = 0.dp,
+                shape = shape,
+            )
+            .clip(shape)
+            .background(MaterialTheme.colorScheme.background)
+            .padding(16.dp)
+    ) {
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -77,7 +93,7 @@ fun ProfilePostElement(
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         when (val content = post.content) {
             is PostContent.Text -> {
@@ -95,27 +111,31 @@ fun ProfilePostElement(
                     content = content,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .aspectRatio(1f)
                         .clip(RoundedCornerShape(12.dp))
-                        .height(200.dp),
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         FlowRow(
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
             itemVerticalAlignment = Alignment.CenterVertically
         ) {
-            BadgeElement(
-                iconResId = R.drawable.ic_mutations,
+            PostChip(
                 text = "${post.generation}/${post.maxGenerations}",
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                iconResId = R.drawable.ic_mutations,
             )
 
-            BadgeElement(
-                iconResId = R.drawable.ic_clock,
+            PostChip(
                 text = stringResource(R.string.badge_seconds, post.nextTimeLimit),
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                iconResId = R.drawable.ic_clock,
             )
         }
     }
@@ -128,7 +148,6 @@ private fun ProfilePostElementDrawingPreview() {
         Box(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
-                .padding(horizontal = 16.dp)
         ) {
             ProfilePostElement(
                 post = PostUi(
@@ -155,7 +174,6 @@ private fun ProfilePostElementTextPreview() {
         Box(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
-                .padding(horizontal = 16.dp)
         ) {
             ProfilePostElement(
                 post = PostUi(

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.badge.BadgeElement
+import com.brokentelephone.game.core.badge.PostChip
 import com.brokentelephone.game.core.shimmer.shimmer
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.domain.model.post.PostContent
@@ -45,7 +46,7 @@ fun ProfilePostElementShimmer(
                 text = "2m ago",
                 fontFamily = FontFamily(Font(R.font.nunito_regular)),
                 fontSize = 14.sp,
-                lineHeight = 20.sp,
+                lineHeight = 14.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.shimmer(cornerRadius = 4.dp)
             )
@@ -58,7 +59,7 @@ fun ProfilePostElementShimmer(
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         when (content) {
             is PostContent.Text -> {
@@ -66,7 +67,7 @@ fun ProfilePostElementShimmer(
                     text = "Once upon a time there was a broken telephone and nobody remembered what the original message was.",
                     fontFamily = FontFamily(Font(R.font.nunito_regular)),
                     fontSize = 15.sp,
-                    lineHeight = 22.sp,
+                    lineHeight = 15.sp,
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.shimmer(cornerRadius = 4.dp)
                 )
@@ -75,29 +76,34 @@ fun ProfilePostElementShimmer(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp)
+                        .aspectRatio(1f)
                         .clip(RoundedCornerShape(12.dp))
                         .shimmer(cornerRadius = 12.dp)
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            BadgeElement(
+
+            PostChip(
+                text = "3/10",
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
                 iconResId = R.drawable.ic_mutations,
-                text = "7/10",
-                modifier = Modifier.shimmer(cornerRadius = 4.dp)
+                modifier = Modifier.shimmer(cornerRadius = 50.dp)
             )
 
-            BadgeElement(
-                iconResId = R.drawable.ic_clock,
+            PostChip(
                 text = "60s",
-                modifier = Modifier.shimmer(cornerRadius = 4.dp)
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                iconResId = R.drawable.ic_clock,
+                modifier = Modifier.shimmer(cornerRadius = 50.dp)
             )
         }
     }

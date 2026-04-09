@@ -49,9 +49,6 @@ fun ChainDetailsShimmerList(
     ) {
         itemsIndexed(items) { index, content ->
             Column {
-                if (index != 0) {
-                    Spacer(modifier = Modifier.height(24.dp))
-                }
 
                 ChainDetailsElementShimmer(content = content)
 
@@ -60,8 +57,7 @@ fun ChainDetailsShimmerList(
 
                     Row(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 52.dp),
+                            .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center,
                     ) {
@@ -72,6 +68,8 @@ fun ChainDetailsShimmerList(
                             modifier = Modifier.shimmer(cornerRadius = 4.dp),
                         )
                     }
+
+                    Spacer(modifier = Modifier.height(24.dp))
                 }
             }
         }

@@ -1,9 +1,7 @@
 package com.brokentelephone.game.core.top_bar
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -33,15 +31,15 @@ fun PostTopBar(
     onPostClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    Row(
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-
-        IconButton(onClick = onBackClick) {
+        IconButton(
+            onClick = onBackClick,
+            modifier = Modifier.align(Alignment.CenterStart)
+        ) {
             Icon(
                 painter = painterResource(R.drawable.ic_back),
                 contentDescription = null,
@@ -55,12 +53,14 @@ fun PostTopBar(
             fontFamily = FontFamily(Font(R.font.nunito_bold)),
             fontSize = 18.sp,
             lineHeight = 24.sp,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.align(Alignment.Center)
         )
 
         TextButton(
             onClick = onPostClick,
             enabled = isPostButtonEnabled,
+            modifier = Modifier.align(Alignment.CenterEnd)
         ) {
             Text(
                 text = stringResource(R.string.common_post),
@@ -70,7 +70,6 @@ fun PostTopBar(
                 lineHeight = 24.sp,
             )
         }
-
     }
 }
 

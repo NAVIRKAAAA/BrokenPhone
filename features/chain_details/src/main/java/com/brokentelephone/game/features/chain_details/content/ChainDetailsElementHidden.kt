@@ -27,15 +27,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.shimmer.shimmer
+import com.brokentelephone.game.core.modifier.hidden
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.utils.coloredShadow
 import com.brokentelephone.game.domain.model.post.PostContent
 
 @Composable
-fun ChainDetailsElementShimmer(
+fun ChainDetailsElementHidden(
     content: PostContent,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
 
     val shape = RoundedCornerShape(12.dp)
@@ -63,7 +63,7 @@ fun ChainDetailsElementShimmer(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .shimmer(cornerRadius = 20.dp)
+                    .hidden(cornerRadius = 20.dp)
             )
 
             Spacer(modifier = Modifier.width(12.dp))
@@ -86,7 +86,7 @@ fun ChainDetailsElementShimmer(
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.shimmer(cornerRadius = 4.dp)
+                            modifier = Modifier.hidden(cornerRadius = 4.dp)
                         )
 
                         Spacer(modifier = Modifier.height(4.dp))
@@ -97,7 +97,7 @@ fun ChainDetailsElementShimmer(
                             fontSize = 14.sp,
                             lineHeight = 14.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.shimmer(cornerRadius = 4.dp)
+                            modifier = Modifier.hidden(cornerRadius = 4.dp)
                         )
                     }
 
@@ -117,7 +117,7 @@ fun ChainDetailsElementShimmer(
                     fontSize = 15.sp,
                     lineHeight = 22.sp,
                     color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.shimmer(cornerRadius = 4.dp)
+                    modifier = Modifier.hidden(cornerRadius = 4.dp)
                 )
             }
 
@@ -127,38 +127,24 @@ fun ChainDetailsElementShimmer(
                         .fillMaxWidth()
                         .aspectRatio(1f)
                         .clip(RoundedCornerShape(12.dp))
-                        .shimmer(cornerRadius = 12.dp)
+                        .hidden(cornerRadius = 12.dp)
                 )
             }
         }
 
     }
+
 }
 
 @Preview
 @Composable
-private fun ChainDetailsElementShimmerTextPreview() {
-    BrokenTelephoneTheme(darkTheme = true) {
+private fun ChainDetailsElementHiddenPreview() {
+    BrokenTelephoneTheme(darkTheme = false) {
         Box(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
-                .padding(horizontal = 16.dp)
         ) {
-            ChainDetailsElementShimmer(content = PostContent.Text(""))
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun ChainDetailsElementShimmerDrawingPreview() {
-    BrokenTelephoneTheme(darkTheme = true) {
-        Box(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
-                .padding(horizontal = 16.dp)
-        ) {
-            ChainDetailsElementShimmer(content = PostContent.Drawing())
+            ChainDetailsElementHidden(content = PostContent.Drawing())
         }
     }
 }

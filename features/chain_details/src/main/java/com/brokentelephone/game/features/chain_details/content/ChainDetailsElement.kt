@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -28,9 +30,9 @@ import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.avatar.AvatarComponent
 import com.brokentelephone.game.core.model.post.PostUi
-import com.brokentelephone.game.core.modifier.hidden
 import com.brokentelephone.game.core.post.DrawPostImage
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
+import com.brokentelephone.game.core.utils.coloredShadow
 import com.brokentelephone.game.core.utils.rememberRelativeTime
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
@@ -39,116 +41,118 @@ import com.brokentelephone.game.domain.model.post.PostStatus
 fun ChainDetailsElement(
     post: PostUi,
     modifier: Modifier = Modifier,
-    isHidden: Boolean = false,
     onUserClick: () -> Unit = {},
 ) {
     val relativeTime = rememberRelativeTime(post.createdAt)
+    val shape = RoundedCornerShape(12.dp)
 
-    Row(
-        modifier = modifier
+    Column(
+        modifier = Modifier
             .fillMaxWidth()
+            .coloredShadow(
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                blurRadius = 32f,
+                offsetY = 0.dp,
+                offsetX = 0.dp,
+                shape = shape,
+            )
+            .clip(shape)
+            .background(MaterialTheme.colorScheme.background)
+            .padding(16.dp)
     ) {
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+        ) {
 
-        AvatarComponent(
-            avatarUrl = post.avatarUrl,
-            size = 40.dp,
-            modifier = if (isHidden) {
-                Modifier.hidden(cornerRadius = 50.dp)
-            } else {
-                Modifier.clickable(
+            AvatarComponent(
+                avatarUrl = post.avatarUrl,
+                size = 40.dp,
+                modifier = Modifier.clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                     onClick = onUserClick
                 )
-            }
-        )
+            )
 
-        Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(12.dp))
 
-        Column {
+            Column {
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
                 Row(
-                    modifier = Modifier.weight(1f),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
-                        text = post.authorName,
-                        fontFamily = FontFamily(Font(R.font.nunito_bold)),
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier
-                            .weight(1f, fill = false)
-                            .then(
-                                if (isHidden) Modifier.hidden(cornerRadius = 4.dp)
-                                else Modifier.clickable(
+                    Column(
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Text(
+                            text = post.authorName,
+                            fontFamily = FontFamily(Font(R.font.nunito_bold)),
+                            fontSize = 16.sp,
+                            lineHeight = 24.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier
+                                .clickable(
                                     interactionSource = remember { MutableInteractionSource() },
                                     indication = null,
                                     onClick = onUserClick
                                 )
-                            )
-                    )
+                        )
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = relativeTime,
+                            fontFamily = FontFamily(Font(R.font.nunito_regular)),
+                            fontSize = 14.sp,
+                            lineHeight = 20.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                        )
+                    }
 
-                    Text(
-                        text = relativeTime,
-                        fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                        fontSize = 14.sp,
-                        lineHeight = 20.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        modifier = if (isHidden) Modifier.hidden(cornerRadius = 4.dp) else Modifier
-                    )
                 }
-
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
 
-            when (val content = post.content) {
-                is PostContent.Text -> {
-                    Text(
-                        text = content.text,
-                        fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                        fontSize = 15.sp,
-                        lineHeight = 22.sp,
-                        modifier = if (isHidden) Modifier.hidden(cornerRadius = 4.dp) else Modifier,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                }
+        }
 
-                is PostContent.Drawing -> {
-                    DrawPostImage(
-                        content = content,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
-                            .height(200.dp)
-                            .then(if (isHidden) Modifier.hidden(cornerRadius = 12.dp) else Modifier),
-                    )
-                }
+        Spacer(modifier = Modifier.height(12.dp))
+
+        when (val content = post.content) {
+            is PostContent.Text -> {
+                Text(
+                    text = content.text,
+                    fontFamily = FontFamily(Font(R.font.nunito_regular)),
+                    fontSize = 15.sp,
+                    lineHeight = 22.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+
+            is PostContent.Drawing -> {
+                DrawPostImage(
+                    content = content,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f)
+                        .clip(RoundedCornerShape(12.dp))
+                )
             }
         }
-    }
 
+    }
 }
 
 @Preview
 @Composable
 fun ChainDetailsElementPreview() {
     BrokenTelephoneTheme(
-        darkTheme = true
+        darkTheme = false
     ) {
         Box(
-            modifier = Modifier.background(MaterialTheme.colorScheme.background)
         ) {
             ChainDetailsElement(
                 post = PostUi(
@@ -157,14 +161,13 @@ fun ChainDetailsElementPreview() {
                     authorName = "Alex",
                     avatarUrl = null,
 //                    content = PostContent.Drawing(),
-            content = PostContent.Text("Once upon a time there was a broken telephone..."),
+                    content = PostContent.Text("Once upon a time there was a broken telephone..."),
                     createdAt = System.currentTimeMillis() - 300000,
                     generation = 10,
                     maxGenerations = 10,
                     status = PostStatus.AVAILABLE,
                     nextTimeLimit = 60,
                 ),
-                isHidden = false
             )
         }
     }

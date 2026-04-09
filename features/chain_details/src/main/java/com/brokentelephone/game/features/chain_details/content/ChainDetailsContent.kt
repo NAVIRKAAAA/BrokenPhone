@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -24,6 +23,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -34,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
@@ -60,15 +63,22 @@ fun ChainDetailsContent(
     val chainSize = state.chain.size - 1
     val maxGenerations = state.post?.maxGenerations ?: 0
 
+    val isScrolled by remember {
+        derivedStateOf {
+            lazyListState.firstVisibleItemIndex > 0 || lazyListState.firstVisibleItemScrollOffset > 0
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .statusBarsPadding(),
+            .background(MaterialTheme.colorScheme.background),
     ) {
         EditProfileTopBar(
             title = stringResource(R.string.chain_details_title),
             onBackClick = onBackClick,
+            showShadow = isScrolled,
+            modifier = Modifier.zIndex(1f)
         )
 
         ShimmerContent(
@@ -110,23 +120,29 @@ fun ChainDetailsContent(
                         ) { index, postUi ->
                             Column {
 
-                                if (index != 0) {
-                                    Spacer(modifier = Modifier.height(24.dp))
-                                }
+                                val isHidden =
+                                    chainSize != maxGenerations && (postUi.authorId != state.userId || postUi.id != state.postId)
 
-                                ChainDetailsElement(
-                                    post = postUi,
-                                    isHidden = chainSize != maxGenerations && (postUi.authorId != state.userId || postUi.id != state.postId),
-                                    onUserClick = { onUserClick(postUi.authorId) }
-                                )
+                                if (!isHidden) {
+                                    ChainDetailsElement(
+                                        post = postUi,
+                                        onUserClick = { onUserClick(postUi.authorId) }
+                                    )
+                                } else {
+                                    val hiddenContent = when (postUi.content) {
+                                        is PostContent.Text -> PostContent.Drawing()
+                                        is PostContent.Drawing -> PostContent.Text("")
+                                    }
+                                    ChainDetailsElementHidden(content = hiddenContent)
+                                }
 
                                 if (index < maxGenerations) {
 
                                     Spacer(modifier = Modifier.height(24.dp))
+
                                     Row(
                                         modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(start = 52.dp),
+                                            .fillMaxWidth(),
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.Center
                                     ) {
@@ -150,6 +166,8 @@ fun ChainDetailsContent(
 //                                color = MaterialTheme.colorScheme.primary,
 //                            )
                                     }
+
+                                    Spacer(modifier = Modifier.height(24.dp))
 
                                 }
                             }
@@ -231,20 +249,50 @@ fun ChainDetailsContentPreview() {
         val userId = "user_id"
         ChainDetailsContent(
             state = ChainDetailsState(
-                isLoading = true,
-//                postParentId = "1",
-//                chain = MockPostRepository.chainsMockList.mapIndexed { index, entry ->
-//                    entry.toUi(
-//                        id = Uuid.random().toString(),
-//                        generation = index,
-//                        maxGenerations = MockPostRepository.chainsMockList.size,
-//                        textTimeLimit = 0,
-//                        drawingTimeLimit = 0
-//                    ).copy(
-//                        authorId = if (index == 1) userId else index.toString()
-//                    )
-//                }.subList(0, 1),
-                userId = "1",
+                isLoading = false,
+                chain = listOf(
+                    PostUi(
+                        id = "1", authorId = "user_1", authorName = "Alex",
+                        avatarUrl = null,
+                        content = PostContent.Text("Once upon a time there was a broken telephone that nobody could fix..."),
+                        createdAt = System.currentTimeMillis() - 3_600_000,
+                        generation = 1, maxGenerations = 5,
+                        status = PostStatus.AVAILABLE, nextTimeLimit = 60,
+                    ),
+                    PostUi(
+                        id = "2", authorId = "user_2", authorName = "Maria",
+                        avatarUrl = null,
+                        content = PostContent.Drawing(),
+                        createdAt = System.currentTimeMillis() - 2_700_000,
+                        generation = 2, maxGenerations = 5,
+                        status = PostStatus.AVAILABLE, nextTimeLimit = 45,
+                    ),
+                    PostUi(
+                        id = "3", authorId = "user_1", authorName = "Alex",
+                        avatarUrl = null,
+                        content = PostContent.Text("A cat was sitting on a telephone wire singing songs"),
+                        createdAt = System.currentTimeMillis() - 1_800_000,
+                        generation = 3, maxGenerations = 5,
+                        status = PostStatus.AVAILABLE, nextTimeLimit = 60,
+                    ),
+                    PostUi(
+                        id = "4", authorId = "user_3", authorName = "John",
+                        avatarUrl = null,
+                        content = PostContent.Drawing(),
+                        createdAt = System.currentTimeMillis() - 900_000,
+                        generation = 4, maxGenerations = 5,
+                        status = PostStatus.AVAILABLE, nextTimeLimit = 30,
+                    ),
+                    PostUi(
+                        id = "5", authorId = "user_4", authorName = "Sofia",
+                        avatarUrl = null,
+                        content = PostContent.Text("The telephone sang a broken cat on the wire"),
+                        createdAt = System.currentTimeMillis() - 300_000,
+                        generation = 5, maxGenerations = 5,
+                        status = PostStatus.AVAILABLE, nextTimeLimit = 60,
+                    ),
+                ),
+                userId = "user_1",
                 post = PostUi(
                     id = "1",
                     authorId = "user-1",
