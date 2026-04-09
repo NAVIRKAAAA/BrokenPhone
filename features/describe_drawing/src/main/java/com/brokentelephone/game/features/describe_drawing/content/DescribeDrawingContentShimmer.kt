@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.badge.BadgeElement
+import com.brokentelephone.game.core.badge.PostChip
 import com.brokentelephone.game.core.shimmer.shimmer
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
@@ -53,7 +53,7 @@ fun DescribeDrawingContentShimmer(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Once upon a time there was a broken telephone\nthat nobody could fix...\nThis is the third line of placeholder text.",
+            text = "Once upon a time there was a broken telephone\nthat nobody could fix...",
             fontFamily = FontFamily(Font(R.font.nunito_regular)),
             fontSize = 15.sp,
             lineHeight = 22.sp,
@@ -63,27 +63,32 @@ fun DescribeDrawingContentShimmer(
             color = MaterialTheme.colorScheme.onBackground,
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Row(
-            modifier = Modifier.padding(start = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            BadgeElement(
+
+            PostChip(
+                text = "3/10",
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
                 iconResId = R.drawable.ic_mutations,
-                text = "10",
-                modifier = Modifier.shimmer(cornerRadius = 4.dp)
+                modifier = Modifier.shimmer(cornerRadius = 50.dp)
             )
 
-            BadgeElement(
-                iconResId = R.drawable.ic_clock,
+            PostChip(
                 text = "60s",
-                modifier = Modifier.shimmer(cornerRadius = 4.dp)
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                iconResId = R.drawable.ic_clock,
+                modifier = Modifier.shimmer(cornerRadius = 50.dp)
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
     }
 }
 

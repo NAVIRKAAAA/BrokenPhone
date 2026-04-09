@@ -22,10 +22,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
+import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.shimmer.shimmer
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.domain.model.post.PostContent
+import com.brokentelephone.game.domain.model.post.PostStatus
 import com.brokentelephone.game.features.post_details.model.PostDetailsButtonType
 import com.brokentelephone.game.features.post_details.model.PostDetailsState
 
@@ -54,7 +56,6 @@ fun PostDetailsContent(
             isLoading = post == null,
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
 
         ShimmerContent(
             isLoading = post == null,
@@ -100,7 +101,6 @@ fun PostDetailsContent(
                         PostDetailsElement(
                             post = post,
                             onUserClick = { onUserClick(post.authorId) },
-                            modifier = Modifier.padding(horizontal = 16.dp)
                         )
 
                         Spacer(modifier = Modifier.height(16.dp))
@@ -151,19 +151,32 @@ fun PostDetailsContent(
 @Composable
 fun PostDetailsContentPreview() {
     BrokenTelephoneTheme(
-        darkTheme = true
+        darkTheme = false
     ) {
         Box(
             modifier = Modifier.background(MaterialTheme.colorScheme.background)
         ) {
             PostDetailsContent(
                 state = PostDetailsState(
+                    postUi = PostUi(
+                        id = "2",
+                        authorId = "user-1",
+                        authorName = "Alex",
+                        avatarUrl = null,
+                        content = PostContent.Drawing(),
+//                        content = PostContent.Text("Once upon a time there was a broken telephone that nobody could fix..."),
+                        createdAt = System.currentTimeMillis() - 7200000,
+                        generation = 10,
+                        maxGenerations = 10,
+                        status = PostStatus.AVAILABLE,
+                        nextTimeLimit = 30,
+                    ),
 //                    MockPostRepository.mockList[2].toUi().copy(
 //                        status = PostStatus.AVAILABLE,
 //                        generation = 4,
 //                        maxGenerations = 10
 //                    ),
-                    isContinueLoading = false
+//                    isContinueLoading = false
                 ),
                 onContinueClick = {},
                 onViewHistoryClick = {},

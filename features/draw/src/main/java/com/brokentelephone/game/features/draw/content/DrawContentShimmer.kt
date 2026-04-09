@@ -26,7 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.badge.BadgeElement
+import com.brokentelephone.game.core.badge.PostChip
 import com.brokentelephone.game.core.shimmer.shimmer
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
@@ -68,20 +68,25 @@ fun DrawContentShimmer(
         Spacer(modifier = Modifier.height(12.dp))
 
         Row(
-            modifier = Modifier.padding(start = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            BadgeElement(
+
+            PostChip(
+                text = "3/10",
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
                 iconResId = R.drawable.ic_mutations,
-                text = "7/10",
-                modifier = Modifier.shimmer(cornerRadius = 4.dp)
+                modifier = Modifier.shimmer(cornerRadius = 50.dp)
             )
 
-            BadgeElement(
-                iconResId = R.drawable.ic_clock,
+            PostChip(
                 text = "60s",
-                modifier = Modifier.shimmer(cornerRadius = 4.dp)
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                iconResId = R.drawable.ic_clock,
+                modifier = Modifier.shimmer(cornerRadius = 50.dp)
             )
         }
     }

@@ -1,5 +1,7 @@
 package com.brokentelephone.game.features.dashboard.content
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.DropdownMenu
@@ -36,12 +39,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
+import com.brokentelephone.game.core.utils.coloredShadow
 import com.brokentelephone.game.domain.model.sort.DashboardSort
 
 @Composable
 fun DashboardTopBar(
     name: String,
     selectedSort: DashboardSort,
+    isScrolled: Boolean,
     onSortSelected: (DashboardSort) -> Unit,
     onTitleClick: () -> Unit,
     onNotificationsClick: () -> Unit,
@@ -50,9 +55,23 @@ fun DashboardTopBar(
 ) {
     var isSortMenuVisible by remember { mutableStateOf(false) }
 
+    val blurRadius by animateFloatAsState(
+        targetValue = if (isScrolled) 24f else 0f,
+        animationSpec = tween(durationMillis = 150),
+        label = "topBarBlur"
+    )
+
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .coloredShadow(
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.14f),
+                blurRadius = blurRadius,
+                offsetY = 0.dp,
+                offsetX = 0.dp,
+                shape = RoundedCornerShape(0.dp)
+            )
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding()
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
@@ -162,6 +181,7 @@ private fun DashboardTopBarPreview() {
             DashboardTopBar(
                 name = "Alex".repeat(44),
                 selectedSort = DashboardSort.LATEST,
+                isScrolled = false,
                 onSortSelected = {},
                 onTitleClick = {},
                 onNotificationsClick = {},
@@ -179,6 +199,7 @@ private fun DashboardTopBarScrolledPreview() {
             DashboardTopBar(
                 name = "Alex",
                 selectedSort = DashboardSort.LATEST,
+                isScrolled = true,
                 onSortSelected = {},
                 onTitleClick = {},
                 onNotificationsClick = {},

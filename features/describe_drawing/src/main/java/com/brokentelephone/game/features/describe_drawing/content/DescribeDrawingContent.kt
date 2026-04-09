@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -40,12 +40,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.badge.BadgeElement
+import com.brokentelephone.game.core.badge.PostChip
 import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.post.DrawPostImage
 import com.brokentelephone.game.core.shimmer.ShimmerContent
@@ -150,7 +149,7 @@ fun DescribeDrawingContent(
                                         lineHeight = 22.sp,
                                         color = MaterialTheme.colorScheme.onBackground
                                     ),
-                                    minLines = 3,
+                                    minLines = 2,
                                     maxLines = 3,
                                     keyboardActions = KeyboardActions(
                                         onDone = {
@@ -176,52 +175,56 @@ fun DescribeDrawingContent(
                                 }
                             }
 
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(12.dp))
 
-                            Row(
-                                modifier = Modifier.padding(start = 16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            FlowRow(
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                itemVerticalAlignment = Alignment.CenterVertically
                             ) {
 
-                                BadgeElement(
-                                    iconResId = R.drawable.ic_mutations,
+                                PostChip(
                                     text = stringResource(
                                         R.string.create_post_badge_generations,
                                         post.maxGenerations
                                     ),
+                                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    iconResId = R.drawable.ic_mutations,
+                                    modifier = Modifier,
                                 )
 
-                                BadgeElement(
-                                    iconResId = R.drawable.ic_clock,
+                                PostChip(
                                     text = state.formattedTime,
+                                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    iconResId = R.drawable.ic_clock,
+                                    modifier = Modifier,
                                 )
+
 
                                 if (state.text.isNotBlank()) {
+                                    val isTextOverLimit = state.isTextOverLimit
 
-                                    Text(
-                                        text = "|",
-                                        textAlign = TextAlign.Center,
-                                        fontFamily = FontFamily(Font(R.font.nunito_bold)),
-                                        fontSize = 14.sp,
-                                        lineHeight = 20.sp,
-                                        color = MaterialTheme.appColors.divider
-                                    )
+                                    val counterContentColor =
+                                        if (isTextOverLimit) MaterialTheme.colorScheme.onErrorContainer
+                                        else MaterialTheme.colorScheme.onPrimaryContainer
+                                    val counterContainerColor =
+                                        if (isTextOverLimit) MaterialTheme.colorScheme.errorContainer
+                                        else MaterialTheme.colorScheme.primaryContainer
 
-
-                                    Text(
-                                        text = "${state.text.length}/${140}",
-                                        textAlign = TextAlign.Center,
-                                        fontFamily = FontFamily(Font(R.font.nunito_bold)),
-                                        fontSize = 14.sp,
-                                        lineHeight = 20.sp,
-                                        color = if (state.isTextOverLimit) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
+                                    PostChip(
+                                        text = "${state.text.length}/${DescribeDrawingState.MAX_TEXT_LENGTH}",
+                                        contentColor = counterContentColor,
+                                        containerColor = counterContainerColor,
+                                        iconResId = null,
+                                        modifier = Modifier,
                                     )
                                 }
-
                             }
 
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(12.dp))
                         }
                     }
                 }

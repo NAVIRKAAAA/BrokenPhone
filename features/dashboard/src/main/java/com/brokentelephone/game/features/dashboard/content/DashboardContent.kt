@@ -3,37 +3,39 @@ package com.brokentelephone.game.features.dashboard.content
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
+import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.pagination.LoadMoreIndicator
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.core.theme.appColors
+import com.brokentelephone.game.domain.model.post.PostContent
+import com.brokentelephone.game.domain.model.post.PostStatus
 import com.brokentelephone.game.domain.model.sort.DashboardSort
 import com.brokentelephone.game.features.dashboard.model.DashboardState
 
@@ -57,13 +59,21 @@ fun DashboardContent(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
+        val isScrolled by remember {
+            derivedStateOf {
+                listState.firstVisibleItemIndex > 0 || listState.firstVisibleItemScrollOffset > 0
+            }
+        }
+
         DashboardTopBar(
             name = state.user?.username ?: "",
             selectedSort = state.selectedSort,
+            isScrolled = isScrolled,
             onSortSelected = onSortSelected,
             onTitleClick = onTitleClick,
             onNotificationsClick = onNotificationsClick,
             unreadNotificationsCount = state.unreadNotificationsCount,
+            modifier = Modifier.zIndex(1f),
         )
 
         val pullToRefreshState = rememberPullToRefreshState()
@@ -104,12 +114,13 @@ fun DashboardContent(
                     LazyColumn(
                         state = listState,
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(vertical = 16.dp),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        itemsIndexed(
+                        items(
                             items = state.posts,
-                            key = { _, item -> item.id }
-                        ) { index, postUi ->
+                            key = { it.id }
+                        ) { postUi ->
                             Column(
                                 modifier = Modifier
                                     .animateItem()
@@ -120,20 +131,12 @@ fun DashboardContent(
                                         interactionSource = remember { MutableInteractionSource() }
                                     )
                             ) {
-                                if (index != 0) {
-                                    Spacer(modifier = Modifier.height(16.dp))
-                                }
                                 PostElement(
                                     post = postUi,
                                     isUsersPost = postUi.authorId == state.user?.id,
                                     onMoreClick = { onMoreClick(postUi.id) },
-                                    onUserClick = { onUserClick(postUi.authorId) },
-                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                    onUserClick = { onUserClick(postUi.authorId) }
                                 )
-                                Spacer(modifier = Modifier.height(16.dp))
-                                if (index != state.posts.lastIndex) {
-                                    HorizontalDivider(color = MaterialTheme.appColors.divider)
-                                }
                             }
                         }
                         if (state.hasMore) {
@@ -167,8 +170,46 @@ fun DashboardContentPreview() {
                         avatarUrl = "",
                         createdAt = 0
                     ),
-                    isInitialLoading = true,
-                    unreadNotificationsCount = 4
+                    isInitialLoading = false,
+                    unreadNotificationsCount = 4,
+                    posts = listOf(
+                        PostUi(
+                            id = "1",
+                            authorId = "user_1",
+                            authorName = "Alex",
+                            avatarUrl = null,
+                            content = PostContent.Text("Once upon a time there was a broken telephone that nobody could fix..."),
+                            createdAt = System.currentTimeMillis() - 120_000,
+                            generation = 10,
+                            maxGenerations = 10,
+                            status = PostStatus.AVAILABLE,
+                            nextTimeLimit = 30,
+                        ),
+                        PostUi(
+                            id = "2",
+                            authorId = "user_2",
+                            authorName = "Maria",
+                            avatarUrl = null,
+                            content = PostContent.Drawing(),
+                            createdAt = System.currentTimeMillis() - 3_600_000,
+                            generation = 3,
+                            maxGenerations = 10,
+                            status = PostStatus.AVAILABLE,
+                            nextTimeLimit = 60,
+                        ),
+                        PostUi(
+                            id = "3",
+                            authorId = "user_3",
+                            authorName = "John".repeat(43),
+                            avatarUrl = null,
+                            content = PostContent.Text("A mysterious figure appeared at the edge of the forest."),
+                            createdAt = System.currentTimeMillis() - 7_200_000,
+                            generation = 7,
+                            maxGenerations = 10,
+                            status = PostStatus.AVAILABLE,
+                            nextTimeLimit = 45,
+                        ),
+                    )
                 ),
                 onPostClick = {},
                 onMoreClick = {},

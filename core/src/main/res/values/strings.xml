@@ -178,7 +178,7 @@
 
     <!-- Dashboard -->
     <string name="dashboard_title">Hey, %1$s!</string>
-    <string name="dashboard_badge_complete">Finished!</string>
+    <string name="dashboard_badge_complete">Finished</string>
     <string name="dashboard_badge_you">You!</string>
 
     <!-- Google Sign In -->
@@ -268,7 +268,7 @@
     <!-- Create Post -->
     <string name="create_post_title">Start a Chain</string>
     <string name="create_post_placeholder">Write something to kick things off…</string>
-    <string name="create_post_badge_generations">1/%1$d</string>
+    <string name="create_post_badge_generations">0/%1$d</string>
     <string name="create_post_badge_time_limits">%1$ds / %2$ds</string>
     <string name="badge_seconds">%1$ds</string>
     <string name="create_post_text_counter">%1$d/%2$d</string>

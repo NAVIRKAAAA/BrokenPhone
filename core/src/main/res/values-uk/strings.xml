@@ -172,7 +172,7 @@
 
     <string name="create_post_title">Новий ланцюжок</string>
     <string name="create_post_placeholder">Напиши щось, щоб почати…</string>
-    <string name="create_post_badge_generations">1/%1$d</string>
+    <string name="create_post_badge_generations">0/%1$d</string>
     <string name="create_post_badge_time_limits">%1$dс / %2$dс</string>
     <string name="create_post_text_counter">%1$d/%2$d</string>
     <string name="create_post_dialog_discard_title">Здатися?</string>
@@ -230,7 +230,7 @@
     <string name="bottom_nav_bar_guest">Гість</string>
 
     <string name="dashboard_title">Привіт, %1$s!</string>
-    <string name="dashboard_badge_complete">Завершено!</string>
+    <string name="dashboard_badge_complete">Завершено</string>
     <string name="dashboard_badge_you">Ти!</string>
 
     <string name="sign_up_title">До гри!</string>

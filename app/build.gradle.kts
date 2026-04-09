@@ -18,6 +18,8 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        base.archivesName = "${applicationId}-v${versionName}"
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -38,6 +40,7 @@ android {
         compose = true
         buildConfig = true
     }
+
 }
 
 dependencies {

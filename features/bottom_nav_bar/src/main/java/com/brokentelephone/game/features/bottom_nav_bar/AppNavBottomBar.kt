@@ -119,7 +119,7 @@ fun AppNavBottomBar(
                 modifier = Modifier
                     .coloredShadow(
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.14f),
-                        blurRadius = 16f,
+                        blurRadius = 24f,
                         offsetY = 0.dp,
                         offsetX = 0.dp,
                         shape = RoundedCornerShape(28.dp)
@@ -158,7 +158,7 @@ private fun AppNavBottomBarItem(
 ) {
 
     val color = if (isSelected) {
-        MaterialTheme.colorScheme.primary
+        MaterialTheme.colorScheme.onPrimaryContainer
     } else {
         MaterialTheme.colorScheme.onSurfaceVariant
     }

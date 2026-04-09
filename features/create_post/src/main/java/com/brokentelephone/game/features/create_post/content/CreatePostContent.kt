@@ -2,10 +2,7 @@ package com.brokentelephone.game.features.create_post.content
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -15,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.features.create_post.model.CreatePostState
@@ -54,8 +50,6 @@ fun CreatePostContent(
             },
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         PrePostElement(
             name = state.user?.username.orEmpty(),
             text = state.text,
@@ -67,7 +61,6 @@ fun CreatePostContent(
             textTimeLimit = state.textTimeLimit,
             drawingTimeLimit = state.drawingTimeLimit,
             focusRequester = focusRequester,
-            modifier = Modifier.padding(horizontal = 16.dp),
             onDone = onPostClick
         )
     }
@@ -89,7 +82,7 @@ fun CreatePostContentPreview() {
                     avatarUrl = "",
                     createdAt = 0
                 ),
-                text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed lectus massa, gravida quis efficitur ut, vehicula id nulla. Phasellus placerat odio id tortor efficitur lacinia. Quisque a semper ante. In hac habitasse platea dictumst. Proin ut euismod massa. Sed sodales nibh purus, in consequat quam feugiat vitae. Curabitur scelerisque massa ac consequat luctus. In tincidunt blandit felis. In sed nulla diam. Nullam a auctor felis, ut pretium lacus.",
+//                text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed lectus massa, gravida quis efficitur ut, vehicula id nulla. Phasellus placerat odio id tortor efficitur lacinia. Quisque a semper ante. In hac habitasse platea dictumst. Proin ut euismod massa. Sed sodales nibh purus, in consequat quam feugiat vitae. Curabitur scelerisque massa ac consequat luctus. In tincidunt blandit felis. In sed nulla diam. Nullam a auctor felis, ut pretium lacus.",
             ),
             onTextChanged = {},
             onBadgeClick = {},

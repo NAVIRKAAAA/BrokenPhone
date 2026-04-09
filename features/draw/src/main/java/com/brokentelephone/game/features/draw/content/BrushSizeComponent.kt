@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -17,11 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.features.draw.model.BrushSize
@@ -58,7 +56,11 @@ fun BrushSizeComponentSingle(
     onClick: () -> Unit = {},
 ) {
 
-    val text = brushSize.name.first().uppercase()
+    val iconResId = when(brushSize) {
+        BrushSize.SMALL -> R.drawable.brush_size_s
+        BrushSize.MEDIUM -> R.drawable.brush_size_m
+        BrushSize.LARGE -> R.drawable.brush_size_l
+    }
 
     val containerColor = if (isSelected) {
         MaterialTheme.colorScheme.primary
@@ -85,13 +87,10 @@ fun BrushSizeComponentSingle(
         contentAlignment = Alignment.Center
     ) {
 
-        Text(
-            text = text,
-            fontFamily = FontFamily(Font(R.font.nunito_bold)),
-            fontSize = 14.sp,
-            lineHeight = 24.sp,
-            maxLines = 1,
-            color = contentColor
+        Icon(
+            painter = painterResource(iconResId),
+            contentDescription = null,
+            tint = contentColor
         )
 
     }

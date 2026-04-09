@@ -7,6 +7,9 @@ val dividerDark = Color(0xFF3C383E)
 val badgeCompleteLight = Color(0xFF22C55E)
 val badgeCompleteDark = Color(0xFF4ADE80)
 
+val badgeCompleteContainerLight = Color(0xFFDCFCE7)
+val badgeCompleteContainerDark = Color(0xFF15803D)
+
 val primaryLight = Color(0xFF9B5DE5)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFF2E7FE)
@@ -117,7 +120,7 @@ val surfaceContainerHighestLightHighContrast = Color(0xFFCBC4CC)
 
 val primaryDark = Color(0xFFD8BAFA)
 val onPrimaryDark = Color(0xFF3D245A)
-val primaryContainerDark = Color(0xFF674D8F)
+val primaryContainerDark = Color(0xFF7A5CA8)
 val onPrimaryContainerDark = Color(0xFFEEDBFF)
 val secondaryDark = Color(0xFFFFB1C8)
 val onSecondaryDark = Color(0xFF541D32)

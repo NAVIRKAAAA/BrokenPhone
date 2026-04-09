@@ -4,7 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.badge.BadgeElement
+import com.brokentelephone.game.core.badge.PostChip
 import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
@@ -70,7 +70,7 @@ fun DrawContent(
             content = {
                 if (post != null) {
                     val content = post.content as? PostContent.Text ?: return@ShimmerContent
-                    Column() {
+                    Column {
                         Text(
                             text = content.text,
                             fontFamily = FontFamily(Font(R.font.nunito_regular)),
@@ -92,11 +92,6 @@ fun DrawContent(
                                 .padding(horizontal = 16.dp)
                                 .aspectRatio(1f)
                                 .clip(RoundedCornerShape(14.dp))
-//                                .border(
-//                                    1.dp,
-//                                    MaterialTheme.appColors.divider,
-//                                    RoundedCornerShape(14.dp)
-//                                )
                         ) {
                             DrawingCanvas(
                                 paths = state.paths,
@@ -109,22 +104,25 @@ fun DrawContent(
 
                         Spacer(modifier = Modifier.height(12.dp))
 
-                        Row(
-                            modifier = Modifier.padding(start = 16.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        FlowRow(
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            itemVerticalAlignment = Alignment.CenterVertically
                         ) {
-
-                            BadgeElement(
-                                iconResId = R.drawable.ic_mutations,
+                            PostChip(
                                 text = "${post.generation}/${post.maxGenerations}",
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                iconResId = R.drawable.ic_mutations,
                             )
 
-                            BadgeElement(
-                                iconResId = R.drawable.ic_clock,
+                            PostChip(
                                 text = state.formattedTime,
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                iconResId = R.drawable.ic_clock,
                             )
-
                         }
 
                         Spacer(modifier = Modifier.weight(1f))

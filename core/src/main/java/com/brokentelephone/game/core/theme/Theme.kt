@@ -262,6 +262,7 @@ fun BrokenTelephoneTheme(
     val appColors = if (darkTheme) {
         AppColors(
             badgeComplete = badgeCompleteDark,
+            badgeCompleteContainer = badgeCompleteContainerDark,
             badgeYou = primaryDark,
             divider = dividerDark,
             canvasBg = Color.White
@@ -269,6 +270,7 @@ fun BrokenTelephoneTheme(
     } else {
         AppColors(
             badgeComplete = badgeCompleteLight,
+            badgeCompleteContainer = badgeCompleteContainerLight,
             badgeYou = primaryLight,
             divider = dividerLight,
             canvasBg = surfaceContainerLight.copy(alpha = 0.3f)

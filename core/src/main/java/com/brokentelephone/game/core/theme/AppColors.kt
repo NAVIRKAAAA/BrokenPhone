@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 @Immutable
 data class AppColors(
     val badgeComplete: Color,
+    val badgeCompleteContainer: Color,
     val badgeYou: Color,
     val divider: Color,
     val canvasBg: Color
@@ -17,6 +18,7 @@ data class AppColors(
 val LocalAppColors = staticCompositionLocalOf {
     AppColors(
         badgeComplete = Color.Unspecified,
+        badgeCompleteContainer = Color.Unspecified,
         badgeYou = Color.Unspecified,
         divider = Color.Unspecified,
         canvasBg = Color.Unspecified
