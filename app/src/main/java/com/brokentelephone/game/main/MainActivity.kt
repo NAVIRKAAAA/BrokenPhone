@@ -150,7 +150,7 @@ class MainActivity : AppCompatActivity() {
                                 modifier = Modifier
                                     .align(Alignment.BottomCenter)
                                     .navigationBarsPadding()
-                                    .padding(bottom = 16.dp)
+                                    .padding(bottom = 8.dp)
                                     .fillMaxWidth(0.85f)
                             )
 

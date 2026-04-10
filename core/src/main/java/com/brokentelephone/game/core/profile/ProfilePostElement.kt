@@ -36,6 +36,7 @@ import com.brokentelephone.game.core.badge.PostChip
 import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.post.DrawPostImage
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
+import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.core.utils.coloredShadow
 import com.brokentelephone.game.core.utils.rememberRelativeTime
 import com.brokentelephone.game.domain.model.post.PostContent
@@ -55,7 +56,7 @@ fun ProfilePostElement(
             .fillMaxWidth()
             .coloredShadow(
                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
-                blurRadius = 32f,
+                blurRadius = 16f,
                 offsetY = 0.dp,
                 offsetX = 0.dp,
                 shape = shape,
@@ -124,19 +125,28 @@ fun ProfilePostElement(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             itemVerticalAlignment = Alignment.CenterVertically
         ) {
-            PostChip(
-                text = "${post.generation}/${post.maxGenerations}",
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                iconResId = R.drawable.ic_mutations,
-            )
+            if (post.isCompleted) {
+                PostChip(
+                    text = stringResource(R.string.dashboard_badge_complete),
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    containerColor = MaterialTheme.appColors.badgeCompleteContainer,
+                    iconResId = R.drawable.ic_check,
+                )
+            } else {
+                PostChip(
+                    text = "${post.generation}/${post.maxGenerations}",
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    iconResId = R.drawable.ic_mutations,
+                )
 
-            PostChip(
-                text = stringResource(R.string.badge_seconds, post.nextTimeLimit),
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                iconResId = R.drawable.ic_clock,
-            )
+                PostChip(
+                    text = stringResource(R.string.badge_seconds, post.nextTimeLimit),
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    iconResId = R.drawable.ic_clock,
+                )
+            }
         }
     }
 }

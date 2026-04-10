@@ -130,8 +130,8 @@ fun ChainDetailsContent(
                                     )
                                 } else {
                                     val hiddenContent = when (postUi.content) {
-                                        is PostContent.Text -> PostContent.Drawing()
-                                        is PostContent.Drawing -> PostContent.Text("")
+                                        is PostContent.Text -> PostContent.Text("")
+                                        is PostContent.Drawing -> PostContent.Drawing("")
                                     }
                                     ChainDetailsElementHidden(content = hiddenContent)
                                 }

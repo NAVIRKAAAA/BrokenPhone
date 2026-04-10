@@ -38,6 +38,7 @@ fun PostDetailsElementShimmer(
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
+            .padding(16.dp)
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Box(
@@ -129,7 +130,6 @@ fun PostDetailsElementShimmerTextPreview() {
         Box(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
-                .padding(horizontal = 16.dp)
         ) {
             PostDetailsElementShimmer(content = PostContent.Text(""))
         }
@@ -143,7 +143,6 @@ fun PostDetailsElementShimmerDrawingPreview() {
         Box(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
-                .padding(horizontal = 16.dp)
         ) {
             PostDetailsElementShimmer(content = PostContent.Drawing())
         }

@@ -56,7 +56,7 @@ fun DashboardTopBar(
     var isSortMenuVisible by remember { mutableStateOf(false) }
 
     val blurRadius by animateFloatAsState(
-        targetValue = if (isScrolled) 24f else 0f,
+        targetValue = if (isScrolled) 16f else 0f,
         animationSpec = tween(durationMillis = 150),
         label = "topBarBlur"
     )

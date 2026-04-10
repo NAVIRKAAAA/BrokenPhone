@@ -38,7 +38,7 @@ fun EditProfileTopBar(
     actions: (@Composable () -> Unit)? = null,
 ) {
     val blurRadius by animateFloatAsState(
-        targetValue = if (showShadow) 24f else 0f,
+        targetValue = if (showShadow) 16f else 0f,
         animationSpec = tween(durationMillis = 150),
         label = "topBarBlur"
     )

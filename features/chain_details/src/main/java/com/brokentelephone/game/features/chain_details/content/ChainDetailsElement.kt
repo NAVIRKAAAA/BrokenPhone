@@ -51,7 +51,7 @@ fun ChainDetailsElement(
             .fillMaxWidth()
             .coloredShadow(
                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
-                blurRadius = 32f,
+                blurRadius = 16f,
                 offsetY = 0.dp,
                 offsetX = 0.dp,
                 shape = shape,

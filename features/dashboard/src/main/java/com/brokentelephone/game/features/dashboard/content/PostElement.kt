@@ -48,7 +48,6 @@ import com.brokentelephone.game.domain.model.post.PostStatus
 fun PostElement(
     post: PostUi,
     modifier: Modifier = Modifier,
-    isUsersPost: Boolean = false,
     onMoreClick: () -> Unit = {},
     onUserClick: () -> Unit = {}
 ) {
@@ -60,7 +59,7 @@ fun PostElement(
             .fillMaxWidth()
             .coloredShadow(
                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
-                blurRadius = 32f,
+                blurRadius = 16f,
                 offsetY = 0.dp,
                 offsetX = 0.dp,
                 shape = shape,
@@ -222,7 +221,6 @@ fun PostElementPreview() {
                     status = PostStatus.AVAILABLE,
                     nextTimeLimit = 60,
                 ),
-                isUsersPost = true
             )
         }
     }

@@ -41,26 +41,26 @@ fun CreatePostTopBar(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
-        IconButton(
-            onClick = onCloseClick
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
         ) {
+            IconButton(onClick = onCloseClick) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_close),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground,
+                )
+            }
 
-            Icon(
-                painter = painterResource(R.drawable.ic_close),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onBackground,
+            Text(
+                text = stringResource(R.string.create_post_title),
+                textAlign = TextAlign.Center,
+                fontFamily = FontFamily(Font(R.font.nunito_bold)),
+                fontSize = 18.sp,
+                lineHeight = 24.sp,
+                color = MaterialTheme.colorScheme.primary,
             )
-
         }
-
-        Text(
-            text = stringResource(R.string.create_post_title),
-            textAlign = TextAlign.Center,
-            fontFamily = FontFamily(Font(R.font.nunito_bold)),
-            fontSize = 18.sp,
-            lineHeight = 24.sp,
-            color = MaterialTheme.colorScheme.primary
-        )
 
         TextButton(
             onClick = onPostClick,

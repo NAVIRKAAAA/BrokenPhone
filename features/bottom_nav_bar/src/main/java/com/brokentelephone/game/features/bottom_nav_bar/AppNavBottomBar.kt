@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -122,13 +123,13 @@ fun AppNavBottomBar(
                         blurRadius = 24f,
                         offsetY = 0.dp,
                         offsetX = 0.dp,
-                        shape = RoundedCornerShape(28.dp)
+                        shape = CircleShape
                     )
                     .background(
                         color = MaterialTheme.colorScheme.background,
-                        shape = RoundedCornerShape(28.dp)
+                        shape = CircleShape
                     )
-                    .padding(horizontal = 8.dp, vertical = 6.dp),
+                    .padding(horizontal = 8.dp, vertical = 4.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -248,7 +249,7 @@ fun AppNavBottomBarPreview() {
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .navigationBarsPadding()
-                    .padding(bottom = 16.dp)
+                    .padding(bottom = 8.dp)
                     .fillMaxWidth(0.85f)
             ) {
                 Row(
@@ -258,13 +259,13 @@ fun AppNavBottomBarPreview() {
                             blurRadius = 16f,
                             offsetY = 0.dp,
                             offsetX = 0.dp,
-                            shape = RoundedCornerShape(28.dp)
+                            shape = CircleShape
                         )
                         .background(
                             color = MaterialTheme.colorScheme.surface,
-                            shape = RoundedCornerShape(28.dp)
+                            shape = CircleShape
                         )
-                        .padding(horizontal = 8.dp, vertical = 6.dp),
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {

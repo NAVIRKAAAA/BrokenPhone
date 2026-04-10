@@ -133,7 +133,6 @@ fun DashboardContent(
                             ) {
                                 PostElement(
                                     post = postUi,
-                                    isUsersPost = postUi.authorId == state.user?.id,
                                     onMoreClick = { onMoreClick(postUi.id) },
                                     onUserClick = { onUserClick(postUi.authorId) }
                                 )
