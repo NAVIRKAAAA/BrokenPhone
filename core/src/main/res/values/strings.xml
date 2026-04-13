@@ -281,6 +281,11 @@
     <string name="create_post_chain_settings_text_response">Describe time</string>
     <string name="create_post_chain_settings_drawing_response">Draw time</string>
     <string name="create_post_chain_settings_button_done">Done</string>
+    <string name="create_post_chain_settings_chain_length_subtitle">Select the number of players in the chain</string>
+    <string name="create_post_chain_settings_chain_length_range">%1$d-%2$d players</string>
+    <string name="create_post_chain_settings_chain_length_value">%1$d players</string>
+    <string name="create_post_chain_settings_text_response_subtitle">Select the writing time per turn</string>
+    <string name="create_post_chain_settings_drawing_response_subtitle">Select the drawing time per turn</string>
 
     <!-- Create Post — Start New Chain Dialog -->
     <string name="create_post_start_chain_title">Ready to start?</string>

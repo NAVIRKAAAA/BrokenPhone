@@ -40,6 +40,10 @@ class GameSessionRepositoryImpl(
 
     override val collectionName = "sessions"
 
+    // TODO: Migrate to RTDB
+    // 1. Слухати зміни на sessions/{userId} через addValueEventListener
+    // 2. Мапити snapshot в GameSession через toGameSession() (адаптувати mapper під RTDB DataSnapshot)
+    // 3. Якщо snapshot null або відсутній — закрити flow з SessionNotFoundException
     override fun getSession(sessionId: String): Flow<GameSession> = callbackFlow {
         val listener = collection.document(sessionId)
             .addSnapshotListener { snapshot, error ->
@@ -53,6 +57,12 @@ class GameSessionRepositoryImpl(
         awaitClose { listener.remove() }
     }
 
+    // TODO: Migrate sessions to RTDB (posts залишаються у Firestore)
+    // 1. Перевірити що у юзера немає активної сесії — читати RTDB sessions/{userId}, якщо не null → UserAlreadyInSessionException
+    // 2. Firestore транзакція на posts/{postId} — перевірити status == AVAILABLE і cooldown,
+    //    оновити post: status = IN_PROGRESS, sessionId = newSessionId
+    // 3. Після успішної Firestore транзакції — записати в RTDB:
+    //    sessions/{userId} = { sessionId, postId, lockedAt (server time), timeLimitSeconds, status = ACTIVE }
     override suspend fun joinSession(postId: String, userId: String, timeLimit: Int): GameSession {
         try {
             val postRef = collection.firestore
@@ -118,6 +128,11 @@ class GameSessionRepositoryImpl(
         }
     }
 
+    // TODO: Migrate sessions to RTDB (posts залишаються у Firestore)
+    // 1. Читати RTDB sessions/{userId} — якщо null → SessionNotFoundException,
+    //    перевірити що postId збігається → інакше SessionValidationException
+    // 2. Firestore транзакція на posts/{postId} — оновити: status = AVAILABLE, sessionId = null
+    // 3. RTDB updateChildren: sessions/{userId} = null (видалити сесію)
     override suspend fun cancelSession(sessionId: String, postId: String, userId: String) {
         try {
             val sessionRef = collection.document(sessionId)
@@ -159,6 +174,14 @@ class GameSessionRepositoryImpl(
         }
     }
 
+    // TODO: Migrate sessions to RTDB (posts/chains/contributions залишаються у Firestore)
+    // 1. Читати RTDB sessions/{authorId} — якщо null → SessionNotFoundException,
+    //    перевірити userId == authorId і postId збігається → SessionValidationException,
+    //    перевірити lockedAt + timeLimitSeconds * 1000 > serverNow → SessionExpiredException
+    // 2. Firestore транзакція — без змін: читати пост, створити новий пост,
+    //    оновити post/chain/contributions (ця логіка залишається повністю у Firestore)
+    // 3. Після успішної Firestore транзакції — RTDB updateChildren:
+    //    sessions/{authorId} = null (видалити сесію)
     override suspend fun completeSession(
         sessionId: String,
         postId: String,

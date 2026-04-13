@@ -116,8 +116,13 @@ fun ChainSettingsDialog(
 
             ChainSettingsItem(
                 title = stringResource(R.string.create_post_chain_settings_chain_length),
+                subtitle = stringResource(R.string.create_post_chain_settings_chain_length_subtitle),
                 value = chainLength.toString(),
-                range = "$CHAIN_LENGTH_MIN-$CHAIN_LENGTH_MAX",
+                range = stringResource(
+                    R.string.create_post_chain_settings_chain_length_range,
+                    CHAIN_LENGTH_MIN,
+                    CHAIN_LENGTH_MAX
+                ),
                 onMinusClick = { chainLength -= CHAIN_LENGTH_STEP },
                 onPlusClick = { chainLength += CHAIN_LENGTH_STEP },
                 isMinusEnabled = chainLength > CHAIN_LENGTH_MIN,
@@ -128,8 +133,14 @@ fun ChainSettingsDialog(
 
             ChainSettingsItem(
                 title = stringResource(R.string.create_post_chain_settings_text_response),
+                subtitle = stringResource(R.string.create_post_chain_settings_text_response_subtitle),
                 value = stringResource(R.string.badge_seconds, textTimeLimit),
-                range = "${stringResource(R.string.badge_seconds, TEXT_TIME_MIN)}-${stringResource(R.string.badge_seconds, TEXT_TIME_MAX)}",
+                range = "${
+                    stringResource(
+                        R.string.badge_seconds,
+                        TEXT_TIME_MIN
+                    )
+                }-${stringResource(R.string.badge_seconds, TEXT_TIME_MAX)}",
                 onMinusClick = { textTimeLimit -= TEXT_TIME_STEP },
                 onPlusClick = { textTimeLimit += TEXT_TIME_STEP },
                 isMinusEnabled = textTimeLimit > TEXT_TIME_MIN,
@@ -140,8 +151,14 @@ fun ChainSettingsDialog(
 
             ChainSettingsItem(
                 title = stringResource(R.string.create_post_chain_settings_drawing_response),
+                subtitle = stringResource(R.string.create_post_chain_settings_drawing_response_subtitle),
                 value = stringResource(R.string.badge_seconds, drawingTimeLimit),
-                range = "${stringResource(R.string.badge_seconds, DRAWING_TIME_MIN)}-${stringResource(R.string.badge_seconds, DRAWING_TIME_MAX)}",
+                range = "${
+                    stringResource(
+                        R.string.badge_seconds,
+                        DRAWING_TIME_MIN
+                    )
+                }-${stringResource(R.string.badge_seconds, DRAWING_TIME_MAX)}",
                 onMinusClick = { drawingTimeLimit -= DRAWING_TIME_STEP },
                 onPlusClick = { drawingTimeLimit += DRAWING_TIME_STEP },
                 isMinusEnabled = drawingTimeLimit > DRAWING_TIME_MIN,
@@ -152,7 +169,9 @@ fun ChainSettingsDialog(
 
             Button(
                 onClick = { onConfirm(chainLength, textTimeLimit, drawingTimeLimit) },
-                modifier = Modifier.fillMaxWidth().height(48.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
                 colors = ButtonDefaults.buttonColors(
                     contentColor = MaterialTheme.colorScheme.onPrimary,
                     containerColor = MaterialTheme.colorScheme.primary

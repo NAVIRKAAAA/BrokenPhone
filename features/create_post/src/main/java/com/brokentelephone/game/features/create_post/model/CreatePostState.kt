@@ -9,7 +9,7 @@ data class CreatePostState(
     val maxGenerations: Int = DEFAULT_MAX_GENERATIONS,
     val textTimeLimit: Int = DEFAULT_TEXT_TIME_LIMIT,
     val drawingTimeLimit: Int = DEFAULT_DRAWING_TIME_LIMIT,
-    val showChainSettings: Boolean = false,
+    val activeChainSetting: ChainSetting? = null,
     val showStartNewChain: Boolean = false,
     val showDiscardDialog: Boolean = false,
     val isLoading: Boolean = false,

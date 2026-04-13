@@ -94,14 +94,14 @@ fun StartNewChainDialog(
 
             StartNewChainSettingsItem(
                 text = stringResource(R.string.create_post_start_chain_text_time, textTimeLimit),
-                iconResId = R.drawable.ic_clock,
+                iconResId = R.drawable.ic_edit_v2,
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             StartNewChainSettingsItem(
                 text = stringResource(R.string.create_post_start_chain_draw_time, drawingTimeLimit),
-                iconResId = R.drawable.ic_clock,
+                iconResId = R.drawable.ic_brush_v2,
             )
 
             Spacer(modifier = Modifier.height(12.dp))

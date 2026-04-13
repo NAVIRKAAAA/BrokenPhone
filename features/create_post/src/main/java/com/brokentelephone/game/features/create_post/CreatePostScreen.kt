@@ -5,14 +5,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.dialog.ConfirmDialog
 import com.brokentelephone.game.core.dialog.ErrorDialog
 import com.brokentelephone.game.features.create_post.content.CreatePostContent
-import com.brokentelephone.game.features.create_post.dialog.chain_settings.ChainSettingsDialog
+import com.brokentelephone.game.features.create_post.dialog.chain_settings.StepperDialog
 import com.brokentelephone.game.features.create_post.dialog.start_new_chain.StartNewChainDialog
+import com.brokentelephone.game.features.create_post.model.ChainSetting
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -24,6 +26,7 @@ fun CreatePostScreen(
 ) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     BackHandler {
         viewModel.onBackClick()
@@ -41,7 +44,7 @@ fun CreatePostScreen(
     CreatePostContent(
         state = state,
         onTextChanged = viewModel::onTextChanged,
-        onBadgeClick = viewModel::onShowChainSettings,
+        onChainSettingClick = viewModel::onShowChainSetting,
         onPostClick = viewModel::onShowStartNewChain,
         onBackClick = viewModel::onBackClick,
         modifier = modifier
@@ -77,14 +80,41 @@ fun CreatePostScreen(
         )
     }
 
-    if (state.showChainSettings) {
-        ChainSettingsDialog(
-            initialChainLength = state.maxGenerations,
-            initialTextTimeLimit = state.textTimeLimit,
-            initialDrawingTimeLimit = state.drawingTimeLimit,
-            onDismiss = viewModel::onDismissChainSettings,
-            onConfirm = viewModel::onChainSettingsConfirmed,
+    when (state.activeChainSetting) {
+        ChainSetting.CHAIN_LENGTH -> StepperDialog(
+            title = stringResource(R.string.create_post_chain_settings_chain_length),
+            body = stringResource(R.string.create_post_chain_settings_chain_length_subtitle),
+            initialValue = state.maxGenerations,
+            minValue = 6,
+            maxValue = 20,
+            step = 2,
+            valueFormatter = { stringResource(R.string.create_post_chain_settings_chain_length_value, it) },
+            onDismiss = viewModel::onDismissChainSetting,
+            onConfirm = viewModel::onChainLengthConfirmed,
         )
+        ChainSetting.TEXT_TIME -> StepperDialog(
+            title = stringResource(R.string.create_post_chain_settings_text_response),
+            body = stringResource(R.string.create_post_chain_settings_text_response_subtitle),
+            initialValue = state.textTimeLimit,
+            minValue = 30,
+            maxValue = 120,
+            step = 10,
+            valueFormatter = { stringResource(R.string.badge_seconds, it) },
+            onDismiss = viewModel::onDismissChainSetting,
+            onConfirm = viewModel::onTextTimeLimitConfirmed,
+        )
+        ChainSetting.DRAWING_TIME -> StepperDialog(
+            title = stringResource(R.string.create_post_chain_settings_drawing_response),
+            body = stringResource(R.string.create_post_chain_settings_drawing_response_subtitle),
+            initialValue = state.drawingTimeLimit,
+            minValue = 60,
+            maxValue = 180,
+            step = 10,
+            valueFormatter = { stringResource(R.string.badge_seconds, it) },
+            onDismiss = viewModel::onDismissChainSetting,
+            onConfirm = viewModel::onDrawingTimeLimitConfirmed,
+        )
+        null -> Unit
     }
 
 }

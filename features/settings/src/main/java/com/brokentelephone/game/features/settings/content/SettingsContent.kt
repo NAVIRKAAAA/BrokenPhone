@@ -113,13 +113,13 @@ fun SettingsContent(
                     .padding(horizontal = 16.dp),
             )
 
-            AccountTextInfoItem(
-                name = stringResource(R.string.app_preferences_language),
-                value = stringResource(state.language.displayNameResId),
-                modifier = Modifier
-                    .clickable(onClick = onLanguageClick)
-                    .padding(horizontal = 16.dp),
-            )
+//            AccountTextInfoItem(
+//                name = stringResource(R.string.app_preferences_language),
+//                value = stringResource(state.language.displayNameResId),
+//                modifier = Modifier
+//                    .clickable(onClick = onLanguageClick)
+//                    .padding(horizontal = 16.dp),
+//            )
 
             AccountTextInfoItem(
                 name = stringResource(R.string.app_preferences_theme),

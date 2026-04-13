@@ -40,7 +40,7 @@ import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.avatar.AvatarComponent
 import com.brokentelephone.game.core.badge.PostChip
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.core.utils.rememberRelativeTime
+import com.brokentelephone.game.features.create_post.model.ChainSetting
 import com.brokentelephone.game.features.create_post.model.CreatePostState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,7 +49,7 @@ fun PrePostElement(
     name: String,
     text: String,
     onTextChanged: (String) -> Unit,
-    onBadgeClick: () -> Unit,
+    onChainSettingClick: (ChainSetting) -> Unit,
     onDone: () -> Unit,
     isTextOverLimit: Boolean,
     modifier: Modifier = Modifier,
@@ -59,8 +59,6 @@ fun PrePostElement(
     textTimeLimit: Int = 0,
     drawingTimeLimit: Int = 0,
 ) {
-    val relativeTime = rememberRelativeTime(System.currentTimeMillis())
-
     val focusManager = LocalFocusManager.current
     Column(
         modifier = Modifier
@@ -94,117 +92,114 @@ fun PrePostElement(
                     overflow = TextOverflow.Ellipsis,
                 )
 
-                Text(
-                    text = relativeTime,
-                    fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                    fontSize = 14.sp,
-                    lineHeight = 20.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                )
-            }
-        }
+                Spacer(modifier = Modifier.height(8.dp))
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        CompositionLocalProvider(
-            LocalTextSelectionColors provides TextSelectionColors(
-                handleColor = MaterialTheme.colorScheme.primary,
-                backgroundColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
-            )
-        ) {
-            BasicTextField(
-                value = text,
-                onValueChange = onTextChanged,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .then(focusRequester?.let { Modifier.focusRequester(it) } ?: Modifier),
-                textStyle = TextStyle(
-                    fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                    fontSize = 15.sp,
-                    lineHeight = 22.sp,
-                    color = MaterialTheme.colorScheme.onBackground
-                ),
-                minLines = 2,
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        focusManager.clearFocus()
-                        onDone()
-                    }
-                ),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
-            ) { innerTextField ->
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    if (text.isEmpty()) {
-                        Text(
-                            text = stringResource(R.string.create_post_placeholder),
+                CompositionLocalProvider(
+                    LocalTextSelectionColors provides TextSelectionColors(
+                        handleColor = MaterialTheme.colorScheme.primary,
+                        backgroundColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+                    )
+                ) {
+                    BasicTextField(
+                        value = text,
+                        onValueChange = onTextChanged,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .then(focusRequester?.let { Modifier.focusRequester(it) } ?: Modifier),
+                        textStyle = TextStyle(
                             fontFamily = FontFamily(Font(R.font.nunito_regular)),
                             fontSize = 15.sp,
                             lineHeight = 22.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onBackground
+                        ),
+                        minLines = 3,
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                focusManager.clearFocus()
+                                onDone()
+                            }
+                        ),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                    ) { innerTextField ->
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            if (text.isEmpty()) {
+                                Text(
+                                    text = stringResource(R.string.create_post_placeholder),
+                                    fontFamily = FontFamily(Font(R.font.nunito_regular)),
+                                    fontSize = 15.sp,
+                                    lineHeight = 22.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
+                                )
+                            }
+                            innerTextField()
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                FlowRow(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    itemVerticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    PostChip(
+                        text = stringResource(
+                            R.string.create_post_badge_generations,
+                            maxGenerations
+                        ),
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        iconResId = R.drawable.ic_mutations,
+                        modifier = Modifier,
+                        enabled = true,
+                        onClick = { onChainSettingClick(ChainSetting.CHAIN_LENGTH) }
+                    )
+
+                    PostChip(
+                        text = stringResource(R.string.badge_seconds, textTimeLimit),
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        iconResId = R.drawable.ic_edit_v2,
+                        modifier = Modifier,
+                        enabled = true,
+                        onClick = { onChainSettingClick(ChainSetting.TEXT_TIME) }
+                    )
+
+                    PostChip(
+                        text = stringResource(R.string.badge_seconds, drawingTimeLimit),
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        iconResId = R.drawable.ic_brush_v2,
+                        modifier = Modifier,
+                        enabled = true,
+                        onClick = { onChainSettingClick(ChainSetting.DRAWING_TIME) }
+                    )
+
+
+                    if (text.isNotBlank()) {
+                        val counterContentColor =
+                            if (isTextOverLimit) MaterialTheme.colorScheme.onErrorContainer
+                            else MaterialTheme.colorScheme.onSurfaceVariant
+                        val counterContainerColor =
+                            if (isTextOverLimit) MaterialTheme.colorScheme.errorContainer
+                            else MaterialTheme.colorScheme.surfaceVariant
+
+                        PostChip(
+                            text = stringResource(
+                                R.string.create_post_text_counter,
+                                text.length,
+                                CreatePostState.MAX_TEXT_LENGTH
+                            ),
+                            contentColor = counterContentColor,
+                            containerColor = counterContainerColor,
+                            iconResId = null,
+                            modifier = Modifier,
                         )
                     }
-                    innerTextField()
                 }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        FlowRow(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            itemVerticalAlignment = Alignment.CenterVertically
-        ) {
-
-            PostChip(
-                text = stringResource(
-                    R.string.create_post_badge_generations,
-                    maxGenerations
-                ),
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                iconResId = R.drawable.ic_mutations,
-                modifier = Modifier,
-                enabled = true,
-                onClick = onBadgeClick
-            )
-
-            PostChip(
-                text = stringResource(
-                    R.string.create_post_badge_time_limits,
-                    textTimeLimit,
-                    drawingTimeLimit
-                ),
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                iconResId = R.drawable.ic_clock,
-                modifier = Modifier,
-                enabled = true,
-                onClick = onBadgeClick
-            )
-
-
-            if (text.isNotBlank()) {
-                val counterContentColor =
-                    if (isTextOverLimit) MaterialTheme.colorScheme.onErrorContainer
-                    else MaterialTheme.colorScheme.onPrimaryContainer
-                val counterContainerColor =
-                    if (isTextOverLimit) MaterialTheme.colorScheme.errorContainer
-                    else MaterialTheme.colorScheme.primaryContainer
-
-                PostChip(
-                    text = stringResource(
-                        R.string.create_post_text_counter,
-                        text.length,
-                        CreatePostState.MAX_TEXT_LENGTH
-                    ),
-                    contentColor = counterContentColor,
-                    containerColor = counterContainerColor,
-                    iconResId = null,
-                    modifier = Modifier,
-                )
             }
         }
 
@@ -223,10 +218,11 @@ fun PrePostElementPreview() {
         ) {
             PrePostElement(
                 name = "Alex",
-                text = "Дфдфдф",
-//                text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed lectus massa, gravida quis efficitur ut, vehicula id nulla. Phasellus placerat odio id tortor efficitur lacinia. Quisque a semper ante. In hac habitasse platea dictumst. Proin ut euismod massa. Sed sodales nibh purus, in consequat quam feugiat vitae. Curabitur scelerisque massa ac consequat luctus. In tincidunt blandit felis. In sed nulla diam. Nullam a auctor felis, ut pretium lacus.",
+//                text = "",
+//                text = "Дфдфдф",
+                text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed lectus massa, gravida quis efficitur ut, vehicula id nulla. Phasellus placerat odio id tortor efficitur lacinia. Quisque a semper ante. In hac habitasse platea dictumst. Proin ut euismod massa. Sed sodales nibh purus, in consequat quam feugiat vitae. Curabitur scelerisque massa ac consequat luctus. In tincidunt blandit felis. In sed nulla diam. Nullam a auctor felis, ut pretium lacus.",
                 onTextChanged = {},
-                onBadgeClick = {},
+                onChainSettingClick = {},
                 isTextOverLimit = true,
                 onDone = {},
                 textTimeLimit = 60,

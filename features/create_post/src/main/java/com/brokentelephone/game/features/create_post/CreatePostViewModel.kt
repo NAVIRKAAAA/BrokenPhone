@@ -7,6 +7,7 @@ import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
+import com.brokentelephone.game.features.create_post.model.ChainSetting
 import com.brokentelephone.game.features.create_post.model.CreatePostState
 import com.brokentelephone.game.features.create_post.use_case.CreatePostUseCase
 import kotlinx.coroutines.channels.Channel
@@ -66,12 +67,12 @@ class CreatePostViewModel(
         _state.update { it.copy(text = text) }
     }
 
-    fun onShowChainSettings() {
-        _state.update { it.copy(showChainSettings = true) }
+    fun onShowChainSetting(setting: ChainSetting) {
+        _state.update { it.copy(activeChainSetting = setting) }
     }
 
-    fun onDismissChainSettings() {
-        _state.update { it.copy(showChainSettings = false) }
+    fun onDismissChainSetting() {
+        _state.update { it.copy(activeChainSetting = null) }
     }
 
     fun onShowStartNewChain() {
@@ -83,15 +84,16 @@ class CreatePostViewModel(
         _state.update { it.copy(showStartNewChain = false) }
     }
 
-    fun onChainSettingsConfirmed(maxGenerations: Int, textTimeLimit: Int, drawingTimeLimit: Int) {
-        _state.update {
-            it.copy(
-                maxGenerations = maxGenerations,
-                textTimeLimit = textTimeLimit,
-                drawingTimeLimit = drawingTimeLimit,
-                showChainSettings = false
-            )
-        }
+    fun onChainLengthConfirmed(value: Int) {
+        _state.update { it.copy(maxGenerations = value, activeChainSetting = null) }
+    }
+
+    fun onTextTimeLimitConfirmed(value: Int) {
+        _state.update { it.copy(textTimeLimit = value, activeChainSetting = null) }
+    }
+
+    fun onDrawingTimeLimitConfirmed(value: Int) {
+        _state.update { it.copy(drawingTimeLimit = value, activeChainSetting = null) }
     }
 
     fun onStartChain() {

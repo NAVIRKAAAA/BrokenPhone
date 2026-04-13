@@ -28,6 +28,7 @@ fun ChainSettingsItem(
     title: String,
     value: String,
     range: String,
+    subtitle: String,
     modifier: Modifier = Modifier,
     onMinusClick: () -> Unit = {},
     onPlusClick: () -> Unit = {},
@@ -46,6 +47,17 @@ fun ChainSettingsItem(
             fontSize = 14.sp,
             lineHeight = 20.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+
+        Spacer(modifier = Modifier.height(2.dp))
+
+        Text(
+            text = subtitle,
+            textAlign = TextAlign.Start,
+            fontFamily = FontFamily(Font(R.font.nunito_regular)),
+            fontSize = 12.sp,
+            lineHeight = 16.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -109,6 +121,7 @@ fun ChainSettingsItemPreview() {
         ) {
             ChainSettingsItem(
                 title = "Chain length",
+                subtitle = "Select the number of players in the chain",
                 value = "10",
                 range = "5-20"
             )

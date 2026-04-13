@@ -158,7 +158,7 @@ fun DescribeDrawingContent(
                                         }
                                     ),
                                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
+                                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                                 ) { innerTextField ->
                                     Box(modifier = Modifier.fillMaxWidth()) {
                                         if (state.text.isEmpty()) {
@@ -209,10 +209,10 @@ fun DescribeDrawingContent(
 
                                     val counterContentColor =
                                         if (isTextOverLimit) MaterialTheme.colorScheme.onErrorContainer
-                                        else MaterialTheme.colorScheme.onPrimaryContainer
+                                        else MaterialTheme.colorScheme.onSurfaceVariant
                                     val counterContainerColor =
                                         if (isTextOverLimit) MaterialTheme.colorScheme.errorContainer
-                                        else MaterialTheme.colorScheme.primaryContainer
+                                        else MaterialTheme.colorScheme.surfaceVariant
 
                                     PostChip(
                                         text = "${state.text.length}/${DescribeDrawingState.MAX_TEXT_LENGTH}",

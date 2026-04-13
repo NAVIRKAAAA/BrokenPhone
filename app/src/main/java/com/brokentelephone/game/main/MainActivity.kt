@@ -32,6 +32,7 @@ import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.LocalAppLanguage
 import com.brokentelephone.game.core.utils.isNotificationsGranted
 import com.brokentelephone.game.domain.model.settings.AppTheme
+import com.brokentelephone.game.domain.model.settings.Language
 import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBar
 import com.brokentelephone.game.features.welcome_api.WelcomeRoute
 import com.brokentelephone.game.nav_api.navigateSingle
@@ -114,7 +115,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             CompositionLocalProvider(
-                LocalAppLanguage provides state.language
+                LocalAppLanguage provides Language.ENGLISH
             ) {
                 BrokenTelephoneTheme(darkTheme = isDarkTheme) {
 

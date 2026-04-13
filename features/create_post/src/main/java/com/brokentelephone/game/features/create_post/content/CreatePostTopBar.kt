@@ -1,9 +1,7 @@
 package com.brokentelephone.game.features.create_post.content
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -33,38 +31,37 @@ fun CreatePostTopBar(
     modifier: Modifier = Modifier
 ) {
 
-    Row(
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
+        IconButton(
+            onClick = onCloseClick,
+            modifier = Modifier.align(Alignment.CenterStart),
         ) {
-            IconButton(onClick = onCloseClick) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_close),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground,
-                )
-            }
-
-            Text(
-                text = stringResource(R.string.create_post_title),
-                textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(R.font.nunito_bold)),
-                fontSize = 18.sp,
-                lineHeight = 24.sp,
-                color = MaterialTheme.colorScheme.primary,
+            Icon(
+                painter = painterResource(R.drawable.ic_close),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground,
             )
         }
+
+        Text(
+            text = stringResource(R.string.create_post_title),
+            textAlign = TextAlign.Center,
+            fontFamily = FontFamily(Font(R.font.nunito_bold)),
+            fontSize = 18.sp,
+            lineHeight = 24.sp,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.align(Alignment.Center),
+        )
 
         TextButton(
             onClick = onPostClick,
             enabled = isPostButtonEnabled,
+            modifier = Modifier.align(Alignment.CenterEnd),
         ) {
             Text(
                 text = stringResource(R.string.common_post),
