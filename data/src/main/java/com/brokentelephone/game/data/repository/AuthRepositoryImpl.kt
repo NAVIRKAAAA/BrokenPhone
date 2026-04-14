@@ -1,7 +1,5 @@
 package com.brokentelephone.game.data.repository
 
-import android.content.Context
-import android.util.Log
 import com.brokentelephone.game.domain.model.auth.GoogleAuthResult
 import com.brokentelephone.game.domain.repository.AuthRepository
 import com.brokentelephone.game.essentials.exceptions.auth.EmailAlreadyInUseException
@@ -9,63 +7,63 @@ import com.brokentelephone.game.essentials.exceptions.auth.InvalidActionCodeExce
 import com.brokentelephone.game.essentials.exceptions.auth.InvalidCredentialsException
 import com.brokentelephone.game.essentials.exceptions.auth.InvalidEmailException
 import com.brokentelephone.game.essentials.exceptions.auth.NetworkException
-import com.brokentelephone.game.essentials.exceptions.auth.RecentLoginRequiredException
 import com.brokentelephone.game.essentials.exceptions.auth.TooManyRequestsException
-import com.brokentelephone.game.essentials.exceptions.auth.UnauthorizedException
 import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
 import com.brokentelephone.game.essentials.exceptions.auth.WeakPasswordException
-import com.google.firebase.FirebaseNetworkException
-import com.google.firebase.FirebaseTooManyRequestsException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthInvalidUserException
-import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.actionCodeSettings
-import kotlinx.coroutines.tasks.await
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.auth.OtpType
+import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.auth.providers.Google
+import io.github.jan.supabase.auth.providers.builtin.Email
+import io.github.jan.supabase.auth.providers.builtin.IDToken
+import io.github.jan.supabase.exceptions.RestException
 
 class AuthRepositoryImpl(
-    private val firebaseAuth: FirebaseAuth,
-    private val context: Context,
+    private val supabase: SupabaseClient,
 ) : AuthRepository {
 
     override suspend fun signUpWithEmailPassword(email: String, password: String): String {
         return try {
-            val authResult = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
-            val uid = authResult.user?.uid ?: throw UnknownAuthException()
-
-            uid
-        } catch (_: FirebaseAuthUserCollisionException) {
-            throw EmailAlreadyInUseException()
-        } catch (_: FirebaseAuthInvalidCredentialsException) {
-            throw InvalidEmailException()
-        } catch (_: FirebaseAuthWeakPasswordException) {
-            throw WeakPasswordException()
-        } catch (_: FirebaseNetworkException) {
+            supabase.auth.signUpWith(Email) {
+                this.email = email
+                this.password = password
+            }
+            supabase.auth.currentUserOrNull()?.id ?: throw UnknownAuthException()
+        } catch (e: RestException) {
+            val msg = e.message.orEmpty()
+            when {
+                msg.contains("already registered", ignoreCase = true) ||
+                msg.contains("user_already_exists", ignoreCase = true) -> throw EmailAlreadyInUseException()
+                msg.contains("weak_password", ignoreCase = true) ||
+                msg.contains("at least", ignoreCase = true) -> throw WeakPasswordException()
+                msg.contains("valid email", ignoreCase = true) ||
+                msg.contains("invalid_email", ignoreCase = true) -> throw InvalidEmailException()
+                msg.contains("rate_limit", ignoreCase = true) -> throw TooManyRequestsException()
+                else -> throw UnknownAuthException()
+            }
+        } catch (_: java.io.IOException) {
             throw NetworkException()
-        } catch (_: FirebaseTooManyRequestsException) {
-            throw TooManyRequestsException()
-        } catch (_: Exception) {
+        } catch (e: UnknownAuthException) {
+            throw UnknownAuthException()
+        } catch (e: Exception) {
             throw UnknownAuthException()
         }
     }
 
-    override suspend fun signInWithGoogle(idToken: String): GoogleAuthResult {
-        return try {
-            val credential = GoogleAuthProvider.getCredential(idToken, null)
-            val authResult = firebaseAuth.signInWithCredential(credential).await()
-            val uid = authResult.user?.uid ?: throw UnknownAuthException()
-            val email = authResult.user?.email.orEmpty()
-            val isNewUser = authResult.additionalUserInfo?.isNewUser ?: false
-            GoogleAuthResult(uid = uid, email = email, isNewUser = isNewUser)
-        } catch (_: FirebaseAuthUserCollisionException) {
-            throw EmailAlreadyInUseException()
-        } catch (_: FirebaseNetworkException) {
+    override suspend fun signInWithEmailPassword(email: String, password: String) {
+        try {
+            supabase.auth.signInWith(Email) {
+                this.email = email
+                this.password = password
+            }
+        } catch (error: RestException) {
+            when {
+                error.message.orEmpty().contains("Invalid login credentials", ignoreCase = true) -> throw InvalidCredentialsException()
+                error.message.orEmpty().contains("rate_limit", ignoreCase = true) -> throw TooManyRequestsException()
+                else -> throw UnknownAuthException()
+            }
+        } catch (_: java.io.IOException) {
             throw NetworkException()
-        } catch (_: FirebaseTooManyRequestsException) {
-            throw TooManyRequestsException()
         } catch (_: Exception) {
             throw UnknownAuthException()
         }
@@ -73,40 +71,59 @@ class AuthRepositoryImpl(
 
     override suspend fun signInAnonymously(): String {
         try {
-            val authResult = firebaseAuth.signInAnonymously().await()
-            return authResult.user?.uid ?: throw UnknownAuthException()
-        } catch (_: FirebaseNetworkException) {
+            supabase.auth.signInAnonymously()
+            return supabase.auth.currentUserOrNull()?.id ?: throw UnknownAuthException()
+        } catch (_: UnknownAuthException) {
+            throw UnknownAuthException()
+        } catch (_: java.io.IOException) {
             throw NetworkException()
-        } catch (_: FirebaseTooManyRequestsException) {
-            throw TooManyRequestsException()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
+
+    override suspend fun signInWithGoogle(idToken: String): GoogleAuthResult {
+        return try {
+            supabase.auth.signInWith(IDToken) {
+                provider = Google
+                this.idToken = idToken
+            }
+            val user = supabase.auth.currentUserOrNull() ?: throw UnknownAuthException()
+            val createdAt = user.createdAt?.epochSeconds
+            val lastSignInAt = user.lastSignInAt?.epochSeconds
+            val isNewUser = createdAt == lastSignInAt
+
+            GoogleAuthResult(uid = user.id, email = user.email.orEmpty(), isNewUser = isNewUser)
+        } catch (_: UnknownAuthException) {
+            throw UnknownAuthException()
+        } catch (error: RestException) {
+            when {
+                error.message.orEmpty().contains("already registered", ignoreCase = true) -> throw EmailAlreadyInUseException()
+                error.message.orEmpty().contains("rate_limit", ignoreCase = true) -> throw TooManyRequestsException()
+                else -> throw UnknownAuthException()
+            }
+        } catch (_: java.io.IOException) {
+            throw NetworkException()
+        } catch (_: Exception) {
             throw UnknownAuthException()
         }
     }
 
     override suspend fun sendPasswordResetEmail(email: String) {
         try {
-            firebaseAuth.sendPasswordResetEmail(email).await()
-        } catch (_: FirebaseAuthInvalidCredentialsException) {
-            throw InvalidEmailException()
-        } catch (_: FirebaseNetworkException) {
+            supabase.auth.resetPasswordForEmail(
+                email = email,
+                redirectUrl = "com.brokentelephone.game://reset-password"
+            )
+        } catch (error: RestException) {
+            when {
+                error.message.orEmpty().contains("valid email", ignoreCase = true) ||
+                error.message.orEmpty().contains("invalid_email", ignoreCase = true) -> throw InvalidEmailException()
+                error.message.orEmpty().contains("rate_limit", ignoreCase = true) -> throw TooManyRequestsException()
+                else -> throw UnknownAuthException()
+            }
+        } catch (_: java.io.IOException) {
             throw NetworkException()
-        } catch (_: FirebaseTooManyRequestsException) {
-            throw TooManyRequestsException()
-        } catch (_: Exception) {
-            throw UnknownAuthException()
-        }
-    }
-
-    override suspend fun signInWithEmailPassword(email: String, password: String) {
-        try {
-            firebaseAuth.signInWithEmailAndPassword(email, password).await()
-        } catch (_: FirebaseAuthInvalidCredentialsException) {
-            throw InvalidCredentialsException()
-        } catch (_: FirebaseNetworkException) {
-            throw NetworkException()
-        } catch (_: FirebaseTooManyRequestsException) {
-            throw TooManyRequestsException()
         } catch (_: Exception) {
             throw UnknownAuthException()
         }
@@ -114,56 +131,35 @@ class AuthRepositoryImpl(
 
     override suspend fun sendEmailChangeVerification(newEmail: String) {
         try {
-            val user = firebaseAuth.currentUser ?: throw UnauthorizedException()
-            val actionCodeSettings = actionCodeSettings {
-                url = "https://brokentelephone.firebaseapp.com"
-                handleCodeInApp = true
-                setAndroidPackageName(
-                    context.packageName,
-                    true, // installIfNotAvailable
-                    null
-                )
+            supabase.auth.updateUser(redirectUrl = "com.brokentelephone.game://change-email") {
+                email = newEmail
             }
-
-            user.verifyBeforeUpdateEmail(newEmail, actionCodeSettings).await()
-        } catch (_: FirebaseAuthInvalidUserException) {
-            throw RecentLoginRequiredException()
-        } catch (_: FirebaseAuthRecentLoginRequiredException) {
-            throw RecentLoginRequiredException()
-        } catch (_: FirebaseAuthUserCollisionException) {
-            throw EmailAlreadyInUseException()
-        } catch (_: FirebaseAuthInvalidCredentialsException) {
-            throw InvalidEmailException()
-        } catch (_: FirebaseNetworkException) {
+        } catch (error: RestException) {
+            when {
+                error.message.orEmpty().contains("already registered", ignoreCase = true) ||
+                error.message.orEmpty().contains("already been registered", ignoreCase = true) -> throw EmailAlreadyInUseException()
+                error.message.orEmpty().contains("valid email", ignoreCase = true) ||
+                error.message.orEmpty().contains("invalid_email", ignoreCase = true) -> throw InvalidEmailException()
+                error.message.orEmpty().contains("rate_limit", ignoreCase = true) -> throw TooManyRequestsException()
+                else -> throw UnknownAuthException()
+            }
+        } catch (_: java.io.IOException) {
             throw NetworkException()
-        } catch (_: FirebaseTooManyRequestsException) {
-            throw TooManyRequestsException()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Log.d("LOG_TAG", "e: $e")
+        } catch (_: Exception) {
             throw UnknownAuthException()
         }
     }
 
     override suspend fun sendEmailVerification(email: String) {
         try {
-            val user = firebaseAuth.currentUser ?: throw UnauthorizedException()
-            val actionCodeSettings = actionCodeSettings {
-                url = "https://brokentelephone.firebaseapp.com"
-                handleCodeInApp = true
-                setAndroidPackageName(
-                    context.packageName,
-                    true,
-                    null
-                )
+            supabase.auth.resendEmail(OtpType.Email.SIGNUP, email)
+        } catch (error: RestException) {
+            when {
+                error.message.orEmpty().contains("rate_limit", ignoreCase = true) -> throw TooManyRequestsException()
+                else -> throw UnknownAuthException()
             }
-            user.sendEmailVerification(actionCodeSettings).await()
-        } catch (_: UnauthorizedException) {
-            throw UnauthorizedException()
-        } catch (_: FirebaseNetworkException) {
+        } catch (_: java.io.IOException) {
             throw NetworkException()
-        } catch (_: FirebaseTooManyRequestsException) {
-            throw TooManyRequestsException()
         } catch (_: Exception) {
             throw UnknownAuthException()
         }
@@ -171,12 +167,9 @@ class AuthRepositoryImpl(
 
     override suspend fun applyEmailVerification(oobCode: String) {
         try {
-            firebaseAuth.applyActionCode(oobCode).await()
-            firebaseAuth.currentUser?.reload()?.await()
-        } catch (_: FirebaseNetworkException) {
+            supabase.auth.exchangeCodeForSession(oobCode)
+        } catch (_: java.io.IOException) {
             throw NetworkException()
-        } catch (_: FirebaseTooManyRequestsException) {
-            throw TooManyRequestsException()
         } catch (_: Exception) {
             throw InvalidActionCodeException()
         }
@@ -184,11 +177,9 @@ class AuthRepositoryImpl(
 
     override suspend fun applyEmailChange(oobCode: String) {
         try {
-            firebaseAuth.applyActionCode(oobCode).await()
-        } catch (_: FirebaseNetworkException) {
+            supabase.auth.exchangeCodeForSession(oobCode)
+        } catch (_: java.io.IOException) {
             throw NetworkException()
-        } catch (_: FirebaseTooManyRequestsException) {
-            throw TooManyRequestsException()
         } catch (_: Exception) {
             throw InvalidActionCodeException()
         }

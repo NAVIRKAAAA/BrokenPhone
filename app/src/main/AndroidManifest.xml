@@ -55,6 +55,36 @@
                     android:host="brokentelephone.firebaseapp.com"
                     android:pathPrefix="/__/auth/links" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:scheme="com.brokentelephone.game"
+                    android:host="reset-password" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:scheme="com.brokentelephone.game"
+                    android:host="verify-email" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:scheme="com.brokentelephone.game"
+                    android:host="change-email" />
+            </intent-filter>
         </activity>
     </application>
 

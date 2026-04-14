@@ -14,6 +14,7 @@ import com.brokentelephone.game.data.repository.UserSettingsRepositoryImpl
 import com.brokentelephone.game.data.repository.UsersRepositoryImpl
 import com.brokentelephone.game.data.session.UserSessionImpl
 import com.brokentelephone.game.data.storage.FirebaseImageStorage
+import com.brokentelephone.game.data.supabase.provideSupabaseClient
 import com.brokentelephone.game.domain.api_handler.ApiHandler
 import com.brokentelephone.game.domain.google.GoogleSignInManager
 import com.brokentelephone.game.domain.link.LinkProvider
@@ -40,6 +41,7 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 val dataModule = module {
+    single { provideSupabaseClient() }
     single { FirebaseAuth.getInstance() }
     single {
         FirebaseFirestore.getInstance().apply {
@@ -58,7 +60,7 @@ val dataModule = module {
     single<ImageStorage> { FirebaseImageStorage(get()) }
     single<PostRepository> { PostsRepositoryImpl(get()) }
     single<GameSessionRepository> { GameSessionRepositoryImpl(get()) }
-    single<AuthRepository> { AuthRepositoryImpl(get(), androidContext()) }
+    single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<GoogleSignInManager> { GoogleSignInManagerImpl(androidContext()) }
     single<ReportsRepository> { ReportsRepositoryImpl(get()) }
     single<UserSettingsRepository> { UserSettingsRepositoryImpl(androidContext()) }

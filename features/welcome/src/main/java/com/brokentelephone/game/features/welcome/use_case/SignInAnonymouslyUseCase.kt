@@ -19,7 +19,7 @@ class SignInAnonymouslyUseCase(
             val username = SuggestedUsernames.random()
             val avatarUrl = Avatars.all.random().url
 
-            usersRepository.createUser(userId, username, avatarUrl)
+//            usersRepository.createUser(userId, username, avatarUrl)
         }
     }
 }
