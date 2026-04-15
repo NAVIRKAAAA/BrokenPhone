@@ -10,7 +10,6 @@ data class UserDto(
     @SerialName("email") val email: String = "",
     @SerialName("avatar_url") val avatarUrl: String? = null,
     @SerialName("bio") val bio: String = "",
-    @SerialName("auth_provider") val authProvider: String,
     @SerialName("notifications") val notifications: List<String> = emptyList(),
     @SerialName("onboarding_step") val onboardingStep: String,
     @SerialName("created_at") val createdAt: Long,
@@ -18,11 +17,9 @@ data class UserDto(
     @SerialName("friend_ids") val friendIds: List<String> = emptyList(),
     @SerialName("blocked_user_ids") val blockedUserIds: List<String> = emptyList(),
     @SerialName("blocked_by") val blockedBy: List<String> = emptyList(),
-    @SerialName("not_interested_post_ids") val notInterestedPostIds: List<String> = emptyList(),
     @SerialName("read_notification_ids") val readNotificationIds: List<String> = emptyList(),
     @SerialName("fcm_token") val fcmToken: String? = null,
     @SerialName("session_id") val sessionId: String? = null,
-    @SerialName("is_email_verified") val isEmailVerified: Boolean = false,
     @SerialName("permissions") val permissions: UserPermissionsDto = UserPermissionsDto(),
 )
 

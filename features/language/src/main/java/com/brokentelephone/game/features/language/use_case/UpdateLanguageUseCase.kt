@@ -18,7 +18,7 @@ class UpdateLanguageUseCase(
         handler.handle(Dispatchers.IO) {
             userSession.authState.firstOrNull()?.getUserOrNull() ?: return@handle
 
-            userSession.updateLanguage(language)
+//            userSession.updateLanguage(language)
         }
     }
 }

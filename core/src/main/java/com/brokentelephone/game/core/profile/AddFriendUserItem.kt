@@ -25,7 +25,6 @@ import com.brokentelephone.game.core.model.user.AddFriendUserUi
 import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.domain.model.friend.FriendshipActionState
-import com.brokentelephone.game.domain.user.AuthProvider
 
 @Composable
 fun AddFriendUserItem(
@@ -93,7 +92,6 @@ private fun AddFriendUserItemPreview() {
                         email = "",
                         avatarUrl = null,
                         createdAt = 1740000000000L,
-                        authProvider = AuthProvider.EMAIL,
                     ),
                     friendshipState = FriendshipActionState.INVITE_SENT,
                 ),

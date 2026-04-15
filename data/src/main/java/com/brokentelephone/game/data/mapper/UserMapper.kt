@@ -4,7 +4,6 @@ import com.brokentelephone.game.data.dto.UserDto
 import com.brokentelephone.game.data.dto.UserPermissionsDto
 import com.brokentelephone.game.domain.model.permissions.UserPermissions
 import com.brokentelephone.game.domain.model.settings.NotificationType
-import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.domain.user.User
 
@@ -14,7 +13,6 @@ fun UserDto.toUser(): User = User(
     email = email,
     avatarUrl = avatarUrl,
     bio = bio,
-    authProvider = AuthProvider.getByName(authProvider),
     notifications = notifications.mapNotNull { NotificationType.getByName(it) }.ifEmpty { NotificationType.entries },
     onboardingStep = OnboardingStep.getByName(onboardingStep),
     createdAt = createdAt,
@@ -22,11 +20,9 @@ fun UserDto.toUser(): User = User(
     friendIds = friendIds,
     blockedUserIds = blockedUserIds,
     blockedBy = blockedBy,
-    notInterestedPostIds = notInterestedPostIds,
     readNotificationIds = readNotificationIds,
     fcmToken = fcmToken,
     sessionId = sessionId,
-    isEmailVerified = isEmailVerified,
     permissions = UserPermissions(isNotificationsGranted = permissions.isNotificationsGranted),
 )
 
@@ -36,7 +32,6 @@ fun User.toUserDto(): UserDto = UserDto(
     email = email,
     avatarUrl = avatarUrl,
     bio = bio,
-    authProvider = authProvider.name,
     notifications = notifications.map { it.name },
     onboardingStep = onboardingStep.name,
     createdAt = createdAt,
@@ -44,10 +39,8 @@ fun User.toUserDto(): UserDto = UserDto(
     friendIds = friendIds,
     blockedUserIds = blockedUserIds,
     blockedBy = blockedBy,
-    notInterestedPostIds = notInterestedPostIds,
     readNotificationIds = readNotificationIds,
     fcmToken = fcmToken,
     sessionId = sessionId,
-    isEmailVerified = isEmailVerified,
     permissions = UserPermissionsDto(isNotificationsGranted = permissions.isNotificationsGranted),
 )

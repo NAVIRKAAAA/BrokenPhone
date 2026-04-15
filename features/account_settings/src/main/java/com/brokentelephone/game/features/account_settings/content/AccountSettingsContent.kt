@@ -1,7 +1,6 @@
 package com.brokentelephone.game.features.account_settings.content
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,7 +22,6 @@ import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.core.top_bar.EditProfileTopBar
 import com.brokentelephone.game.core.utils.rememberMemberSince
-import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.features.account_settings.model.AccountSettingsState
 
 @Composable
@@ -48,21 +46,21 @@ fun AccountSettingsContent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        val isEmailVerified = state.user?.isEmailVerified ?: false
+//        val isEmailVerified = state.user?.isEmailVerified ?: false
 
-        AccountEmailInfoItem(
-            email = state.user?.email ?: "",
-            isVerified = isEmailVerified,
-            modifier = Modifier
-                .clickable(onClick = onVerifyEmailClick, enabled = !isEmailVerified && !state.isVerifyEmailLoading)
-                .padding(horizontal = 16.dp),
-        )
+//        AccountEmailInfoItem(
+//            email = state.user?.email ?: "",
+//            isVerified = isEmailVerified,
+//            modifier = Modifier
+//                .clickable(onClick = onVerifyEmailClick, enabled = !isEmailVerified && !state.isVerifyEmailLoading)
+//                .padding(horizontal = 16.dp),
+//        )
 
-        AccountStaticInfoItem(
-            name = stringResource(R.string.account_settings_provider),
-            value = state.user?.authProvider?.let { stringResource(it.labelResId) },
-            modifier = Modifier.padding(horizontal = 16.dp),
-        )
+//        AccountStaticInfoItem(
+//            name = stringResource(R.string.account_settings_provider),
+//            value = state.user?.authProvider?.let { stringResource(it.labelResId) },
+//            modifier = Modifier.padding(horizontal = 16.dp),
+//        )
 
         AccountStaticInfoItem(
             name = stringResource(R.string.account_settings_member_since),
@@ -92,7 +90,7 @@ fun AccountSettingsContentPreview() {
                     username = "Alex",
                     email = "alex@example.com",
                     avatarUrl = null,
-                    authProvider = AuthProvider.EMAIL,
+//                    authProvider = AuthProvider.EMAIL,
                     createdAt = 1_700_000_000_000L,
                 ),
             )

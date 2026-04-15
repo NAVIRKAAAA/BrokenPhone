@@ -13,7 +13,7 @@ class UpdateUserPermissionsUseCase(
 ) {
     suspend fun execute(permissions: UserPermissions): AppResult<Unit> {
         return handler.handle(Dispatchers.IO) {
-            val current = userSession.authState.first().getUserOrNull()?.permissions
+            val current = userSession.authState.first { it.getUserOrNull() != null }.getUserOrNull()?.permissions
             if (current == permissions) return@handle
             userSession.updatePermissions(permissions)
         }

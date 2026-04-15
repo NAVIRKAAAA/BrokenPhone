@@ -45,7 +45,6 @@ import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.core.top_bar.EditProfileTopBar
 import com.brokentelephone.game.domain.model.friend.FriendshipActionState
-import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.features.add_friend.model.AddFriendState
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -256,7 +255,7 @@ private val previewPendingInvites = listOf(
             email = "",
             avatarUrl = null,
             createdAt = 1740300000000L,
-            authProvider = AuthProvider.EMAIL
+//            authProvider = AuthProvider.EMAIL
         ),
         friendshipState = FriendshipActionState.INVITE_SENT,
     ),
@@ -267,7 +266,7 @@ private val previewPendingInvites = listOf(
             email = "",
             avatarUrl = null,
             createdAt = 1740400000000L,
-            authProvider = AuthProvider.EMAIL
+//            authProvider = AuthProvider.EMAIL
         ),
         friendshipState = FriendshipActionState.INVITE_SENT,
     ),
@@ -281,7 +280,7 @@ private val previewUsers = listOf(
             email = "",
             avatarUrl = null,
             createdAt = 1740000000000L,
-            authProvider = AuthProvider.EMAIL
+//            authProvider = AuthProvider.EMAIL
         ),
         friendshipState = FriendshipActionState.NOT_FRIENDS,
     ),
@@ -292,7 +291,7 @@ private val previewUsers = listOf(
             email = "",
             avatarUrl = null,
             createdAt = 1740100000000L,
-            authProvider = AuthProvider.EMAIL
+//            authProvider = AuthProvider.EMAIL
         ),
         friendshipState = FriendshipActionState.INVITE_SENT,
     ),
@@ -303,7 +302,7 @@ private val previewUsers = listOf(
             email = "",
             avatarUrl = null,
             createdAt = 1740200000000L,
-            authProvider = AuthProvider.EMAIL
+//            authProvider = AuthProvider.EMAIL
         ),
         friendshipState = FriendshipActionState.FRIENDS,
     ),

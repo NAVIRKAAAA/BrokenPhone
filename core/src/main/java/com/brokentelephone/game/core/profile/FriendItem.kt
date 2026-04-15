@@ -26,7 +26,6 @@ import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.avatar.AvatarComponent
 import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.domain.user.AuthProvider
 
 @Composable
 fun FriendItem(
@@ -86,7 +85,7 @@ private fun FriendItemDarkPreview() {
                     email = "",
                     avatarUrl = null,
                     createdAt = 1740000000000L,
-                    authProvider = AuthProvider.EMAIL,
+//                    authProvider = AuthProvider.EMAIL,
                     bio = "I love drawing, creative games, and exploring new ideas. Always up for a challenge and meeting new people through fun activities!",
                 ),
                 onRemoveClick = {},
@@ -107,7 +106,7 @@ private fun FriendItemLightPreview() {
                     email = "",
                     avatarUrl = null,
                     createdAt = 1740000000000L,
-                    authProvider = AuthProvider.EMAIL,
+//                    authProvider = AuthProvider.EMAIL,
                 ),
                 onRemoveClick = {},
             )

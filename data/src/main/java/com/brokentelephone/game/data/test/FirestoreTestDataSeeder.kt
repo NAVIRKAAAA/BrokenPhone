@@ -7,7 +7,6 @@ import com.brokentelephone.game.domain.model.post.Post
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
 import com.brokentelephone.game.domain.model.settings.NotificationType
-import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.domain.user.User
 import com.google.firebase.firestore.FieldValue
@@ -29,7 +28,7 @@ class FirestoreTestDataSeeder(
                 username = username,
                 email = "$username@test.com".lowercase(),
                 avatarUrl = "",
-                authProvider = AuthProvider.EMAIL,
+//                authProvider = AuthProvider.EMAIL,
                 createdAt = now,
                 updatedAt = now,
                 notifications = NotificationType.entries,
@@ -106,7 +105,7 @@ class FirestoreTestDataSeeder(
                 username = username,
                 email = "${username.replace(" ", "").lowercase()}_${it}@test.com",
                 avatarUrl = "",
-                authProvider = AuthProvider.EMAIL,
+//                authProvider = AuthProvider.EMAIL,
                 createdAt = now,
                 updatedAt = now,
                 notifications = NotificationType.entries,

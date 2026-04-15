@@ -1,7 +1,6 @@
 package com.brokentelephone.game.domain.user
 
 import com.brokentelephone.game.domain.model.permissions.UserPermissions
-import com.brokentelephone.game.domain.model.settings.Language
 import com.brokentelephone.game.domain.model.settings.NotificationType
 
 data class User(
@@ -13,7 +12,6 @@ data class User(
     val createdAt: Long,
     val updatedAt: Long,
     val notifications: List<NotificationType>,
-    val authProvider: AuthProvider,
     val onboardingStep: OnboardingStep,
     val friendIds: List<String> = emptyList(),
     val blockedUserIds: List<String> = emptyList(),
@@ -22,8 +20,6 @@ data class User(
     val readNotificationIds: List<String> = emptyList(),
     val fcmToken: String? = null,
     val sessionId: String? = null,
-    val isEmailVerified: Boolean = false,
-    val language: Language = Language.ENGLISH,
     val permissions: UserPermissions = UserPermissions(),
 ) {
 
@@ -33,7 +29,6 @@ data class User(
         FIELD_EMAIL to email,
         FIELD_AVATAR_URL to avatarUrl,
         FIELD_BIO to bio,
-        FIELD_AUTH_PROVIDER to authProvider.name,
         FIELD_NOTIFICATIONS to notifications.map { it.name },
         FIELD_ONBOARDING_STEP to onboardingStep.name,
         FIELD_CREATED_AT to createdAt,
@@ -45,8 +40,6 @@ data class User(
         FIELD_READ_NOTIFICATION_IDS to readNotificationIds,
         FIELD_FCM_TOKEN to fcmToken,
         FIELD_SESSION_ID to sessionId,
-        FIELD_IS_EMAIL_VERIFIED to isEmailVerified,
-        FIELD_LANGUAGE to language.name,
         FIELD_PERMISSIONS to permissions.toMap(),
     )
 
@@ -81,7 +74,6 @@ data class User(
                     email = map[FIELD_EMAIL] as? String ?: "",
                     avatarUrl = map[FIELD_AVATAR_URL] as? String,
                     bio = map[FIELD_BIO] as? String ?: "",
-                    authProvider = AuthProvider.valueOf(map[FIELD_AUTH_PROVIDER] as? String ?: return null),
                     notifications = (map[FIELD_NOTIFICATIONS] as? List<String>)
                         ?.mapNotNull { runCatching { NotificationType.valueOf(it) }.getOrNull() }
                         ?: NotificationType.entries,
@@ -97,10 +89,6 @@ data class User(
                     readNotificationIds = (map[FIELD_READ_NOTIFICATION_IDS] as? List<String>) ?: emptyList(),
                     fcmToken = map[FIELD_FCM_TOKEN] as? String,
                     sessionId = map[FIELD_SESSION_ID] as? String,
-                    isEmailVerified = map[FIELD_IS_EMAIL_VERIFIED] as? Boolean ?: false,
-                    language = runCatching {
-                        Language.valueOf(map[FIELD_LANGUAGE] as? String ?: "")
-                    }.getOrDefault(Language.ENGLISH),
                     permissions = (map[FIELD_PERMISSIONS] as? Map<String, Any?>)
                         ?.let { UserPermissions.fromMap(it) }
                         ?: UserPermissions(),

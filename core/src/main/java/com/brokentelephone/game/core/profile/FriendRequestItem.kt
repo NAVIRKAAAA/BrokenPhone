@@ -26,7 +26,6 @@ import com.brokentelephone.game.core.avatar.AvatarComponent
 import com.brokentelephone.game.core.button.BTButton
 import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.domain.user.AuthProvider
 
 @Composable
 fun FriendRequestItem(
@@ -117,7 +116,7 @@ private fun FriendRequestItemDarkPreview() {
                     email = "",
                     avatarUrl = null,
                     createdAt = 1740000000000L,
-                    authProvider = AuthProvider.EMAIL,
+//                    authProvider = AuthProvider.EMAIL,
                 ),
                 onAcceptClick = {},
                 onDeclineClick = {},
@@ -138,7 +137,7 @@ private fun FriendRequestItemLightPreview() {
                     email = "",
                     avatarUrl = null,
                     createdAt = 1740000000000L,
-                    authProvider = AuthProvider.EMAIL,
+//                    authProvider = AuthProvider.EMAIL,
                 ),
                 onAcceptClick = {},
                 onDeclineClick = {},

@@ -54,7 +54,7 @@ val dataModule = module {
     single { FirebaseMessaging.getInstance() }
 
     single<ApiHandler> { ApiHandlerImpl() }
-    single<UserSession> { UserSessionImpl(get(), get(), get()) }
+    single<UserSession> { UserSessionImpl(get()) }
     single<LinkProvider> { LinkProviderImpl() }
     single<AppInfoRepository> { MockAppInfoRepositoryImpl() }
     single<ImageStorage> { FirebaseImageStorage(get()) }
