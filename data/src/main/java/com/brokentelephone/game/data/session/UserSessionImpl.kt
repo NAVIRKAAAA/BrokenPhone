@@ -49,10 +49,12 @@ class UserSessionImpl(
     override val authState: Flow<AuthState> = _authState.asStateFlow()
 
     private var realtimeChannel: RealtimeChannel? = null
+    private var realtimeCollectJob: kotlinx.coroutines.Job? = null
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override suspend fun initialize() {
         Log.d("LOG_TAG", "initialize()")
+
         val status = supabase.auth.sessionStatus
             .first { it is SessionStatus.Authenticated || it is SessionStatus.NotAuthenticated }
 
@@ -69,9 +71,7 @@ class UserSessionImpl(
                     ?.toUser()
                     ?: throw SessionDataException()
 
-                _authState.value =AuthState.Auth(user)
-
-                observeSupabaseUser(userId)
+                _authState.value = AuthState.Auth(user)
             } catch (e: SessionDataException) {
                 throw e
             } catch (_: Exception) {
@@ -80,9 +80,20 @@ class UserSessionImpl(
         } else {
             _authState.value = AuthState.NotAuth
         }
+
+        scope.launch {
+            supabase.auth.sessionStatus.collect { newSessionStatus ->
+                Log.d("LOG_TAG", "newSessionStatus: $newSessionStatus")
+                val currentUserId =
+                    supabase.auth.currentUserOrNull()?.id ?: return@collect
+
+                observeSupabaseUser(currentUserId)
+            }
+        }
     }
 
     private fun observeSupabaseUser(userId: String) {
+        realtimeCollectJob?.cancel()
         realtimeChannel?.let { channel ->
             scope.launch { supabase.realtime.removeChannel(channel) }
         }
@@ -101,12 +112,18 @@ class UserSessionImpl(
             )
         }
 
-        scope.launch {
+        realtimeCollectJob = scope.launch {
+            try {
+                val user = supabase.from(COLLECTION_USERS)
+                    .select { filter { eq("id", userId) } }
+                    .decodeSingleOrNull<UserDto>()
+                    ?.toUser()
+                if (user != null) _authState.value = AuthState.Auth(user)
+            } catch (_: Exception) { }
+
             updateFlow.collect { change ->
-                Log.d("LOG_TAG", "New user change")
                 try {
                     val updatedUser = change.decodeRecord<UserDto>().toUser()
-                    Log.d("LOG_TAG", "New user: $updatedUser")
                     _authState.value = AuthState.Auth(updatedUser)
                 } catch (_: Exception) { }
             }
@@ -266,7 +283,9 @@ class UserSessionImpl(
         try {
             supabase.from(COLLECTION_USERS).update(
                 buildJsonObject {
-                    put("notifications", buildJsonArray { notifications.forEach { add(JsonPrimitive(it.name)) } })
+                    put(
+                        "notifications",
+                        buildJsonArray { notifications.forEach { add(JsonPrimitive(it.name)) } })
                     put("updated_at", System.currentTimeMillis())
                 }
             ) {
