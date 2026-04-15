@@ -41,7 +41,7 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 val dataModule = module {
-    single { provideSupabaseClient() }
+    single { provideSupabaseClient(androidContext()) }
     single { FirebaseAuth.getInstance() }
     single {
         FirebaseFirestore.getInstance().apply {
@@ -54,7 +54,7 @@ val dataModule = module {
     single { FirebaseMessaging.getInstance() }
 
     single<ApiHandler> { ApiHandlerImpl() }
-    single<UserSession> { UserSessionImpl(get(), get()) }
+    single<UserSession> { UserSessionImpl(get(), get(), get()) }
     single<LinkProvider> { LinkProviderImpl() }
     single<AppInfoRepository> { MockAppInfoRepositoryImpl() }
     single<ImageStorage> { FirebaseImageStorage(get()) }
@@ -64,7 +64,7 @@ val dataModule = module {
     single<GoogleSignInManager> { GoogleSignInManagerImpl(androidContext()) }
     single<ReportsRepository> { ReportsRepositoryImpl(get()) }
     single<UserSettingsRepository> { UserSettingsRepositoryImpl(androidContext()) }
-    single<UsersRepository> { UsersRepositoryImpl(get()) }
+    single<UsersRepository> { UsersRepositoryImpl(get(), get()) }
     single<FriendsRepository> { FriendsRepositoryImpl(get()) }
     single<NotificationsRepository> { NotificationsRepositoryImpl(get()) }
 

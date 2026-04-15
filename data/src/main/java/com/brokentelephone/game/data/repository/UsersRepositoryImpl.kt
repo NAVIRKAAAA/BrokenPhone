@@ -2,22 +2,26 @@ package com.brokentelephone.game.data.repository
 
 import android.util.Log
 import com.brokentelephone.game.data.mapper.toAppException
+import com.brokentelephone.game.data.mapper.toUserDto
 import com.brokentelephone.game.domain.model.settings.NotificationType
 import com.brokentelephone.game.domain.repository.UsersRepository
 import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.domain.user.User
+import com.brokentelephone.game.essentials.exceptions.auth.EmailAlreadyInUseException
 import com.brokentelephone.game.essentials.exceptions.auth.NetworkException
 import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
-
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
-import kotlinx.coroutines.tasks.await
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.exceptions.RestException
+import io.github.jan.supabase.postgrest.from
 
 class UsersRepositoryImpl(
     firestore: FirebaseFirestore,
+    private val supabase: SupabaseClient,
 ) : FirestoreRepository(firestore), UsersRepository {
 
     override val collectionName = "users"
@@ -121,17 +125,20 @@ class UsersRepositoryImpl(
         )
 
         try {
-            collection
-                .document(id)
-                .set(user.toMap())
-                .await()
-        } catch (_: FirebaseNetworkException) {
+            supabase.from("users").insert(user.toUserDto())
+        } catch (e: RestException) {
+            Log.d("LOG_TAG", "createUser(): $e")
+            val msg = e.message.orEmpty()
+            when {
+                msg.contains("duplicate key", ignoreCase = true) ||
+                msg.contains("already exists", ignoreCase = true) -> throw EmailAlreadyInUseException()
+                else -> throw UnknownAuthException()
+            }
+        } catch (e: java.io.IOException) {
+            Log.d("LOG_TAG", "createUser(): $e")
             throw NetworkException()
-        } catch (e: FirebaseFirestoreException) {
-            Log.d("LOG_TAG", "Error: $e")
-            throw e.toAppException()
         } catch (e: Exception) {
-            Log.d("LOG_TAG", "Error: $e")
+            Log.d("LOG_TAG", "createUser(): $e")
             throw UnknownAuthException()
         }
     }
@@ -174,17 +181,20 @@ class UsersRepositoryImpl(
         )
 
         try {
-            collection
-                .document(id)
-                .set(user.toMap())
-                .await()
-        } catch (_: FirebaseNetworkException) {
+            supabase.from("users").insert(user.toUserDto())
+        } catch (e: RestException) {
+            Log.d("LOG_TAG", "createUser(): $e")
+            val msg = e.message.orEmpty()
+            when {
+                msg.contains("duplicate key", ignoreCase = true) ||
+                msg.contains("already exists", ignoreCase = true) -> throw EmailAlreadyInUseException()
+                else -> throw UnknownAuthException()
+            }
+        } catch (e: java.io.IOException) {
+            Log.d("LOG_TAG", "createUser(): $e")
             throw NetworkException()
-        } catch (e: FirebaseFirestoreException) {
-            Log.d("LOG_TAG", "Error: $e")
-            throw e.toAppException()
         } catch (e: Exception) {
-            Log.d("LOG_TAG", "Error: $e")
+            Log.d("LOG_TAG", "createUser(): $e")
             throw UnknownAuthException()
         }
     }

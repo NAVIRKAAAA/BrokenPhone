@@ -2,7 +2,7 @@ package com.brokentelephone.game.domain.api_handler
 
 import kotlinx.coroutines.CoroutineDispatcher
 
-private const val DEFAULT_MAX_RETRIES = 1
+private const val DEFAULT_MAX_RETRIES = 0
 
 interface ApiHandler {
     suspend fun <T> handle(

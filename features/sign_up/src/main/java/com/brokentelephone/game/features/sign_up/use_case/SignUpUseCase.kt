@@ -5,6 +5,7 @@ import com.brokentelephone.game.domain.api_handler.ApiHandler
 import com.brokentelephone.game.domain.api_handler.AppResult
 import com.brokentelephone.game.domain.repository.AuthRepository
 import com.brokentelephone.game.domain.repository.UsersRepository
+import com.brokentelephone.game.domain.user.AuthProvider
 import kotlinx.coroutines.Dispatchers
 
 class SignUpUseCase(
@@ -19,7 +20,7 @@ class SignUpUseCase(
         return handler.handle(Dispatchers.IO, maxRetries = 0) {
             val userId = authRepository.signUpWithEmailPassword(email, password)
             Log.d("LOG_TAG", "SignUpUseCase: $userId")
-//            usersRepository.createUser(id = userId, email = email, authProvider = AuthProvider.EMAIL)
+            usersRepository.createUser(id = userId, email = email, authProvider = AuthProvider.EMAIL)
         }
     }
 }

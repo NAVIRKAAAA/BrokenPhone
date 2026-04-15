@@ -8,5 +8,12 @@ enum class AuthProvider(
 ) {
     EMAIL(R.string.account_settings_provider_email),
     GOOGLE(R.string.account_settings_provider_google),
-    GUEST(R.string.account_settings_provider_guest),
+    GUEST(R.string.account_settings_provider_guest);
+
+    companion object {
+        fun getByName(value: String): AuthProvider {
+            return AuthProvider.entries.firstOrNull { it.name.equals(value, ignoreCase = true) }
+                ?: EMAIL
+        }
+    }
 }

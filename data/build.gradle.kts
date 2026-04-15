@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.androidx.startup)
     implementation(libs.supabase.auth)
     implementation(libs.supabase.postgrest)
+    implementation(libs.supabase.realtime)
     implementation(libs.supabase.storage)
     implementation(libs.ktor.client.okhttp)
 }

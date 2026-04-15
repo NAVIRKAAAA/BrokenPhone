@@ -1,7 +1,9 @@
 package com.brokentelephone.game.data.session
 
 import android.util.Log
+import com.brokentelephone.game.data.dto.UserDto
 import com.brokentelephone.game.data.ext.toAuthProvider
+import com.brokentelephone.game.data.mapper.toUser
 import com.brokentelephone.game.domain.model.permissions.UserPermissions
 import com.brokentelephone.game.domain.model.settings.Language
 import com.brokentelephone.game.domain.model.settings.NotificationType
@@ -21,39 +23,68 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.messaging.FirebaseMessaging
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.auth.status.SessionStatus
+import io.github.jan.supabase.exceptions.RestException
+import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.filter.FilterOperation
+import io.github.jan.supabase.postgrest.query.filter.FilterOperator
+import io.github.jan.supabase.realtime.PostgresAction
+import io.github.jan.supabase.realtime.RealtimeChannel
+import io.github.jan.supabase.realtime.channel
+import io.github.jan.supabase.realtime.decodeRecord
+import io.github.jan.supabase.realtime.postgresChangeFlow
+import io.github.jan.supabase.realtime.realtime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import java.util.Locale
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 
 class UserSessionImpl(
     private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
+    private val supabase: SupabaseClient,
 ) : UserSession {
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.NotAuth)
     override val authState: Flow<AuthState> = _authState.asStateFlow()
 
     private var firestoreListener: ListenerRegistration? = null
+    private var realtimeChannel: RealtimeChannel? = null
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override suspend fun initialize() {
-        val currentUser = firebaseAuth.currentUser
+        Log.d("LOG_TAG", "initialize()")
+        val status = supabase.auth.sessionStatus
+            .first { it is SessionStatus.Authenticated || it is SessionStatus.NotAuthenticated }
 
-        Log.d("LOG_TAG", "initialize: $currentUser")
+        Log.d("LOG_TAG", "sessionStatus: $status")
 
-        if (currentUser != null) {
+        if (status is SessionStatus.Authenticated) {
+            val userId = supabase.auth.currentUserOrNull()?.id ?: throw SessionDataException()
+
             try {
-                val snapshot =
-                    firestore.collection(COLLECTION_USERS).document(currentUser.uid).get().await()
-                val user = snapshot.data?.let { User.fromMap(it) } ?: throw SessionDataException()
+                val rawResult = supabase.from("users")
+                    .select { filter { eq("id", userId) } }
+                val user = rawResult
+                    .decodeSingleOrNull<UserDto>()
+                    ?.toUser()
+                    ?: throw SessionDataException()
+
+                val isGuest = user.authProvider == AuthProvider.GUEST
+
                 _authState.value =
-                    if (currentUser.isAnonymous) AuthState.Guest(user) else AuthState.Auth(user)
+                    if (isGuest) AuthState.Guest(user) else AuthState.Auth(user)
+
+                observeSupabaseUser(userId)
             } catch (e: SessionDataException) {
                 throw e
             } catch (_: Exception) {
@@ -62,62 +93,54 @@ class UserSessionImpl(
         } else {
             _authState.value = AuthState.NotAuth
         }
+    }
 
-        firebaseAuth.addAuthStateListener { auth ->
-            val user = auth.currentUser
+    private fun observeSupabaseUser(userId: String) {
+        realtimeChannel?.let { channel ->
+            scope.launch { supabase.realtime.removeChannel(channel) }
+        }
 
-            Log.d("LOG_TAG", "isEmailVerified(): ${user?.isEmailVerified}")
+        val channel = supabase.realtime.channel("user-$userId")
+        realtimeChannel = channel
 
-            firestoreListener?.remove()
-            firestoreListener = null
+        val updateFlow = channel.postgresChangeFlow<PostgresAction.Update>(schema = "public") {
+            table = "users"
+            filter(
+                FilterOperation(
+                    column = "id",
+                    operator = FilterOperator.EQ,
+                    value = userId
+                )
+            )
+        }
 
-            if (user != null) {
-                observeFirestoreUser(uid = user.uid, isAnonymous = user.isAnonymous)
-                scope.launch { refreshFcmToken() }
-            } else {
-                _authState.value = AuthState.NotAuth
+        scope.launch {
+            updateFlow.collect { change ->
+                Log.d("LOG_TAG", "New user change")
+                try {
+                    val updatedUser = change.decodeRecord<UserDto>().toUser()
+                    Log.d("LOG_TAG", "New user: $updatedUser")
+                    _authState.value = when (updatedUser.authProvider) {
+                        AuthProvider.GUEST -> AuthState.Guest(updatedUser)
+                        else -> AuthState.Auth(updatedUser)
+                    }
+                } catch (_: Exception) { }
             }
         }
+
+        scope.launch { channel.subscribe() }
     }
 
-    private fun observeFirestoreUser(uid: String, isAnonymous: Boolean) {
-        firestoreListener = firestore
-            .collection(COLLECTION_USERS)
-            .document(uid)
-            .addSnapshotListener { snapshot, error ->
-                if (error != null || snapshot == null) return@addSnapshotListener
-                val user = snapshot.data?.let { User.fromMap(it) } ?: return@addSnapshotListener
-                _authState.value = if (isAnonymous) AuthState.Guest(user) else AuthState.Auth(user)
-                if (!isAnonymous) {
-                    scope.launch { syncEmailIfNeeded(uid, user.email) }
-                    scope.launch { syncAuthProviderIfNeeded(uid, user.authProvider) }
-                    scope.launch { syncIsEmailVerifiedIfNeeded(uid, user.isEmailVerified) }
-                    scope.launch { syncAppLanguageIfNeeded(uid, user.language) }
-                }
-            }
-    }
-
-    private suspend fun syncIsEmailVerifiedIfNeeded(uid: String, firestoreIsEmailVerified: Boolean) {
+    private suspend fun syncIsEmailVerifiedIfNeeded(
+        uid: String,
+        firestoreIsEmailVerified: Boolean
+    ) {
         val authIsEmailVerified = firebaseAuth.currentUser?.isEmailVerified ?: return
         if (authIsEmailVerified == firestoreIsEmailVerified) return
         try {
             firestore.collection(COLLECTION_USERS)
                 .document(uid)
                 .update(User.FIELD_IS_EMAIL_VERIFIED, authIsEmailVerified)
-                .await()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            // best-effort sync, ignore failures
-        }
-    }
-
-    private suspend fun syncAppLanguageIfNeeded(uid: String, firestoreLanguage: Language) {
-        val deviceLanguage = if (Locale.getDefault().language.startsWith("uk")) Language.UKRAINIAN else Language.ENGLISH
-        if (deviceLanguage == firestoreLanguage) return
-        try {
-            firestore.collection(COLLECTION_USERS)
-                .document(uid)
-                .update(User.FIELD_LANGUAGE, deviceLanguage.name)
                 .await()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -158,18 +181,19 @@ class UserSessionImpl(
     }
 
     override suspend fun updateUsername(username: String) {
-        val uid = firebaseAuth.currentUser?.uid ?: throw UnauthorizedException()
+        val userId = supabase.auth.currentUserOrNull()?.id ?: throw UnauthorizedException()
         try {
-            firestore.collection(COLLECTION_USERS)
-                .document(uid)
-                .update(
-                    User.FIELD_USERNAME,
-                    username,
-                    User.FIELD_UPDATED_AT,
-                    System.currentTimeMillis()
-                )
-                .await()
-        } catch (_: FirebaseNetworkException) {
+            supabase.from("users").update(
+                buildJsonObject {
+                    put("username", username)
+                    put("updated_at", System.currentTimeMillis())
+                }
+            ) {
+                filter { eq("id", userId) }
+            }
+        } catch (_: RestException) {
+            throw UnknownAuthException()
+        } catch (_: java.io.IOException) {
             throw NetworkException()
         } catch (_: Exception) {
             throw UnknownAuthException()
@@ -215,17 +239,20 @@ class UserSessionImpl(
     }
 
     override suspend fun completeAvatarStep(avatarUrl: String) {
-        val uid = firebaseAuth.currentUser?.uid ?: throw UnauthorizedException()
+        val userId = supabase.auth.currentUserOrNull()?.id ?: throw UnauthorizedException()
         try {
-            firestore.collection(COLLECTION_USERS)
-                .document(uid)
-                .update(
-                    User.FIELD_AVATAR_URL, avatarUrl,
-                    User.FIELD_ONBOARDING_STEP, OnboardingStep.CHOOSE_USERNAME.name,
-                    User.FIELD_UPDATED_AT, System.currentTimeMillis(),
-                )
-                .await()
-        } catch (_: FirebaseNetworkException) {
+            supabase.from("users").update(
+                buildJsonObject {
+                    put("avatar_url", avatarUrl)
+                    put("onboarding_step", OnboardingStep.CHOOSE_USERNAME.name)
+                    put("updated_at", System.currentTimeMillis())
+                }
+            ) {
+                filter { eq("id", userId) }
+            }
+        } catch (_: RestException) {
+            throw UnknownAuthException()
+        } catch (_: java.io.IOException) {
             throw NetworkException()
         } catch (_: Exception) {
             throw UnknownAuthException()
@@ -233,17 +260,20 @@ class UserSessionImpl(
     }
 
     override suspend fun completeUsernameStep(username: String) {
-        val uid = firebaseAuth.currentUser?.uid ?: throw UnauthorizedException()
+        val userId = supabase.auth.currentUserOrNull()?.id ?: throw UnauthorizedException()
         try {
-            firestore.collection(COLLECTION_USERS)
-                .document(uid)
-                .update(
-                    User.FIELD_USERNAME, username,
-                    User.FIELD_ONBOARDING_STEP, OnboardingStep.COMPLETED.name,
-                    User.FIELD_UPDATED_AT, System.currentTimeMillis(),
-                )
-                .await()
-        } catch (_: FirebaseNetworkException) {
+            supabase.from("users").update(
+                buildJsonObject {
+                    put("username", username)
+                    put("onboarding_step", OnboardingStep.COMPLETED.name)
+                    put("updated_at", System.currentTimeMillis())
+                }
+            ) {
+                filter { eq("id", userId) }
+            }
+        } catch (_: RestException) {
+            throw UnknownAuthException()
+        } catch (_: java.io.IOException) {
             throw NetworkException()
         } catch (_: Exception) {
             throw UnknownAuthException()
@@ -304,6 +334,7 @@ class UserSessionImpl(
             throw UnknownAuthException()
         }
     }
+
     override suspend fun updateNotifications(notifications: List<NotificationType>) {
         val uid = firebaseAuth.currentUser?.uid ?: throw UnauthorizedException()
         try {
@@ -361,6 +392,7 @@ class UserSessionImpl(
             throw UnknownAuthException()
         }
     }
+
     override suspend fun deleteFcmToken() {
         val uid = firebaseAuth.currentUser?.uid ?: return
         try {
@@ -397,7 +429,13 @@ class UserSessionImpl(
         }
     }
 
-    override suspend fun signOut() = firebaseAuth.signOut()
+    override suspend fun signOut() {
+        realtimeChannel?.let { supabase.realtime.removeChannel(it) }
+        realtimeChannel = null
+        supabase.auth.signOut()
+        _authState.value = AuthState.NotAuth
+    }
+
     override suspend fun deleteAccount() = Unit
 
     override suspend fun getBlockedUsers(): List<BlockedUser> {
