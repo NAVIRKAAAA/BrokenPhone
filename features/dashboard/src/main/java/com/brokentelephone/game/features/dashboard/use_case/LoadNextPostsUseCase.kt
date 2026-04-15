@@ -30,9 +30,11 @@ class LoadNextPostsUseCase(
                 pageSize,
                 sort,
                 user.id,
-                user.blockedUserIds,
-                user.blockedBy,
-                user.notInterestedPostIds
+//                user.blockedUserIds,
+//                user.blockedBy,
+                blockedBy = listOf(),
+                blockedUsersIds = listOf(),
+                notInterestedPostIds = user.notInterestedPostIds
             )
         }
     }

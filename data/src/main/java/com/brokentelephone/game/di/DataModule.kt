@@ -64,7 +64,7 @@ val dataModule = module {
     single<GoogleSignInManager> { GoogleSignInManagerImpl(androidContext()) }
     single<ReportsRepository> { ReportsRepositoryImpl(get()) }
     single<UserSettingsRepository> { UserSettingsRepositoryImpl(androidContext()) }
-    single<UsersRepository> { UsersRepositoryImpl(get(), get()) }
+    single<UsersRepository> { UsersRepositoryImpl(get()) }
     single<FriendsRepository> { FriendsRepositoryImpl(get()) }
     single<NotificationsRepository> { NotificationsRepositoryImpl(get()) }
 

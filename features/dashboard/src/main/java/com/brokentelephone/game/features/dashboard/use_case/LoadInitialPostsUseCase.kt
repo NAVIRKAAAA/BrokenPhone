@@ -25,9 +25,11 @@ class LoadInitialPostsUseCase(
                 pageSize,
                 sort,
                 user.id,
-                user.blockedUserIds,
-                user.blockedBy,
-                user.notInterestedPostIds
+//                user.blockedUserIds,
+//                user.blockedBy,
+                blockedUsersIds = listOf(),
+                blockedBy = listOf(),
+                notInterestedPostIds = user.notInterestedPostIds
             )
         }
     }

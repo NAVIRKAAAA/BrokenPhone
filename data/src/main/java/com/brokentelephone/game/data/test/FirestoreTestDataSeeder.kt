@@ -1,7 +1,6 @@
 package com.brokentelephone.game.data.test
 
 import com.brokentelephone.game.data.mapper.toMap
-import com.brokentelephone.game.domain.model.notification.Notification
 import com.brokentelephone.game.domain.model.notification.NotificationData
 import com.brokentelephone.game.domain.model.post.Post
 import com.brokentelephone.game.domain.model.post.PostContent
@@ -34,7 +33,7 @@ class FirestoreTestDataSeeder(
                 notifications = NotificationType.entries,
                 onboardingStep = OnboardingStep.COMPLETED,
             )
-            usersCollection.document(id).set(user.toMap()).await()
+//            usersCollection.document(id).set(user.toMap()).await()
         }
     }
 
@@ -46,48 +45,48 @@ class FirestoreTestDataSeeder(
             .get()
             .await()
             .documents
-            .mapNotNull { it.data?.let { map -> User.fromMap(map) } }
+//            .mapNotNull { it.data?.let { map -> User.fromMap(map) } }
             .filter { it.id != targetUserId }
 
-        val friendsNotifications = realUsers.take(5).mapIndexed { idx, user ->
-            NotificationData.Friends(
-                requestId = "req_${user.id}",
-                userId = user.id,
-                username = user.username,
-                userAvatarUrl = user.avatarUrl,
-                type = if (idx % 2 == 0) NotificationData.FriendsType.INVITE_RECEIVED
-                else NotificationData.FriendsType.INVITE_ACCEPTED,
-            )
-        }
+//        val friendsNotifications = realUsers.take(5).mapIndexed { idx, user ->
+//            NotificationData.Friends(
+//                requestId = "req_${user.id}",
+//                userId = user.id,
+//                username = user.username,
+//                userAvatarUrl = user.avatarUrl,
+//                type = if (idx % 2 == 0) NotificationData.FriendsType.INVITE_RECEIVED
+//                else NotificationData.FriendsType.INVITE_ACCEPTED,
+//            )
+//        }
 
-        val allData: List<NotificationData> =
-            friendsNotifications + FAKE_CHAIN_NOTIFICATIONS + FAKE_NEWS_NOTIFICATIONS
-
-        val h = 60 * 60 * 1000L
-        val d = 24 * h
-        val offsets: List<Long> = listOf(
-            // Today
-            1 * h, 5 * h,
-            // Yesterday
-            25 * h, 30 * h,
-            // Last 7 days
-            3 * d, 5 * d, 6 * d,
-            // Last 30 days
-            10 * d, 18 * d, 27 * d,
-            // Earlier
-            40 * d, 65 * d, 90 * d,
-        )
-
-        allData.zip(offsets).forEach { (data, offset) ->
-            val docRef = notificationsCollection.document()
-            val notification = Notification(
-                id = docRef.id,
-                receiversIds = listOf(targetUserId),
-                data = data,
-                createdAt = now - offset,
-            )
-            docRef.set(notification.toMap()).await()
-        }
+//        val allData: List<NotificationData> =
+//            friendsNotifications + FAKE_CHAIN_NOTIFICATIONS + FAKE_NEWS_NOTIFICATIONS
+//
+//        val h = 60 * 60 * 1000L
+//        val d = 24 * h
+//        val offsets: List<Long> = listOf(
+//            // Today
+//            1 * h, 5 * h,
+//            // Yesterday
+//            25 * h, 30 * h,
+//            // Last 7 days
+//            3 * d, 5 * d, 6 * d,
+//            // Last 30 days
+//            10 * d, 18 * d, 27 * d,
+//            // Earlier
+//            40 * d, 65 * d, 90 * d,
+//        )
+//
+//        allData.zip(offsets).forEach { (data, offset) ->
+//            val docRef = notificationsCollection.document()
+//            val notification = Notification(
+//                id = docRef.id,
+//                receiversIds = listOf(targetUserId),
+//                data = data,
+//                createdAt = now - offset,
+//            )
+//            docRef.set(notification.toMap()).await()
+//        }
     }
 
     suspend fun seedFriends(
@@ -112,7 +111,7 @@ class FirestoreTestDataSeeder(
                 onboardingStep = OnboardingStep.COMPLETED,
                 friendIds = listOf(targetUserId),
             )
-            docRef.set(user.toMap()).await()
+//            docRef.set(user.toMap()).await()
             friendIds.add(docRef.id)
         }
 

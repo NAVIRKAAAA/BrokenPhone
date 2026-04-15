@@ -15,8 +15,6 @@ data class UserDto(
     @SerialName("created_at") val createdAt: Long,
     @SerialName("updated_at") val updatedAt: Long,
     @SerialName("friend_ids") val friendIds: List<String> = emptyList(),
-    @SerialName("blocked_user_ids") val blockedUserIds: List<String> = emptyList(),
-    @SerialName("blocked_by") val blockedBy: List<String> = emptyList(),
     @SerialName("read_notification_ids") val readNotificationIds: List<String> = emptyList(),
     @SerialName("fcm_token") val fcmToken: String? = null,
     @SerialName("session_id") val sessionId: String? = null,

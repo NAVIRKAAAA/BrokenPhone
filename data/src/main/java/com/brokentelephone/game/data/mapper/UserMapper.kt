@@ -6,6 +6,7 @@ import com.brokentelephone.game.domain.model.permissions.UserPermissions
 import com.brokentelephone.game.domain.model.settings.NotificationType
 import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.domain.user.User
+import io.github.jan.supabase.auth.user.UserInfo
 
 fun UserDto.toUser(): User = User(
     id = id,
@@ -18,13 +19,26 @@ fun UserDto.toUser(): User = User(
     createdAt = createdAt,
     updatedAt = updatedAt,
     friendIds = friendIds,
-    blockedUserIds = blockedUserIds,
-    blockedBy = blockedBy,
     readNotificationIds = readNotificationIds,
     fcmToken = fcmToken,
     sessionId = sessionId,
     permissions = UserPermissions(isNotificationsGranted = permissions.isNotificationsGranted),
 )
+
+fun UserInfo.toUser(): User {
+    val now = System.currentTimeMillis()
+    return User(
+        id = id,
+        username = "",
+        email = email ?: "",
+        avatarUrl = null,
+        bio = "",
+        notifications = NotificationType.entries,
+        onboardingStep = OnboardingStep.CHOOSE_USERNAME,
+        createdAt = createdAt?.toEpochMilliseconds() ?: now,
+        updatedAt = updatedAt?.toEpochMilliseconds() ?: now,
+    )
+}
 
 fun User.toUserDto(): UserDto = UserDto(
     id = id,
@@ -37,8 +51,6 @@ fun User.toUserDto(): UserDto = UserDto(
     createdAt = createdAt,
     updatedAt = updatedAt,
     friendIds = friendIds,
-    blockedUserIds = blockedUserIds,
-    blockedBy = blockedBy,
     readNotificationIds = readNotificationIds,
     fcmToken = fcmToken,
     sessionId = sessionId,

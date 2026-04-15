@@ -11,7 +11,6 @@ data class UserUi(
     val createdAt: Long,
     val sessionId: String? = null,
     val friendIds: List<String> = listOf(),
-    val blockedUsersIds: List<String> = listOf(),
     val readNotificationIds: List<String> = listOf(),
 )
 
@@ -24,6 +23,5 @@ fun User.toUi() = UserUi(
     createdAt = createdAt,
     sessionId = sessionId,
     friendIds = friendIds,
-    blockedUsersIds = blockedUserIds,
     readNotificationIds = readNotificationIds,
 )

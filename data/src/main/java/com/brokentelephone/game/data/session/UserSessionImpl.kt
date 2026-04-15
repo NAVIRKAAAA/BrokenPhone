@@ -18,6 +18,7 @@ import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.status.SessionStatus
+import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.exceptions.RestException
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.filter.FilterOperation
@@ -85,20 +86,21 @@ class UserSessionImpl(
             supabase.auth.sessionStatus.collect { newSessionStatus ->
                 Log.d("LOG_TAG", "newSessionStatus: $newSessionStatus")
                 val currentUserId =
-                    supabase.auth.currentUserOrNull()?.id ?: return@collect
+                    supabase.auth.currentUserOrNull() ?: return@collect
 
                 observeSupabaseUser(currentUserId)
             }
         }
     }
 
-    private fun observeSupabaseUser(userId: String) {
+    private suspend fun observeSupabaseUser(userInfo: UserInfo) {
+        Log.d("LOG_TAG", "observeSupabaseUser(): $userInfo")
         realtimeCollectJob?.cancel()
         realtimeChannel?.let { channel ->
-            scope.launch { supabase.realtime.removeChannel(channel) }
+            supabase.realtime.removeChannel(channel)
         }
 
-        val channel = supabase.realtime.channel("user-$userId")
+        val channel = supabase.realtime.channel("user-${userInfo.id}")
         realtimeChannel = channel
 
         val updateFlow = channel.postgresChangeFlow<PostgresAction.Update>(schema = "public") {
@@ -107,29 +109,38 @@ class UserSessionImpl(
                 FilterOperation(
                     column = "id",
                     operator = FilterOperator.EQ,
-                    value = userId
+                    value = userInfo.id
                 )
             )
         }
 
         realtimeCollectJob = scope.launch {
+
+            val user = userInfo.toUser()
+
+            _authState.value = AuthState.Auth(user)
+
             try {
                 val user = supabase.from(COLLECTION_USERS)
-                    .select { filter { eq("id", userId) } }
+                    .select { filter { eq("id", userInfo.id) } }
                     .decodeSingleOrNull<UserDto>()
                     ?.toUser()
                 if (user != null) _authState.value = AuthState.Auth(user)
-            } catch (_: Exception) { }
+            } catch (_: Exception) {
+            }
 
             updateFlow.collect { change ->
+                Log.d("LOG_TAG", "Change: $change")
                 try {
                     val updatedUser = change.decodeRecord<UserDto>().toUser()
                     _authState.value = AuthState.Auth(updatedUser)
-                } catch (_: Exception) { }
+                } catch (e: Exception) {
+                    Log.d("LOG_TAG", "updateFlow.collect { change -> $e")
+                }
             }
         }
 
-        scope.launch { channel.subscribe() }
+        channel.subscribe()
     }
 
     override suspend fun updateUsername(username: String) {

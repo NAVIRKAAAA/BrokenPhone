@@ -20,23 +20,12 @@ class GetSuggestedUsersUseCase(
     private val friendsRepository: FriendsRepository,
     private val handler: ApiHandler,
 ) {
-    suspend fun execute(
-        additionalExcludeIds: List<String> = emptyList(),
-    ): AppResult<List<Pair<User, FriendshipActionState>>> {
+    suspend fun execute(): AppResult<List<Pair<User, FriendshipActionState>>> {
         return handler.handle(Dispatchers.IO) {
-            val currentUser =
-                userSession.authState.firstOrNull()?.getUserOrNull()
-                    ?: throw UnauthorizedException()
+            val currentUser = userSession.authState.firstOrNull()?.getUserOrNull()
+                ?: throw UnauthorizedException()
 
-            val excludeIds = buildList {
-                add(currentUser.id)
-                addAll(currentUser.friendIds)
-                addAll(currentUser.blockedUserIds)
-                addAll(currentUser.blockedBy)
-                addAll(additionalExcludeIds)
-            }
-
-            val users = usersRepository.getSuggestedUsers(excludeIds)
+            val users = usersRepository.getSuggestedUsers()
 
             coroutineScope {
                 users.map { user ->
