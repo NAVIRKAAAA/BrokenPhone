@@ -1,6 +1,5 @@
 package com.brokentelephone.game.data.test
 
-import com.brokentelephone.game.data.mapper.toMap
 import com.brokentelephone.game.domain.model.notification.NotificationData
 import com.brokentelephone.game.domain.model.post.Post
 import com.brokentelephone.game.domain.model.post.PostContent
@@ -152,7 +151,7 @@ class FirestoreTestDataSeeder(
 //                .document(docRef.id)
 
             firestore.runBatch { batch ->
-                batch.set(docRef, post.toMap())
+//                batch.set(docRef, post.toMap())
 //                batch.set(chainEntryRef, chainEntry.toMap())
 //                batch.set(userPostRef, post.toMap())
             }.await()

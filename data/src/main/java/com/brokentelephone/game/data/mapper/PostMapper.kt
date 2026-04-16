@@ -1,8 +1,10 @@
 package com.brokentelephone.game.data.mapper
 
+import com.brokentelephone.game.data.dto.PostDto
 import com.brokentelephone.game.data.ext.toMillis
 import com.brokentelephone.game.data.ext.toTimestamp
 import com.brokentelephone.game.domain.model.post.Post
+import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
 import com.google.firebase.Timestamp
 
@@ -23,6 +25,50 @@ private object PostFields {
     const val SESSION_ID = "sessionId"
     const val SESSIONS_HISTORY = "sessionsHistory"
 }
+
+fun PostDto.toPost(): Post = Post(
+    id = id,
+    chainId = chainId,
+    authorId = authorId,
+    authorName = authorName,
+    avatarUrl = avatarUrl,
+    content = when (contentType) {
+        "DRAWING" -> PostContent.Drawing(imageUrl = contentImageUrl)
+        else -> PostContent.Text(text = contentText.orEmpty())
+    },
+    createdAt = createdAt,
+    updatedAt = updatedAt,
+    status = PostStatus.fromString(status),
+    sessionId = sessionId,
+    sessionsHistory = sessionsHistory.mapNotNull { it.toPostSessionHistoryItem() },
+    generation = generation,
+    maxGenerations = maxGenerations,
+    textTimeLimit = textTimeLimit,
+    drawingTimeLimit = drawingTimeLimit,
+)
+
+fun Post.toPostDto(): PostDto = PostDto(
+    id = id,
+    chainId = chainId,
+    authorId = authorId,
+    authorName = authorName,
+    avatarUrl = avatarUrl,
+    contentType = when (content) {
+        is PostContent.Text -> "TEXT"
+        is PostContent.Drawing -> "DRAWING"
+    },
+    contentText = (content as? PostContent.Text)?.text,
+    contentImageUrl = (content as? PostContent.Drawing)?.imageUrl,
+    status = status.name,
+    sessionId = sessionId,
+    sessionsHistory = sessionsHistory.map { it.toDto() },
+    generation = generation,
+    maxGenerations = maxGenerations,
+    textTimeLimit = textTimeLimit,
+    drawingTimeLimit = drawingTimeLimit,
+    createdAt = createdAt,
+    updatedAt = updatedAt,
+)
 
 fun Post.toMap(): Map<String, Any?> = mapOf(
     PostFields.ID to id,

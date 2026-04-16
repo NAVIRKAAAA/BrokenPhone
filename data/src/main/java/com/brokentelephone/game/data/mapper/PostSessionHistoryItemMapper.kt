@@ -1,10 +1,27 @@
 package com.brokentelephone.game.data.mapper
 
+import com.brokentelephone.game.data.dto.PostSessionHistoryItemDto
 import com.brokentelephone.game.data.ext.toMillis
 import com.brokentelephone.game.data.ext.toTimestamp
 import com.brokentelephone.game.domain.model.session.PostSessionHistoryItem
 import com.brokentelephone.game.domain.model.session.PostSessionHistoryType
 import com.google.firebase.Timestamp
+
+fun PostSessionHistoryItemDto.toPostSessionHistoryItem(): PostSessionHistoryItem? = runCatching {
+    PostSessionHistoryItem(
+        sessionId = sessionId,
+        userId = userId,
+        type = PostSessionHistoryType.valueOf(type),
+        timestamp = timestamp,
+    )
+}.getOrNull()
+
+fun PostSessionHistoryItem.toDto(): PostSessionHistoryItemDto = PostSessionHistoryItemDto(
+    sessionId = sessionId,
+    userId = userId,
+    type = type.name,
+    timestamp = timestamp,
+)
 
 fun PostSessionHistoryItem.toMap(): Map<String, Any?> = mapOf(
     "sessionId" to sessionId,

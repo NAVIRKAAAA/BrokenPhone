@@ -21,7 +21,6 @@ import com.brokentelephone.game.features.dashboard.model.DashboardSideEffect
 import com.brokentelephone.game.features.dashboard.model.DashboardState
 import com.brokentelephone.game.features.dashboard.use_case.LoadInitialPostsUseCase
 import com.brokentelephone.game.features.dashboard.use_case.LoadNextPostsUseCase
-import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,7 +46,7 @@ class DashboardViewModel(
     private val _state = MutableStateFlow(DashboardState())
     val state = _state.asStateFlow()
 
-    private var lastDocRef: DocumentSnapshot? = null
+    private var lastOffset: Int = 0
     private var lastLoadedAt: Long = 0L
 
     private val _sideEffects = Channel<DashboardSideEffect>(Channel.BUFFERED)
@@ -72,7 +71,7 @@ class DashboardViewModel(
                 .onSuccess { page ->
                     Log.d("LOG_TAG", "loadInitialPosts: onSuccess (${page.posts.size})")
                     lastLoadedAt = System.currentTimeMillis()
-                    lastDocRef = page.lastDocRef
+                    lastOffset = page.offset
                     _state.update { state ->
                         state.copy(
                             isInitialLoading = false,
@@ -91,8 +90,6 @@ class DashboardViewModel(
     }
 
     fun loadNextPosts() {
-        val docRef = lastDocRef ?: return
-
         if (state.value.isInitialLoading || state.value.isLoadingMore || !state.value.hasMore) return
 
         viewModelScope.launch {
@@ -101,10 +98,10 @@ class DashboardViewModel(
 
             delay(150)
 
-            loadNextPostsUseCase.execute(docRef, DEFAULT_PAGE_SIZE, state.value.selectedSort)
+            loadNextPostsUseCase.execute(lastOffset, DEFAULT_PAGE_SIZE, state.value.selectedSort)
                 .onSuccess { page ->
                     Log.d("LOG_TAG", "loadNextPosts: onSuccess (${page.posts.size})")
-                    lastDocRef = page.lastDocRef
+                    lastOffset = page.offset
                     _state.update { state ->
                         state.copy(
                             isLoadingMore = false,
@@ -130,7 +127,7 @@ class DashboardViewModel(
                 .onSuccess { page ->
                     Log.d("LOG_TAG", "onRefresh: onSuccess (${page.posts.size})")
                     lastLoadedAt = System.currentTimeMillis()
-                    lastDocRef = page.lastDocRef
+                    lastOffset = page.offset
                     _state.update { state ->
                         state.copy(
                             isRefreshing = false,

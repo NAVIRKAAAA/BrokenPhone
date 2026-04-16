@@ -1,9 +1,10 @@
 package com.brokentelephone.game.data.repository
 
 import android.util.Log
-import com.brokentelephone.game.data.mapper.toAppException
-import com.brokentelephone.game.data.mapper.toMap
+import com.brokentelephone.game.data.dto.PostDto
+import com.brokentelephone.game.data.mapper.toChainDto
 import com.brokentelephone.game.data.mapper.toPost
+import com.brokentelephone.game.data.mapper.toPostDto
 import com.brokentelephone.game.domain.model.chain.Chain
 import com.brokentelephone.game.domain.model.chain.ChainStatus
 import com.brokentelephone.game.domain.model.pagination.PostsPage
@@ -18,168 +19,191 @@ import com.brokentelephone.game.essentials.exceptions.auth.PostInProgressExcepti
 import com.brokentelephone.game.essentials.exceptions.auth.PostNotFoundException
 import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
 import com.brokentelephone.game.essentials.exceptions.main.AppException
-import com.google.firebase.FirebaseNetworkException
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.Query
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.exceptions.RestException
+import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.Order
+import io.github.jan.supabase.postgrest.query.PostgrestRequestBuilder
+import io.github.jan.supabase.postgrest.query.filter.FilterOperation
+import io.github.jan.supabase.postgrest.query.filter.FilterOperator
+import io.github.jan.supabase.realtime.PostgresAction
+import io.github.jan.supabase.realtime.channel
+import io.github.jan.supabase.realtime.decodeRecord
+import io.github.jan.supabase.realtime.postgresChangeFlow
+import io.github.jan.supabase.realtime.realtime
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
+import java.io.IOException
+import java.util.UUID
 
 class PostsRepositoryImpl(
-    firestore: FirebaseFirestore,
-) : FirestoreRepository(firestore), PostRepository {
-
-    override val collectionName = "posts"
+    private val supabase: SupabaseClient,
+) : PostRepository {
 
     override suspend fun loadInitialPosts(
         pageSize: Int,
         sort: DashboardSort,
-        userId: String,
-        blockedUsersIds: List<String>,
-        blockedBy: List<String>,
-        notInterestedPostIds: List<String>
     ): PostsPage {
         try {
-            val snapshot = collection
-                .applySorting(sort)
-                .limit(pageSize.toLong())
-                .getFromServer()
-
-            val posts = snapshot.documents.mapNotNull { it.data?.toPost() }
-
-            val hasMore = posts.size >= pageSize
-            val excludedAuthorIds = (blockedUsersIds + blockedBy + userId).toSet()
-            val filteredPosts = posts
-                .filter { !(it.status == PostStatus.COMPLETED && it.generation < it.maxGenerations) }
-//                .filter {
-//                it.authorId !in excludedAuthorIds &&
-//                        it.id !in notInterestedPostIds
-//            }
-
-            val lastDocRef = snapshot.documents.lastOrNull()
-            return PostsPage(posts = filteredPosts, lastDocRef = lastDocRef, hasMore = hasMore)
-        } catch (_: FirebaseNetworkException) {
+            val posts = supabase.from(TABLE_POSTS)
+                .select {
+                    filter { neq("status", PostStatus.COMPLETED.name) }
+                    applySorting(sort)
+                    range(0L, (pageSize - 1).toLong())
+                }
+                .decodeList<PostDto>()
+                .map { it.toPost() }
+            return PostsPage(posts = posts, offset = posts.size, hasMore = posts.size >= pageSize)
+        } catch (_: IOException) {
             throw NetworkException()
-        } catch (e: FirebaseFirestoreException) {
-            Log.d("LOG_TAG", "Error: $e")
-            throw e.toAppException()
+        } catch (e: RestException) {
+            Log.d("LOG_TAG", "loadInitialPosts(): $e")
+            throw UnknownAuthException()
         } catch (e: Exception) {
-            Log.d("LOG_TAG", "Error: $e")
+            Log.d("LOG_TAG", "loadInitialPosts(): $e")
             throw UnknownAuthException()
         }
     }
 
     override suspend fun loadNextPosts(
-        afterDoc: DocumentSnapshot,
+        offset: Int,
         pageSize: Int,
         sort: DashboardSort,
-        userId: String,
-        blockedUsersIds: List<String>,
-        blockedBy: List<String>,
-        notInterestedPostIds: List<String>
     ): PostsPage {
         try {
-            val excludedAuthorIds = (blockedUsersIds + blockedBy + userId).toSet()
-            val snapshot = collection
-                .applySorting(sort)
-                .startAfter(afterDoc)
-                .limit(pageSize.toLong())
-                .getFromServer()
-
-            val posts = snapshot.documents.mapNotNull { it.data?.toPost() }
-            val filteredPosts = posts
-                .filter { !(it.status == PostStatus.COMPLETED && it.generation < it.maxGenerations) }
-//                .filter {
-//                it.authorId !in excludedAuthorIds &&
-//                        it.id !in notInterestedPostIds
-//            }
-
-            val hasMore = posts.size >= pageSize
-
-            val lastDocRef = snapshot.documents.lastOrNull()
-            return PostsPage(posts = filteredPosts, lastDocRef = lastDocRef, hasMore = hasMore)
-        } catch (_: FirebaseNetworkException) {
+            val posts = supabase.from(TABLE_POSTS)
+                .select {
+                    filter { neq("status", PostStatus.COMPLETED.name) }
+                    applySorting(sort)
+                    range(offset.toLong(), (offset + pageSize - 1).toLong())
+                }
+                .decodeList<PostDto>()
+                .map { it.toPost() }
+            return PostsPage(posts = posts, offset = offset + posts.size, hasMore = posts.size >= pageSize)
+        } catch (_: IOException) {
             throw NetworkException()
-        } catch (e: FirebaseFirestoreException) {
-            Log.d("LOG_TAG", "Error: $e")
-            throw e.toAppException()
+        } catch (e: RestException) {
+            Log.d("LOG_TAG", "loadNextPosts(): $e")
+            throw UnknownAuthException()
         } catch (e: Exception) {
-            Log.d("LOG_TAG", "Error: $e")
+            Log.d("LOG_TAG", "loadNextPosts(): $e")
             throw UnknownAuthException()
         }
     }
 
     override fun getPostById(id: String): Flow<Post> = callbackFlow {
-        val listener = collection.document(id)
-            .addSnapshotListener { snapshot, error ->
-                val post = snapshot?.data?.toPost()
-                if (post == null || error != null) {
-                    close(PostNotFoundException())
-                    return@addSnapshotListener
-                }
-                trySend(post)
+        val channel = supabase.realtime.channel("post-$id-${UUID.randomUUID()}")
+
+        val updateFlow = channel.postgresChangeFlow<PostgresAction.Update>(schema = "public") {
+            table = TABLE_POSTS
+            filter(FilterOperation("id", FilterOperator.EQ, id))
+        }
+
+        val collectJob = launch {
+            updateFlow.collect { change ->
+                try {
+                    Log.d("LOG_TAG", "Realtime: $change")
+                    trySend(change.decodeRecord<PostDto>().toPost())
+                } catch (_: Exception) {}
             }
-        awaitClose { listener.remove() }
+        }
+
+        channel.subscribe()
+
+        try {
+            val post = supabase.from(TABLE_POSTS)
+                .select { filter { eq("id", id) } }
+                .decodeSingleOrNull<PostDto>()
+                ?.toPost()
+            if (post == null) {
+                close(PostNotFoundException())
+                return@callbackFlow
+            }
+            Log.d("LOG_TAG", "First Sent: $post")
+            trySend(post)
+        } catch (_: Exception) {
+            close(PostNotFoundException())
+        }
+
+        awaitClose {
+            collectJob.cancel()
+            launch { supabase.realtime.removeChannel(channel) }
+        }
     }
 
     override suspend fun getChainByPostId(postId: String): List<Post> {
-        return try {
-            val post = collection.document(postId).getFromServer()
-                .data?.toPost() ?: throw PostNotFoundException()
+        try {
+            val post = supabase.from(TABLE_POSTS)
+                .select { filter { eq("id", postId) } }
+                .decodeSingleOrNull<PostDto>()
+                ?.toPost() ?: throw PostNotFoundException()
 
-            val snapshot = collection
-                .whereEqualTo(FIELD_CHAIN_ID, post.chainId)
-                .orderBy(FIELD_CREATED_AT, Query.Direction.ASCENDING)
-                .getFromServer()
-
-            snapshot.documents.mapNotNull { it.data?.toPost() }
-        } catch (_: FirebaseNetworkException) {
+            return supabase.from(TABLE_POSTS)
+                .select {
+                    filter { eq("chain_id", post.chainId) }
+                    order("created_at", Order.ASCENDING)
+                }
+                .decodeList<PostDto>()
+                .map { it.toPost() }
+        } catch (e: AppException) {
+            throw e
+        } catch (_: IOException) {
             throw NetworkException()
-        } catch (e: FirebaseFirestoreException) {
-            Log.d("LOG_TAG", "Error: $e")
-            throw e.toAppException()
+        } catch (e: RestException) {
+            Log.d("LOG_TAG", "getChainByPostId(): $e")
+            throw UnknownAuthException()
         } catch (e: Exception) {
-            Log.d("LOG_TAG", "Error: $e")
+            Log.d("LOG_TAG", "getChainByPostId(): $e")
             throw UnknownAuthException()
         }
     }
 
     override suspend fun loadUserPosts(userId: String): List<Post> {
         try {
-            val snapshot = collection.firestore
-                .collection(USERS_COLLECTION)
-                .document(userId)
-                .collection(USER_POSTS_COLLECTION)
-                .orderBy(FIELD_CREATED_AT, Query.Direction.DESCENDING)
-                .getFromServer()
-            return snapshot.documents.mapNotNull { it.data?.toPost() }
-        } catch (_: FirebaseNetworkException) {
+            return supabase.from(TABLE_POSTS)
+                .select {
+                    filter {
+                        eq("author_id", userId)
+                        eq("generation", 0)
+                    }
+                    order("created_at", Order.DESCENDING)
+                }
+                .decodeList<PostDto>()
+                .map { it.toPost() }
+        } catch (_: IOException) {
             throw NetworkException()
-        } catch (e: FirebaseFirestoreException) {
-            Log.d("LOG_TAG", "Error: $e")
-            throw e.toAppException()
+        } catch (e: RestException) {
+            Log.d("LOG_TAG", "loadUserPosts(): $e")
+            throw UnknownAuthException()
         } catch (e: Exception) {
-            Log.d("LOG_TAG", "Error: $e")
+            Log.d("LOG_TAG", "loadUserPosts(): $e")
             throw UnknownAuthException()
         }
     }
 
     override suspend fun loadContributions(userId: String): List<Post> {
         try {
-            val snapshot = contributionsCollection(userId)
-                .orderBy(FIELD_CREATED_AT, Query.Direction.DESCENDING)
-                .getFromServer()
-            return snapshot.documents.mapNotNull { it.data?.toPost() }
-        } catch (_: FirebaseNetworkException) {
+            return supabase.from(TABLE_POSTS)
+                .select {
+                    filter {
+                        eq("author_id", userId)
+                        gt("generation", 0)
+                    }
+                    order("created_at", Order.DESCENDING)
+                }
+                .decodeList<PostDto>()
+                .map { it.toPost() }
+        } catch (_: IOException) {
             throw NetworkException()
-        } catch (e: FirebaseFirestoreException) {
-            Log.d("LOG_TAG", "Error: $e")
-            throw e.toAppException()
+        } catch (e: RestException) {
+            Log.d("LOG_TAG", "loadContributions(): $e")
+            throw UnknownAuthException()
         } catch (e: Exception) {
-            Log.d("LOG_TAG", "Error: $e")
+            Log.d("LOG_TAG", "loadContributions(): $e")
             throw UnknownAuthException()
         }
     }
@@ -193,13 +217,22 @@ class PostsRepositoryImpl(
         textTimeLimit: Int,
         drawingTimeLimit: Int,
     ) {
-        val docRef = collection.document()
-        val chainRef = collection.firestore.collection(CHAINS_COLLECTION).document()
+        val chainId = UUID.randomUUID().toString()
+        val postId = UUID.randomUUID().toString()
         val now = System.currentTimeMillis()
 
+        val chain = Chain(
+            id = chainId,
+            createdAt = now,
+            status = ChainStatus.ACTIVE,
+            generation = 0,
+            maxGenerations = maxGenerations,
+            textTimeLimit = textTimeLimit,
+            drawingTimeLimit = drawingTimeLimit,
+        )
         val post = Post(
-            id = docRef.id,
-            chainId = chainRef.id,
+            id = postId,
+            chainId = chainId,
             authorId = authorId,
             authorName = authorName,
             avatarUrl = avatarUrl,
@@ -213,139 +246,77 @@ class PostsRepositoryImpl(
             textTimeLimit = textTimeLimit,
             drawingTimeLimit = drawingTimeLimit,
         )
-        val chain = Chain(
-            id = chainRef.id,
-            createdAt = now,
-            status = ChainStatus.ACTIVE,
-            generation = 0,
-            maxGenerations = maxGenerations,
-            textTimeLimit = textTimeLimit,
-            drawingTimeLimit = drawingTimeLimit,
-        )
-        val userPostRef = collection.firestore
-            .collection(USERS_COLLECTION)
-            .document(authorId)
-            .collection(USER_POSTS_COLLECTION)
-            .document(docRef.id)
 
         try {
-            collection.firestore.runBatch { batch ->
-                batch.set(docRef, post.toMap())
-                batch.set(chainRef, chain.toMap())
-                batch.set(userPostRef, post.toMap())
-            }.await()
-        } catch (_: FirebaseNetworkException) {
+            supabase.from(TABLE_CHAINS).insert(chain.toChainDto())
+            supabase.from(TABLE_POSTS).insert(post.toPostDto())
+        } catch (_: IOException) {
             throw NetworkException()
-        } catch (e: FirebaseFirestoreException) {
-            Log.d("LOG_TAG", "Error: $e")
-            throw e.toAppException()
+        } catch (e: RestException) {
+            Log.d("LOG_TAG", "createPost(): $e")
+            throw UnknownAuthException()
         } catch (e: Exception) {
-            Log.d("LOG_TAG", "Error: $e")
+            Log.d("LOG_TAG", "createPost(): $e")
             throw UnknownAuthException()
         }
     }
 
     override suspend fun deletePost(postId: String) {
         try {
-            val post = collection.document(postId).getFromServer()
-                .data?.toPost() ?: throw PostNotFoundException()
+            val post = supabase.from(TABLE_POSTS)
+                .select { filter { eq("id", postId) } }
+                .decodeSingleOrNull<PostDto>()
+                ?.toPost() ?: throw PostNotFoundException()
 
-            val chainGeneration = collection.firestore
-                .collection(CHAINS_COLLECTION)
-                .document(post.chainId)
-                .getFromServer()
-                .getLong(FIELD_GENERATION)?.toInt() ?: throw PostNotFoundException()
+            val chainGeneration = supabase.from(TABLE_POSTS)
+                .select { filter { eq("chain_id", post.chainId) } }
+                .decodeList<PostDto>()
+                .maxOfOrNull { it.generation } ?: throw PostNotFoundException()
 
             if (post.status == PostStatus.IN_PROGRESS) throw PostInProgressException()
             if (chainGeneration != post.generation) throw CannotDeletePostException()
             if (chainGeneration == post.maxGenerations) throw CannotDeletePostException()
 
-            val postRef = collection.document(postId)
-            val chainRef = collection.firestore
-                .collection(CHAINS_COLLECTION)
-                .document(post.chainId)
-            val userPostRef = collection.firestore
-                .collection(USERS_COLLECTION)
-                .document(post.authorId)
-                .collection(USER_POSTS_COLLECTION)
-                .document(postId)
-            val userContributionRef = collection.firestore
-                .collection(USERS_COLLECTION)
-                .document(post.authorId)
-                .collection(CONTRIBUTIONS_COLLECTION)
-                .document(postId)
-
-            val userDocRef = if (userPostRef.getFromServer().exists()) {
-                userPostRef
-            } else {
-                userContributionRef
-            }
-
             if (post.generation == 0) {
-                collection.firestore.runBatch { batch ->
-                    batch.delete(postRef)
-                    batch.delete(chainRef)
-                    batch.delete(userDocRef)
-                }.await()
+                supabase.from(TABLE_CHAINS).delete { filter { eq("id", post.chainId) } }
             } else {
-                val prevPostDoc = collection
-                    .whereEqualTo(FIELD_CHAIN_ID, post.chainId)
-                    .whereEqualTo(FIELD_GENERATION, post.generation - 1)
-                    .getFromServer()
-                    .documents
-                    .firstOrNull() ?: throw PostNotFoundException()
+                val prevPost = supabase.from(TABLE_POSTS)
+                    .select {
+                        filter {
+                            eq("chain_id", post.chainId)
+                            eq("generation", post.generation - 1)
+                        }
+                    }
+                    .decodeSingleOrNull<PostDto>() ?: throw PostNotFoundException()
 
-                collection.firestore.runBatch { batch ->
-                    batch.delete(postRef)
-                    batch.update(chainRef, FIELD_GENERATION, post.generation - 1)
-                    batch.update(prevPostDoc.reference, FIELD_STATUS, PostStatus.AVAILABLE.name)
-                    batch.delete(userDocRef)
-                }.await()
+                supabase.from(TABLE_POSTS).delete { filter { eq("id", postId) } }
+                supabase.from(TABLE_POSTS).update(
+                    buildJsonObject { put("status", PostStatus.AVAILABLE.name) }
+                ) { filter { eq("id", prevPost.id) } }
             }
         } catch (e: AppException) {
             throw e
-        } catch (_: FirebaseNetworkException) {
+        } catch (_: IOException) {
             throw NetworkException()
-        } catch (e: FirebaseFirestoreException) {
-            throw e.toAppException()
+        } catch (e: RestException) {
+            Log.d("LOG_TAG", "deletePost(): $e")
+            throw UnknownAuthException()
         } catch (e: Exception) {
             Log.d("LOG_TAG", "deletePost: $e")
             throw UnknownAuthException()
         }
     }
 
-    private fun contributionsCollection(userId: String) = collection.firestore
-        .collection(USERS_COLLECTION)
-        .document(userId)
-        .collection(CONTRIBUTIONS_COLLECTION)
-
-    private fun Query.applySorting(sort: DashboardSort): Query {
-        return when (sort) {
-            DashboardSort.LATEST -> orderBy(
-                FIELD_UPDATED_AT,
-                Query.Direction.DESCENDING
-            )
-
-            DashboardSort.ALMOST_DONE -> orderBy(FIELD_GENERATION, Query.Direction.DESCENDING)
-            DashboardSort.LONGEST_CHAIN -> orderBy(
-                FIELD_MAX_GENERATIONS,
-                Query.Direction.DESCENDING
-            )
+    private fun PostgrestRequestBuilder.applySorting(sort: DashboardSort) {
+        when (sort) {
+            DashboardSort.LATEST -> order("updated_at", Order.DESCENDING)
+            DashboardSort.ALMOST_DONE -> order("generation", Order.DESCENDING)
+            DashboardSort.LONGEST_CHAIN -> order("max_generations", Order.DESCENDING)
         }
     }
 
     private companion object {
-        const val FIELD_CHAIN_ID = "chainId"
-        const val FIELD_CREATED_AT = "createdAt"
-        const val FIELD_UPDATED_AT = "updatedAt"
-        const val FIELD_GENERATION = "generation"
-        const val FIELD_MAX_GENERATIONS = "maxGenerations"
-        const val FIELD_STATUS = "status"
-        const val CHAINS_COLLECTION = "chains"
-        const val CHAIN_POSTS_COLLECTION = "posts"
-        const val USERS_COLLECTION = "users"
-        const val CONTRIBUTIONS_COLLECTION = "contributions"
-        const val USER_POSTS_COLLECTION = "posts"
-        val ACTIVE_STATUSES = listOf(PostStatus.AVAILABLE.name, PostStatus.IN_PROGRESS.name)
+        const val TABLE_CHAINS = "chains"
+        const val TABLE_POSTS = "posts"
     }
 }

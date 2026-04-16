@@ -46,7 +46,7 @@ class DescribeDrawingViewModel(
 
     private fun loadinInitialData() {
         viewModelScope.launch {
-            getActiveSessionUseCase.execute().onSuccess { session ->
+            getActiveSessionUseCase.execute(sessionId).onSuccess { session ->
                 _state.update { it.copy(session = session) }
 
                 getPostByIdUseCase.executeWithResult(session.postId).onSuccess { post ->

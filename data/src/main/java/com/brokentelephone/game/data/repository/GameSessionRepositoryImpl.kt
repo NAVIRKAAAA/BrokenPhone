@@ -1,19 +1,10 @@
 package com.brokentelephone.game.data.repository
 
 import android.util.Log
-import com.brokentelephone.game.data.mapper.toAppException
+import com.brokentelephone.game.data.dto.GameSessionDto
 import com.brokentelephone.game.data.mapper.toGameSession
-import com.brokentelephone.game.data.mapper.toMap
-import com.brokentelephone.game.data.mapper.toPost
-import com.brokentelephone.game.domain.model.chain.ChainStatus
-import com.brokentelephone.game.domain.model.post.Post
 import com.brokentelephone.game.domain.model.post.PostContent
-import com.brokentelephone.game.domain.model.post.PostStatus
 import com.brokentelephone.game.domain.model.session.GameSession
-import com.brokentelephone.game.domain.model.session.GameSessionStatus
-import com.brokentelephone.game.domain.model.session.PostSessionHistoryItem
-import com.brokentelephone.game.domain.model.session.PostSessionHistoryType
-import com.brokentelephone.game.domain.model.session.cooldownRemainingMs
 import com.brokentelephone.game.domain.repository.GameSessionRepository
 import com.brokentelephone.game.essentials.exceptions.auth.NetworkException
 import com.brokentelephone.game.essentials.exceptions.auth.PostNotFoundException
@@ -24,164 +15,120 @@ import com.brokentelephone.game.essentials.exceptions.auth.SessionNotFoundExcept
 import com.brokentelephone.game.essentials.exceptions.auth.SessionValidationException
 import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
 import com.brokentelephone.game.essentials.exceptions.auth.UserAlreadyInSessionException
-import com.brokentelephone.game.essentials.exceptions.main.AppException
-import com.google.firebase.FirebaseNetworkException
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.exceptions.RestException
+import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.query.filter.FilterOperation
+import io.github.jan.supabase.postgrest.query.filter.FilterOperator
+import io.github.jan.supabase.realtime.PostgresAction
+import io.github.jan.supabase.realtime.channel
+import io.github.jan.supabase.realtime.decodeRecord
+import io.github.jan.supabase.realtime.postgresChangeFlow
+import io.github.jan.supabase.realtime.realtime
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
+import java.io.IOException
+import java.util.UUID
 
 class GameSessionRepositoryImpl(
-    firestore: FirebaseFirestore,
-) : FirestoreRepository(firestore), GameSessionRepository {
+    private val supabase: SupabaseClient,
+) : GameSessionRepository {
 
-    override val collectionName = "sessions"
-
-    // TODO: Migrate to RTDB
-    // 1. Слухати зміни на sessions/{userId} через addValueEventListener
-    // 2. Мапити snapshot в GameSession через toGameSession() (адаптувати mapper під RTDB DataSnapshot)
-    // 3. Якщо snapshot null або відсутній — закрити flow з SessionNotFoundException
     override fun getSession(sessionId: String): Flow<GameSession> = callbackFlow {
-        val listener = collection.document(sessionId)
-            .addSnapshotListener { snapshot, error ->
-                val session = snapshot?.data?.toGameSession()
-                if (session == null || error != null) {
-                    close(SessionNotFoundException())
-                    return@addSnapshotListener
+        val channel = supabase.realtime.channel("session-$sessionId-${UUID.randomUUID()}")
+
+        val updateFlow = channel.postgresChangeFlow<PostgresAction.Update>(schema = "public") {
+            table = TABLE_SESSIONS
+            filter(FilterOperation("id", FilterOperator.EQ, sessionId))
+        }
+
+        val collectJob = launch {
+            updateFlow.collect { change ->
+                try {
+                    trySend(change.decodeRecord<GameSessionDto>().toGameSession())
+                } catch (_: Exception) {
                 }
-                trySend(session)
             }
-        awaitClose { listener.remove() }
+        }
+
+        channel.subscribe()
+
+        try {
+            val session = supabase.from(TABLE_SESSIONS)
+                .select { filter { eq("id", sessionId) } }
+                .decodeSingleOrNull<GameSessionDto>()
+                ?.toGameSession()
+            if (session == null) {
+                close(SessionNotFoundException())
+                return@callbackFlow
+            }
+            trySend(session)
+        } catch (_: Exception) {
+            close(SessionNotFoundException())
+        }
+
+        awaitClose {
+            collectJob.cancel()
+            launch { supabase.realtime.removeChannel(channel) }
+        }
     }
 
-    // TODO: Migrate sessions to RTDB (posts залишаються у Firestore)
-    // 1. Перевірити що у юзера немає активної сесії — читати RTDB sessions/{userId}, якщо не null → UserAlreadyInSessionException
-    // 2. Firestore транзакція на posts/{postId} — перевірити status == AVAILABLE і cooldown,
-    //    оновити post: status = IN_PROGRESS, sessionId = newSessionId
-    // 3. Після успішної Firestore транзакції — записати в RTDB:
-    //    sessions/{userId} = { sessionId, postId, lockedAt (server time), timeLimitSeconds, status = ACTIVE }
     override suspend fun joinSession(postId: String, userId: String, timeLimit: Int): GameSession {
         try {
-            val postRef = collection.firestore
-                .collection(POSTS_COLLECTION)
-                .document(postId)
-            val sessionRef = collection.document()
-            val userRef = collection.firestore
-                .collection(USERS_COLLECTION)
-                .document(userId)
-
-            val session = collection.firestore.runTransaction { transaction ->
-                val post = transaction.get(postRef).data?.toPost() ?: throw PostNotFoundException()
-                val user = transaction.get(userRef).data ?: throw PostNotFoundException()
-
-                if (user[FIELD_SESSION_ID] != null) throw UserAlreadyInSessionException()
-
-                if (post.status != PostStatus.AVAILABLE) throw PostUnavailableToJoinException()
-
-                val now = System.currentTimeMillis()
-
-                if (post.sessionsHistory.cooldownRemainingMs(userId) > 0) {
-                    throw SessionCooldownException()
+            return supabase.postgrest.rpc(
+                "join_session",
+                buildJsonObject {
+                    put("p_post_id", postId)
+                    put("p_user_id", userId)
+                    put("p_time_limit", timeLimit)
                 }
-                val session = GameSession(
-                    id = sessionRef.id,
-                    userId = userId,
-                    postId = postId,
-                    lockedAt = now,
-                    expiresAt = now + timeLimit * 1000L,
-                    status = GameSessionStatus.ACTIVE,
-                )
-
-                val historyItem = PostSessionHistoryItem(
-                    sessionId = sessionRef.id,
-                    userId = userId,
-                    type = PostSessionHistoryType.JOIN,
-                    timestamp = now,
-                )
-
-                transaction.set(sessionRef, session.toMap())
-                transaction.update(
-                    postRef, mapOf<String, Any?>(
-                        FIELD_STATUS to PostStatus.IN_PROGRESS.name,
-                        FIELD_SESSION_ID to sessionRef.id,
-                        FIELD_SESSIONS_HISTORY to FieldValue.arrayUnion(historyItem.toMap()),
-                    )
-                )
-                transaction.update(userRef, FIELD_SESSION_ID, sessionRef.id)
-
-                session
-            }.await()
-
-            return session
-        } catch (e: AppException) {
-            throw e
-        } catch (_: FirebaseNetworkException) {
+            ).decodeAs<GameSessionDto>().toGameSession()
+        } catch (e: RestException) {
+            val msg = e.message.orEmpty()
+            throw when {
+                "USER_ALREADY_IN_SESSION" in msg -> UserAlreadyInSessionException()
+                "POST_NOT_FOUND" in msg -> PostNotFoundException()
+                "POST_UNAVAILABLE" in msg -> PostUnavailableToJoinException()
+                "SESSION_COOLDOWN" in msg -> SessionCooldownException()
+                else -> UnknownAuthException()
+            }
+        } catch (_: IOException) {
             throw NetworkException()
-        } catch (e: FirebaseFirestoreException) {
-            throw e.toAppException()
         } catch (e: Exception) {
             Log.d("LOG_TAG", "joinSession: $e")
             throw UnknownAuthException()
         }
     }
 
-    // TODO: Migrate sessions to RTDB (posts залишаються у Firestore)
-    // 1. Читати RTDB sessions/{userId} — якщо null → SessionNotFoundException,
-    //    перевірити що postId збігається → інакше SessionValidationException
-    // 2. Firestore транзакція на posts/{postId} — оновити: status = AVAILABLE, sessionId = null
-    // 3. RTDB updateChildren: sessions/{userId} = null (видалити сесію)
     override suspend fun cancelSession(sessionId: String, postId: String, userId: String) {
         try {
-            val sessionRef = collection.document(sessionId)
-            val postRef = collection.firestore.collection(POSTS_COLLECTION).document(postId)
-            val userRef = collection.firestore.collection(USERS_COLLECTION).document(userId)
-
-            collection.firestore.runTransaction { transaction ->
-                val session = transaction.get(sessionRef).data?.toGameSession()
-                    ?: throw SessionNotFoundException()
-
-                if (session.userId != userId) throw SessionValidationException()
-                if (session.postId != postId) throw SessionValidationException()
-
-                val historyItem = PostSessionHistoryItem(
-                    sessionId = sessionId,
-                    userId = userId,
-                    type = PostSessionHistoryType.CANCEL,
-                    timestamp = System.currentTimeMillis(),
-                )
-
-                transaction.update(sessionRef, FIELD_STATUS, GameSessionStatus.CANCELLED.name)
-                transaction.update(
-                    postRef, mapOf<String, Any?>(
-                        FIELD_STATUS to PostStatus.AVAILABLE.name,
-                        FIELD_SESSION_ID to null,
-                        FIELD_SESSIONS_HISTORY to FieldValue.arrayUnion(historyItem.toMap()),
-                    )
-                )
-                transaction.update(userRef, FIELD_SESSION_ID, null)
-            }.await()
-        } catch (e: AppException) {
-            throw e
-        } catch (_: FirebaseNetworkException) {
+            supabase.postgrest.rpc(
+                "cancel_session",
+                buildJsonObject {
+                    put("p_session_id", sessionId)
+                    put("p_post_id", postId)
+                    put("p_user_id", userId)
+                }
+            )
+        } catch (e: RestException) {
+            val msg = e.message.orEmpty()
+            throw when {
+                "SESSION_NOT_FOUND" in msg -> SessionNotFoundException()
+                "SESSION_VALIDATION_ERROR" in msg -> SessionValidationException()
+                else -> UnknownAuthException()
+            }
+        } catch (_: IOException) {
             throw NetworkException()
-        } catch (e: FirebaseFirestoreException) {
-            throw e.toAppException()
         } catch (_: Exception) {
             throw UnknownAuthException()
         }
     }
 
-    // TODO: Migrate sessions to RTDB (posts/chains/contributions залишаються у Firestore)
-    // 1. Читати RTDB sessions/{authorId} — якщо null → SessionNotFoundException,
-    //    перевірити userId == authorId і postId збігається → SessionValidationException,
-    //    перевірити lockedAt + timeLimitSeconds * 1000 > serverNow → SessionExpiredException
-    // 2. Firestore транзакція — без змін: читати пост, створити новий пост,
-    //    оновити post/chain/contributions (ця логіка залишається повністю у Firestore)
-    // 3. Після успішної Firestore транзакції — RTDB updateChildren:
-    //    sessions/{authorId} = null (видалити сесію)
     override suspend fun completeSession(
         sessionId: String,
         postId: String,
@@ -192,92 +139,41 @@ class GameSessionRepositoryImpl(
     ) {
         try {
             Log.d("LOG_TAG", "completeSession()")
-            val postRef = collection.firestore.collection(POSTS_COLLECTION).document(postId)
-            val sessionRef = collection.document(sessionId)
-            val newPostRef = collection.firestore.collection(POSTS_COLLECTION).document()
-            val userRef = collection.firestore.collection(USERS_COLLECTION).document(authorId)
-
-            collection.firestore.runTransaction { transaction ->
-                val session = transaction.get(sessionRef).data?.toGameSession()
-                    ?: throw SessionNotFoundException()
-
-                if (session.userId != authorId) throw SessionValidationException()
-                if (session.postId != postId) throw SessionValidationException()
-                if (System.currentTimeMillis() > session.expiresAt) throw SessionExpiredException()
-
-                val post = transaction.get(postRef).data?.toPost() ?: throw PostNotFoundException()
-
-                if (post.sessionId != sessionId) throw SessionValidationException()
-
-                val now = System.currentTimeMillis()
-                val newGeneration = post.generation + 1
-                val isChainComplete = newGeneration > post.maxGenerations
-                val newPost = Post(
-                    id = newPostRef.id,
-                    chainId = post.chainId,
-                    authorId = authorId,
-                    authorName = authorName,
-                    avatarUrl = avatarUrl,
-                    content = content,
-                    createdAt = now,
-                    updatedAt = now,
-                    status = PostStatus.AVAILABLE,
-                    sessionId = null,
-                    generation = newGeneration,
-                    maxGenerations = post.maxGenerations,
-                    textTimeLimit = post.textTimeLimit,
-                    drawingTimeLimit = post.drawingTimeLimit,
-                )
-                val chainRef = collection.firestore
-                    .collection(CHAINS_COLLECTION)
-                    .document(post.chainId)
-                val contributionRef = collection.firestore
-                    .collection(USERS_COLLECTION)
-                    .document(authorId)
-                    .collection(CONTRIBUTIONS_COLLECTION)
-                    .document(newPostRef.id)
-
-                transaction.update(sessionRef, FIELD_STATUS, GameSessionStatus.COMPLETED.name)
-                transaction.update(userRef, FIELD_SESSION_ID, null)
-                transaction.update(
-                    postRef, mapOf(
-                        FIELD_STATUS to PostStatus.COMPLETED.name,
-                        FIELD_SESSION_ID to null,
+            supabase.postgrest.rpc(
+                "complete_session",
+                buildJsonObject {
+                    put("p_session_id", sessionId)
+                    put("p_post_id", postId)
+                    put("p_author_id", authorId)
+                    put("p_author_name", authorName)
+                    put("p_avatar_url", avatarUrl)
+                    put(
+                        "p_content_type", when (content) {
+                            is PostContent.Text -> "TEXT"
+                            is PostContent.Drawing -> "DRAWING"
+                        }
                     )
-                )
-                transaction.update(
-                    chainRef, mapOf(
-                        FIELD_GENERATION to newGeneration,
-                        FIELD_CHAIN_STATUS to if (isChainComplete) ChainStatus.COMPLETED.name else ChainStatus.ACTIVE.name,
-                        FIELD_COMPLETED_AT to if (isChainComplete) now else null,
-                    )
-                )
-
-                transaction.set(newPostRef, newPost.toMap())
-                transaction.set(contributionRef, newPost.toMap())
-            }.await()
-
-        } catch (e: AppException) {
-            throw e
-        }  catch (_: FirebaseNetworkException) {
+                    put("p_content_text", (content as? PostContent.Text)?.text)
+                    put("p_content_image_url", (content as? PostContent.Drawing)?.imageUrl)
+                }
+            )
+        } catch (e: RestException) {
+            val msg = e.message.orEmpty()
+            throw when {
+                "SESSION_NOT_FOUND" in msg -> SessionNotFoundException()
+                "SESSION_VALIDATION_ERROR" in msg -> SessionValidationException()
+                "SESSION_EXPIRED" in msg -> SessionExpiredException()
+                "POST_NOT_FOUND" in msg -> PostNotFoundException()
+                else -> UnknownAuthException()
+            }
+        } catch (_: IOException) {
             throw NetworkException()
-        } catch (e: FirebaseFirestoreException) {
-            throw e.toAppException()
         } catch (_: Exception) {
             throw UnknownAuthException()
         }
     }
 
     private companion object {
-        const val POSTS_COLLECTION = "posts"
-        const val CHAINS_COLLECTION = "chains"
-        const val USERS_COLLECTION = "users"
-        const val CONTRIBUTIONS_COLLECTION = "contributions"
-        const val FIELD_STATUS = "status"
-        const val FIELD_SESSION_ID = "sessionId"
-        const val FIELD_SESSIONS_HISTORY = "sessionsHistory"
-        const val FIELD_GENERATION = "generation"
-        const val FIELD_CHAIN_STATUS = "status"
-        const val FIELD_COMPLETED_AT = "completedAt"
+        const val TABLE_SESSIONS = "sessions"
     }
 }

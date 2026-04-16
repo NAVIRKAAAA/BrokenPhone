@@ -3,7 +3,6 @@ package com.brokentelephone.game.domain.repository
 import com.brokentelephone.game.domain.model.pagination.PostsPage
 import com.brokentelephone.game.domain.model.post.Post
 import com.brokentelephone.game.domain.model.sort.DashboardSort
-import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.flow.Flow
 
 
@@ -12,20 +11,12 @@ interface PostRepository {
     suspend fun loadInitialPosts(
         pageSize: Int,
         sort: DashboardSort,
-        userId: String,
-        blockedUsersIds: List<String>,
-        blockedBy: List<String>,
-        notInterestedPostIds: List<String>
     ): PostsPage
 
     suspend fun loadNextPosts(
-        afterDoc: DocumentSnapshot,
+        offset: Int,
         pageSize: Int,
         sort: DashboardSort,
-        userId: String,
-        blockedUsersIds: List<String>,
-        blockedBy: List<String>,
-        notInterestedPostIds: List<String>
     ): PostsPage
 
     fun getPostById(id: String): Flow<Post>
@@ -47,6 +38,5 @@ interface PostRepository {
     )
 
     suspend fun deletePost(postId: String)
-
 
 }
