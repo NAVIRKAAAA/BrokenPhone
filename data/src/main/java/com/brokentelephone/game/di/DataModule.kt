@@ -13,7 +13,7 @@ import com.brokentelephone.game.data.repository.ReportsRepositoryImpl
 import com.brokentelephone.game.data.repository.UserSettingsRepositoryImpl
 import com.brokentelephone.game.data.repository.UsersRepositoryImpl
 import com.brokentelephone.game.data.session.UserSessionImpl
-import com.brokentelephone.game.data.storage.FirebaseImageStorage
+import com.brokentelephone.game.data.storage.SupabaseImageStorage
 import com.brokentelephone.game.data.supabase.provideSupabaseClient
 import com.brokentelephone.game.domain.api_handler.ApiHandler
 import com.brokentelephone.game.domain.google.GoogleSignInManager
@@ -35,7 +35,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestoreSettings
 import com.google.firebase.firestore.memoryCacheSettings
 import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.storage.FirebaseStorage
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
@@ -50,14 +49,13 @@ val dataModule = module {
             }
         }
     }
-    single { FirebaseStorage.getInstance() }
     single { FirebaseMessaging.getInstance() }
 
     single<ApiHandler> { ApiHandlerImpl() }
     single<UserSession> { UserSessionImpl(get()) }
     single<LinkProvider> { LinkProviderImpl() }
     single<AppInfoRepository> { MockAppInfoRepositoryImpl() }
-    single<ImageStorage> { FirebaseImageStorage(get()) }
+    single<ImageStorage> { SupabaseImageStorage(get()) }
     single<PostRepository> { PostsRepositoryImpl(get()) }
     single<GameSessionRepository> { GameSessionRepositoryImpl(get()) }
     single<AuthRepository> { AuthRepositoryImpl(get()) }
