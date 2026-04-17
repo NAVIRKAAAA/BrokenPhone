@@ -7,12 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
+import com.brokentelephone.game.domain.use_case.SetPendingEmailUseCase
 import com.brokentelephone.game.essentials.exceptions.auth.InvalidEmailException
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.edit_email.model.EditEmailEvent
 import com.brokentelephone.game.features.edit_email.model.EditEmailState
 import com.brokentelephone.game.features.edit_email.use_case.SendEmailChangeVerificationUseCase
-import com.brokentelephone.game.features.edit_email.use_case.SetPendingEmailUseCase
 import com.brokentelephone.game.features.edit_email.use_case.ValidateEmailUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -37,6 +37,7 @@ import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBar
 import com.brokentelephone.game.features.welcome_api.WelcomeRoute
 import com.brokentelephone.game.nav_api.navigateSingle
 import com.brokentelephone.game.navigation.nav_graph.AppNavGraph
+import com.brokentelephone.game.new_password_api.NewPasswordRoute
 import com.brokentelephone.game.sign_in_api.SignInRoute
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -62,7 +63,7 @@ class MainActivity : AppCompatActivity() {
 
         enableEdgeToEdge()
 
-        intent.data?.let { mainViewModel.handleAuthLink(it) }
+        intent.data?.let { mainViewModel.handleNewIntent(it) }
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
@@ -97,6 +98,14 @@ class MainActivity : AppCompatActivity() {
                             }
 
                             navController.navigate(SignInRoute(email = effect.email))
+                        }
+
+                        MainSideEffect.NavigateToNewPassword -> {
+                            navController.navigate(WelcomeRoute) {
+                                popUpTo(0) { inclusive = true }
+                            }
+
+                            navController.navigate(NewPasswordRoute)
                         }
                     }
                 }
@@ -190,6 +199,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        intent.data?.let { mainViewModel.handleAuthLink(it) }
+        intent.data?.let { mainViewModel.handleNewIntent(it) }
     }
 }

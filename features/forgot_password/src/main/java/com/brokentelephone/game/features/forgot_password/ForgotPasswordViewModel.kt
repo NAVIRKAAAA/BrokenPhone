@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
+import com.brokentelephone.game.domain.use_case.SetPendingEmailUseCase
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.forgot_password.model.ForgotPasswordSideEffect
 import com.brokentelephone.game.features.forgot_password.model.ForgotPasswordState
@@ -21,6 +22,7 @@ import kotlinx.coroutines.launch
 class ForgotPasswordViewModel(
     initialEmail: String,
     private val sendPasswordResetEmailUseCase: SendPasswordResetEmailUseCase,
+    private val setPendingEmailUseCase: SetPendingEmailUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
 
@@ -47,10 +49,6 @@ class ForgotPasswordViewModel(
 
     fun onResetLinkSentDismissed() {
         _state.update { it.copy(isResetLinkSent = false) }
-
-        viewModelScope.launch {
-            _sideEffects.send(ForgotPasswordSideEffect.NavigateBack)
-        }
     }
 
     fun onSendClick() {
@@ -62,6 +60,7 @@ class ForgotPasswordViewModel(
             _state.update { it.copy(isLoading = true) }
 
             sendPasswordResetEmailUseCase.execute(email).onSuccess {
+                setPendingEmailUseCase.execute(email)
                 _state.update { it.copy(isLoading = false, isResetLinkSent = true) }
             }.onError { error ->
                 val message = exceptionToMessageMapper.map(error)

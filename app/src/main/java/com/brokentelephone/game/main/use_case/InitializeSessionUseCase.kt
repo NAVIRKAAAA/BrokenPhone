@@ -1,5 +1,6 @@
 package com.brokentelephone.game.main.use_case
 
+import android.util.Log
 import com.brokentelephone.game.domain.api_handler.ApiHandler
 import com.brokentelephone.game.domain.api_handler.AppResult
 import com.brokentelephone.game.domain.user.AuthState
@@ -14,7 +15,8 @@ class InitializeSessionUseCase(
     suspend fun execute(): AppResult<AuthState> {
         return handler.handle(Dispatchers.IO) {
             userSession.initialize()
-            val authState = userSession.authState.first()
+            val authState = userSession.authState.first { it !is AuthState.Loading }
+            Log.d("LOG_TAG", "InitializeSessionUseCase: $authState")
             authState
         }
     }

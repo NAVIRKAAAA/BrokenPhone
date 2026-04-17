@@ -12,9 +12,11 @@ import com.brokentelephone.game.domain.user.BlockedUser
 import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.essentials.exceptions.auth.NetworkException
-import com.brokentelephone.game.essentials.exceptions.auth.SessionDataException
+import com.brokentelephone.game.essentials.exceptions.auth.SamePasswordException
+import com.brokentelephone.game.essentials.exceptions.auth.TooManyRequestsException
 import com.brokentelephone.game.essentials.exceptions.auth.UnauthorizedException
 import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
+import com.brokentelephone.game.essentials.exceptions.auth.WeakPasswordException
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.status.SessionStatus
@@ -46,7 +48,7 @@ class UserSessionImpl(
     private val supabase: SupabaseClient,
 ) : UserSession {
 
-    private val _authState = MutableStateFlow<AuthState>(AuthState.NotAuth)
+    private val _authState = MutableStateFlow<AuthState>(AuthState.Loading)
     override val authState: Flow<AuthState> = _authState.asStateFlow()
 
     private var realtimeChannel: RealtimeChannel? = null
@@ -61,32 +63,16 @@ class UserSessionImpl(
 
         Log.d("LOG_TAG", "sessionStatus: $status")
 
-        if (status is SessionStatus.Authenticated) {
-            val userId = supabase.auth.currentUserOrNull()?.id ?: throw SessionDataException()
-
-            try {
-                val rawResult = supabase.from(COLLECTION_USERS)
-                    .select { filter { eq("id", userId) } }
-                val user = rawResult
-                    .decodeSingleOrNull<UserDto>()
-                    ?.toUser()
-                    ?: throw SessionDataException()
-
-                _authState.value = AuthState.Auth(user)
-            } catch (e: SessionDataException) {
-                throw e
-            } catch (_: Exception) {
-                throw SessionDataException()
-            }
-        } else {
-            _authState.value = AuthState.NotAuth
-        }
-
         scope.launch {
+            Log.d("LOG_TAG", "Start observe sessionStatus")
             supabase.auth.sessionStatus.collect { newSessionStatus ->
                 Log.d("LOG_TAG", "newSessionStatus: $newSessionStatus")
                 val currentUserId =
-                    supabase.auth.currentUserOrNull() ?: return@collect
+                    supabase.auth.currentUserOrNull() ?: run {
+                        _authState.value = AuthState.NotAuth
+                        return@collect
+                    }
+                Log.d("LOG_TAG", "currentUserId: $currentUserId")
 
                 observeSupabaseUser(currentUserId)
             }
@@ -116,10 +102,6 @@ class UserSessionImpl(
 
         realtimeCollectJob = scope.launch {
 
-            val user = userInfo.toUser()
-
-            _authState.value = AuthState.Auth(user)
-
             try {
                 val user = supabase.from(COLLECTION_USERS)
                     .select { filter { eq("id", userInfo.id) } }
@@ -127,6 +109,7 @@ class UserSessionImpl(
                     ?.toUser()
                 if (user != null) _authState.value = AuthState.Auth(user)
             } catch (_: Exception) {
+                _authState.value = AuthState.NotAuth
             }
 
             updateFlow.collect { change ->
@@ -370,6 +353,30 @@ class UserSessionImpl(
 //            e.printStackTrace()
 //            // best-effort, ignore failures
 //        }
+    }
+
+    override suspend fun updatePassword(newPassword: String) {
+        supabase.auth.currentUserOrNull() ?: throw UnauthorizedException()
+        try {
+            supabase.auth.updateUser {
+                password = newPassword
+            }
+        } catch (e: RestException) {
+            Log.d("LOG_TAG", "E: $e")
+            val msg = e.message.orEmpty()
+            when {
+                msg.contains("same_password", ignoreCase = true) ||
+                msg.contains("different from", ignoreCase = true) -> throw SamePasswordException()
+                msg.contains("weak_password", ignoreCase = true) ||
+                msg.contains("at least", ignoreCase = true) -> throw WeakPasswordException()
+                msg.contains("rate_limit", ignoreCase = true) -> throw TooManyRequestsException()
+                else -> throw UnknownAuthException()
+            }
+        } catch (_: java.io.IOException) {
+            throw NetworkException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
     }
 
     override suspend fun signOut() {

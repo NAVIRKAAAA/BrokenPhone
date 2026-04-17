@@ -109,6 +109,16 @@ class AuthRepositoryImpl(
         }
     }
 
+    override suspend fun importSession(code: String) {
+        try {
+            supabase.auth.exchangeCodeForSession(code)
+        } catch (_: java.io.IOException) {
+            throw NetworkException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
+
     override suspend fun sendPasswordResetEmail(email: String) {
         try {
             supabase.auth.resetPasswordForEmail(

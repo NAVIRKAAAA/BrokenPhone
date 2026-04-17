@@ -64,6 +64,9 @@ dependencies {
     implementation(project(":features:forgot_password"))
     implementation(project(":features:forgot_password_api"))
 
+    implementation(project(":features:new_password"))
+    implementation(project(":features:new_password_api"))
+
     implementation(project(":features:choose_username"))
     implementation(project(":features:choose_username_api"))
 

@@ -22,6 +22,13 @@ class SignUpValidator {
         }
     }
 
+    fun validatePassword(password: String, confirmPassword: String): List<AppException> {
+        return buildList {
+            if (password.length < MIN_PASSWORD_LENGTH) add(WeakPasswordException())
+            if (password != confirmPassword) add(PasswordsDoNotMatchException())
+        }
+    }
+
     private fun isEmailValid(email: String): Boolean {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }

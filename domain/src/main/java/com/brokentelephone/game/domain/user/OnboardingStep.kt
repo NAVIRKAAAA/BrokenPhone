@@ -7,6 +7,6 @@ enum class OnboardingStep {
 
     companion object {
         fun getByName(value: String): OnboardingStep =
-            entries.firstOrNull { it.name.equals(value, ignoreCase = true) } ?: CHOOSE_USERNAME
+            entries.firstOrNull { it.name.equals(value, ignoreCase = true) } ?: OnboardingStep.CHOOSE_AVATAR
     }
 }

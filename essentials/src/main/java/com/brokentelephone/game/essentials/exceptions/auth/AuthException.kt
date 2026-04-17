@@ -147,3 +147,8 @@ class InvalidActionCodeException : AppException("Action code is invalid or expir
     override fun getLocalizedMessage(stringProvider: StringProvider): String =
         stringProvider.getString(R.string.error_invalid_action_code)
 }
+
+class SamePasswordException : AppException("New password must be different from the old password") {
+    override fun getLocalizedMessage(stringProvider: StringProvider): String =
+        stringProvider.getString(R.string.error_same_password)
+}

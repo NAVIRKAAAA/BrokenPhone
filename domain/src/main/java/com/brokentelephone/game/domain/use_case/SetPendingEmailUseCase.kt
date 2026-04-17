@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.edit_email.use_case
+package com.brokentelephone.game.domain.use_case
 
 import com.brokentelephone.game.domain.repository.UserSettingsRepository
 

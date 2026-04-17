@@ -20,6 +20,7 @@ interface UserSession {
     suspend fun updateFcmToken(token: String)
     suspend fun refreshFcmToken()
     suspend fun deleteFcmToken()
+    suspend fun updatePassword(newPassword: String)
     suspend fun signOut()
     suspend fun deleteAccount()
     suspend fun getBlockedUsers(): List<BlockedUser>

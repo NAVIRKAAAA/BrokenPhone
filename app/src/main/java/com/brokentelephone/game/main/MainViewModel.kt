@@ -17,6 +17,7 @@ import com.brokentelephone.game.domain.model.session.GameSession
 import com.brokentelephone.game.domain.model.session.GameSessionStatus
 import com.brokentelephone.game.domain.use_case.GetActiveSessionUseCase
 import com.brokentelephone.game.domain.use_case.GetLanguageUseCase
+import com.brokentelephone.game.domain.use_case.GetPendingEmailUseCase
 import com.brokentelephone.game.domain.use_case.GetPostByIdUseCase
 import com.brokentelephone.game.domain.use_case.GetThemeUseCase
 import com.brokentelephone.game.domain.user.OnboardingStep
@@ -27,7 +28,7 @@ import com.brokentelephone.game.features.language.use_case.InitializeFirstAppLau
 import com.brokentelephone.game.features.notifications_settings.use_case.UpdateUserPermissionsUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailChangeUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
-import com.brokentelephone.game.main.use_case.GetPendingEmailUseCase
+import com.brokentelephone.game.main.use_case.ApplyPasswordResetUseCase
 import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
 import com.brokentelephone.game.navigation.nav_graph.AuthGraph
 import kotlinx.coroutines.Job
@@ -51,6 +52,7 @@ class MainViewModel(
     private val getPostByIdUseCase: GetPostByIdUseCase,
     private val applyEmailChangeUseCase: ApplyEmailChangeUseCase,
     private val applyEmailVerificationUseCase: ApplyEmailVerificationUseCase,
+    private val applyPasswordResetUseCase: ApplyPasswordResetUseCase,
     private val getPendingEmailUseCase: GetPendingEmailUseCase,
     private val updateUserPermissionsUseCase: UpdateUserPermissionsUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
@@ -217,8 +219,13 @@ class MainViewModel(
         _state.update { it.copy(pendingRoutes = emptyList()) }
     }
 
-    fun handleAuthLink(uri: Uri) {
-        Log.d("LOG_TAG", "handleAuthLink: $uri")
+    fun handleNewIntent(uri: Uri) {
+        Log.d("LOG_TAG", "handleNewIntent: $uri")
+
+        if (uri.host == "reset-password") {
+            handlePasswordReset(uri)
+            return
+        }
 
         val innerLink = uri.getQueryParameter("link") ?: return
         val innerUri = innerLink.toUri()
@@ -230,6 +237,22 @@ class MainViewModel(
         when (mode) {
             "verifyAndChangeEmail" -> handleEmailChange(oobCode)
             "verifyEmail" -> handleEmailVerification(oobCode)
+        }
+    }
+
+    private fun handlePasswordReset(uri: Uri) {
+        val code = uri.getQueryParameter("code") ?: return
+
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            applyPasswordResetUseCase.execute(code)
+                .onSuccess {
+                    _state.update { it.copy(isLoading = false) }
+                    _sideEffects.send(MainSideEffect.NavigateToNewPassword)
+                }
+                .onError {
+                    _state.update { it.copy(isLoading = false) }
+                }
         }
     }
 

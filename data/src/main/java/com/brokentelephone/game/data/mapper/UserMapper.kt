@@ -34,7 +34,7 @@ fun UserInfo.toUser(): User {
         avatarUrl = null,
         bio = "",
         notifications = NotificationType.entries,
-        onboardingStep = OnboardingStep.CHOOSE_USERNAME,
+        onboardingStep = OnboardingStep.CHOOSE_AVATAR,
         createdAt = createdAt?.toEpochMilliseconds() ?: now,
         updatedAt = updatedAt?.toEpochMilliseconds() ?: now,
     )

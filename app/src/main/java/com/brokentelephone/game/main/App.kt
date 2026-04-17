@@ -23,6 +23,7 @@ import com.brokentelephone.game.features.edit_username.di.editUsernameModule
 import com.brokentelephone.game.features.forgot_password.di.forgotPasswordModule
 import com.brokentelephone.game.features.friends.di.friendsModule
 import com.brokentelephone.game.features.language.di.languageModule
+import com.brokentelephone.game.features.new_password.di.newPasswordModule
 import com.brokentelephone.game.features.notification_details.di.notificationDetailsModule
 import com.brokentelephone.game.features.notifications.di.notificationsModule
 import com.brokentelephone.game.features.notifications_settings.di.notificationsSettingsModule
@@ -78,7 +79,8 @@ class App : Application() {
                 accountSettingsModule,
                 blockedUsersModule,
                 languageModule,
-                themeModule
+                themeModule,
+                newPasswordModule
             )
         }
     }

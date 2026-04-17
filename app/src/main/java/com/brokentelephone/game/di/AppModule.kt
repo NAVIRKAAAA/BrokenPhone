@@ -8,6 +8,7 @@ import com.brokentelephone.game.domain.use_case.DeletePostUseCase
 import com.brokentelephone.game.domain.use_case.GetActiveSessionUseCase
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.domain.use_case.GetLanguageUseCase
+import com.brokentelephone.game.domain.use_case.GetPendingEmailUseCase
 import com.brokentelephone.game.domain.use_case.GetPostLinkByIdUseCase
 import com.brokentelephone.game.domain.use_case.GetPrivacyPolicyLinkUseCase
 import com.brokentelephone.game.domain.use_case.GetTermsOfServiceLinkUseCase
@@ -24,7 +25,7 @@ import com.brokentelephone.game.domain.use_case.SignInWithGoogleUseCase
 import com.brokentelephone.game.main.MainViewModel
 import com.brokentelephone.game.main.use_case.ApplyEmailChangeUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
-import com.brokentelephone.game.main.use_case.GetPendingEmailUseCase
+import com.brokentelephone.game.main.use_case.ApplyPasswordResetUseCase
 import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -60,6 +61,7 @@ val appModule = module {
     factoryOf(::GetActiveSessionUseCase)
     factoryOf(::ApplyEmailChangeUseCase)
     factoryOf(::ApplyEmailVerificationUseCase)
+    factoryOf(::ApplyPasswordResetUseCase)
     factoryOf(::GetPendingEmailUseCase)
     viewModelOf(::MainViewModel)
 }
