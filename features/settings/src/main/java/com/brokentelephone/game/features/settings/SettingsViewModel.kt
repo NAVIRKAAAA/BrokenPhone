@@ -23,6 +23,7 @@ import com.brokentelephone.game.draw_api.DrawRoute
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.settings.model.SettingsSideEffect
 import com.brokentelephone.game.features.settings.model.SettingsState
+import com.brokentelephone.game.features.settings.use_case.GetBlockedUsersCountUseCase
 import com.brokentelephone.game.features.settings.use_case.GetVersionInfoUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -48,6 +49,7 @@ class SettingsViewModel(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getActiveSessionUseCase: GetActiveSessionUseCase,
     private val getPostByIdUseCase: GetPostByIdUseCase,
+    private val getBlockedUsersCountUseCase: GetBlockedUsersCountUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SettingsState())
@@ -123,6 +125,13 @@ class SettingsViewModel(
     fun onPrivacyPolicyClick() {
         viewModelScope.launch {
             _sideEffects.send(SettingsSideEffect.OpenLink(getPrivacyPolicyLinkUseCase()))
+        }
+    }
+
+    fun onScreenResumed() {
+        viewModelScope.launch {
+            getBlockedUsersCountUseCase.execute()
+                .onSuccess { count -> _state.update { it.copy(blockedUsersCount = count) } }
         }
     }
 

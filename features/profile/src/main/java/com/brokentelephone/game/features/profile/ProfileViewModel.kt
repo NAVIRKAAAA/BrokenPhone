@@ -49,9 +49,9 @@ class ProfileViewModel(
     private var lastLoadedAt: Long = 0L
 
     init {
-        getAuthStateUseCase()
-            .onEach { authState -> _state.update { it.copy(isAuth = authState.isAuth()) } }
-            .launchIn(viewModelScope)
+//        getAuthStateUseCase()
+//            .onEach { authState -> _state.update { it.copy(isAuth = authState.isAuth()) } }
+//            .launchIn(viewModelScope)
 
         getCurrentUserUseCase()
             .onEach { user -> _state.update { it.copy(user = user?.toUi()) } }
@@ -92,7 +92,14 @@ class ProfileViewModel(
     }
 
     private suspend fun fetchMyPosts() {
-        val user = state.value.user ?: return
+        val user = state.value.user ?: run {
+            _state.update {
+                it.copy(
+                    isPostsLoading = false
+                )
+            }
+            return
+        }
 
         getUserPostsUseCase.execute(user.id)
             .onSuccess { posts ->
@@ -108,7 +115,14 @@ class ProfileViewModel(
     }
 
     private suspend fun fetchContributions() {
-        val user = state.value.user ?: return
+        val user = state.value.user ?: run {
+            _state.update {
+                it.copy(
+                    isContributionsLoading = false
+                )
+            }
+            return
+        }
 
         getUserContributionsUseCase.execute(user.id)
             .onSuccess { posts ->

@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface UserSession {
     val authState: Flow<AuthState>
     suspend fun initialize()
+    suspend fun reloadUser()
     suspend fun updateUsername(username: String)
     suspend fun updateBio(bio: String)
     suspend fun updateAvatar(avatarUrl: String)

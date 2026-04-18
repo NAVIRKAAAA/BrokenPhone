@@ -6,7 +6,7 @@ import com.brokentelephone.game.core.model.user.UserUi
 
 data class ProfileState(
     val selectedTab: ProfileTab = ProfileTab.POSTS,
-    val isAuth: Boolean = false,
+    val isAuth: Boolean = true,
     val user: UserUi? = null,
     val isPostsLoading: Boolean = true,
     val isInitialLoading: Boolean = true,

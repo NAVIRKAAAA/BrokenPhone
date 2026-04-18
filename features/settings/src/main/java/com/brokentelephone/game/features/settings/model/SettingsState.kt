@@ -18,6 +18,7 @@ data class SettingsState(
     val globalError: String? = null,
     val sessionRemainingSeconds: Int = 0,
     val isSessionLoading: Boolean = false,
+    val blockedUsersCount: Int = 0,
 ) {
     val sessionFormattedTime: String get() = if (user?.sessionId != null) {
         "%02d:%02d".format(sessionRemainingSeconds / 60, sessionRemainingSeconds % 60)

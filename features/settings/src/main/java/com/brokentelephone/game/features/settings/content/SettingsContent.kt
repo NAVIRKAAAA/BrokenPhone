@@ -94,8 +94,7 @@ fun SettingsContent(
 
             AccountTextInfoItem(
                 name = stringResource(R.string.account_settings_blocked_users),
-//                value = "${state.user?.blockedUsersIds?.size ?: 0}",
-                value = "0",
+                value = "${state.blockedUsersCount ?: 0}",
                 modifier = Modifier
                     .clickable(onClick = onBlockedUsersClick)
                     .padding(horizontal = 16.dp),

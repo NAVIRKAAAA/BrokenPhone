@@ -39,6 +39,7 @@ fun SettingsScreen(
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.checkNotificationsPermission(context.isNotificationsGranted())
+        viewModel.onScreenResumed()
     }
 
     LaunchedEffect(Unit) {

@@ -1,5 +1,6 @@
 package com.brokentelephone.game.features.welcome
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.domain.api_handler.onError
@@ -31,6 +32,7 @@ class WelcomeViewModel(
             _state.update { it.copy(isLoading = true) }
 
             signInAnonymouslyUseCase.execute().onSuccess {
+                Log.d("LOG_TAG", "signInAnonymouslyUseCase(): onSuccess")
                 _state.update { it.copy(isLoading = false) }
                 _sideEffects.send(WelcomeSideEffect.NavigateToDashboard)
             }.onError { error ->

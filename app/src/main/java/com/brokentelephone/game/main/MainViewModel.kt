@@ -2,7 +2,6 @@ package com.brokentelephone.game.main
 
 import android.net.Uri
 import android.util.Log
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.choose_avatar_api.ChooseAvatarRoute
@@ -227,16 +226,10 @@ class MainViewModel(
             return
         }
 
-        val innerLink = uri.getQueryParameter("link") ?: return
-        val innerUri = innerLink.toUri()
-        val oobCode = innerUri.getQueryParameter("oobCode") ?: return
-        val mode = innerUri.getQueryParameter("mode") ?: return
-
-        Log.d("LOG_TAG", "mode: $mode, oobCode: $oobCode")
-
-        when (mode) {
-            "verifyAndChangeEmail" -> handleEmailChange(oobCode)
-            "verifyEmail" -> handleEmailVerification(oobCode)
+        if (uri.host == "change-email") {
+            val code = uri.getQueryParameter("code") ?: return
+            handleEmailChange(code)
+            return
         }
     }
 
@@ -256,26 +249,11 @@ class MainViewModel(
         }
     }
 
-    private fun handleEmailVerification(oobCode: String) {
-        viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
-            applyEmailVerificationUseCase.execute(oobCode).onSuccess {
-                Log.d("LOG_TAG", "handleEmailVerification(): onSuccess")
-                // TODO: Show success banner
-            }.onError { exception ->
-                Log.d("LOG_TAG", "handleEmailVerification(): onError: $exception")
-            }
-            _state.update { it.copy(isLoading = false) }
-        }
-    }
-
     private fun handleEmailChange(oobCode: String) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             applyEmailChangeUseCase.execute(oobCode)
-            val pendingEmail = getPendingEmailUseCase.execute() ?: ""
             _state.update { it.copy(isLoading = false) }
-            _sideEffects.send(MainSideEffect.NavigateToSignIn(pendingEmail))
         }
     }
 }

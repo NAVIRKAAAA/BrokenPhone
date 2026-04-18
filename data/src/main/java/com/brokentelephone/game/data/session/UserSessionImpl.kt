@@ -79,6 +79,11 @@ class UserSessionImpl(
         }
     }
 
+    override suspend fun reloadUser() {
+        val userInfo = supabase.auth.currentUserOrNull() ?: return
+        observeSupabaseUser(userInfo)
+    }
+
     private suspend fun observeSupabaseUser(userInfo: UserInfo) {
         Log.d("LOG_TAG", "observeSupabaseUser(): $userInfo")
         realtimeCollectJob?.cancel()
@@ -107,7 +112,13 @@ class UserSessionImpl(
                     .select { filter { eq("id", userInfo.id) } }
                     .decodeSingleOrNull<UserDto>()
                     ?.toUser()
-                if (user != null) _authState.value = AuthState.Auth(user)
+
+                if (user != null) {
+                    val updatedUser = user.copy(
+                        email = userInfo.email ?: ""
+                    )
+                    _authState.value = AuthState.Auth(updatedUser)
+                }
             } catch (_: Exception) {
                 _authState.value = AuthState.NotAuth
             }
@@ -115,8 +126,11 @@ class UserSessionImpl(
             updateFlow.collect { change ->
                 Log.d("LOG_TAG", "Change: $change")
                 try {
-                    val updatedUser = change.decodeRecord<UserDto>().toUser()
-                    _authState.value = AuthState.Auth(updatedUser)
+                    val newUser = change.decodeRecord<UserDto>().toUser()
+                    val updatedNewUser = newUser.copy(
+                        email = userInfo.email ?: ""
+                    )
+                    _authState.value = AuthState.Auth(updatedNewUser)
                 } catch (e: Exception) {
                     Log.d("LOG_TAG", "updateFlow.collect { change -> $e")
                 }
