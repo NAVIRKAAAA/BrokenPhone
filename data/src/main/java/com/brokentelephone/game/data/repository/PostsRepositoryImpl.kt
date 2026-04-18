@@ -47,11 +47,15 @@ class PostsRepositoryImpl(
     override suspend fun loadInitialPosts(
         pageSize: Int,
         sort: DashboardSort,
+        excludedUserIds: List<String>,
     ): PostsPage {
         try {
             val posts = supabase.from(TABLE_POSTS)
                 .select {
-                    filter { neq("status", PostStatus.COMPLETED.name) }
+                    filter {
+                        neq("status", PostStatus.COMPLETED.name)
+                        excludedUserIds.forEach { id -> neq("author_id", id) }
+                    }
                     applySorting(sort)
                     range(0L, (pageSize - 1).toLong())
                 }
@@ -73,11 +77,15 @@ class PostsRepositoryImpl(
         offset: Int,
         pageSize: Int,
         sort: DashboardSort,
+        excludedUserIds: List<String>,
     ): PostsPage {
         try {
             val posts = supabase.from(TABLE_POSTS)
                 .select {
-                    filter { neq("status", PostStatus.COMPLETED.name) }
+                    filter {
+                        neq("status", PostStatus.COMPLETED.name)
+                        excludedUserIds.forEach { id -> neq("author_id", id) }
+                    }
                     applySorting(sort)
                     range(offset.toLong(), (offset + pageSize - 1).toLong())
                 }

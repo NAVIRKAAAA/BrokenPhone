@@ -13,6 +13,7 @@ data class User(
     val updatedAt: Long,
     val notifications: List<NotificationType>,
     val onboardingStep: OnboardingStep,
+    val isEmailVerified: Boolean = false,
     val friendIds: List<String> = emptyList(),
     val notInterestedPostIds: List<String> = emptyList(),
     val readNotificationIds: List<String> = emptyList(),

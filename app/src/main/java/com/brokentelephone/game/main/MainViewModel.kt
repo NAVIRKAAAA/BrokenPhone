@@ -16,7 +16,6 @@ import com.brokentelephone.game.domain.model.session.GameSession
 import com.brokentelephone.game.domain.model.session.GameSessionStatus
 import com.brokentelephone.game.domain.use_case.GetActiveSessionUseCase
 import com.brokentelephone.game.domain.use_case.GetLanguageUseCase
-import com.brokentelephone.game.domain.use_case.GetPendingEmailUseCase
 import com.brokentelephone.game.domain.use_case.GetPostByIdUseCase
 import com.brokentelephone.game.domain.use_case.GetThemeUseCase
 import com.brokentelephone.game.domain.user.OnboardingStep
@@ -52,7 +51,6 @@ class MainViewModel(
     private val applyEmailChangeUseCase: ApplyEmailChangeUseCase,
     private val applyEmailVerificationUseCase: ApplyEmailVerificationUseCase,
     private val applyPasswordResetUseCase: ApplyPasswordResetUseCase,
-    private val getPendingEmailUseCase: GetPendingEmailUseCase,
     private val updateUserPermissionsUseCase: UpdateUserPermissionsUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
@@ -231,6 +229,12 @@ class MainViewModel(
             handleEmailChange(code)
             return
         }
+
+        if (uri.host == "verify-email") {
+            val code = uri.getQueryParameter("code") ?: return
+            handleEmailVerification(code)
+            return
+        }
     }
 
     private fun handlePasswordReset(uri: Uri) {
@@ -246,6 +250,14 @@ class MainViewModel(
                 .onError {
                     _state.update { it.copy(isLoading = false) }
                 }
+        }
+    }
+
+    private fun handleEmailVerification(code: String) {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            applyEmailVerificationUseCase.execute(code)
+            _state.update { it.copy(isLoading = false) }
         }
     }
 

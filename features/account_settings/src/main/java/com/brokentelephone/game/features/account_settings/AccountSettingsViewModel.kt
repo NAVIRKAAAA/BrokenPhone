@@ -34,7 +34,6 @@ class AccountSettingsViewModel(
     val sideEffects = _sideEffects.receiveAsFlow()
 
     init {
-
         getCurrentUserUseCase()
             .onEach { user -> _state.update { it.copy(user = user?.toUi()) } }
             .launchIn(viewModelScope)

@@ -13,6 +13,7 @@ import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.essentials.exceptions.auth.NetworkException
 import com.brokentelephone.game.essentials.exceptions.auth.SamePasswordException
+import com.brokentelephone.game.essentials.exceptions.auth.SessionDataException
 import com.brokentelephone.game.essentials.exceptions.auth.TooManyRequestsException
 import com.brokentelephone.game.essentials.exceptions.auth.UnauthorizedException
 import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
@@ -112,13 +113,13 @@ class UserSessionImpl(
                     .select { filter { eq("id", userInfo.id) } }
                     .decodeSingleOrNull<UserDto>()
                     ?.toUser()
+                    ?: throw SessionDataException()
 
-                if (user != null) {
-                    val updatedUser = user.copy(
-                        email = userInfo.email ?: ""
-                    )
-                    _authState.value = AuthState.Auth(updatedUser)
-                }
+                val updatedUser = user.copy(
+                    email = userInfo.email ?: "",
+                    isEmailVerified = userInfo.emailConfirmedAt != null
+                )
+                _authState.value = AuthState.Auth(updatedUser)
             } catch (_: Exception) {
                 _authState.value = AuthState.NotAuth
             }
@@ -128,7 +129,8 @@ class UserSessionImpl(
                 try {
                     val newUser = change.decodeRecord<UserDto>().toUser()
                     val updatedNewUser = newUser.copy(
-                        email = userInfo.email ?: ""
+                        email = userInfo.email ?: "",
+                        isEmailVerified = userInfo.emailConfirmedAt != null
                     )
                     _authState.value = AuthState.Auth(updatedNewUser)
                 } catch (e: Exception) {
@@ -380,9 +382,14 @@ class UserSessionImpl(
             val msg = e.message.orEmpty()
             when {
                 msg.contains("same_password", ignoreCase = true) ||
-                msg.contains("different from", ignoreCase = true) -> throw SamePasswordException()
+                        msg.contains(
+                            "different from",
+                            ignoreCase = true
+                        ) -> throw SamePasswordException()
+
                 msg.contains("weak_password", ignoreCase = true) ||
-                msg.contains("at least", ignoreCase = true) -> throw WeakPasswordException()
+                        msg.contains("at least", ignoreCase = true) -> throw WeakPasswordException()
+
                 msg.contains("rate_limit", ignoreCase = true) -> throw TooManyRequestsException()
                 else -> throw UnknownAuthException()
             }
@@ -401,6 +408,31 @@ class UserSessionImpl(
     }
 
     override suspend fun deleteAccount() = Unit
+
+    override suspend fun getExcludedUserIds(): List<String> {
+        val currentUserId = supabase.auth.currentUserOrNull()?.id ?: throw UnauthorizedException()
+        return try {
+            supabase.from(COLLECTION_USER_BLOCKS)
+                .select {
+                    filter {
+                        or {
+                            eq("blocker_id", currentUserId)
+                            eq("blocked_id", currentUserId)
+                        }
+                    }
+                }
+                .decodeList<UserBlockDto>()
+                .map { block ->
+                    if (block.blockerId == currentUserId) block.blockedId else block.blockerId
+                }
+        } catch (_: RestException) {
+            throw UnknownAuthException()
+        } catch (_: java.io.IOException) {
+            throw NetworkException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
 
     override suspend fun getBlockedUsers(): List<BlockedUser> {
         val currentUserId = supabase.auth.currentUserOrNull()?.id ?: throw UnauthorizedException()

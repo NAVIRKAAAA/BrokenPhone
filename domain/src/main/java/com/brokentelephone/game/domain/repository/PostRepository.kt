@@ -11,12 +11,14 @@ interface PostRepository {
     suspend fun loadInitialPosts(
         pageSize: Int,
         sort: DashboardSort,
+        excludedUserIds: List<String> = emptyList(),
     ): PostsPage
 
     suspend fun loadNextPosts(
         offset: Int,
         pageSize: Int,
         sort: DashboardSort,
+        excludedUserIds: List<String> = emptyList(),
     ): PostsPage
 
     fun getPostById(id: String): Flow<Post>

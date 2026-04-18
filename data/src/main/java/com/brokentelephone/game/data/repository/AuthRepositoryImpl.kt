@@ -1,5 +1,6 @@
 package com.brokentelephone.game.data.repository
 
+import android.util.Log
 import com.brokentelephone.game.domain.model.auth.GoogleAuthResult
 import com.brokentelephone.game.domain.repository.AuthRepository
 import com.brokentelephone.game.essentials.exceptions.auth.EmailAlreadyInUseException
@@ -22,6 +23,7 @@ class AuthRepositoryImpl(
     private val supabase: SupabaseClient,
 ) : AuthRepository {
 
+    // TODO: add redirect confirm sign up
     override suspend fun signUpWithEmailPassword(email: String, password: String): String {
         return try {
             supabase.auth.signUpWith(Email) {
@@ -30,6 +32,7 @@ class AuthRepositoryImpl(
             }
             supabase.auth.currentUserOrNull()?.id ?: throw UnknownAuthException()
         } catch (e: RestException) {
+            Log.d("LOG_TAG", "signUpWithEmailPassword: $e")
             val msg = e.message.orEmpty()
             when {
                 msg.contains("already registered", ignoreCase = true) ||
@@ -46,6 +49,7 @@ class AuthRepositoryImpl(
         } catch (e: UnknownAuthException) {
             throw UnknownAuthException()
         } catch (e: Exception) {
+            Log.d("LOG_TAG", "signUpWithEmailPassword: $e")
             throw UnknownAuthException()
         }
     }

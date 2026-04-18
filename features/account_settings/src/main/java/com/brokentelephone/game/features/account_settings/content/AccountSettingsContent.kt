@@ -1,6 +1,7 @@
 package com.brokentelephone.game.features.account_settings.content
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,15 +47,15 @@ fun AccountSettingsContent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-//        val isEmailVerified = state.user?.isEmailVerified ?: false
+        val isEmailVerified = state.user?.isEmailVerified ?: false
 
-//        AccountEmailInfoItem(
-//            email = state.user?.email ?: "",
-//            isVerified = isEmailVerified,
-//            modifier = Modifier
-//                .clickable(onClick = onVerifyEmailClick, enabled = !isEmailVerified && !state.isVerifyEmailLoading)
-//                .padding(horizontal = 16.dp),
-//        )
+        AccountEmailInfoItem(
+            email = state.user?.email ?: "",
+            isVerified = isEmailVerified,
+            modifier = Modifier
+                .clickable(onClick = onVerifyEmailClick, enabled = !isEmailVerified && !state.isVerifyEmailLoading)
+                .padding(horizontal = 16.dp),
+        )
 
 //        AccountStaticInfoItem(
 //            name = stringResource(R.string.account_settings_provider),

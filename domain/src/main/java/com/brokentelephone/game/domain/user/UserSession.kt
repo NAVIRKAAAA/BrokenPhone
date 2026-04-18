@@ -25,4 +25,5 @@ interface UserSession {
     suspend fun signOut()
     suspend fun deleteAccount()
     suspend fun getBlockedUsers(): List<BlockedUser>
+    suspend fun getExcludedUserIds(): List<String>
 }
