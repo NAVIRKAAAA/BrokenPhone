@@ -8,4 +8,5 @@ sealed interface MainSideEffect {
     data class NavigateToDescribeDrawing(val route: DescribeDrawingRoute) : MainSideEffect
     data class NavigateToSignIn(val email: String) : MainSideEffect
     data object NavigateToNewPassword : MainSideEffect
+    data object NavigateToChooseAvatar : MainSideEffect
 }

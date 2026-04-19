@@ -55,6 +55,9 @@ dependencies {
     implementation(project(":features:sign_up"))
     implementation(project(":features:sign_up_api"))
 
+    implementation(project(":features:confirm_sign_up"))
+    implementation(project(":features:confirm_sign_up_api"))
+
     implementation(project(":features:sign_in"))
     implementation(project(":features:sign_in_api"))
 

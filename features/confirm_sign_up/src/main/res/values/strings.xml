@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="confirm_sign_up_title">Confirm Email</string>
+    <string name="confirm_sign_up_heading">Check Your Email</string>
+    <string name="confirm_sign_up_body_prefix">We sent a %1$d-digit code to </string>
+    <string name="confirm_sign_up_body_suffix">. Enter it below to confirm your email.</string>
+    <string name="confirm_sign_up_code_label">Confirmation code</string>
+    <string name="confirm_sign_up_code_hint">Enter the %1$d-digit code from your email</string>
+    <string name="confirm_sign_up_confirm">Confirm</string>
+    <string name="confirm_sign_up_no_code">Didn\'t receive the code?</string>
+    <string name="confirm_sign_up_resend">Resend</string>
+    <string name="confirm_sign_up_resend_cooldown">Resend in %1$s</string>
+</resources>

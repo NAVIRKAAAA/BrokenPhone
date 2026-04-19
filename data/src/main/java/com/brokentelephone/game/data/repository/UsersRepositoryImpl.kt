@@ -6,7 +6,6 @@ import com.brokentelephone.game.data.mapper.toUser
 import com.brokentelephone.game.data.mapper.toUserDto
 import com.brokentelephone.game.domain.model.settings.NotificationType
 import com.brokentelephone.game.domain.repository.UsersRepository
-import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.domain.user.User
 import com.brokentelephone.game.essentials.exceptions.auth.EmailAlreadyInUseException
@@ -95,7 +94,6 @@ class UsersRepositoryImpl(
     override suspend fun createUser(
         id: String,
         email: String,
-        authProvider: AuthProvider,
     ) {
         val now = System.currentTimeMillis()
 
@@ -104,7 +102,6 @@ class UsersRepositoryImpl(
             username = "",
             email = email,
             avatarUrl = null,
-//            authProvider = authProvider,
             createdAt = now,
             updatedAt = now,
             notifications = NotificationType.entries,

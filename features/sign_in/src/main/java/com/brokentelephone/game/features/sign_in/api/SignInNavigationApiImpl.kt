@@ -74,7 +74,7 @@ class SignInNavigationApiImpl : SignInNavigationApi {
                     }
                 },
                 onNavigateToChooseAvatar = {
-                    navController.navigateSingle(ChooseAvatarRoute) {
+                    navController.navigate(ChooseAvatarRoute) {
                         popUpTo(0) { inclusive = true }
                     }
                 },

@@ -5,7 +5,6 @@ import com.brokentelephone.game.domain.api_handler.AppResult
 import com.brokentelephone.game.domain.google.GoogleSignInManager
 import com.brokentelephone.game.domain.repository.AuthRepository
 import com.brokentelephone.game.domain.repository.UsersRepository
-import com.brokentelephone.game.domain.user.AuthProvider
 import kotlinx.coroutines.Dispatchers
 
 class SignInWithGoogleUseCase(
@@ -28,7 +27,6 @@ class SignInWithGoogleUseCase(
                 usersRepository.createUser(
                     id = result.uid,
                     email = result.email,
-                    authProvider = AuthProvider.GOOGLE,
                 )
             }
             result.isNewUser

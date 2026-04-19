@@ -11,6 +11,7 @@ import com.brokentelephone.game.features.bottom_nav_bar.di.bottomNavBarModule
 import com.brokentelephone.game.features.chain_details.di.chainDetailsModule
 import com.brokentelephone.game.features.choose_avatar.di.chooseAvatarModule
 import com.brokentelephone.game.features.choose_username.di.chooseUsernameModule
+import com.brokentelephone.game.features.confirm_sign_up.di.confirmSignUpModule
 import com.brokentelephone.game.features.create_post.di.createPostModule
 import com.brokentelephone.game.features.dashboard.di.dashboardModule
 import com.brokentelephone.game.features.describe_drawing.di.describeDrawingModule
@@ -52,6 +53,7 @@ class App : Application() {
                 welcomeModule,
                 signInModule,
                 signUpModule,
+                confirmSignUpModule,
                 chooseAvatarModule,
                 chooseUsernameModule,
                 dashboardModule,

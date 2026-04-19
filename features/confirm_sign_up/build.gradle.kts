@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.brokentelephone.game.features.sign_up"
+    namespace = "com.brokentelephone.game.features.confirm_sign_up"
     compileSdk = 37
 
     defaultConfig {
@@ -24,10 +24,8 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":domain"))
     implementation(project(":essentials"))
-    implementation(project(":features:sign_up_api"))
-    implementation(project(":features:choose_avatar_api"))
-    implementation(project(":features:dashboard_api"))
     implementation(project(":features:confirm_sign_up_api"))
+    implementation(project(":features:choose_avatar_api"))
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.koin.android)
     implementation(libs.koin.compose.viewmodel)

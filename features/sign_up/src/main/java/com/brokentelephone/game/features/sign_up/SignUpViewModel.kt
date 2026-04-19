@@ -127,7 +127,7 @@ class SignUpViewModel(
 
             signUpUseCase.execute(currentState.email, currentState.password).onSuccess {
                 _state.update { it.copy(isLoading = false) }
-                _sideEffects.send(SignUpSideEffect.NavigateToChooseAvatar)
+                _sideEffects.send(SignUpSideEffect.NavigateToConfirmSignUp(currentState.email))
             }.onError { error ->
                 val message = exceptionToMessageMapper.map(error)
                 _state.update { it.copy(isLoading = false, globalError = message) }

@@ -12,6 +12,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.brokentelephone.game.choose_avatar_api.ChooseAvatarRoute
 import com.brokentelephone.game.dashboard_api.DashboardRoute
+import com.brokentelephone.game.features.confirm_sign_up_api.ConfirmSignUpRoute
 import com.brokentelephone.game.features.sign_up.SignUpScreen
 import com.brokentelephone.game.features.sign_up_api.SignUpNavigationApi
 import com.brokentelephone.game.features.sign_up_api.SignUpRoute
@@ -63,9 +64,13 @@ class SignUpNavigationApiImpl : SignUpNavigationApi {
                     }
                 },
                 onNavigateToChooseAvatar = {
-                    navController.navigateSingle(ChooseAvatarRoute) {
+                    navController.navigate(ChooseAvatarRoute) {
                         popUpTo(0) { inclusive = true }
                     }
+                },
+                onNavigateToConfirmSignUp = { email ->
+                    // Auto navigate. Don't use navigateSingle !
+                    navController.navigate(ConfirmSignUpRoute(email = email))
                 },
             )
         }

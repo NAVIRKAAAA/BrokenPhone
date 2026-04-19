@@ -1,6 +1,5 @@
 package com.brokentelephone.game.domain.repository
 
-import com.brokentelephone.game.domain.user.AuthProvider
 import com.brokentelephone.game.domain.user.User
 
 interface UsersRepository {
@@ -11,7 +10,6 @@ interface UsersRepository {
     suspend fun createUser(
         id: String,
         email: String,
-        authProvider: AuthProvider
     )
 
     suspend fun createUser(id: String, username: String, avatarUrl: String)

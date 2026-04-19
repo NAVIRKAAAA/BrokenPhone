@@ -18,6 +18,7 @@ fun SignUpScreen(
     onBackClick: () -> Unit,
     onSignedUp: () -> Unit = {},
     onNavigateToChooseAvatar: () -> Unit = {},
+    onNavigateToConfirmSignUp: (email: String) -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: SignUpViewModel = koinViewModel(),
 ) {
@@ -30,6 +31,7 @@ fun SignUpScreen(
             when (effect) {
                 SignUpSideEffect.SignedUp -> onSignedUp()
                 SignUpSideEffect.NavigateToChooseAvatar -> onNavigateToChooseAvatar()
+                is SignUpSideEffect.NavigateToConfirmSignUp -> onNavigateToConfirmSignUp(effect.email)
                 SignUpSideEffect.ClearFocus -> focusManager.clearFocus()
                 is SignUpSideEffect.OpenLink -> context.openCustomTab(effect.url)
             }

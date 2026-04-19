@@ -23,6 +23,7 @@ import com.brokentelephone.game.edit_bio_api.EditBioNavigationApi
 import com.brokentelephone.game.edit_email_api.EditEmailNavigationApi
 import com.brokentelephone.game.edit_profile_api.EditProfileNavigationApi
 import com.brokentelephone.game.edit_username_api.EditUsernameNavigationApi
+import com.brokentelephone.game.features.confirm_sign_up_api.ConfirmSignUpNavigationApi
 import com.brokentelephone.game.features.sign_up_api.SignUpNavigationApi
 import com.brokentelephone.game.features.welcome_api.WelcomeNavigationApi
 import com.brokentelephone.game.features.welcome_api.WelcomeRoute
@@ -55,6 +56,7 @@ fun AppNavGraph(
 ) {
     val welcomeNavigationApi: WelcomeNavigationApi = koinInject()
     val signUpNavigationApi: SignUpNavigationApi = koinInject()
+    val confirmSignUpNavigationApi: ConfirmSignUpNavigationApi = koinInject()
     val signInNavigationApi: SignInNavigationApi = koinInject()
     val forgotPasswordNavigationApi: ForgotPasswordNavigationApi = koinInject()
     val chooseAvatarNavigationApi: ChooseAvatarNavigationApi = koinInject()
@@ -88,6 +90,7 @@ fun AppNavGraph(
     val authGraphRoutes = listOf(
         welcomeNavigationApi,
         signUpNavigationApi,
+        confirmSignUpNavigationApi,
         signInNavigationApi,
         forgotPasswordNavigationApi,
         chooseAvatarNavigationApi,

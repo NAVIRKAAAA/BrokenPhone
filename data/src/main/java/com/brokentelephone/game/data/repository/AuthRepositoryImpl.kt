@@ -7,6 +7,7 @@ import com.brokentelephone.game.essentials.exceptions.auth.EmailAlreadyInUseExce
 import com.brokentelephone.game.essentials.exceptions.auth.InvalidActionCodeException
 import com.brokentelephone.game.essentials.exceptions.auth.InvalidCredentialsException
 import com.brokentelephone.game.essentials.exceptions.auth.InvalidEmailException
+import com.brokentelephone.game.essentials.exceptions.auth.InvalidOtpException
 import com.brokentelephone.game.essentials.exceptions.auth.NetworkException
 import com.brokentelephone.game.essentials.exceptions.auth.TooManyRequestsException
 import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
@@ -23,24 +24,30 @@ class AuthRepositoryImpl(
     private val supabase: SupabaseClient,
 ) : AuthRepository {
 
-    // TODO: add redirect confirm sign up
-    override suspend fun signUpWithEmailPassword(email: String, password: String): String {
-        return try {
-            supabase.auth.signUpWith(Email) {
+    override suspend fun signUpWithEmailPassword(email: String, password: String) {
+        try {
+            supabase.auth.signUpWith(provider = Email) {
                 this.email = email
                 this.password = password
             }
-            supabase.auth.currentUserOrNull()?.id ?: throw UnknownAuthException()
         } catch (e: RestException) {
             Log.d("LOG_TAG", "signUpWithEmailPassword: $e")
             val msg = e.message.orEmpty()
             when {
                 msg.contains("already registered", ignoreCase = true) ||
-                msg.contains("user_already_exists", ignoreCase = true) -> throw EmailAlreadyInUseException()
+                        msg.contains(
+                            "user_already_exists",
+                            ignoreCase = true
+                        ) -> throw EmailAlreadyInUseException()
+
                 msg.contains("weak_password", ignoreCase = true) ||
-                msg.contains("at least", ignoreCase = true) -> throw WeakPasswordException()
-                msg.contains("valid email", ignoreCase = true) ||
-                msg.contains("invalid_email", ignoreCase = true) -> throw InvalidEmailException()
+                        msg.contains("at least", ignoreCase = true) -> throw WeakPasswordException()
+
+                msg.contains("valid email", ignoreCase = true) || msg.contains(
+                    "invalid_email",
+                    ignoreCase = true
+                ) -> throw InvalidEmailException()
+
                 msg.contains("rate_limit", ignoreCase = true) -> throw TooManyRequestsException()
                 else -> throw UnknownAuthException()
             }
@@ -62,8 +69,14 @@ class AuthRepositoryImpl(
             }
         } catch (error: RestException) {
             when {
-                error.message.orEmpty().contains("Invalid login credentials", ignoreCase = true) -> throw InvalidCredentialsException()
-                error.message.orEmpty().contains("rate_limit", ignoreCase = true) -> throw TooManyRequestsException()
+                error.message.orEmpty().contains(
+                    "Invalid login credentials",
+                    ignoreCase = true
+                ) -> throw InvalidCredentialsException()
+
+                error.message.orEmpty()
+                    .contains("rate_limit", ignoreCase = true) -> throw TooManyRequestsException()
+
                 else -> throw UnknownAuthException()
             }
         } catch (_: java.io.IOException) {
@@ -102,8 +115,14 @@ class AuthRepositoryImpl(
             throw UnknownAuthException()
         } catch (error: RestException) {
             when {
-                error.message.orEmpty().contains("already registered", ignoreCase = true) -> throw EmailAlreadyInUseException()
-                error.message.orEmpty().contains("rate_limit", ignoreCase = true) -> throw TooManyRequestsException()
+                error.message.orEmpty().contains(
+                    "already registered",
+                    ignoreCase = true
+                ) -> throw EmailAlreadyInUseException()
+
+                error.message.orEmpty()
+                    .contains("rate_limit", ignoreCase = true) -> throw TooManyRequestsException()
+
                 else -> throw UnknownAuthException()
             }
         } catch (_: java.io.IOException) {
@@ -132,8 +151,14 @@ class AuthRepositoryImpl(
         } catch (error: RestException) {
             when {
                 error.message.orEmpty().contains("valid email", ignoreCase = true) ||
-                error.message.orEmpty().contains("invalid_email", ignoreCase = true) -> throw InvalidEmailException()
-                error.message.orEmpty().contains("rate_limit", ignoreCase = true) -> throw TooManyRequestsException()
+                        error.message.orEmpty().contains(
+                            "invalid_email",
+                            ignoreCase = true
+                        ) -> throw InvalidEmailException()
+
+                error.message.orEmpty()
+                    .contains("rate_limit", ignoreCase = true) -> throw TooManyRequestsException()
+
                 else -> throw UnknownAuthException()
             }
         } catch (_: java.io.IOException) {
@@ -151,10 +176,20 @@ class AuthRepositoryImpl(
         } catch (error: RestException) {
             when {
                 error.message.orEmpty().contains("already registered", ignoreCase = true) ||
-                error.message.orEmpty().contains("already been registered", ignoreCase = true) -> throw EmailAlreadyInUseException()
+                        error.message.orEmpty().contains(
+                            "already been registered",
+                            ignoreCase = true
+                        ) -> throw EmailAlreadyInUseException()
+
                 error.message.orEmpty().contains("valid email", ignoreCase = true) ||
-                error.message.orEmpty().contains("invalid_email", ignoreCase = true) -> throw InvalidEmailException()
-                error.message.orEmpty().contains("rate_limit", ignoreCase = true) -> throw TooManyRequestsException()
+                        error.message.orEmpty().contains(
+                            "invalid_email",
+                            ignoreCase = true
+                        ) -> throw InvalidEmailException()
+
+                error.message.orEmpty()
+                    .contains("rate_limit", ignoreCase = true) -> throw TooManyRequestsException()
+
                 else -> throw UnknownAuthException()
             }
         } catch (_: java.io.IOException) {
@@ -169,7 +204,9 @@ class AuthRepositoryImpl(
             supabase.auth.resendEmail(OtpType.Email.SIGNUP, email)
         } catch (error: RestException) {
             when {
-                error.message.orEmpty().contains("rate_limit", ignoreCase = true) -> throw TooManyRequestsException()
+                error.message.orEmpty()
+                    .contains("rate_limit", ignoreCase = true) -> throw TooManyRequestsException()
+
                 else -> throw UnknownAuthException()
             }
         } catch (_: java.io.IOException) {
@@ -197,5 +234,46 @@ class AuthRepositoryImpl(
         } catch (_: Exception) {
             throw InvalidActionCodeException()
         }
+    }
+
+    override suspend fun verifyEmailOtp(email: String, otp: String) {
+        try {
+            supabase.auth.verifyEmailOtp(type = OtpType.Email.SIGNUP, email = email, token = otp)
+        } catch (error: RestException) {
+            val msg = error.message.orEmpty()
+            when {
+                msg.contains("rate_limit", ignoreCase = true) -> throw TooManyRequestsException()
+                else -> throw InvalidOtpException()
+            }
+        } catch (_: java.io.IOException) {
+            throw NetworkException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
+
+    override suspend fun resendSignUpConfirmation(email: String) {
+        try {
+            supabase.auth.resendEmail(OtpType.Email.SIGNUP, email)
+        } catch (error: RestException) {
+            when {
+                error.message.orEmpty()
+                    .contains("rate_limit", ignoreCase = true) -> throw TooManyRequestsException()
+
+                else -> throw UnknownAuthException()
+            }
+        } catch (_: java.io.IOException) {
+            throw NetworkException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
+    }
+
+    override suspend fun getCurrentUserId(): String {
+        return supabase.auth.currentUserOrNull()?.id ?: throw UnknownAuthException()
+    }
+
+    override suspend fun getCurrentUserEmail(): String {
+        return supabase.auth.currentUserOrNull()?.email ?: throw UnknownAuthException()
     }
 }

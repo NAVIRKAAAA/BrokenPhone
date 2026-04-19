@@ -24,6 +24,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.brokentelephone.game.choose_avatar_api.ChooseAvatarRoute
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.banner.ActiveSessionBanner
 import com.brokentelephone.game.core.dialog.ConfirmDialog
@@ -106,6 +107,14 @@ class MainActivity : AppCompatActivity() {
                             }
 
                             navController.navigate(NewPasswordRoute)
+                        }
+
+                        MainSideEffect.NavigateToChooseAvatar -> {
+                            navController.navigate(WelcomeRoute) {
+                                popUpTo(0) { inclusive = true }
+                            }
+
+                            navController.navigate(ChooseAvatarRoute)
                         }
                     }
                 }

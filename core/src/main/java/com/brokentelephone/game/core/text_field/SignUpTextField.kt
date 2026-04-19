@@ -25,6 +25,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,11 +46,12 @@ fun SignUpTextField(
     onClearClick: (() -> Unit)? = null,
     isPasswordVisible: Boolean = false,
     onPasswordVisibilityToggle: (() -> Unit)? = null,
+    keyboardType: KeyboardType = KeyboardType.Unspecified,
     imeAction: ImeAction = ImeAction.Done,
     onImeAction: () -> Unit = {},
 ) {
     val supportingText: @Composable (() -> Unit)? = when {
-        (error != null && error.isNotBlank()) || hint != null || maxLength != null -> {
+        !error.isNullOrBlank() || hint != null || maxLength != null -> {
             {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     when {
@@ -109,13 +111,13 @@ fun SignUpTextField(
                 fontFamily = FontFamily(Font(R.font.nunito_regular)),
                 fontSize = 15.sp,
                 lineHeight = 22.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
             )
         },
         supportingText = supportingText,
         isError = error != null,
         visualTransformation = visualTransformation,
-        keyboardOptions = KeyboardOptions(imeAction = imeAction),
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
         keyboardActions = KeyboardActions(onAny = { onImeAction() }),
         trailingIcon = when {
             onPasswordVisibilityToggle != null -> {
@@ -179,7 +181,7 @@ fun SignUpTextFieldPasswordPreview() {
         darkTheme = true
     ) {
         SignUpTextField(
-            text = "secret123".repeat(555),
+            text = "secret123",
             label = "Password",
             isPasswordVisible = visible,
             onPasswordVisibilityToggle = { visible = !visible },
