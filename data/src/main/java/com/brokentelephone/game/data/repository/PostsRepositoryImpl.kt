@@ -22,6 +22,7 @@ import com.brokentelephone.game.essentials.exceptions.main.AppException
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.exceptions.RestException
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
 import io.github.jan.supabase.postgrest.query.PostgrestRequestBuilder
 import io.github.jan.supabase.postgrest.query.filter.FilterOperation
@@ -51,7 +52,7 @@ class PostsRepositoryImpl(
     ): PostsPage {
         try {
             val posts = supabase.from(TABLE_POSTS)
-                .select {
+                .select(Columns.raw("*, users!author_id(username, avatar_url)")) {
                     filter {
                         neq("status", PostStatus.COMPLETED.name)
                         excludedUserIds.forEach { id -> neq("author_id", id) }
@@ -81,7 +82,7 @@ class PostsRepositoryImpl(
     ): PostsPage {
         try {
             val posts = supabase.from(TABLE_POSTS)
-                .select {
+                .select(Columns.raw("*, users!author_id(username, avatar_url)")) {
                     filter {
                         neq("status", PostStatus.COMPLETED.name)
                         excludedUserIds.forEach { id -> neq("author_id", id) }
@@ -151,7 +152,7 @@ class PostsRepositoryImpl(
                 ?.toPost() ?: throw PostNotFoundException()
 
             return supabase.from(TABLE_POSTS)
-                .select {
+                .select(Columns.raw("*, users!author_id(username, avatar_url)")) {
                     filter { eq("chain_id", post.chainId) }
                     order("created_at", Order.ASCENDING)
                 }

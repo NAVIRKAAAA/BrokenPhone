@@ -4,12 +4,19 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class PostAuthorDto(
+    @SerialName("username") val username: String,
+    @SerialName("avatar_url") val avatarUrl: String? = null,
+)
+
+@Serializable
 data class PostDto(
     @SerialName("id") val id: String,
     @SerialName("chain_id") val chainId: String,
     @SerialName("author_id") val authorId: String,
     @SerialName("author_name") val authorName: String,
     @SerialName("avatar_url") val avatarUrl: String? = null,
+    @SerialName("users") val author: PostAuthorDto? = null,
     @SerialName("content_type") val contentType: String,
     @SerialName("content_text") val contentText: String? = null,
     @SerialName("content_image_url") val contentImageUrl: String? = null,

@@ -118,10 +118,9 @@ class PostDetailsViewModel(
     }
 
     private fun loadPost() {
-        getPostByIdUseCase(postId)
+        getPostByIdUseCase.execute(postId)
             .map { it.toUi() }
             .onEach { postUi ->
-                delay(150)
                 _state.update {
                     it.copy(
                         postUi = postUi,
