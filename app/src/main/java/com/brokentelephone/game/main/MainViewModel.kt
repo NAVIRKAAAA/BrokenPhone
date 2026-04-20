@@ -15,7 +15,6 @@ import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.session.GameSession
 import com.brokentelephone.game.domain.model.session.GameSessionStatus
 import com.brokentelephone.game.domain.use_case.GetActiveSessionUseCase
-import com.brokentelephone.game.domain.use_case.GetLanguageUseCase
 import com.brokentelephone.game.domain.use_case.GetPostByIdUseCase
 import com.brokentelephone.game.domain.use_case.GetThemeUseCase
 import com.brokentelephone.game.domain.user.OnboardingStep
@@ -43,7 +42,6 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val getThemeUseCase: GetThemeUseCase,
-    private val getLanguageUseCase: GetLanguageUseCase,
     private val initializeFirstAppLaunchUseCase: InitializeFirstAppLaunchUseCase,
     private val initializeSessionUseCase: InitializeSessionUseCase,
     private val getActiveSessionUseCase: GetActiveSessionUseCase,
@@ -65,7 +63,6 @@ class MainViewModel(
 
     init {
         observeTheme()
-        observeLanguage()
         initializeSession()
         initializeFirstLaunch()
     }
@@ -85,12 +82,6 @@ class MainViewModel(
     private fun observeTheme() {
         getThemeUseCase()
             .onEach { theme -> _state.update { it.copy(theme = theme) } }
-            .launchIn(viewModelScope)
-    }
-
-    private fun observeLanguage() {
-        getLanguageUseCase()
-            .onEach { language -> _state.update { it.copy(language = language) } }
             .launchIn(viewModelScope)
     }
 

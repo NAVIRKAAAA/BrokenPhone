@@ -9,8 +9,8 @@ import com.brokentelephone.game.core.model.user.toUi
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.use_case.DeletePostUseCase
-import com.brokentelephone.game.domain.use_case.GetAuthStateUseCase
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
+import com.brokentelephone.game.domain.use_case.GetFriendsCountUseCase
 import com.brokentelephone.game.domain.use_case.GetPostLinkByIdUseCase
 import com.brokentelephone.game.domain.use_case.GetUserContributionsUseCase
 import com.brokentelephone.game.domain.use_case.GetUserPostsUseCase
@@ -36,7 +36,7 @@ class ProfileViewModel(
     private val getUserContributionsUseCase: GetUserContributionsUseCase,
     private val getPostLinkByIdUseCase: GetPostLinkByIdUseCase,
     private val deletePostUseCase: DeletePostUseCase,
-    private val getAuthStateUseCase: GetAuthStateUseCase,
+    private val getFriendsCountUseCase: GetFriendsCountUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper
 ) : ViewModel() {
 
@@ -66,8 +66,10 @@ class ProfileViewModel(
 
             val posts = async { fetchMyPosts() }
             val contributions = async { fetchContributions() }
+            val friendsCount = async { fetchFriendsCount() }
             posts.await()
             contributions.await()
+            friendsCount.await()
             lastLoadedAt = System.currentTimeMillis()
 
             _state.update { it.copy(isInitialLoading = false) }
@@ -82,8 +84,10 @@ class ProfileViewModel(
 
             val posts = async { fetchMyPosts() }
             val contributions = async { fetchContributions() }
+            val friendsCount = async { fetchFriendsCount() }
             posts.await()
             contributions.await()
+            friendsCount.await()
 
             lastLoadedAt = System.currentTimeMillis()
 
@@ -112,6 +116,12 @@ class ProfileViewModel(
             .onError {
                 _state.update { it.copy(isPostsLoading = false) }
             }
+    }
+
+    private suspend fun fetchFriendsCount() {
+        val userId = state.value.user?.id ?: return
+        getFriendsCountUseCase.execute(userId)
+            .onSuccess { count -> _state.update { it.copy(friendsCount = count) } }
     }
 
     private suspend fun fetchContributions() {

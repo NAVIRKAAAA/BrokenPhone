@@ -21,6 +21,8 @@ class SearchUsersUseCase(
     private val userSession: UserSession,
     private val handler: ApiHandler,
 ) {
+
+    // TODO: Improve getFriendshipActionState for each user
     suspend fun execute(query: String): AppResult<List<AddFriendUserUi>> {
         return handler.handle(Dispatchers.IO) {
             val currentUser = userSession.authState.first().getUserOrNull()

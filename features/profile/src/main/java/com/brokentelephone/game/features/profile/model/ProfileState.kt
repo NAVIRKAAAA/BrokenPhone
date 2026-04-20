@@ -8,6 +8,7 @@ data class ProfileState(
     val selectedTab: ProfileTab = ProfileTab.POSTS,
     val isAuth: Boolean = true,
     val user: UserUi? = null,
+    val friendsCount: Int = 0,
     val isPostsLoading: Boolean = true,
     val isInitialLoading: Boolean = true,
     val myPosts: List<PostUi> = emptyList(),

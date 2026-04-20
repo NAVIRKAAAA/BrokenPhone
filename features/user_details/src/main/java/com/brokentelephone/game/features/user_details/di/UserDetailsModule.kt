@@ -2,6 +2,7 @@ package com.brokentelephone.game.features.user_details.di
 
 import com.brokentelephone.game.domain.use_case.AcceptFriendRequestUseCase
 import com.brokentelephone.game.domain.use_case.CancelFriendRequestUseCase
+import com.brokentelephone.game.domain.use_case.GetFriendsCountUseCase
 import com.brokentelephone.game.domain.use_case.GetUserByIdUseCase
 import com.brokentelephone.game.domain.use_case.GetUserLinkByIdUseCase
 import com.brokentelephone.game.domain.use_case.RemoveFriendUseCase
@@ -16,6 +17,7 @@ import org.koin.dsl.module
 
 val userDetailsModule = module {
     factoryOf(::GetUserByIdUseCase)
+    factoryOf(::GetFriendsCountUseCase)
     factoryOf(::GetFriendshipActionStateUseCase)
     factoryOf(::SendFriendRequestUseCase)
     factoryOf(::GetUserLinkByIdUseCase)

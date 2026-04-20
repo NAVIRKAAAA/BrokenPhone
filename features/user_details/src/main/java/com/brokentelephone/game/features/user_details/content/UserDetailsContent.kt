@@ -169,7 +169,7 @@ fun UserDetailsContent(
                                             .padding(top = 16.dp),
                                         postsCount = state.myPosts.size,
                                         contributions = state.myContributions.size,
-                                        friends = user.friendIds.size,
+                                        friends = state.friendsCount,
                                         isAuth = true,
                                         bio = user.bio,
                                         createdAt = user.createdAt,

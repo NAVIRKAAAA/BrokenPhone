@@ -68,6 +68,8 @@ class UserSessionImpl(
             Log.d("LOG_TAG", "Start observe sessionStatus")
             supabase.auth.sessionStatus.collect { newSessionStatus ->
                 Log.d("LOG_TAG", "newSessionStatus: $newSessionStatus")
+                if (newSessionStatus is SessionStatus.Initializing) return@collect
+
                 val currentUserId =
                     supabase.auth.currentUserOrNull() ?: run {
                         _authState.value = AuthState.NotAuth

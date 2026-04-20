@@ -108,7 +108,7 @@ class FirestoreTestDataSeeder(
                 updatedAt = now,
                 notifications = NotificationType.entries,
                 onboardingStep = OnboardingStep.COMPLETED,
-                friendIds = listOf(targetUserId),
+//                friendIds = listOf(targetUserId),
             )
 //            docRef.set(user.toMap()).await()
             friendIds.add(docRef.id)

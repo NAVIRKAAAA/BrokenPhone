@@ -14,7 +14,6 @@ data class UserDto(
     @SerialName("onboarding_step") val onboardingStep: String,
     @SerialName("created_at") val createdAt: Long,
     @SerialName("updated_at") val updatedAt: Long,
-    @SerialName("friend_ids") val friendIds: List<String> = emptyList(),
     @SerialName("read_notification_ids") val readNotificationIds: List<String> = emptyList(),
     @SerialName("fcm_token") val fcmToken: String? = null,
     @SerialName("session_id") val sessionId: String? = null,

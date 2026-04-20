@@ -1,10 +1,9 @@
 package com.brokentelephone.game.domain.model.friend
 
+// TODO: remove it
 enum class FriendRequestStatus {
     PENDING,
     ACCEPTED,
-    CANCELLED_BY_SENDER,
-    DECLINED_BY_RECEIVER,
 }
 
 data class FriendRequest(

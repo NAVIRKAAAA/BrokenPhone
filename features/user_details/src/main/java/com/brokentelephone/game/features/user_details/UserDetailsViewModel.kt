@@ -16,6 +16,7 @@ import com.brokentelephone.game.domain.use_case.BlockUserUseCase
 import com.brokentelephone.game.domain.use_case.CancelFriendRequestUseCase
 import com.brokentelephone.game.domain.use_case.DeletePostUseCase
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
+import com.brokentelephone.game.domain.use_case.GetFriendsCountUseCase
 import com.brokentelephone.game.domain.use_case.GetPostLinkByIdUseCase
 import com.brokentelephone.game.domain.use_case.GetUserByIdUseCase
 import com.brokentelephone.game.domain.use_case.GetUserContributionsUseCase
@@ -60,6 +61,7 @@ class UserDetailsViewModel(
     private val reportPostUseCase: ReportPostUseCase,
     private val reportUserUseCase: ReportUserUseCase,
     private val deletePostUseCase: DeletePostUseCase,
+    private val getFriendsCountUseCase: GetFriendsCountUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(UserDetailsState())
@@ -90,8 +92,10 @@ class UserDetailsViewModel(
 
             val posts = async { fetchMyPosts() }
             val contributions = async { fetchContributions() }
+            val friendsCount = async { fetchFriendsCount() }
             posts.await()
             contributions.await()
+            friendsCount.await()
             lastLoadedAt = System.currentTimeMillis()
 
             _state.update { it.copy(isInitialLoading = false) }
@@ -112,13 +116,20 @@ class UserDetailsViewModel(
 
             val posts = async { fetchMyPosts() }
             val contributions = async { fetchContributions() }
+            val friendsCount = async { fetchFriendsCount() }
             posts.await()
             contributions.await()
+            friendsCount.await()
 
             lastLoadedAt = System.currentTimeMillis()
 
             _state.update { it.copy(isRefreshing = false) }
         }
+    }
+
+    private suspend fun fetchFriendsCount() {
+        getFriendsCountUseCase.execute(userId)
+            .onSuccess { count -> _state.update { it.copy(friendsCount = count) } }
     }
 
     private suspend fun fetchFriendshipActionState() {

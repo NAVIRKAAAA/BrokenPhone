@@ -20,6 +20,7 @@ class GetSuggestedUsersUseCase(
     private val friendsRepository: FriendsRepository,
     private val handler: ApiHandler,
 ) {
+    // TODO: Improve getFriendshipActionState for each user
     suspend fun execute(): AppResult<List<Pair<User, FriendshipActionState>>> {
         return handler.handle(Dispatchers.IO) {
             val currentUser = userSession.authState.firstOrNull()?.getUserOrNull()

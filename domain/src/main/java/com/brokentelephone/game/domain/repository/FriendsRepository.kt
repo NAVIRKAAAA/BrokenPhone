@@ -2,6 +2,7 @@ package com.brokentelephone.game.domain.repository
 
 import com.brokentelephone.game.domain.model.friend.FriendRequest
 import com.brokentelephone.game.domain.model.friend.FriendshipActionState
+import com.brokentelephone.game.domain.user.User
 
 interface FriendsRepository {
 
@@ -9,15 +10,17 @@ interface FriendsRepository {
 
     suspend fun sendFriendRequest(senderId: String, receiverId: String)
 
-    suspend fun getSentPendingRequestId(senderId: String, receiverId: String): String?
+    suspend fun acceptFriendRequest(senderId: String, receiverId: String)
 
-    suspend fun acceptFriendRequest(requestId: String)
+    suspend fun cancelFriendRequest(senderId: String, receiverId: String)
 
-    suspend fun cancelFriendRequest(requestId: String)
-
-    suspend fun declineFriendRequest(requestId: String)
+    suspend fun declineFriendRequest(senderId: String, receiverId: String)
 
     suspend fun removeFriend(userId: String, friendId: String)
+
+    suspend fun getFriends(userId: String): List<User>
+
+    suspend fun getFriendsCount(userId: String): Int
 
     suspend fun getSentPendingRequests(senderId: String): List<FriendRequest>
 

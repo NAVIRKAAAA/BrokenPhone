@@ -10,7 +10,6 @@ data class UserUi(
     val bio: String = "",
     val createdAt: Long,
     val sessionId: String? = null,
-    val friendIds: List<String> = listOf(),
     val isEmailVerified: Boolean = false,
     val readNotificationIds: List<String> = listOf(),
 )
@@ -23,7 +22,6 @@ fun User.toUi() = UserUi(
     bio = bio,
     createdAt = createdAt,
     sessionId = sessionId,
-    friendIds = friendIds,
     readNotificationIds = readNotificationIds,
     isEmailVerified = isEmailVerified
 )

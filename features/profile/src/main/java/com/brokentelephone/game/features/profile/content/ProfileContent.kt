@@ -180,7 +180,7 @@ fun ProfileContent(
                                 .padding(top = 16.dp),
                             postsCount = state.myPosts.size,
                             contributions = state.myContributions.size,
-                            friends = state.user?.friendIds?.size ?: 0,
+                            friends = state.friendsCount,
                             isAuth = state.isAuth,
                             bio = state.user?.bio.orEmpty(),
                             createdAt = state.user?.createdAt,

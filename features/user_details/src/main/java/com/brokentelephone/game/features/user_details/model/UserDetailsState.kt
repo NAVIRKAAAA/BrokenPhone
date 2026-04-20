@@ -10,6 +10,7 @@ data class UserDetailsState(
     val friendshipActionState: FriendshipActionState? = null,
     val isFriendshipActionLoading: Boolean = false,
     val user: UserUi? = null,
+    val friendsCount: Int = 0,
     val currentUser: UserUi? = null,
     val globalError: String? = null,
     val selectedTab: ProfileTab = ProfileTab.POSTS,
