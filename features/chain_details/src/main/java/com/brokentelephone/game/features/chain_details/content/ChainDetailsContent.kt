@@ -2,16 +2,20 @@ package com.brokentelephone.game.features.chain_details.content
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -20,12 +24,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -38,12 +40,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.brokentelephone.game.core.R
+import com.brokentelephone.game.core.button.FloatingActionButton
 import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
-import com.brokentelephone.game.core.top_bar.EditProfileTopBar
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
 import com.brokentelephone.game.features.chain_details.model.ChainDetailsState
@@ -63,22 +65,22 @@ fun ChainDetailsContent(
     val chainSize = state.chain.size - 1
     val maxGenerations = state.post?.maxGenerations ?: 0
 
-    val isScrolled by remember {
-        derivedStateOf {
-            lazyListState.firstVisibleItemIndex > 0 || lazyListState.firstVisibleItemScrollOffset > 0
-        }
-    }
+    // status bars + top padding + icon + spacer
+    val listContentTopPadding =
+        WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + 80.dp
 
-    Column(
+    Box(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
     ) {
-        EditProfileTopBar(
-            title = stringResource(R.string.chain_details_title),
-            onBackClick = onBackClick,
-            showShadow = isScrolled,
-            modifier = Modifier.zIndex(1f)
+        FloatingActionButton(
+            imageResId = R.drawable.ic_back,
+            onClick = onBackClick,
+            modifier = Modifier
+                .zIndex(1f)
+                .statusBarsPadding()
+                .padding(8.dp)
         )
 
         ShimmerContent(
@@ -102,8 +104,6 @@ fun ChainDetailsContent(
                         )
                     },
                 ) {
-
-
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
@@ -111,67 +111,44 @@ fun ChainDetailsContent(
                         state = lazyListState,
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        contentPadding = PaddingValues(vertical = 16.dp),
+                        contentPadding = PaddingValues(top = listContentTopPadding, bottom = 16.dp),
                     ) {
 
                         itemsIndexed(
                             items = state.chain,
                             key = { _, item -> item.id }
                         ) { index, postUi ->
-                            Column {
+                            val isLast = index == state.chain.lastIndex
+                            val isHidden =
+                                chainSize != maxGenerations && (postUi.authorId != state.userId || postUi.id != state.postId)
 
-                                val isHidden =
-                                    chainSize != maxGenerations && (postUi.authorId != state.userId || postUi.id != state.postId)
-
-                                if (!isHidden) {
-                                    ChainDetailsElement(
-                                        post = postUi,
-                                        onUserClick = { onUserClick(postUi.authorId) }
-                                    )
-                                } else {
-                                    val hiddenContent = when (postUi.content) {
-                                        is PostContent.Text -> PostContent.Text("")
-                                        is PostContent.Drawing -> PostContent.Drawing("")
-                                    }
-                                    ChainDetailsElementHidden(content = hiddenContent)
+                            if (!isHidden) {
+                                ChainDetailsElement(
+                                    post = postUi,
+                                    onUserClick = { onUserClick(postUi.authorId) }
+                                )
+                            } else {
+                                val hiddenContent = when (postUi.content) {
+                                    is PostContent.Text -> PostContent.Text("")
+                                    is PostContent.Drawing -> PostContent.Drawing("")
                                 }
-
-                                if (index < maxGenerations) {
-
-                                    Spacer(modifier = Modifier.height(24.dp))
-
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.Center
-                                    ) {
-
-                                        Icon(
-                                            painter = painterResource(R.drawable.ic_arrow_down),
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.primary,
-                                            modifier = Modifier
-                                        )
-
-
-//                            Spacer(modifier = Modifier.width(4.dp))
-//
-//                            Text(
-//                                text = (index + 1).toString(),
-//                                textAlign = TextAlign.Center,
-//                                fontFamily = FontFamily(Font(R.font.inter_medium)),
-//                                fontSize = 16.sp,
-//                                lineHeight = 24.sp,
-//                                color = MaterialTheme.colorScheme.primary,
-//                            )
-                                    }
-
-                                    Spacer(modifier = Modifier.height(24.dp))
-
-                                }
+                                ChainDetailsElementHidden(content = hiddenContent)
                             }
 
+                            if (!isLast) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(24.dp),
+                                    contentAlignment = Alignment.CenterStart,
+                                ) {
+                                    VerticalDivider(
+                                        thickness = 2.dp,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.padding(start = 32.dp),
+                                    )
+                                }
+                            }
                         }
 
                         item {
@@ -230,7 +207,6 @@ fun ChainDetailsContent(
                                     .navigationBarsPadding()
                             )
                         }
-
                     }
                 }
             },
@@ -244,12 +220,12 @@ fun ChainDetailsContent(
 @Composable
 fun ChainDetailsContentPreview() {
     BrokenTelephoneTheme(
-        darkTheme = true
+        darkTheme = false
     ) {
-        val userId = "user_id"
         ChainDetailsContent(
             state = ChainDetailsState(
                 isLoading = false,
+                postId = "1",
                 chain = listOf(
                     PostUi(
                         id = "1", authorId = "user_1", authorName = "Alex",
@@ -295,14 +271,14 @@ fun ChainDetailsContentPreview() {
                 userId = "user_1",
                 post = PostUi(
                     id = "1",
-                    authorId = "user-1",
+                    authorId = "user_1",
                     authorName = "Alex",
                     avatarUrl = null,
 //                    content = PostContent.Drawing(),
                     content = PostContent.Text("Once upon a time there was a broken telephone..."),
                     createdAt = System.currentTimeMillis() - 300000,
-                    generation = 10,
-                    maxGenerations = 10,
+                    generation = 5,
+                    maxGenerations = 5,
                     status = PostStatus.AVAILABLE,
                     nextTimeLimit = 60,
                 )
