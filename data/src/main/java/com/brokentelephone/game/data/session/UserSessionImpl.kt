@@ -1,6 +1,10 @@
 package com.brokentelephone.game.data.session
 
 import android.util.Log
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.brokentelephone.game.data.dto.UserBlockDto
 import com.brokentelephone.game.data.dto.UserDto
 import com.brokentelephone.game.data.dto.toBlockedUser
@@ -39,6 +43,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
@@ -47,6 +52,7 @@ import kotlinx.serialization.json.put
 
 class UserSessionImpl(
     private val supabase: SupabaseClient,
+    private val dataStore: DataStore<Preferences>,
 ) : UserSession {
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.Loading)
@@ -247,7 +253,14 @@ class UserSessionImpl(
     }
 
     override suspend fun markPostAsNotInterested(postId: String) {
-        return
+        dataStore.edit { prefs ->
+            val current = prefs[KEY_NOT_INTERESTED_POSTS] ?: emptySet()
+            prefs[KEY_NOT_INTERESTED_POSTS] = current + postId
+        }
+    }
+
+    override suspend fun getNotInterestedPostIds(): List<String> {
+        return dataStore.data.firstOrNull()?.get(KEY_NOT_INTERESTED_POSTS)?.toList() ?: emptyList()
     }
 
     override suspend fun blockUser(userId: String) {
@@ -403,6 +416,7 @@ class UserSessionImpl(
     }
 
     override suspend fun signOut() {
+        dataStore.edit { it.remove(KEY_NOT_INTERESTED_POSTS) }
         realtimeChannel?.let { supabase.realtime.removeChannel(it) }
         realtimeChannel = null
         supabase.auth.signOut()
@@ -455,5 +469,6 @@ class UserSessionImpl(
     companion object {
         private const val COLLECTION_USERS = "users"
         private const val COLLECTION_USER_BLOCKS = "user_blocks"
+        private val KEY_NOT_INTERESTED_POSTS = stringSetPreferencesKey("not_interested_posts")
     }
 }

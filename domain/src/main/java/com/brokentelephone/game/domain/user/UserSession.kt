@@ -14,6 +14,7 @@ interface UserSession {
     suspend fun completeAvatarStep(avatarUrl: String)
     suspend fun completeUsernameStep(username: String)
     suspend fun markPostAsNotInterested(postId: String)
+    suspend fun getNotInterestedPostIds(): List<String>
     suspend fun blockUser(userId: String)
     suspend fun unblockUser(userId: String)
     suspend fun updateNotifications(notifications: List<NotificationType>)

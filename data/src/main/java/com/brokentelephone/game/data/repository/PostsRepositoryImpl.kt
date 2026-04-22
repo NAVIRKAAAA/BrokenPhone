@@ -49,6 +49,7 @@ class PostsRepositoryImpl(
         pageSize: Int,
         sort: DashboardSort,
         excludedUserIds: List<String>,
+        excludedPostIds: List<String>,
     ): PostsPage {
         try {
             val posts = supabase.from(TABLE_POSTS)
@@ -56,6 +57,7 @@ class PostsRepositoryImpl(
                     filter {
                         neq("status", PostStatus.COMPLETED.name)
                         excludedUserIds.forEach { id -> neq("author_id", id) }
+                        excludedPostIds.forEach { id -> neq("id", id) }
                     }
                     applySorting(sort)
                     range(0L, (pageSize - 1).toLong())
@@ -79,6 +81,7 @@ class PostsRepositoryImpl(
         pageSize: Int,
         sort: DashboardSort,
         excludedUserIds: List<String>,
+        excludedPostIds: List<String>,
     ): PostsPage {
         try {
             val posts = supabase.from(TABLE_POSTS)
@@ -86,6 +89,7 @@ class PostsRepositoryImpl(
                     filter {
                         neq("status", PostStatus.COMPLETED.name)
                         excludedUserIds.forEach { id -> neq("author_id", id) }
+                        excludedPostIds.forEach { id -> neq("id", id) }
                     }
                     applySorting(sort)
                     range(offset.toLong(), (offset + pageSize - 1).toLong())

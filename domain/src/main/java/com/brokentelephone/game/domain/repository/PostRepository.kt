@@ -12,6 +12,7 @@ interface PostRepository {
         pageSize: Int,
         sort: DashboardSort,
         excludedUserIds: List<String> = emptyList(),
+        excludedPostIds: List<String> = emptyList(),
     ): PostsPage
 
     suspend fun loadNextPosts(
@@ -19,6 +20,7 @@ interface PostRepository {
         pageSize: Int,
         sort: DashboardSort,
         excludedUserIds: List<String> = emptyList(),
+        excludedPostIds: List<String> = emptyList(),
     ): PostsPage
 
     fun getPostById(id: String): Flow<Post>

@@ -1,5 +1,9 @@
 package com.brokentelephone.game.di
 
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import com.brokentelephone.game.data.google.GoogleSignInManagerImpl
 import com.brokentelephone.game.data.handler.ApiHandlerImpl
 import com.brokentelephone.game.data.link.LinkProviderImpl
@@ -39,6 +43,8 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
+private val Context.userSessionDataStore: DataStore<Preferences> by preferencesDataStore(name = "user_session")
+
 val dataModule = module {
     single { provideSupabaseClient(androidContext()) }
     single { FirebaseAuth.getInstance() }
@@ -52,7 +58,7 @@ val dataModule = module {
     single { FirebaseMessaging.getInstance() }
 
     single<ApiHandler> { ApiHandlerImpl() }
-    single<UserSession> { UserSessionImpl(get()) }
+    single<UserSession> { UserSessionImpl(get(), androidContext().userSessionDataStore) }
     single<LinkProvider> { LinkProviderImpl() }
     single<AppInfoRepository> { MockAppInfoRepositoryImpl() }
     single<ImageStorage> { SupabaseImageStorage(get()) }

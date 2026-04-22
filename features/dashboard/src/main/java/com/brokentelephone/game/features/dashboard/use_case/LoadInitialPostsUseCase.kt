@@ -17,7 +17,8 @@ class LoadInitialPostsUseCase(
     suspend fun execute(pageSize: Int, sort: DashboardSort): AppResult<PostsPage> {
         return handler.handle(Dispatchers.IO) {
             val excludedUserIds = userSession.getExcludedUserIds()
-            repository.loadInitialPosts(pageSize, sort, excludedUserIds)
+            val excludedPostIds = userSession.getNotInterestedPostIds()
+            repository.loadInitialPosts(pageSize, sort, excludedUserIds, excludedPostIds)
         }
     }
 }

@@ -20,7 +20,8 @@ class LoadNextPostsUseCase(
     ): AppResult<PostsPage> {
         return handler.handle(Dispatchers.IO) {
             val excludedUserIds = userSession.getExcludedUserIds()
-            repository.loadNextPosts(offset, pageSize, sort, excludedUserIds)
+            val excludedPostIds = userSession.getNotInterestedPostIds()
+            repository.loadNextPosts(offset, pageSize, sort, excludedUserIds, excludedPostIds)
         }
     }
 }
