@@ -1,57 +1,61 @@
 package com.brokentelephone.game.data.repository
 
 import android.util.Log
-import com.brokentelephone.game.data.mapper.toAppException
+import com.brokentelephone.game.data.dto.NotificationDto
 import com.brokentelephone.game.data.mapper.toNotification
 import com.brokentelephone.game.domain.model.notification.Notification
 import com.brokentelephone.game.domain.model.notification.NotificationFilter
 import com.brokentelephone.game.domain.repository.NotificationsRepository
 import com.brokentelephone.game.essentials.exceptions.auth.NetworkException
 import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
-import com.google.firebase.FirebaseNetworkException
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.Query
-import kotlinx.coroutines.channels.awaitClose
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.exceptions.RestException
+import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.postgrest.query.Order
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import java.io.IOException
 
 class NotificationsRepositoryImpl(
-    firestore: FirebaseFirestore,
-) : FirestoreRepository(firestore), NotificationsRepository {
-
-    override val collectionName = "notifications"
+    private val supabase: SupabaseClient,
+) : NotificationsRepository {
 
     override suspend fun getNotificationById(notificationId: String): Notification? {
         return try {
-            val snapshot = collection.document(notificationId).getFromServer()
-            snapshot.data?.toNotification()
-        } catch (_: FirebaseNetworkException) {
+            supabase.from(TABLE_NOTIFICATIONS)
+                .select { filter { eq("id", notificationId) } }
+                .decodeSingleOrNull<NotificationDto>()
+                ?.toNotification()
+        } catch (_: IOException) {
             throw NetworkException()
-        } catch (e: FirebaseFirestoreException) {
-            Log.d("LOG_TAG", "getNotificationById error: $e")
-            throw e.toAppException()
+        } catch (e: RestException) {
+            Log.d("LOG_TAG", "getNotificationById: $e")
+            throw UnknownAuthException()
         } catch (e: Exception) {
-            Log.d("LOG_TAG", "getNotificationById error: $e")
+            Log.d("LOG_TAG", "getNotificationById: $e")
             throw UnknownAuthException()
         }
     }
 
     override suspend fun getNotifications(userId: String): List<Notification> {
         return try {
-            collection
-                .whereArrayContains(FIELD_RECEIVERS_IDS, userId)
-                .orderBy(FIELD_CREATED_AT, Query.Direction.DESCENDING)
-                .getFromServer()
-                .documents
-                .mapNotNull { it.data?.toNotification() }
-        } catch (_: FirebaseNetworkException) {
+            supabase.from(TABLE_NOTIFICATIONS)
+                .select {
+                    filter { contains("receiver_ids", listOf(userId)) }
+                    order("created_at", Order.DESCENDING)
+                }
+                .decodeList<NotificationDto>()
+                .mapNotNull { it.toNotification() }
+        } catch (_: IOException) {
             throw NetworkException()
-        } catch (e: FirebaseFirestoreException) {
-            Log.d("LOG_TAG", "getNotifications error: $e")
-            throw e.toAppException()
+        } catch (e: RestException) {
+            Log.d("LOG_TAG", "getNotifications: $e")
+            throw UnknownAuthException()
         } catch (e: Exception) {
-            Log.d("LOG_TAG", "getNotifications error: $e")
+            Log.d("LOG_TAG", "getNotifications: $e")
             throw UnknownAuthException()
         }
     }
@@ -60,27 +64,31 @@ class NotificationsRepositoryImpl(
         userId: String,
         filter: NotificationFilter,
     ): List<Notification> {
-        val notificationType = when (filter) {
-            NotificationFilter.NEWS -> NOTIFICATION_TYPE_NEWS
-            NotificationFilter.FRIENDS -> NOTIFICATION_TYPE_FRIEND_REQUEST
-            NotificationFilter.CHAIN -> NOTIFICATION_TYPE_CHAIN_INFO
-            else -> emptyList<Notification>()
+        val type = when (filter) {
+            NotificationFilter.FRIENDS -> TYPE_FRIEND_REQUEST
+            NotificationFilter.CHAIN -> TYPE_CHAIN_INFO
+            NotificationFilter.NEWS -> TYPE_NEWS
+            NotificationFilter.ALL,
+            NotificationFilter.UNREAD -> return getNotifications(userId)
         }
         return try {
-            collection
-                .whereArrayContains(FIELD_RECEIVERS_IDS, userId)
-                .whereEqualTo(FIELD_TYPE, notificationType)
-                .orderBy(FIELD_CREATED_AT, Query.Direction.DESCENDING)
-                .getFromServer()
-                .documents
-                .mapNotNull { it.data?.toNotification() }
-        } catch (_: FirebaseNetworkException) {
+            supabase.from(TABLE_NOTIFICATIONS)
+                .select {
+                    filter {
+                        contains("receiver_ids", listOf(userId))
+                        eq("type", type)
+                    }
+                    order("created_at", Order.DESCENDING)
+                }
+                .decodeList<NotificationDto>()
+                .mapNotNull { it.toNotification() }
+        } catch (_: IOException) {
             throw NetworkException()
-        } catch (e: FirebaseFirestoreException) {
-            Log.d("LOG_TAG", "getNotifications error: $e")
-            throw e.toAppException()
+        } catch (e: RestException) {
+            Log.d("LOG_TAG", "getNotifications(filter): $e")
+            throw UnknownAuthException()
         } catch (e: Exception) {
-            Log.d("LOG_TAG", "getNotifications error: $e")
+            Log.d("LOG_TAG", "getNotifications(filter): $e")
             throw UnknownAuthException()
         }
     }
@@ -88,27 +96,29 @@ class NotificationsRepositoryImpl(
     override fun getUnreadNotificationsCount(
         userId: String,
         readNotificationIds: List<String>,
-    ): Flow<Int> = callbackFlow {
-        val listener = collection
-            .whereArrayContains(FIELD_RECEIVERS_IDS, userId)
-            .addSnapshotListener { snapshot, error ->
-                if (error != null || snapshot == null) return@addSnapshotListener
-                val unreadCount = snapshot.documents.count { doc ->
-                    val id = doc.getString(FIELD_ID) ?: return@count false
-                    id !in readNotificationIds
+    ): Flow<Int> = flow {
+        try {
+            val allIds = supabase.from(TABLE_NOTIFICATIONS)
+                .select(columns = Columns.list("id")) {
+                    filter { contains("receiver_ids", listOf(userId)) }
                 }
-                trySend(unreadCount)
-            }
-        awaitClose { listener.remove() }
+                .decodeList<NotificationIdDto>()
+                .map { it.id }
+            emit(allIds.count { it !in readNotificationIds })
+        } catch (_: IOException) {
+            emit(0)
+        } catch (_: Exception) {
+            emit(0)
+        }
     }
 
+    @Serializable
+    private data class NotificationIdDto(@SerialName("id") val id: String)
+
     private companion object {
-        const val FIELD_ID = "id"
-        const val FIELD_RECEIVERS_IDS = "receiversIds"
-        const val FIELD_CREATED_AT = "createdAt"
-        const val FIELD_TYPE = "type"
-        const val NOTIFICATION_TYPE_NEWS = "NEWS"
-        const val NOTIFICATION_TYPE_FRIEND_REQUEST = "FRIEND_REQUEST"
-        const val NOTIFICATION_TYPE_CHAIN_INFO = "CHAIN_INFO"
+        const val TABLE_NOTIFICATIONS = "notifications"
+        const val TYPE_FRIEND_REQUEST = "FRIEND_REQUEST"
+        const val TYPE_CHAIN_INFO = "CHAIN_INFO"
+        const val TYPE_NEWS = "NEWS"
     }
 }
