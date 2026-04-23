@@ -1,4 +1,4 @@
-package com.brokentelephone.game.core.username
+package com.brokentelephone.game.core.model.user
 
 object SuggestedUsernames {
     private val all: List<String> = listOf(

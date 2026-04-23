@@ -16,9 +16,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.R
+import com.brokentelephone.game.core.button.SettingsLogoutButton
 import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.profile.AccountStaticInfoItem
-import com.brokentelephone.game.core.profile.SettingsLogoutButton
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.core.top_bar.EditProfileTopBar

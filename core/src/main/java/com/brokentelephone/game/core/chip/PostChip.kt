@@ -1,4 +1,4 @@
-package com.brokentelephone.game.core.badge
+package com.brokentelephone.game.core.chip
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

@@ -35,8 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.model.profile.ProfileTab
+import com.brokentelephone.game.core.modifier.coloredShadow
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.core.utils.coloredShadow
 
 @Composable
 fun ProfileTabRowNew(

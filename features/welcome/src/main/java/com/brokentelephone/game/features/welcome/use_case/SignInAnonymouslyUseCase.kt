@@ -1,7 +1,7 @@
 package com.brokentelephone.game.features.welcome.use_case
 
 import com.brokentelephone.game.core.avatar.Avatars
-import com.brokentelephone.game.core.username.SuggestedUsernames
+import com.brokentelephone.game.core.model.user.SuggestedUsernames
 import com.brokentelephone.game.domain.api_handler.ApiHandler
 import com.brokentelephone.game.domain.api_handler.AppResult
 import com.brokentelephone.game.domain.repository.AuthRepository

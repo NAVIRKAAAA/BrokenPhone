@@ -1,4 +1,4 @@
-package com.brokentelephone.game.core.profile
+package com.brokentelephone.game.core.button
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth

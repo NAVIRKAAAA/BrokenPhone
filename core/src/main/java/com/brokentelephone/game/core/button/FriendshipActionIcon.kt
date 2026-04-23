@@ -1,4 +1,4 @@
-package com.brokentelephone.game.core.profile
+package com.brokentelephone.game.core.button
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

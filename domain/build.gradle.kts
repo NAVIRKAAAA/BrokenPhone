@@ -18,6 +18,7 @@ android {
 
 dependencies {
     implementation(project(":essentials"))
+    implementation(libs.androidx.core.ktx)
     api(platform(libs.firebase.bom))
-    api(libs.firebase.firestore)
+    api(libs.kotlinx.coroutines.core)
 }

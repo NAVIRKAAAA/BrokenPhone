@@ -1,6 +1,6 @@
 package com.brokentelephone.game.features.edit_username.model
 
-import com.brokentelephone.game.core.username.SuggestedUsernames
+import com.brokentelephone.game.core.model.user.SuggestedUsernames
 import com.brokentelephone.game.features.edit_username.EditUsernameViewModel
 
 data class EditUsernameState(

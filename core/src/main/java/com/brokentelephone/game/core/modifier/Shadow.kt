@@ -1,4 +1,4 @@
-package com.brokentelephone.game.core.utils
+package com.brokentelephone.game.core.modifier
 
 import android.graphics.BlurMaskFilter
 import androidx.compose.ui.Modifier

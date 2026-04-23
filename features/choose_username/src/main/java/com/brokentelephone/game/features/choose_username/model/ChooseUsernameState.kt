@@ -1,6 +1,6 @@
 package com.brokentelephone.game.features.choose_username.model
 
-import com.brokentelephone.game.core.username.SuggestedUsernames
+import com.brokentelephone.game.core.model.user.SuggestedUsernames
 import com.brokentelephone.game.features.choose_username.ChooseUsernameViewModel
 
 data class ChooseUsernameState(
