@@ -9,7 +9,7 @@ import com.brokentelephone.game.domain.use_case.GetPostByIdUseCase
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.chain_details.model.ChainDetailsSideEffect
 import com.brokentelephone.game.features.chain_details.model.ChainDetailsState
-import com.brokentelephone.game.features.chain_details.use_case.GetChainByPostIdUseCase
+import com.brokentelephone.game.features.chain_details.use_case.GetChainByIdUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 class ChainDetailsViewModel(
     val postId: String,
     val userId: String,
-    private val getChainByPostIdUseCase: GetChainByPostIdUseCase,
+    private val getChainByIdUseCase: GetChainByIdUseCase,
     private val getPostByIdUseCase: GetPostByIdUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
@@ -35,11 +35,6 @@ class ChainDetailsViewModel(
 
     private var lastLoadedAt: Long = 0L
 
-    init {
-
-        loadPost()
-    }
-
     fun onResume() {
         loadChain()
     }
@@ -50,29 +45,24 @@ class ChainDetailsViewModel(
 
             delay(150)
 
-            getChainByPostIdUseCase.execute(postId).onSuccess { chain ->
-                lastLoadedAt = System.currentTimeMillis()
-                _state.update { it.copy(chain = chain, isRefreshing = false) }
-            }.onError { e ->
-                _state.update {
-                    it.copy(
-                        isRefreshing = false,
-                        globalError = exceptionToMessageMapper.map(e),
-                        globalException = e,
-                    )
-                }
-            }
-
-        }
-    }
-
-    private fun loadPost() {
-        viewModelScope.launch {
-
             getPostByIdUseCase.executeWithResult(postId).onSuccess { post ->
-                _state.update { it.copy(post = post.toUi()) }
-            }
 
+                _state.update { it.copy(post = post.toUi()) }
+
+                getChainByIdUseCase.execute(post.chainId).onSuccess { chain ->
+                    lastLoadedAt = System.currentTimeMillis()
+                    _state.update { it.copy(chain = chain, isRefreshing = false) }
+                }.onError { e ->
+                    _state.update {
+                        it.copy(
+                            isRefreshing = false,
+                            globalError = exceptionToMessageMapper.map(e),
+                            globalException = e,
+                        )
+                    }
+                }
+
+            }
         }
     }
 
@@ -80,17 +70,23 @@ class ChainDetailsViewModel(
         if (!isInitialLoadAllowed()) return
 
         viewModelScope.launch {
-            getChainByPostIdUseCase.execute(postId).onSuccess { chain ->
-                lastLoadedAt = System.currentTimeMillis()
-                _state.update { it.copy(chain = chain, isLoading = false) }
-            }.onError { e ->
-                _state.update {
-                    it.copy(
-                        isLoading = false,
-                        globalError = exceptionToMessageMapper.map(e),
-                        globalException = e,
-                    )
+            getPostByIdUseCase.executeWithResult(postId).onSuccess { post ->
+
+                _state.update { it.copy(post = post.toUi()) }
+
+                getChainByIdUseCase.execute(post.chainId).onSuccess { chain ->
+                    lastLoadedAt = System.currentTimeMillis()
+                    _state.update { it.copy(chain = chain, isLoading = false) }
+                }.onError { e ->
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            globalError = exceptionToMessageMapper.map(e),
+                            globalException = e,
+                        )
+                    }
                 }
+
             }
         }
     }

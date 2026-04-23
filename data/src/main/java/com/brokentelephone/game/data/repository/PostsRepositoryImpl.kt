@@ -56,8 +56,8 @@ class PostsRepositoryImpl(
                 .select(Columns.raw("*, users!author_id(username, avatar_url)")) {
                     filter {
                         neq("status", PostStatus.COMPLETED.name)
-                        excludedUserIds.forEach { id -> neq("author_id", id) }
-                        excludedPostIds.forEach { id -> neq("id", id) }
+                        if (excludedUserIds.isNotEmpty()) filterNot("author_id", FilterOperator.IN, "(${excludedUserIds.joinToString(",")})")
+                        if (excludedPostIds.isNotEmpty()) filterNot("id", FilterOperator.IN, "(${excludedPostIds.joinToString(",")})")
                     }
                     applySorting(sort)
                     range(0L, (pageSize - 1).toLong())
@@ -88,8 +88,8 @@ class PostsRepositoryImpl(
                 .select(Columns.raw("*, users!author_id(username, avatar_url)")) {
                     filter {
                         neq("status", PostStatus.COMPLETED.name)
-                        excludedUserIds.forEach { id -> neq("author_id", id) }
-                        excludedPostIds.forEach { id -> neq("id", id) }
+                        if (excludedUserIds.isNotEmpty()) filterNot("author_id", FilterOperator.IN, "(${excludedUserIds.joinToString(",")})")
+                        if (excludedPostIds.isNotEmpty()) filterNot("id", FilterOperator.IN, "(${excludedPostIds.joinToString(",")})")
                     }
                     applySorting(sort)
                     range(offset.toLong(), (offset + pageSize - 1).toLong())
@@ -175,6 +175,27 @@ class PostsRepositoryImpl(
         }
     }
 
+    override suspend fun getChainById(chainId: String): List<Post> {
+        try {
+            return supabase.from(TABLE_POSTS)
+                .select(Columns.raw("*, users!author_id(username, avatar_url)")) {
+                    filter { eq("chain_id", chainId) }
+                    order("created_at", Order.ASCENDING)
+                }
+                .decodeList<PostDto>()
+                .map { it.toPost() }
+        } catch (e: AppException) {
+            throw e
+        } catch (_: IOException) {
+            throw NetworkException()
+        } catch (e: RestException) {
+            Log.d("LOG_TAG", "getChainByPostId(): $e")
+            throw UnknownAuthException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "getChainByPostId(): $e")
+            throw UnknownAuthException()
+        }
+    }
     override suspend fun loadUserPosts(userId: String): List<Post> {
         try {
             return supabase.from(TABLE_POSTS)

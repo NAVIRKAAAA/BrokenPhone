@@ -7,14 +7,14 @@ import com.brokentelephone.game.domain.api_handler.AppResult
 import com.brokentelephone.game.domain.repository.PostRepository
 import kotlinx.coroutines.Dispatchers
 
-class GetChainByPostIdUseCase(
+class GetChainByIdUseCase(
     private val repository: PostRepository,
     private val handler: ApiHandler
 ) {
 
-    suspend fun execute(postId: String): AppResult<List<PostUi>> {
+    suspend fun execute(chainId: String): AppResult<List<PostUi>> {
         return handler.handle(Dispatchers.IO) {
-            val entries = repository.getChainByPostId(postId)
+            val entries = repository.getChainById(chainId)
             entries.map { entry -> entry.toUi() }
         }
     }
