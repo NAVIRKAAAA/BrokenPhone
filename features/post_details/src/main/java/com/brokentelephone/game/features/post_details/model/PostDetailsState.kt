@@ -15,6 +15,8 @@ data class PostDetailsState(
     val isReportBottomSheetVisible: Boolean = false,
     val isBlockDialogVisible: Boolean = false,
     val isBlockLoading: Boolean = false,
+    val isDeleteDialogVisible: Boolean = false,
+    val isDeleteLoading: Boolean = false,
     val isContinueLoading: Boolean = false,
     val globalError: String? = null,
     val globalException: Exception? = null,
@@ -22,6 +24,9 @@ data class PostDetailsState(
     val cooldownRemainingSeconds: Int = 0,
     val sessionRemainingSeconds: Int = 0,
 ) {
+    val isOwnPost: Boolean get() =
+        postUi != null && userUi != null && postUi.authorId == userUi.id
+
     val formattedCooldown: String get() {
         val minutes = cooldownRemainingSeconds / 60
         val seconds = cooldownRemainingSeconds % 60

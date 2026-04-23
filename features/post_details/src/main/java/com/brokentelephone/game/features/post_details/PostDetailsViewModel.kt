@@ -13,6 +13,7 @@ import com.brokentelephone.game.domain.model.session.GameSession
 import com.brokentelephone.game.domain.model.session.GameSessionStatus
 import com.brokentelephone.game.domain.model.session.cooldownRemainingMs
 import com.brokentelephone.game.domain.use_case.BlockUserUseCase
+import com.brokentelephone.game.domain.use_case.DeletePostUseCase
 import com.brokentelephone.game.domain.use_case.GetActiveSessionUseCase
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.domain.use_case.GetPostByIdUseCase
@@ -46,6 +47,7 @@ class PostDetailsViewModel(
     private val reportPostUseCase: ReportPostUseCase,
     private val blockUserUseCase: BlockUserUseCase,
     private val markPostAsNotInterestedUseCase: MarkPostAsNotInterestedUseCase,
+    private val deletePostUseCase: DeletePostUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
     private val joinSessionUseCase: JoinSessionUseCase,
@@ -257,6 +259,31 @@ class PostDetailsViewModel(
                 _state.update {
                     it.copy(
                         isContinueLoading = false,
+                        globalError = exceptionToMessageMapper.map(exception)
+                    )
+                }
+            }
+        }
+    }
+
+    fun onDeleteClick() {
+        _state.update { it.copy(isBottomSheetVisible = false, isDeleteDialogVisible = true) }
+    }
+
+    fun onDeleteDialogDismiss() {
+        _state.update { it.copy(isDeleteDialogVisible = false) }
+    }
+
+    fun onDeleteConfirm() {
+        _state.update { it.copy(isDeleteLoading = true) }
+        viewModelScope.launch {
+            deletePostUseCase.execute(postId).onSuccess {
+                _sideEffects.send(PostDetailsSideEffect.NavigateBackWithForceUpdate)
+            }.onError { exception ->
+                _state.update {
+                    it.copy(
+                        isDeleteLoading = false,
+                        isDeleteDialogVisible = false,
                         globalError = exceptionToMessageMapper.map(exception)
                     )
                 }

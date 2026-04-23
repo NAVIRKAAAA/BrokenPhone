@@ -291,6 +291,13 @@ class PostsRepositoryImpl(
             if (chainGeneration == post.maxGenerations) throw CannotDeletePostException()
 
             if (post.generation == 0) {
+                val chainPostIds = supabase.from(TABLE_POSTS)
+                    .select { filter { eq("chain_id", post.chainId) } }
+                    .decodeList<PostDto>()
+                    .map { it.id }
+                chainPostIds.forEach { id ->
+                    supabase.from(TABLE_SESSIONS).delete { filter { eq("post_id", id) } }
+                }
                 supabase.from(TABLE_CHAINS).delete { filter { eq("id", post.chainId) } }
             } else {
                 val prevPost = supabase.from(TABLE_POSTS)
@@ -302,6 +309,7 @@ class PostsRepositoryImpl(
                     }
                     .decodeSingleOrNull<PostDto>() ?: throw PostNotFoundException()
 
+                supabase.from(TABLE_SESSIONS).delete { filter { eq("post_id", postId) } }
                 supabase.from(TABLE_POSTS).delete { filter { eq("id", postId) } }
                 supabase.from(TABLE_POSTS).update(
                     buildJsonObject { put("status", PostStatus.AVAILABLE.name) }
@@ -331,5 +339,6 @@ class PostsRepositoryImpl(
     private companion object {
         const val TABLE_CHAINS = "chains"
         const val TABLE_POSTS = "posts"
+        const val TABLE_SESSIONS = "sessions"
     }
 }

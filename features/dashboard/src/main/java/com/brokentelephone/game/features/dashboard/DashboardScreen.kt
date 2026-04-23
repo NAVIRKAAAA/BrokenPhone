@@ -134,16 +134,32 @@ fun DashboardScreen(
     if (state.isPostBottomSheetVisible) {
         PostBottomSheet(
             onDismissRequest = viewModel::onPostBottomSheetDismiss,
-            actions = PostBottomSheetAction.entries.filter { it != PostBottomSheetAction.DELETE },
+            actions = if (state.isSelectedPostMine) {
+                listOf(PostBottomSheetAction.COPY_LINK, PostBottomSheetAction.DELETE)
+            } else {
+                PostBottomSheetAction.entries.filter { it != PostBottomSheetAction.DELETE }
+            },
             onActionClick = { action ->
                 when (action) {
                     PostBottomSheetAction.NOT_INTERESTED -> viewModel.onNotInterestedClick()
                     PostBottomSheetAction.COPY_LINK -> viewModel.onCopyLinkClick()
                     PostBottomSheetAction.BLOCK -> viewModel.onBlockClick()
                     PostBottomSheetAction.REPORT -> viewModel.onReportClick()
-                    else -> return@PostBottomSheet
+                    PostBottomSheetAction.DELETE -> viewModel.onDeleteClick()
                 }
             },
+        )
+    }
+
+    if (state.isDeleteDialogVisible) {
+        ConfirmDialog(
+            title = stringResource(R.string.common_dialog_delete_post_title),
+            body = stringResource(R.string.common_dialog_delete_post_body),
+            cancelText = stringResource(R.string.common_cancel),
+            confirmText = stringResource(R.string.common_delete),
+            onDismiss = viewModel::onDeleteDialogDismiss,
+            onConfirm = viewModel::onDeleteConfirm,
+            isLoading = state.isDeleteLoading,
         )
     }
 

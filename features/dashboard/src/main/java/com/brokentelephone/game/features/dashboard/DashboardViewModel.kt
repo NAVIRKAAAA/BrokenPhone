@@ -11,6 +11,7 @@ import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.model.report.ReportPostType
 import com.brokentelephone.game.domain.model.sort.DashboardSort
 import com.brokentelephone.game.domain.use_case.BlockUserUseCase
+import com.brokentelephone.game.domain.use_case.DeletePostUseCase
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.domain.use_case.GetPostLinkByIdUseCase
 import com.brokentelephone.game.domain.use_case.GetUnreadNotificationsCountUseCase
@@ -39,6 +40,7 @@ class DashboardViewModel(
     private val getPostLinkByIdUseCase: GetPostLinkByIdUseCase,
     private val blockUserUseCase: BlockUserUseCase,
     private val markPostAsNotInterestedUseCase: MarkPostAsNotInterestedUseCase,
+    private val deletePostUseCase: DeletePostUseCase,
     private val reportPostUseCase: ReportPostUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
@@ -212,6 +214,40 @@ class DashboardViewModel(
                         isBlockDialogVisible = false,
                         globalError = exceptionToMessageMapper.map(exception),
                         selectedPost = null
+                    )
+                }
+            }
+        }
+    }
+
+    fun onDeleteClick() {
+        _state.update { it.copy(isPostBottomSheetVisible = false, isDeleteDialogVisible = true) }
+    }
+
+    fun onDeleteDialogDismiss() {
+        _state.update { it.copy(isDeleteDialogVisible = false) }
+    }
+
+    fun onDeleteConfirm() {
+        val postId = state.value.selectedPost?.id ?: return
+        _state.update { it.copy(isDeleteLoading = true) }
+        viewModelScope.launch {
+            deletePostUseCase.execute(postId).onSuccess {
+                _state.update {
+                    it.copy(
+                        isDeleteLoading = false,
+                        isDeleteDialogVisible = false,
+                        selectedPost = null,
+                    )
+                }
+
+                onRefresh()
+            }.onError { exception ->
+                _state.update {
+                    it.copy(
+                        isDeleteLoading = false,
+                        isDeleteDialogVisible = false,
+                        globalError = exceptionToMessageMapper.map(exception)
                     )
                 }
             }
