@@ -22,12 +22,11 @@ import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 fun AvatarComponent(
     avatarUrl: String?,
     modifier: Modifier = Modifier,
-    size: Dp = 40.dp,
+    size: Dp? = 40.dp,
 ) {
     val context = LocalContext.current
     Box(
-        modifier = modifier
-            .size(size)
+        modifier = (if (size != null) modifier.size(size) else modifier)
             .clip(CircleShape),
     ) {
         SubcomposeAsyncImage(

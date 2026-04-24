@@ -110,7 +110,8 @@ class ProfileViewModel(
                 _state.update {
                     it.copy(
                         isPostsLoading = false,
-                        myPosts = posts.map { p -> p.toUi() })
+                        myPosts = posts.map { p -> p.toUi() }
+                    )
                 }
             }
             .onError {
@@ -139,7 +140,8 @@ class ProfileViewModel(
                 _state.update {
                     it.copy(
                         isContributionsLoading = false,
-                        myContributions = posts.map { p -> p.toUi() })
+                        myContributions = posts.map { p -> p.toUi() }
+                    )
                 }
             }
             .onError {

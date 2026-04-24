@@ -30,18 +30,23 @@ import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 fun AccountInfoSectionShimmer(
     modifier: Modifier = Modifier,
 ) {
+    val avatarSize = 82.dp
     Column() {
         Row(modifier = modifier.fillMaxWidth()) {
             Box(
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(avatarSize)
                     .clip(CircleShape)
                     .shimmer(cornerRadius = 32.dp)
             )
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            Column {
+            Column(
+                modifier = Modifier
+                    .height(avatarSize),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
                 Text(
                     text = "Username pl",
                     fontFamily = FontFamily(Font(R.font.nunito_extra_bold)),

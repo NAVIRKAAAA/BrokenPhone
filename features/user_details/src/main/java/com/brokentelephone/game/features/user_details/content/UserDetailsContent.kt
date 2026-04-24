@@ -170,7 +170,6 @@ fun UserDetailsContent(
                                         postsCount = state.myPosts.size,
                                         contributions = state.myContributions.size,
                                         friends = state.friendsCount,
-                                        isAuth = true,
                                         bio = user.bio,
                                         createdAt = user.createdAt,
                                         onFriendsClick = onFriendsClick,

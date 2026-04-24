@@ -30,7 +30,6 @@ import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 fun AccountInfoSection(
     username: String,
     modifier: Modifier = Modifier,
-    isAuth: Boolean = true,
     postsCount: Int = 0,
     contributions: Int = 0,
     friends: Int = 0,
@@ -41,13 +40,23 @@ fun AccountInfoSection(
     onPostsClick: () -> Unit = {},
     onContributionsClick: () -> Unit = {},
 ) {
+    val avatarSize = 82.dp
+
     Column(modifier = modifier.fillMaxWidth()) {
+
         Row {
-            AvatarComponent(avatarUrl = avatarUrl, size = 64.dp)
+            AvatarComponent(
+                avatarUrl = avatarUrl,
+                size = avatarSize
+            )
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            Column {
+            Column(
+                modifier = Modifier
+                    .height(avatarSize),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
                 Text(
                     text = username,
                     textAlign = TextAlign.Start,
@@ -59,45 +68,31 @@ fun AccountInfoSection(
                     color = MaterialTheme.colorScheme.onSurface,
                 )
 
-                if (isAuth) {
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-                        StatInfo(
-                            value = postsCount,
-                            name = stringResource(R.string.profile_posts),
-                            enabled = true,
-                            onClick = onPostsClick,
-                        )
-                        StatInfo(
-                            value = contributions,
-                            name = stringResource(R.string.profile_contributions),
-                            enabled = true,
-                            onClick = onContributionsClick,
-                        )
-                        StatInfo(
-                            value = friends,
-                            name = stringResource(R.string.profile_friends),
-                            enabled = true,
-                            onClick = onFriendsClick,
-                        )
-                    }
-                } else {
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        text = "Sign up to save your posts and\njoin the fun!",
-                        textAlign = TextAlign.Start,
-                        fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                        fontSize = 14.sp,
-                        lineHeight = 21.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+                    StatInfo(
+                        value = postsCount,
+                        name = stringResource(R.string.profile_posts),
+                        enabled = true,
+                        onClick = onPostsClick,
+                    )
+                    StatInfo(
+                        value = contributions,
+                        name = stringResource(R.string.profile_contributions),
+                        enabled = true,
+                        onClick = onContributionsClick,
+                    )
+                    StatInfo(
+                        value = friends,
+                        name = stringResource(R.string.profile_friends),
+                        enabled = true,
+                        onClick = onFriendsClick,
                     )
                 }
+
             }
         }
 
-        if (isAuth && createdAt != null) {
+        if (createdAt != null) {
             UserBioDisplay(
                 bio = bio,
                 createdAt = createdAt,
@@ -113,7 +108,7 @@ private fun AccountInfoSectionPreview() {
     BrokenTelephoneTheme(darkTheme = true) {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
             AccountInfoSection(
-                username = "Alex", isAuth = true,
+                username = "Alex",
                 bio = "I love drawing, creative games, and exploring new ideas. Always up for a challenge and meeting new people through fun activities!",
                 createdAt = System.currentTimeMillis()
             )

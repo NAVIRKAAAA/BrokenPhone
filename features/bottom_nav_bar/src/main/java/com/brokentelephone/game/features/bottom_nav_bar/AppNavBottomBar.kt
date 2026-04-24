@@ -129,8 +129,8 @@ fun AppNavBottomBar(
                         color = MaterialTheme.colorScheme.background,
                         shape = CircleShape
                     )
-                    .padding(horizontal = 8.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                    .padding(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 BottomNavBar.entries.forEach { item ->
@@ -238,7 +238,7 @@ private fun AppNavBottomBarItem(
 @Composable
 fun AppNavBottomBarPreview() {
     BrokenTelephoneTheme(
-        darkTheme = true
+        darkTheme = false
     ) {
         Box(
             modifier = Modifier
@@ -265,8 +265,8 @@ fun AppNavBottomBarPreview() {
                             color = MaterialTheme.colorScheme.surface,
                             shape = CircleShape
                         )
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
+                        .padding(4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     BottomNavBar.entries.forEach { item ->

@@ -181,7 +181,6 @@ fun ProfileContent(
                             postsCount = state.myPosts.size,
                             contributions = state.myContributions.size,
                             friends = state.friendsCount,
-                            isAuth = state.isAuth,
                             bio = state.user?.bio.orEmpty(),
                             createdAt = state.user?.createdAt,
                             onFriendsClick = onFriendsClick,
@@ -229,10 +228,7 @@ fun ProfileContent(
                                             onMoreClick = onMoreClick,
                                             emptyContent = {
                                                 EmptyPostsElement(
-                                                    modifier = Modifier.padding(
-                                                        horizontal = 16.dp,
-                                                        vertical = 16.dp
-                                                    ),
+                                                    modifier = Modifier.padding(8.dp),
                                                 )
                                             }
                                         )
@@ -250,10 +246,7 @@ fun ProfileContent(
                                             onMoreClick = onMoreClick,
                                             emptyContent = {
                                                 EmptyContributionsElement(
-                                                    modifier = Modifier.padding(
-                                                        horizontal = 16.dp,
-                                                        vertical = 16.dp
-                                                    ),
+                                                    modifier = Modifier.padding(8.dp),
                                                 )
                                             }
                                         )
