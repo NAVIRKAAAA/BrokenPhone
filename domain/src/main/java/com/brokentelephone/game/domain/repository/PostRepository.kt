@@ -2,7 +2,6 @@ package com.brokentelephone.game.domain.repository
 
 import com.brokentelephone.game.domain.model.pagination.PostsPage
 import com.brokentelephone.game.domain.model.post.Post
-import com.brokentelephone.game.domain.model.sort.DashboardSort
 import kotlinx.coroutines.flow.Flow
 
 
@@ -10,7 +9,7 @@ interface PostRepository {
 
     suspend fun loadInitialPosts(
         pageSize: Int,
-        sort: DashboardSort,
+        seed: String,
         excludedUserIds: List<String> = emptyList(),
         excludedPostIds: List<String> = emptyList(),
     ): PostsPage
@@ -18,7 +17,7 @@ interface PostRepository {
     suspend fun loadNextPosts(
         offset: Int,
         pageSize: Int,
-        sort: DashboardSort,
+        seed: String,
         excludedUserIds: List<String> = emptyList(),
         excludedPostIds: List<String> = emptyList(),
     ): PostsPage

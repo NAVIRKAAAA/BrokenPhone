@@ -45,9 +45,10 @@ class PostsRepositoryImpl(
     private val supabase: SupabaseClient,
 ) : PostRepository {
 
+    // TODO: to SQL request
     override suspend fun loadInitialPosts(
         pageSize: Int,
-        sort: DashboardSort,
+        seed: String,
         excludedUserIds: List<String>,
         excludedPostIds: List<String>,
     ): PostsPage {
@@ -59,7 +60,8 @@ class PostsRepositoryImpl(
                         if (excludedUserIds.isNotEmpty()) filterNot("author_id", FilterOperator.IN, "(${excludedUserIds.joinToString(",")})")
                         if (excludedPostIds.isNotEmpty()) filterNot("id", FilterOperator.IN, "(${excludedPostIds.joinToString(",")})")
                     }
-                    applySorting(sort)
+//                    order("md5(id::text || '$seed')", Order.ASCENDING)
+                    applySorting(DashboardSort.LATEST)
                     range(0L, (pageSize - 1).toLong())
                 }
                 .decodeList<PostDto>()
@@ -76,10 +78,11 @@ class PostsRepositoryImpl(
         }
     }
 
+    // TODO: to SQL request
     override suspend fun loadNextPosts(
         offset: Int,
         pageSize: Int,
-        sort: DashboardSort,
+        seed: String,
         excludedUserIds: List<String>,
         excludedPostIds: List<String>,
     ): PostsPage {
@@ -91,7 +94,8 @@ class PostsRepositoryImpl(
                         if (excludedUserIds.isNotEmpty()) filterNot("author_id", FilterOperator.IN, "(${excludedUserIds.joinToString(",")})")
                         if (excludedPostIds.isNotEmpty()) filterNot("id", FilterOperator.IN, "(${excludedPostIds.joinToString(",")})")
                     }
-                    applySorting(sort)
+//                    order("md5(id::text || '$seed')", Order.ASCENDING)
+                    applySorting(DashboardSort.LATEST)
                     range(offset.toLong(), (offset + pageSize - 1).toLong())
                 }
                 .decodeList<PostDto>()

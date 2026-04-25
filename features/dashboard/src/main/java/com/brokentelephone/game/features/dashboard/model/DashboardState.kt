@@ -2,7 +2,6 @@ package com.brokentelephone.game.features.dashboard.model
 
 import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.model.user.UserUi
-import com.brokentelephone.game.domain.model.sort.DashboardSort
 
 data class DashboardState(
     val posts: List<PostUi> = emptyList(),
@@ -11,7 +10,6 @@ data class DashboardState(
     val isLoadingMore: Boolean = false,
     val hasMore: Boolean = true,
     val user: UserUi? = null,
-    val selectedSort: DashboardSort = DashboardSort.LATEST,
     val selectedPost: PostUi? = null,
     val isPostBottomSheetVisible: Boolean = false,
     val isReportBottomSheetVisible: Boolean = false,

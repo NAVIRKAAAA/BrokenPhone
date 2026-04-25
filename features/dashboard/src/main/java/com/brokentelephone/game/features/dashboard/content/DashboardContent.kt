@@ -36,7 +36,6 @@ import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
-import com.brokentelephone.game.domain.model.sort.DashboardSort
 import com.brokentelephone.game.features.dashboard.model.DashboardState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,7 +46,6 @@ fun DashboardContent(
     onPostClick: (postId: String) -> Unit,
     onMoreClick: (postId: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
-    onSortSelected: (DashboardSort) -> Unit,
     onTitleClick: () -> Unit,
     onNotificationsClick: () -> Unit,
     onRefresh: () -> Unit,
@@ -67,9 +65,7 @@ fun DashboardContent(
 
         DashboardTopBar(
             name = state.user?.username ?: "",
-            selectedSort = state.selectedSort,
             isScrolled = isScrolled,
-            onSortSelected = onSortSelected,
             onTitleClick = onTitleClick,
             onNotificationsClick = onNotificationsClick,
             unreadNotificationsCount = state.unreadNotificationsCount,
@@ -213,7 +209,6 @@ fun DashboardContentPreview() {
                 onPostClick = {},
                 onMoreClick = {},
                 onUserClick = {},
-                onSortSelected = {},
                 onTitleClick = {},
                 onNotificationsClick = {},
                 onRefresh = {},

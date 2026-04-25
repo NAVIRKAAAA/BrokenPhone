@@ -9,7 +9,6 @@ import com.brokentelephone.game.core.model.user.toUi
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.model.report.ReportPostType
-import com.brokentelephone.game.domain.model.sort.DashboardSort
 import com.brokentelephone.game.domain.use_case.BlockUserUseCase
 import com.brokentelephone.game.domain.use_case.DeletePostUseCase
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
@@ -31,6 +30,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 class DashboardViewModel(
     private val loadInitialPostsUseCase: LoadInitialPostsUseCase,
@@ -50,6 +50,7 @@ class DashboardViewModel(
 
     private var lastOffset: Int = 0
     private var lastLoadedAt: Long = 0L
+    private var currentSeed: String = UUID.randomUUID().toString()
 
     private val _sideEffects = Channel<DashboardSideEffect>(Channel.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
@@ -69,7 +70,8 @@ class DashboardViewModel(
         viewModelScope.launch {
             Log.d("LOG_TAG", "loadInitialPosts()")
             _state.update { it.copy(isInitialLoading = true) }
-            loadInitialPostsUseCase.execute(INITIAL_PAGE_SIZE, state.value.selectedSort)
+            currentSeed = UUID.randomUUID().toString()
+            loadInitialPostsUseCase.execute(INITIAL_PAGE_SIZE, currentSeed)
                 .onSuccess { page ->
                     Log.d("LOG_TAG", "loadInitialPosts: onSuccess (${page.posts.size})")
                     lastLoadedAt = System.currentTimeMillis()
@@ -100,7 +102,7 @@ class DashboardViewModel(
 
             delay(150)
 
-            loadNextPostsUseCase.execute(lastOffset, DEFAULT_PAGE_SIZE, state.value.selectedSort)
+            loadNextPostsUseCase.execute(lastOffset, DEFAULT_PAGE_SIZE, currentSeed)
                 .onSuccess { page ->
                     Log.d("LOG_TAG", "loadNextPosts: onSuccess (${page.posts.size})")
                     lastOffset = page.offset
@@ -125,7 +127,8 @@ class DashboardViewModel(
 
             delay(150)
 
-            loadInitialPostsUseCase.execute(INITIAL_PAGE_SIZE, state.value.selectedSort)
+            currentSeed = UUID.randomUUID().toString()
+            loadInitialPostsUseCase.execute(INITIAL_PAGE_SIZE, currentSeed)
                 .onSuccess { page ->
                     Log.d("LOG_TAG", "onRefresh: onSuccess (${page.posts.size})")
                     lastLoadedAt = System.currentTimeMillis()
@@ -149,11 +152,7 @@ class DashboardViewModel(
         return System.currentTimeMillis() - lastLoadedAt >= REFRESH_COOLDOWN_MS
     }
 
-    fun onSortSelected(sort: DashboardSort) {
-        _state.update { it.copy(selectedSort = sort) }
-        lastLoadedAt = 0L
-        loadInitialPosts()
-    }
+
 
     fun onCopyLinkClick() {
         val postId = state.value.selectedPost?.id ?: return

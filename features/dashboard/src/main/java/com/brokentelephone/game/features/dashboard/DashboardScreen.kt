@@ -128,7 +128,6 @@ fun DashboardScreen(
         onLoadMore = viewModel::loadNextPosts,
         onTitleClick = { scope.launch { listState.animateScrollToItem(0) } },
         modifier = modifier,
-        onSortSelected = viewModel::onSortSelected
     )
 
     if (state.isPostBottomSheetVisible) {
