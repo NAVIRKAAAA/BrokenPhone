@@ -5,7 +5,6 @@ import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
 import com.brokentelephone.game.domain.model.session.GameSession
-import com.brokentelephone.game.domain.model.session.isMyActiveSession
 
 data class PostDetailsState(
     val postUi: PostUi? = null,
@@ -41,7 +40,7 @@ data class PostDetailsState(
         return when {
             post.isCompleted -> PostDetailsButtonType.COMPLETED
             post.authorId == userUi?.id -> PostDetailsButtonType.OWN_POST
-            post.sessionsHistory.isMyActiveSession(userUi?.sessionId) -> PostDetailsButtonType.MY_SESSION
+//            post.sessionsHistory.isMyActiveSession(userUi?.sessionId) -> PostDetailsButtonType.MY_SESSION
             post.status != PostStatus.AVAILABLE -> PostDetailsButtonType.UNAVAILABLE
             cooldownRemainingSeconds > 0 -> PostDetailsButtonType.COOLDOWN
             post.content is PostContent.Text -> PostDetailsButtonType.DRAW

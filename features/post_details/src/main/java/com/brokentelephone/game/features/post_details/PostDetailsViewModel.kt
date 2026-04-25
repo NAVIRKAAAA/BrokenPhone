@@ -248,7 +248,7 @@ class PostDetailsViewModel(
 
         _state.update { it.copy(isContinueLoading = true) }
         viewModelScope.launch {
-            joinSessionUseCase.execute(postId, post.nextTimeLimit).onSuccess { session ->
+            joinSessionUseCase.execute(postId).onSuccess { session ->
                 _state.update { it.copy(isContinueLoading = false) }
                 val effect = when (post.content) {
                     is PostContent.Text -> PostDetailsSideEffect.NavigateToDraw(session.id)

@@ -108,9 +108,7 @@ class DescribeDrawingViewModel(
         timerJob?.cancel()
         _state.update { it.copy(isCancelling = true) }
         viewModelScope.launch {
-            val postId = state.value.postUi?.id ?: return@launch
-
-            cancelSessionUseCase.execute(sessionId, postId).onSuccess {
+            cancelSessionUseCase.execute(sessionId).onSuccess {
                 _state.update { it.copy(isCancelling = false, showDiscardDialog = false) }
                 _sideEffects.send(DescribeDrawingSideEffect.NavigateBack)
             }.onError {
@@ -126,9 +124,7 @@ class DescribeDrawingViewModel(
     fun onTimesUpGotIt() {
         _state.update { it.copy(isCancelling = true) }
         viewModelScope.launch {
-            val postId = state.value.postUi?.id ?: return@launch
-
-            cancelSessionUseCase.execute(sessionId, postId).onSuccess {
+            cancelSessionUseCase.execute(sessionId).onSuccess {
                 _state.update { it.copy(isCancelling = false, showTimesUpDialog = false) }
                 _sideEffects.send(DescribeDrawingSideEffect.NavigateBack)
             }.onError {
@@ -146,14 +142,13 @@ class DescribeDrawingViewModel(
 
     fun onPostConfirm() {
         val text = state.value.text.trim()
-        val post = state.value.postUi ?: return
 
         timerJob?.cancel()
         _state.update { it.copy(showPostConfirmDialog = false, isPosting = true) }
 
         viewModelScope.launch {
             Log.d("LOG_TAG", "onPostConfirm()")
-            submitDescriptionUseCase.execute(post.id, text)
+            submitDescriptionUseCase.execute(sessionId, text)
                 .onSuccess {
                     _state.update { it.copy(isPosting = false) }
 

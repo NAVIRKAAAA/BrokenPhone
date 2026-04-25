@@ -274,7 +274,6 @@ class PostsRepositoryImpl(
             createdAt = now,
             updatedAt = now,
             status = PostStatus.AVAILABLE,
-            sessionId = null,
             generation = 0,
             maxGenerations = maxGenerations,
             textTimeLimit = textTimeLimit,

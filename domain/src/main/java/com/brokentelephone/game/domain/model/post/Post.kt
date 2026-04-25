@@ -12,7 +12,6 @@ data class Post(
     val createdAt: Long,
     val updatedAt: Long,
     val status: PostStatus,
-    val sessionId: String?,
     val sessionsHistory: List<PostSessionHistoryItem> = emptyList(),
 
     // Chain info

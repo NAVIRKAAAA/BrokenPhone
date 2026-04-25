@@ -8,19 +8,14 @@ interface GameSessionRepository {
 
     fun getSession(sessionId: String): Flow<GameSession>
 
-    suspend fun joinSession(postId: String, userId: String, timeLimit: Int): GameSession
+    suspend fun joinSession(postId: String, userId: String): GameSession
 
-    suspend fun cancelSession(sessionId: String, postId: String, userId: String)
+    suspend fun cancelSession(sessionId: String, userId: String)
 
     suspend fun completeSession(
         sessionId: String,
-        postId: String,
         authorId: String,
-        authorName: String,
-        avatarUrl: String?,
         content: PostContent,
     )
-
-    // continueSession(sessionId: String)
 
 }

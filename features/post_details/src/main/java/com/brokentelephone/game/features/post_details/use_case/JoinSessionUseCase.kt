@@ -14,12 +14,12 @@ class JoinSessionUseCase(
     private val userSession: UserSession,
     private val handler: ApiHandler,
 ) {
-    suspend fun execute(postId: String, timeLimit: Int): AppResult<GameSession> {
+    suspend fun execute(postId: String): AppResult<GameSession> {
         return handler.handle(Dispatchers.IO) {
             val user = userSession.authState.firstOrNull()?.getUserOrNull()
                 ?: throw UnauthorizedException()
 
-            repository.joinSession(postId, user.id, timeLimit)
+            repository.joinSession(postId, user.id)
         }
     }
 }

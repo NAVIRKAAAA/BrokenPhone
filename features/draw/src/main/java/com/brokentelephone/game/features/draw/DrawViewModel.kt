@@ -2,6 +2,7 @@ package com.brokentelephone.game.features.draw
 
 import android.graphics.Bitmap
 import android.graphics.Paint
+import android.util.Log
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.createBitmap
@@ -57,6 +58,8 @@ class DrawViewModel(
         viewModelScope.launch {
             getActiveSessionUseCase.execute(sessionId).onSuccess { session ->
                 _state.update { it.copy(session = session) }
+
+                Log.d("LOG_TAG", "Session: $session")
 
                 getPostByIdUseCase.executeWithResult(session.postId).onSuccess { post ->
                     _state.update { it.copy(postUi = post.toUi()) }
@@ -193,9 +196,7 @@ class DrawViewModel(
     private fun onTimesUpGotIt() {
         _state.update { it.copy(isCancelling = true) }
         viewModelScope.launch {
-            val postId = state.value.postUi?.id ?: return@launch
-
-            cancelSessionUseCase.execute(sessionId, postId).onSuccess {
+            cancelSessionUseCase.execute(sessionId).onSuccess {
                 _state.update { it.copy(isCancelling = false, showTimesUpDialog = false) }
                 _sideEffects.send(DrawSideEffect.NavigateBack)
             }.onError {
@@ -212,9 +213,7 @@ class DrawViewModel(
         timerJob?.cancel()
         _state.update { it.copy(isCancelling = true) }
         viewModelScope.launch {
-            val postId = state.value.postUi?.id ?: return@launch
-
-            cancelSessionUseCase.execute(sessionId, postId).onSuccess {
+            cancelSessionUseCase.execute(sessionId).onSuccess {
                 _state.update { it.copy(isCancelling = false, showDiscardDialog = false) }
                 _sideEffects.send(DrawSideEffect.NavigateBack)
             }.onError {
@@ -230,7 +229,6 @@ class DrawViewModel(
     private fun onPostConfirm() {
         val currentState = state.value
         val canvasSize = currentState.canvasSize ?: return
-        val session = currentState.session ?: return
 
         timerJob?.cancel()
         _state.update { it.copy(showPostConfirmDialog = false, isPosting = true) }
@@ -238,7 +236,7 @@ class DrawViewModel(
         viewModelScope.launch {
             val bitmap = renderToBitmap(currentState.paths, canvasSize.width, canvasSize.height)
             val localPath = drawingBitmapSaver.save(bitmap)
-            submitDrawingUseCase.execute(session.postId, localPath).onSuccess {
+            submitDrawingUseCase.execute(sessionId, localPath).onSuccess {
                 _state.update { it.copy(isPosting = false) }
 
                 delay(150)

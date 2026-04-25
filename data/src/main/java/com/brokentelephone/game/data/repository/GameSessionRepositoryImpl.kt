@@ -9,7 +9,6 @@ import com.brokentelephone.game.domain.repository.GameSessionRepository
 import com.brokentelephone.game.essentials.exceptions.auth.NetworkException
 import com.brokentelephone.game.essentials.exceptions.auth.PostNotFoundException
 import com.brokentelephone.game.essentials.exceptions.auth.PostUnavailableToJoinException
-import com.brokentelephone.game.essentials.exceptions.auth.SessionCooldownException
 import com.brokentelephone.game.essentials.exceptions.auth.SessionExpiredException
 import com.brokentelephone.game.essentials.exceptions.auth.SessionNotFoundException
 import com.brokentelephone.game.essentials.exceptions.auth.SessionValidationException
@@ -78,23 +77,22 @@ class GameSessionRepositoryImpl(
         }
     }
 
-    override suspend fun joinSession(postId: String, userId: String, timeLimit: Int): GameSession {
+    override suspend fun joinSession(postId: String, userId: String): GameSession {
         try {
             return supabase.postgrest.rpc(
                 "join_session",
                 buildJsonObject {
                     put("p_post_id", postId)
                     put("p_user_id", userId)
-                    put("p_time_limit", timeLimit)
                 }
             ).decodeAs<GameSessionDto>().toGameSession()
         } catch (e: RestException) {
+            Log.d("LOG_TAG", "joinSession: $e")
             val msg = e.message.orEmpty()
             throw when {
                 "USER_ALREADY_IN_SESSION" in msg -> UserAlreadyInSessionException()
                 "POST_NOT_FOUND" in msg -> PostNotFoundException()
                 "POST_UNAVAILABLE" in msg -> PostUnavailableToJoinException()
-                "SESSION_COOLDOWN" in msg -> SessionCooldownException()
                 else -> UnknownAuthException()
             }
         } catch (_: IOException) {
@@ -105,17 +103,17 @@ class GameSessionRepositoryImpl(
         }
     }
 
-    override suspend fun cancelSession(sessionId: String, postId: String, userId: String) {
+    override suspend fun cancelSession(sessionId: String, userId: String) {
         try {
             supabase.postgrest.rpc(
                 "cancel_session",
                 buildJsonObject {
                     put("p_session_id", sessionId)
-                    put("p_post_id", postId)
                     put("p_user_id", userId)
                 }
             )
         } catch (e: RestException) {
+            Log.d("LOG_TAG", "cancelSession: $e")
             val msg = e.message.orEmpty()
             throw when {
                 "SESSION_NOT_FOUND" in msg -> SessionNotFoundException()
@@ -131,10 +129,7 @@ class GameSessionRepositoryImpl(
 
     override suspend fun completeSession(
         sessionId: String,
-        postId: String,
         authorId: String,
-        authorName: String,
-        avatarUrl: String?,
         content: PostContent,
     ) {
         try {
@@ -143,10 +138,7 @@ class GameSessionRepositoryImpl(
                 "complete_session",
                 buildJsonObject {
                     put("p_session_id", sessionId)
-                    put("p_post_id", postId)
                     put("p_author_id", authorId)
-                    put("p_author_name", authorName)
-                    put("p_avatar_url", avatarUrl)
                     put(
                         "p_content_type", when (content) {
                             is PostContent.Text -> "TEXT"
@@ -158,6 +150,7 @@ class GameSessionRepositoryImpl(
                 }
             )
         } catch (e: RestException) {
+            Log.d("LOG_TAG", "completeSession: $e")
             val msg = e.message.orEmpty()
             throw when {
                 "SESSION_NOT_FOUND" in msg -> SessionNotFoundException()
