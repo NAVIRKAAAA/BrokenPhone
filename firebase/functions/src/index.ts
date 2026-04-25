@@ -2,4 +2,4 @@ import {initializeApp} from "firebase-admin/app";
 
 initializeApp();
 
-export {autoExpireSession} from "./sessions/autoExpireSession";
+export {handleSessionExpiry} from "./sessions/handleSessionExpiry";

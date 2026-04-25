@@ -13,13 +13,13 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 class GetPostByIdUseCase(
-    private val repository: PostRepository,
+    private val postRepository: PostRepository,
     private val usersRepository: UsersRepository,
     private val handler: ApiHandler,
 ) {
 
     fun execute(id: String): Flow<Post> {
-        return repository.getPostById(id)
+        return postRepository.getPostById(id)
             .map { post ->
                 val author = usersRepository.getUserById(post.authorId)
                 if (author != null) {
@@ -33,7 +33,7 @@ class GetPostByIdUseCase(
 
     suspend fun executeWithResult(id: String): AppResult<Post> {
         return handler.handle(Dispatchers.IO) {
-            repository.getPostById(id).firstOrNull() ?: throw PostNotFoundException()
+            postRepository.getPostById(id).firstOrNull() ?: throw PostNotFoundException()
         }
     }
 }

@@ -109,6 +109,7 @@ class PostsRepositoryImpl(
     }
 
     override fun getPostById(id: String): Flow<Post> = callbackFlow {
+        Log.d("LOG_TAG", "getPostById(): $id")
         val channel = supabase.realtime.channel("post-$id-${UUID.randomUUID()}")
 
         val updateFlow = channel.postgresChangeFlow<PostgresAction.Update>(schema = "public") {
@@ -119,7 +120,7 @@ class PostsRepositoryImpl(
         val collectJob = launch {
             updateFlow.collect { change ->
                 try {
-                    Log.d("LOG_TAG", "Realtime: $change")
+                    Log.d("LOG_TAG", "getPostById change: $change")
                     trySend(change.decodeRecord<PostDto>().toPost())
                 } catch (_: Exception) {}
             }
@@ -138,11 +139,13 @@ class PostsRepositoryImpl(
             }
             Log.d("LOG_TAG", "First Sent: $post")
             trySend(post)
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "getPostById: $e")
             close(PostNotFoundException())
         }
 
         awaitClose {
+            Log.d("LOG_TAG", "getPostById: awaitClose")
             collectJob.cancel()
             launch { supabase.realtime.removeChannel(channel) }
         }
