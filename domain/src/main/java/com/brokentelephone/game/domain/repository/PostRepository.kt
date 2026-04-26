@@ -28,6 +28,10 @@ interface PostRepository {
 
     suspend fun getChainById(chainId: String): List<Post>
 
+    suspend fun loadUserCompletedPosts(userId: String): List<Post>
+
+    suspend fun loadUserCompletedContributions(userId: String): List<Post>
+
     suspend fun loadUserPosts(userId: String): List<Post>
 
     suspend fun loadContributions(userId: String): List<Post>

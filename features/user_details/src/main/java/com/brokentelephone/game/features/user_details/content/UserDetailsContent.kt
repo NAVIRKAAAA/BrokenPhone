@@ -1,6 +1,8 @@
 package com.brokentelephone.game.features.user_details.content
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -42,6 +44,8 @@ import com.brokentelephone.game.core.profile.AccountInfoSection
 import com.brokentelephone.game.core.profile.AccountInfoSectionShimmer
 import com.brokentelephone.game.core.profile.ProfilePostsPage
 import com.brokentelephone.game.core.profile.ProfileTabRow
+import com.brokentelephone.game.core.profile.UserProfileContributionElement
+import com.brokentelephone.game.core.profile.UserProfilePostElement
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.shimmer.shimmer
@@ -246,18 +250,32 @@ fun UserDetailsContent(
                         verticalAlignment = Alignment.Top,
                         beyondViewportPageCount = 1
                     ) { page ->
-                        when (val currentTab = ProfileTab.entries[page]) {
+                        when (ProfileTab.entries[page]) {
                             ProfileTab.POSTS -> {
                                 val showShimmerEffect =
                                     state.isPostsLoading && state.myPosts.isEmpty() && state.isInitialLoading
 
                                 ProfilePostsPage(
                                     posts = state.myPosts,
-                                    tab = currentTab,
                                     isLoading = showShimmerEffect,
                                     nestedScrollConnection = nestedScrollConnection,
-                                    onPostClick = onPostClick,
-                                    onMoreClick = onMoreClick,
+                                    itemContent = { post ->
+                                        UserProfilePostElement(
+                                            post = post,
+                                            onMoreClick = { onMoreClick(post.id) },
+                                            modifier = Modifier
+                                                .combinedClickable(
+                                                    onClick = {
+                                                        onPostClick(post.id)
+                                                    },
+                                                    onLongClick = {
+                                                        onMoreClick(post.id)
+                                                    },
+                                                    indication = null,
+                                                    interactionSource = remember { MutableInteractionSource() }
+                                                )
+                                        )
+                                    },
                                     emptyContent = {
                                         EmptyUserDetailsListElement(
                                             title = stringResource(R.string.user_details_empty_posts_title),
@@ -274,11 +292,25 @@ fun UserDetailsContent(
 
                                 ProfilePostsPage(
                                     posts = state.myContributions,
-                                    tab = currentTab,
                                     isLoading = showShimmerEffect,
                                     nestedScrollConnection = nestedScrollConnection,
-                                    onPostClick = onPostClick,
-                                    onMoreClick = onMoreClick,
+                                    itemContent = { post ->
+                                        UserProfileContributionElement(
+                                            post = post,
+                                            onMoreClick = { onMoreClick(post.id) },
+                                            modifier = Modifier
+                                                .combinedClickable(
+                                                    onClick = {
+                                                        onPostClick(post.id)
+                                                    },
+                                                    onLongClick = {
+                                                        onMoreClick(post.id)
+                                                    },
+                                                    indication = null,
+                                                    interactionSource = remember { MutableInteractionSource() }
+                                                )
+                                        )
+                                    },
                                     emptyContent = {
                                         EmptyUserDetailsListElement(
                                             title = stringResource(R.string.user_details_empty_contributions_title),

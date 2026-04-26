@@ -19,9 +19,9 @@ import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.domain.use_case.GetFriendsCountUseCase
 import com.brokentelephone.game.domain.use_case.GetPostLinkByIdUseCase
 import com.brokentelephone.game.domain.use_case.GetUserByIdUseCase
-import com.brokentelephone.game.domain.use_case.GetUserContributionsUseCase
+import com.brokentelephone.game.domain.use_case.GetUserCompletedContributionsUseCase
+import com.brokentelephone.game.domain.use_case.GetUserCompletedPostsUseCase
 import com.brokentelephone.game.domain.use_case.GetUserLinkByIdUseCase
-import com.brokentelephone.game.domain.use_case.GetUserPostsUseCase
 import com.brokentelephone.game.domain.use_case.MarkPostAsNotInterestedUseCase
 import com.brokentelephone.game.domain.use_case.RemoveFriendUseCase
 import com.brokentelephone.game.domain.use_case.ReportPostUseCase
@@ -47,8 +47,6 @@ class UserDetailsViewModel(
     private val getUserByIdUseCase: GetUserByIdUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
-    private val getUserPostsUseCase: GetUserPostsUseCase,
-    private val getUserContributionsUseCase: GetUserContributionsUseCase,
     private val getFriendshipActionStateUseCase: GetFriendshipActionStateUseCase,
     private val sendFriendRequestUseCase: SendFriendRequestUseCase,
     private val acceptFriendRequestUseCase: AcceptFriendRequestUseCase,
@@ -62,6 +60,8 @@ class UserDetailsViewModel(
     private val reportUserUseCase: ReportUserUseCase,
     private val deletePostUseCase: DeletePostUseCase,
     private val getFriendsCountUseCase: GetFriendsCountUseCase,
+    private val getUserCompletedPostsUseCase: GetUserCompletedPostsUseCase,
+    private val getUserCompletedContributionsUseCase: GetUserCompletedContributionsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(UserDetailsState())
@@ -159,7 +159,7 @@ class UserDetailsViewModel(
     private suspend fun fetchMyPosts() {
         val user = state.value.user ?: return
 
-        getUserPostsUseCase.execute(user.id)
+        getUserCompletedPostsUseCase.execute(user.id)
             .onSuccess { posts ->
                 _state.update {
                     it.copy(
@@ -175,7 +175,7 @@ class UserDetailsViewModel(
     private suspend fun fetchContributions() {
         val user = state.value.user ?: return
 
-        getUserContributionsUseCase.execute(user.id)
+        getUserCompletedContributionsUseCase.execute(user.id)
             .onSuccess { posts ->
                 _state.update {
                     it.copy(

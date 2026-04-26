@@ -14,6 +14,8 @@ import com.brokentelephone.game.domain.use_case.GetPrivacyPolicyLinkUseCase
 import com.brokentelephone.game.domain.use_case.GetTermsOfServiceLinkUseCase
 import com.brokentelephone.game.domain.use_case.GetThemeUseCase
 import com.brokentelephone.game.domain.use_case.GetUnreadNotificationsCountUseCase
+import com.brokentelephone.game.domain.use_case.GetUserCompletedContributionsUseCase
+import com.brokentelephone.game.domain.use_case.GetUserCompletedPostsUseCase
 import com.brokentelephone.game.domain.use_case.GetUserContributionsUseCase
 import com.brokentelephone.game.domain.use_case.GetUserPostsUseCase
 import com.brokentelephone.game.domain.use_case.GetUsersByIdsUseCase
@@ -51,6 +53,8 @@ val appModule = module {
     factoryOf(::GetUsersByIdsUseCase)
     factoryOf(::GetUserPostsUseCase)
     factoryOf(::GetUserContributionsUseCase)
+    factoryOf(::GetUserCompletedPostsUseCase)
+    factoryOf(::GetUserCompletedContributionsUseCase)
 
     factoryOf(::LogoutUseCase)
     factoryOf(::GetTermsOfServiceLinkUseCase)

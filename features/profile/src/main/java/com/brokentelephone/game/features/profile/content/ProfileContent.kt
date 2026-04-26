@@ -1,6 +1,8 @@
 package com.brokentelephone.game.features.profile.content
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -47,6 +49,8 @@ import com.brokentelephone.game.core.button.BTButton
 import com.brokentelephone.game.core.model.profile.ProfileTab
 import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.profile.AccountInfoSection
+import com.brokentelephone.game.core.profile.ProfileContributionElement
+import com.brokentelephone.game.core.profile.ProfilePostElement
 import com.brokentelephone.game.core.profile.ProfilePostsPage
 import com.brokentelephone.game.core.profile.ProfileTabRow
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
@@ -226,18 +230,32 @@ fun ProfileContent(
                                 verticalAlignment = Alignment.Top,
                                 beyondViewportPageCount = 1
                             ) { page ->
-                                when (val currentTab = ProfileTab.entries[page]) {
+                                when (ProfileTab.entries[page]) {
                                     ProfileTab.POSTS -> {
                                         val showShimmerEffect =
                                             state.isPostsLoading && state.myPosts.isEmpty() && state.isInitialLoading
 
                                         ProfilePostsPage(
                                             posts = state.myPosts,
-                                            tab = currentTab,
                                             isLoading = showShimmerEffect,
                                             nestedScrollConnection = nestedScrollConnection,
-                                            onPostClick = onPostClick,
-                                            onMoreClick = onMoreClick,
+                                            itemContent = { post ->
+                                                ProfilePostElement(
+                                                    post = post,
+                                                    onMoreClick = { onMoreClick(post.id) },
+                                                    modifier = Modifier
+                                                        .combinedClickable(
+                                                            onClick = {
+                                                                onPostClick(post.id)
+                                                            },
+                                                            onLongClick = {
+                                                                onMoreClick(post.id)
+                                                            },
+                                                            indication = null,
+                                                            interactionSource = remember { MutableInteractionSource() }
+                                                        )
+                                                )
+                                            },
                                             emptyContent = {
                                                 EmptyPostsElement(
                                                     modifier = Modifier.padding(8.dp),
@@ -252,11 +270,25 @@ fun ProfileContent(
 
                                         ProfilePostsPage(
                                             posts = state.myContributions,
-                                            tab = currentTab,
                                             isLoading = showShimmerEffect,
                                             nestedScrollConnection = nestedScrollConnection,
-                                            onPostClick = onPostClick,
-                                            onMoreClick = onMoreClick,
+                                            itemContent = { post ->
+                                                ProfileContributionElement(
+                                                    post = post,
+                                                    onMoreClick = { onMoreClick(post.id) },
+                                                    modifier = Modifier
+                                                        .combinedClickable(
+                                                            onClick = {
+                                                                onPostClick(post.id)
+                                                            },
+                                                            onLongClick = {
+                                                                onMoreClick(post.id)
+                                                            },
+                                                            indication = null,
+                                                            interactionSource = remember { MutableInteractionSource() }
+                                                        )
+                                                )
+                                            },
                                             emptyContent = {
                                                 EmptyContributionsElement(
                                                     modifier = Modifier.padding(8.dp),

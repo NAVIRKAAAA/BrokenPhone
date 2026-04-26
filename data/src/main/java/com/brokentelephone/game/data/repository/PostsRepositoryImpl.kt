@@ -225,6 +225,58 @@ class PostsRepositoryImpl(
         }
     }
 
+    override suspend fun loadUserCompletedPosts(userId: String): List<Post> {
+        try {
+            return supabase.from(TABLE_POSTS)
+                .select(Columns.raw("*, chains!chain_id!inner(generation)")) {
+                    filter {
+                        eq("author_id", userId)
+                        eq("generation", 0)
+                        eq("chains.status", ChainStatus.COMPLETED.name)
+                    }
+                    order("created_at", Order.DESCENDING)
+                }
+                .decodeList<PostDto>()
+                .map { postDto ->
+                    postDto.toPost().copy(generation = postDto.chain?.generation ?: postDto.generation)
+                }
+        } catch (_: IOException) {
+            throw NetworkException()
+        } catch (e: RestException) {
+            Log.d("LOG_TAG", "loadUserCompletedPosts(): $e")
+            throw UnknownAuthException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "loadUserCompletedPosts(): $e")
+            throw UnknownAuthException()
+        }
+    }
+
+    override suspend fun loadUserCompletedContributions(userId: String): List<Post> {
+        try {
+            return supabase.from(TABLE_POSTS)
+                .select(Columns.raw("*, chains!chain_id!inner(generation)")) {
+                    filter {
+                        eq("author_id", userId)
+                        gt("generation", 0)
+                        eq("chains.status", ChainStatus.COMPLETED.name)
+                    }
+                    order("created_at", Order.DESCENDING)
+                }
+                .decodeList<PostDto>()
+                .map { postDto ->
+                    postDto.toPost().copy(chainSize = postDto.chain?.generation)
+                }
+        } catch (_: IOException) {
+            throw NetworkException()
+        } catch (e: RestException) {
+            Log.d("LOG_TAG", "loadUserCompletedContributions(): $e")
+            throw UnknownAuthException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "loadUserCompletedContributions(): $e")
+            throw UnknownAuthException()
+        }
+    }
+
     override suspend fun loadUserPosts(userId: String): List<Post> {
         try {
             return supabase.from(TABLE_POSTS)
