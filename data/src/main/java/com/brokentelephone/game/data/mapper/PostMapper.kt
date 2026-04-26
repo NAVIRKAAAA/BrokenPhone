@@ -22,6 +22,7 @@ fun PostDto.toPost(): Post = Post(
     maxGenerations = maxGenerations,
     textTimeLimit = textTimeLimit,
     drawingTimeLimit = drawingTimeLimit,
+    chainSize = null
 )
 
 fun Post.toPostDto(): PostDto = PostDto(

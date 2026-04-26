@@ -226,13 +226,14 @@ fun ProfileContent(
                                 verticalAlignment = Alignment.Top,
                                 beyondViewportPageCount = 1
                             ) { page ->
-                                when (ProfileTab.entries[page]) {
+                                when (val currentTab = ProfileTab.entries[page]) {
                                     ProfileTab.POSTS -> {
                                         val showShimmerEffect =
                                             state.isPostsLoading && state.myPosts.isEmpty() && state.isInitialLoading
 
                                         ProfilePostsPage(
                                             posts = state.myPosts,
+                                            tab = currentTab,
                                             isLoading = showShimmerEffect,
                                             nestedScrollConnection = nestedScrollConnection,
                                             onPostClick = onPostClick,
@@ -251,6 +252,7 @@ fun ProfileContent(
 
                                         ProfilePostsPage(
                                             posts = state.myContributions,
+                                            tab = currentTab,
                                             isLoading = showShimmerEffect,
                                             nestedScrollConnection = nestedScrollConnection,
                                             onPostClick = onPostClick,

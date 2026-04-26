@@ -213,7 +213,7 @@ fun UserDetailsContent(
                                             modifier = Modifier.weight(1f),
                                         )
 
-                                        if(state.friendshipActionState != FriendshipActionState.INVITE_RECEIVED) {
+                                        if (state.friendshipActionState != FriendshipActionState.INVITE_RECEIVED) {
                                             Spacer(modifier = Modifier.width(12.dp))
 
                                             ShareProfileButton(
@@ -246,13 +246,14 @@ fun UserDetailsContent(
                         verticalAlignment = Alignment.Top,
                         beyondViewportPageCount = 1
                     ) { page ->
-                        when (ProfileTab.entries[page]) {
+                        when (val currentTab = ProfileTab.entries[page]) {
                             ProfileTab.POSTS -> {
                                 val showShimmerEffect =
                                     state.isPostsLoading && state.myPosts.isEmpty() && state.isInitialLoading
 
                                 ProfilePostsPage(
                                     posts = state.myPosts,
+                                    tab = currentTab,
                                     isLoading = showShimmerEffect,
                                     nestedScrollConnection = nestedScrollConnection,
                                     onPostClick = onPostClick,
@@ -273,6 +274,7 @@ fun UserDetailsContent(
 
                                 ProfilePostsPage(
                                     posts = state.myContributions,
+                                    tab = currentTab,
                                     isLoading = showShimmerEffect,
                                     nestedScrollConnection = nestedScrollConnection,
                                     onPostClick = onPostClick,

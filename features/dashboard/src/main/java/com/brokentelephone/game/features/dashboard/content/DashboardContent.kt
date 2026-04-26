@@ -178,7 +178,8 @@ fun DashboardContentPreview() {
                             generation = 10,
                             maxGenerations = 10,
                             status = PostStatus.AVAILABLE,
-                            nextTimeLimit = 30,
+                            drawingTimeLimit = 60,
+                            textTimeLimit = 60
                         ),
                         PostUi(
                             id = "2",
@@ -190,7 +191,8 @@ fun DashboardContentPreview() {
                             generation = 3,
                             maxGenerations = 10,
                             status = PostStatus.AVAILABLE,
-                            nextTimeLimit = 60,
+                            drawingTimeLimit = 60,
+                            textTimeLimit = 60
                         ),
                         PostUi(
                             id = "3",
@@ -202,7 +204,8 @@ fun DashboardContentPreview() {
                             generation = 7,
                             maxGenerations = 10,
                             status = PostStatus.AVAILABLE,
-                            nextTimeLimit = 45,
+                            drawingTimeLimit = 60,
+                            textTimeLimit = 60
                         ),
                     )
                 ),

@@ -187,10 +187,7 @@ fun DescribeDrawingContent(
                             ) {
 
                                 PostChip(
-                                    text = stringResource(
-                                        R.string.create_post_badge_generations,
-                                        post.maxGenerations
-                                    ),
+                                    text = "${post.generation + 1}/${post.maxGenerations}",
                                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                                     iconResId = R.drawable.ic_mutations,
@@ -258,7 +255,8 @@ fun DescribeDrawingContentPreview() {
                         generation = 10,
                         maxGenerations = 10,
                         status = PostStatus.AVAILABLE,
-                        nextTimeLimit = 30,
+                        drawingTimeLimit = 60,
+                        textTimeLimit = 60
                     )
                 )
             )

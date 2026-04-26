@@ -10,7 +10,7 @@ class GetUserContributionsUseCase(
     private val repository: PostRepository,
     private val handler: ApiHandler,
 ) {
-    suspend fun execute(userId: String,): AppResult<List<Post>> {
+    suspend fun execute(userId: String): AppResult<List<Post>> {
         return handler.handle(Dispatchers.IO) {
             repository.loadContributions(userId)
         }

@@ -219,7 +219,8 @@ fun PostElementPreview() {
                     generation = 7,
                     maxGenerations = 10,
                     status = PostStatus.AVAILABLE,
-                    nextTimeLimit = 60,
+                    drawingTimeLimit = 60,
+                    textTimeLimit = 60
                 ),
             )
         }

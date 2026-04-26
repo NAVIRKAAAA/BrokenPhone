@@ -233,7 +233,9 @@ fun ChainDetailsContentPreview() {
                         content = PostContent.Text("Once upon a time there was a broken telephone that nobody could fix..."),
                         createdAt = System.currentTimeMillis() - 3_600_000,
                         generation = 1, maxGenerations = 5,
-                        status = PostStatus.AVAILABLE, nextTimeLimit = 60,
+                        status = PostStatus.AVAILABLE,
+                        drawingTimeLimit = 60,
+                        textTimeLimit = 60,
                     ),
                     PostUi(
                         id = "2", authorId = "user_2", authorName = "Maria",
@@ -241,7 +243,8 @@ fun ChainDetailsContentPreview() {
                         content = PostContent.Drawing(),
                         createdAt = System.currentTimeMillis() - 2_700_000,
                         generation = 2, maxGenerations = 5,
-                        status = PostStatus.AVAILABLE, nextTimeLimit = 45,
+                        status = PostStatus.AVAILABLE,   drawingTimeLimit = 60,
+                        textTimeLimit = 60,
                     ),
                     PostUi(
                         id = "3", authorId = "user_1", authorName = "Alex",
@@ -249,7 +252,8 @@ fun ChainDetailsContentPreview() {
                         content = PostContent.Text("A cat was sitting on a telephone wire singing songs"),
                         createdAt = System.currentTimeMillis() - 1_800_000,
                         generation = 3, maxGenerations = 5,
-                        status = PostStatus.AVAILABLE, nextTimeLimit = 60,
+                        status = PostStatus.AVAILABLE,   drawingTimeLimit = 60,
+                        textTimeLimit = 60,
                     ),
                     PostUi(
                         id = "4", authorId = "user_3", authorName = "John",
@@ -257,7 +261,8 @@ fun ChainDetailsContentPreview() {
                         content = PostContent.Drawing(),
                         createdAt = System.currentTimeMillis() - 900_000,
                         generation = 4, maxGenerations = 5,
-                        status = PostStatus.AVAILABLE, nextTimeLimit = 30,
+                        status = PostStatus.AVAILABLE,   drawingTimeLimit = 60,
+                        textTimeLimit = 60,
                     ),
                     PostUi(
                         id = "5", authorId = "user_4", authorName = "Sofia",
@@ -265,7 +270,8 @@ fun ChainDetailsContentPreview() {
                         content = PostContent.Text("The telephone sang a broken cat on the wire"),
                         createdAt = System.currentTimeMillis() - 300_000,
                         generation = 5, maxGenerations = 5,
-                        status = PostStatus.AVAILABLE, nextTimeLimit = 60,
+                        status = PostStatus.AVAILABLE,   drawingTimeLimit = 60,
+                        textTimeLimit = 60,
                     ),
                 ),
                 userId = "user_1",
@@ -280,7 +286,8 @@ fun ChainDetailsContentPreview() {
                     generation = 5,
                     maxGenerations = 5,
                     status = PostStatus.AVAILABLE,
-                    nextTimeLimit = 60,
+                    drawingTimeLimit = 60,
+                    textTimeLimit = 60
                 )
             ),
             onBackClick = {},

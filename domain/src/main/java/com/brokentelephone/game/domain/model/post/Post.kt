@@ -17,6 +17,7 @@ data class Post(
     // Chain info
     val generation: Int,
     val maxGenerations: Int,
+    val chainSize: Int?,
 
     // Time limits
     val textTimeLimit: Int,

@@ -17,11 +17,13 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.model.post.PostUi
+import com.brokentelephone.game.core.model.profile.ProfileTab
 import com.brokentelephone.game.core.shimmer.ShimmerContent
 
 @Composable
 fun ProfilePostsPage(
     posts: List<PostUi>,
+    tab: ProfileTab,
     isLoading: Boolean,
     nestedScrollConnection: NestedScrollConnection,
     onPostClick: (postId: String) -> Unit,
@@ -52,21 +54,39 @@ fun ProfilePostsPage(
                     items = posts,
                     key = { it.id }
                 ) { post ->
-                    ProfilePostElement(
-                        post = post,
-                        onMoreClick = { onMoreClick(post.id) },
-                        modifier = Modifier
-                            .combinedClickable(
-                                onClick = {
-                                    onPostClick(post.id)
-                                },
-                                onLongClick = {
-                                    onMoreClick(post.id)
-                                },
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() }
-                            )
-                    )
+                    if(tab == ProfileTab.POSTS) {
+                        ProfilePostElement(
+                            post = post,
+                            onMoreClick = { onMoreClick(post.id) },
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        onPostClick(post.id)
+                                    },
+                                    onLongClick = {
+                                        onMoreClick(post.id)
+                                    },
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                                )
+                        )
+                    } else {
+                        ProfileContributionElement(
+                            post = post,
+                            onMoreClick = { onMoreClick(post.id) },
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        onPostClick(post.id)
+                                    },
+                                    onLongClick = {
+                                        onMoreClick(post.id)
+                                    },
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                                )
+                        )
+                    }
                 }
 
                 item {

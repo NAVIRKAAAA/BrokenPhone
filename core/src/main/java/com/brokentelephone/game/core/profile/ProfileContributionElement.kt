@@ -43,7 +43,7 @@ import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
 
 @Composable
-fun ProfilePostElement(
+fun ProfileContributionElement(
     post: PostUi,
     modifier: Modifier = Modifier,
     onMoreClick: () -> Unit = {},
@@ -125,13 +125,23 @@ fun ProfilePostElement(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             itemVerticalAlignment = Alignment.CenterVertically
         ) {
-            if (post.isCompleted) {
+
+            if (post.chainSize == post.maxGenerations) {
                 PostChip(
                     text = stringResource(R.string.dashboard_badge_complete),
                     contentColor = MaterialTheme.colorScheme.onSurface,
                     containerColor = MaterialTheme.appColors.badgeCompleteContainer,
                     iconResId = R.drawable.ic_check,
                 )
+
+                if (!post.isCompleted) {
+                    PostChip(
+                        text = "${post.generation}/${post.maxGenerations}",
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        iconResId = R.drawable.ic_mutations,
+                    )
+                }
             } else {
                 PostChip(
                     text = "${post.generation}/${post.maxGenerations}",
@@ -142,19 +152,10 @@ fun ProfilePostElement(
             }
 
             PostChip(
-                text = stringResource(R.string.badge_seconds, post.textTimeLimit),
+                text = stringResource(R.string.badge_seconds, post.nextTimeLimit),
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
-                iconResId = R.drawable.ic_edit_v2,
-                modifier = Modifier,
-                enabled = false,
-            )
-
-            PostChip(
-                text = stringResource(R.string.badge_seconds, post.drawingTimeLimit),
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                iconResId = R.drawable.ic_brush_v2,
+                iconResId = R.drawable.ic_clock,
                 modifier = Modifier,
                 enabled = false,
             )
@@ -164,14 +165,14 @@ fun ProfilePostElement(
 
 @Preview
 @Composable
-private fun ProfilePostElementDrawingPreview() {
+private fun ProfileContributionElementDrawingPreview() {
     BrokenTelephoneTheme(darkTheme = false) {
         Box(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp)
         ) {
-            ProfilePostElement(
+            ProfileContributionElement(
                 post = PostUi(
                     id = "1",
                     authorId = "user-1",
@@ -183,7 +184,8 @@ private fun ProfilePostElementDrawingPreview() {
                     maxGenerations = 10,
                     status = PostStatus.AVAILABLE,
                     drawingTimeLimit = 60,
-                    textTimeLimit = 60
+                    textTimeLimit = 60,
+                    chainSize = 10
                 )
             )
         }
@@ -192,14 +194,14 @@ private fun ProfilePostElementDrawingPreview() {
 
 @Preview
 @Composable
-private fun ProfilePostElementTextPreview() {
+private fun ProfileContributionElementTextPreview() {
     BrokenTelephoneTheme(darkTheme = false) {
         Box(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp)
         ) {
-            ProfilePostElement(
+            ProfileContributionElement(
                 post = PostUi(
                     id = "2",
                     authorId = "user-1",
@@ -211,7 +213,8 @@ private fun ProfilePostElementTextPreview() {
                     maxGenerations = 10,
                     status = PostStatus.AVAILABLE,
                     drawingTimeLimit = 60,
-                    textTimeLimit = 60
+                    textTimeLimit = 60,
+                    chainSize = 10
                 )
             )
         }

@@ -253,7 +253,7 @@ class PostsRepositoryImpl(
     override suspend fun loadContributions(userId: String): List<Post> {
         try {
             return supabase.from(TABLE_POSTS)
-                .select {
+                .select(Columns.raw("*, chains!chain_id(generation)")) {
                     filter {
                         eq("author_id", userId)
                         gt("generation", 0)
@@ -261,7 +261,9 @@ class PostsRepositoryImpl(
                     order("created_at", Order.DESCENDING)
                 }
                 .decodeList<PostDto>()
-                .map { it.toPost() }
+                .map { postDto ->
+                    postDto.toPost().copy(chainSize = postDto.chain?.generation)
+                }
         } catch (_: IOException) {
             throw NetworkException()
         } catch (e: RestException) {
@@ -309,6 +311,7 @@ class PostsRepositoryImpl(
             maxGenerations = maxGenerations,
             textTimeLimit = textTimeLimit,
             drawingTimeLimit = drawingTimeLimit,
+            chainSize = null
         )
 
         try {
@@ -325,6 +328,7 @@ class PostsRepositoryImpl(
         }
     }
 
+    // TODO: FIX and to sql !!!
     override suspend fun deletePost(postId: String) {
         try {
             val post = supabase.from(TABLE_POSTS)

@@ -16,11 +16,18 @@ data class PostUi(
     val generation: Int,
     val maxGenerations: Int,
     val status: PostStatus,
-    val nextTimeLimit: Int,
+    val drawingTimeLimit: Int,
+    val textTimeLimit: Int,
     val sessionsHistory: List<PostSessionHistoryItem> = emptyList(),
+    val chainSize: Int? = 0
 ) {
-    val isCompleted: Boolean get() = generation == maxGenerations
 
+    val isCompleted: Boolean get() = generation == maxGenerations
+    val nextTimeLimit: Int
+        get() = when (content) {
+            is PostContent.Text -> drawingTimeLimit
+            is PostContent.Drawing -> textTimeLimit
+        }
 }
 
 fun Post.toUi() = PostUi(
@@ -33,9 +40,8 @@ fun Post.toUi() = PostUi(
     generation = generation,
     maxGenerations = maxGenerations,
     status = status,
-    nextTimeLimit = when (content) {
-        is PostContent.Text -> drawingTimeLimit
-        is PostContent.Drawing -> textTimeLimit
-    },
+    drawingTimeLimit = drawingTimeLimit,
+    textTimeLimit = textTimeLimit,
     sessionsHistory = sessionsHistory,
+    chainSize = chainSize
 )
