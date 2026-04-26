@@ -37,9 +37,10 @@ class CreatePostNavigationApiImpl : CreatePostNavigationApi {
             CreatePostScreen(
                 onBackClick = navController::safePopBackStack,
                 onPostCreated = {
-                    navController.getBackStackEntry(DashboardRoute)
-                        .savedStateHandle[KEY_FORCE_REFRESH] = true
-
+                    runCatching {
+                        navController.getBackStackEntry(DashboardRoute)
+                            .savedStateHandle[KEY_FORCE_REFRESH] = true
+                    }
                     navController.popBackStack()
                 }
             )

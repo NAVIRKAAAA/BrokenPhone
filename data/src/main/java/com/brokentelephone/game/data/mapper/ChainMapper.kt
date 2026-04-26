@@ -8,7 +8,7 @@ fun ChainDto.toChain(): Chain = Chain(
     id = id,
     createdAt = createdAt,
     status = runCatching { ChainStatus.valueOf(status) }.getOrDefault(ChainStatus.ACTIVE),
-    generation = 0,
+    generation = generation,
     maxGenerations = maxGenerations,
     textTimeLimit = textTimeLimit,
     drawingTimeLimit = drawingTimeLimit,
@@ -22,5 +22,6 @@ fun Chain.toChainDto(): ChainDto = ChainDto(
     textTimeLimit = textTimeLimit,
     drawingTimeLimit = drawingTimeLimit,
     createdAt = createdAt,
+    generation = generation,
     completedAt = completedAt,
 )

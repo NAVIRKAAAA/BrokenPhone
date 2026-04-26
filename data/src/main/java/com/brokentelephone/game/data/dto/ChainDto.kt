@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 data class ChainDto(
     @SerialName("id") val id: String,
     @SerialName("status") val status: String,
+    @SerialName("generation") val generation: Int,
     @SerialName("max_generations") val maxGenerations: Int,
     @SerialName("text_time_limit") val textTimeLimit: Int,
     @SerialName("drawing_time_limit") val drawingTimeLimit: Int,

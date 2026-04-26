@@ -27,4 +27,10 @@ data class PostDto(
     @SerialName("drawing_time_limit") val drawingTimeLimit: Int,
     @SerialName("created_at") val createdAt: Long,
     @SerialName("updated_at") val updatedAt: Long,
+    @SerialName("chains") val chain: PostChainDto? = null,
+)
+
+@Serializable
+data class PostChainDto(
+    @SerialName("generation") val generation: Int,
 )

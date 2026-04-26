@@ -74,9 +74,10 @@ class PostDetailsNavigationApiImpl : PostDetailsNavigationApi {
                 viewModel = viewModel,
                 onBackClick = navController::safePopBackStack,
                 navigateBackWithForceUpdate = {
-                    navController.getBackStackEntry(DashboardRoute)
-                        .savedStateHandle[KEY_FORCE_REFRESH] = true
-
+                    runCatching {
+                        navController.getBackStackEntry(DashboardRoute)
+                            .savedStateHandle[KEY_FORCE_REFRESH] = true
+                    }
                     navController.safePopBackStack()
                 },
                 onDrawContinue = { sessionId ->

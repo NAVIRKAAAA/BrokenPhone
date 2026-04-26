@@ -57,8 +57,16 @@ class PostsRepositoryImpl(
                 .select(Columns.raw("*, users!author_id(username, avatar_url)")) {
                     filter {
                         neq("status", PostStatus.COMPLETED.name)
-                        if (excludedUserIds.isNotEmpty()) filterNot("author_id", FilterOperator.IN, "(${excludedUserIds.joinToString(",")})")
-                        if (excludedPostIds.isNotEmpty()) filterNot("id", FilterOperator.IN, "(${excludedPostIds.joinToString(",")})")
+                        if (excludedUserIds.isNotEmpty()) filterNot(
+                            "author_id",
+                            FilterOperator.IN,
+                            "(${excludedUserIds.joinToString(",")})"
+                        )
+                        if (excludedPostIds.isNotEmpty()) filterNot(
+                            "id",
+                            FilterOperator.IN,
+                            "(${excludedPostIds.joinToString(",")})"
+                        )
                     }
 //                    order("md5(id::text || '$seed')", Order.ASCENDING)
                     applySorting(DashboardSort.LATEST)
@@ -91,8 +99,16 @@ class PostsRepositoryImpl(
                 .select(Columns.raw("*, users!author_id(username, avatar_url)")) {
                     filter {
                         neq("status", PostStatus.COMPLETED.name)
-                        if (excludedUserIds.isNotEmpty()) filterNot("author_id", FilterOperator.IN, "(${excludedUserIds.joinToString(",")})")
-                        if (excludedPostIds.isNotEmpty()) filterNot("id", FilterOperator.IN, "(${excludedPostIds.joinToString(",")})")
+                        if (excludedUserIds.isNotEmpty()) filterNot(
+                            "author_id",
+                            FilterOperator.IN,
+                            "(${excludedUserIds.joinToString(",")})"
+                        )
+                        if (excludedPostIds.isNotEmpty()) filterNot(
+                            "id",
+                            FilterOperator.IN,
+                            "(${excludedPostIds.joinToString(",")})"
+                        )
                     }
 //                    order("md5(id::text || '$seed')", Order.ASCENDING)
                     applySorting(DashboardSort.LATEST)
@@ -100,7 +116,11 @@ class PostsRepositoryImpl(
                 }
                 .decodeList<PostDto>()
                 .map { it.toPost() }
-            return PostsPage(posts = posts, offset = offset + posts.size, hasMore = posts.size >= pageSize)
+            return PostsPage(
+                posts = posts,
+                offset = offset + posts.size,
+                hasMore = posts.size >= pageSize
+            )
         } catch (_: IOException) {
             throw NetworkException()
         } catch (e: RestException) {
@@ -126,7 +146,8 @@ class PostsRepositoryImpl(
                 try {
                     Log.d("LOG_TAG", "getPostById change: $change")
                     trySend(change.decodeRecord<PostDto>().toPost())
-                } catch (_: Exception) {}
+                } catch (_: Exception) {
+                }
             }
         }
 
@@ -203,10 +224,11 @@ class PostsRepositoryImpl(
             throw UnknownAuthException()
         }
     }
+
     override suspend fun loadUserPosts(userId: String): List<Post> {
         try {
             return supabase.from(TABLE_POSTS)
-                .select {
+                .select(Columns.raw("*, chains!chain_id(generation)")) {
                     filter {
                         eq("author_id", userId)
                         eq("generation", 0)
@@ -214,7 +236,9 @@ class PostsRepositoryImpl(
                     order("created_at", Order.DESCENDING)
                 }
                 .decodeList<PostDto>()
-                .map { it.toPost() }
+                .map { postDto ->
+                    postDto.toPost().copy(generation = postDto.chain?.generation ?: postDto.generation)
+                }
         } catch (_: IOException) {
             throw NetworkException()
         } catch (e: RestException) {
@@ -341,6 +365,9 @@ class PostsRepositoryImpl(
                 supabase.from(TABLE_POSTS).update(
                     buildJsonObject { put("status", PostStatus.AVAILABLE.name) }
                 ) { filter { eq("id", prevPost.id) } }
+                supabase.from(TABLE_CHAINS).update(
+                    buildJsonObject { put("generation", post.generation - 1) }
+                ) { filter { eq("id", post.chainId) } }
             }
         } catch (e: AppException) {
             throw e
