@@ -41,8 +41,10 @@ class DescribeDrawingNavigationApiImpl : DescribeDrawingNavigationApi {
                 sessionId = route.sessionId,
                 onBackClick = navController::safePopBackStack,
                 onPostSubmitted = {
-                    navController.getBackStackEntry(DashboardRoute)
-                        .savedStateHandle[KEY_FORCE_REFRESH] = true
+                    runCatching {
+                        navController.getBackStackEntry(DashboardRoute)
+                            .savedStateHandle[KEY_FORCE_REFRESH] = true
+                    }
 
                     navController.popBackStack(DashboardRoute, inclusive = false)
                 }

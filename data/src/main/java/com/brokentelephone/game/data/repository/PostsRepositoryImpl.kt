@@ -22,6 +22,7 @@ import com.brokentelephone.game.essentials.exceptions.main.AppException
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.exceptions.RestException
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
 import io.github.jan.supabase.postgrest.query.PostgrestRequestBuilder
@@ -380,60 +381,28 @@ class PostsRepositoryImpl(
         }
     }
 
-    // TODO: FIX and to sql !!!
-    override suspend fun deletePost(postId: String) {
+    override suspend fun deletePost(userId: String, postId: String) {
         try {
-            val post = supabase.from(TABLE_POSTS)
-                .select { filter { eq("id", postId) } }
-                .decodeSingleOrNull<PostDto>()
-                ?.toPost() ?: throw PostNotFoundException()
-
-            val chainGeneration = supabase.from(TABLE_POSTS)
-                .select { filter { eq("chain_id", post.chainId) } }
-                .decodeList<PostDto>()
-                .maxOfOrNull { it.generation } ?: throw PostNotFoundException()
-
-            if (post.status == PostStatus.IN_PROGRESS) throw PostInProgressException()
-            if (chainGeneration != post.generation) throw CannotDeletePostException()
-            if (chainGeneration == post.maxGenerations) throw CannotDeletePostException()
-
-            if (post.generation == 0) {
-                val chainPostIds = supabase.from(TABLE_POSTS)
-                    .select { filter { eq("chain_id", post.chainId) } }
-                    .decodeList<PostDto>()
-                    .map { it.id }
-                chainPostIds.forEach { id ->
-                    supabase.from(TABLE_SESSIONS).delete { filter { eq("post_id", id) } }
+            supabase.postgrest.rpc(
+                "delete_post",
+                buildJsonObject {
+                    put("p_user_id", userId)
+                    put("p_post_id", postId)
                 }
-                supabase.from(TABLE_CHAINS).delete { filter { eq("id", post.chainId) } }
-            } else {
-                val prevPost = supabase.from(TABLE_POSTS)
-                    .select {
-                        filter {
-                            eq("chain_id", post.chainId)
-                            eq("generation", post.generation - 1)
-                        }
-                    }
-                    .decodeSingleOrNull<PostDto>() ?: throw PostNotFoundException()
-
-                supabase.from(TABLE_SESSIONS).delete { filter { eq("post_id", postId) } }
-                supabase.from(TABLE_POSTS).delete { filter { eq("id", postId) } }
-                supabase.from(TABLE_POSTS).update(
-                    buildJsonObject { put("status", PostStatus.AVAILABLE.name) }
-                ) { filter { eq("id", prevPost.id) } }
-                supabase.from(TABLE_CHAINS).update(
-                    buildJsonObject { put("generation", post.generation - 1) }
-                ) { filter { eq("id", post.chainId) } }
-            }
-        } catch (e: AppException) {
-            throw e
-        } catch (_: IOException) {
-            throw NetworkException()
+            )
         } catch (e: RestException) {
             Log.d("LOG_TAG", "deletePost(): $e")
-            throw UnknownAuthException()
-        } catch (e: Exception) {
-            Log.d("LOG_TAG", "deletePost: $e")
+            val msg = e.message.orEmpty()
+            throw when {
+                "POST_NOT_FOUND" in msg -> PostNotFoundException()
+                "PERMISSION_DENIED" in msg -> UnknownAuthException()
+                "POST_IN_PROGRESS" in msg -> PostInProgressException()
+                "CANNOT_DELETE_POST" in msg -> CannotDeletePostException()
+                else -> UnknownAuthException()
+            }
+        } catch (_: IOException) {
+            throw NetworkException()
+        } catch (_: Exception) {
             throw UnknownAuthException()
         }
     }
@@ -449,6 +418,5 @@ class PostsRepositoryImpl(
     private companion object {
         const val TABLE_CHAINS = "chains"
         const val TABLE_POSTS = "posts"
-        const val TABLE_SESSIONS = "sessions"
     }
 }
