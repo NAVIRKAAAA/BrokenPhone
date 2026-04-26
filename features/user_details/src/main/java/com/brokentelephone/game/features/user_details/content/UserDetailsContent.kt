@@ -81,8 +81,19 @@ fun UserDetailsContent(
     val nestedScrollConnection = remember(listState) {
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                if (available.y >= 0f) return Offset.Zero
                 val consumed = listState.dispatchRawDelta(-available.y)
                 return Offset(0f, -consumed)
+            }
+
+            override fun onPostScroll(
+                consumed: Offset,
+                available: Offset,
+                source: NestedScrollSource,
+            ): Offset {
+                if (available.y <= 0f) return Offset.Zero
+                val outerConsumed = listState.dispatchRawDelta(-available.y)
+                return Offset(0f, -outerConsumed)
             }
         }
     }
@@ -246,6 +257,13 @@ fun UserDetailsContent(
                                     nestedScrollConnection = nestedScrollConnection,
                                     onPostClick = onPostClick,
                                     onMoreClick = onMoreClick,
+                                    emptyContent = {
+                                        EmptyUserDetailsListElement(
+                                            title = stringResource(R.string.user_details_empty_posts_title),
+                                            body = stringResource(R.string.user_details_empty_posts_body),
+                                            modifier = Modifier.padding(8.dp),
+                                        )
+                                    }
                                 )
                             }
 
@@ -259,6 +277,13 @@ fun UserDetailsContent(
                                     nestedScrollConnection = nestedScrollConnection,
                                     onPostClick = onPostClick,
                                     onMoreClick = onMoreClick,
+                                    emptyContent = {
+                                        EmptyUserDetailsListElement(
+                                            title = stringResource(R.string.user_details_empty_contributions_title),
+                                            body = stringResource(R.string.user_details_empty_contributions_body),
+                                            modifier = Modifier.padding(8.dp),
+                                        )
+                                    }
                                 )
                             }
                         }
@@ -293,6 +318,7 @@ private fun UserDetailsContentPreview() {
                     createdAt = System.currentTimeMillis(),
                     bio = "I love drawing, creative games, and exploring new ideas. Always up for a challenge and meeting new people through fun activities!",
                 ),
+                isInitialLoading = false
             ),
             onBackClick = {},
             onTabSelect = {}

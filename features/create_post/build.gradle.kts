@@ -25,6 +25,7 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":essentials"))
     implementation(project(":features:create_post_api"))
+    implementation(project(":features:dashboard_api"))
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.koin.android)
     implementation(libs.koin.compose.viewmodel)

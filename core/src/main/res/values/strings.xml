@@ -231,6 +231,12 @@
     <string name="profile_guest_note">You\'re playing as a guest. Sign up to save your progress!</string>
     <string name="profile_member_since">Member since %1$s</string>
 
+    <!-- User Details -->
+    <string name="user_details_empty_posts_title">No posts</string>
+    <string name="user_details_empty_posts_body">Looks like this user hasn\'t posted anything yet.</string>
+    <string name="user_details_empty_contributions_title">No contributions</string>
+    <string name="user_details_empty_contributions_body">Looks like this user hasn\'t joined any chains yet.</string>
+
     <!-- Notifications -->
     <string name="notification_friend_request_body">sent you a friend request</string>
     <string name="notification_friend_accepted_body">accepted your friend request</string>

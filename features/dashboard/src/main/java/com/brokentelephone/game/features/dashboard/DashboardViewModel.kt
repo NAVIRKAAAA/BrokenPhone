@@ -140,6 +140,8 @@ class DashboardViewModel(
                             hasMore = page.hasMore,
                         )
                     }
+
+                    _sideEffects.send(DashboardSideEffect.ScrollToTop)
                 }
                 .onError {
                     _state.update { it.copy(isRefreshing = false) }

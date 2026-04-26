@@ -9,7 +9,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.brokentelephone.game.create_post_api.CreatePostNavigationApi
 import com.brokentelephone.game.create_post_api.CreatePostRoute
+import com.brokentelephone.game.dashboard_api.DashboardRoute
 import com.brokentelephone.game.features.create_post.CreatePostScreen
+import com.brokentelephone.game.nav_api.KEY_FORCE_REFRESH
 import com.brokentelephone.game.nav_api.safePopBackStack
 
 class CreatePostNavigationApiImpl : CreatePostNavigationApi {
@@ -34,7 +36,12 @@ class CreatePostNavigationApiImpl : CreatePostNavigationApi {
         ) {
             CreatePostScreen(
                 onBackClick = navController::safePopBackStack,
-                onPostCreated = navController::safePopBackStack
+                onPostCreated = {
+                    navController.getBackStackEntry(DashboardRoute)
+                        .savedStateHandle[KEY_FORCE_REFRESH] = true
+
+                    navController.popBackStack()
+                }
             )
         }
     }

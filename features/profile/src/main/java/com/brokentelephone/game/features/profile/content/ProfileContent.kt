@@ -80,8 +80,19 @@ fun ProfileContent(
     val nestedScrollConnection = remember(listState) {
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                if (available.y >= 0f) return Offset.Zero
                 val consumed = listState.dispatchRawDelta(-available.y)
                 return Offset(0f, -consumed)
+            }
+
+            override fun onPostScroll(
+                consumed: Offset,
+                available: Offset,
+                source: NestedScrollSource,
+            ): Offset {
+                if (available.y <= 0f) return Offset.Zero
+                val outerConsumed = listState.dispatchRawDelta(-available.y)
+                return Offset(0f, -outerConsumed)
             }
         }
     }
