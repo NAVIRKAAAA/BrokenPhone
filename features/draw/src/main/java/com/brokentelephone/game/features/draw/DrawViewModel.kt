@@ -93,7 +93,6 @@ class DrawViewModel(
                             isTimerExpired = true,
                             showTimesUpDialog = true,
                             showDiscardDialog = false,
-                            showPostConfirmDialog = false
                         )
                     }
                     break
@@ -119,8 +118,6 @@ class DrawViewModel(
             is DrawingAction.OnBrushSizeChange -> _state.update { it.copy(selectedBrushSize = action.brushSize) }
             is DrawingAction.OnCanvasSizeChanged -> _state.update { it.copy(canvasSize = action.size) }
             DrawingAction.OnPostClick -> onPostClick()
-            DrawingAction.OnPostConfirm -> onPostConfirm()
-            DrawingAction.OnPostDismiss -> _state.update { it.copy(showPostConfirmDialog = false) }
             DrawingAction.OnBackClick -> onBackClick()
             DrawingAction.OnDiscardConfirm -> onDiscardConfirm()
             DrawingAction.OnDiscardDismiss -> _state.update { it.copy(showDiscardDialog = false) }
@@ -223,24 +220,16 @@ class DrawViewModel(
     }
 
     private fun onPostClick() {
-        _state.update { it.copy(showPostConfirmDialog = true) }
-    }
-
-    private fun onPostConfirm() {
         val currentState = state.value
         val canvasSize = currentState.canvasSize ?: return
 
         timerJob?.cancel()
-        _state.update { it.copy(showPostConfirmDialog = false, isPosting = true) }
+        _state.update { it.copy(isPosting = true) }
 
         viewModelScope.launch {
             val bitmap = renderToBitmap(currentState.paths, canvasSize.width, canvasSize.height)
             val localPath = drawingBitmapSaver.save(bitmap)
             submitDrawingUseCase.execute(sessionId, localPath).onSuccess {
-                _state.update { it.copy(isPosting = false) }
-
-                delay(150)
-
                 _sideEffects.send(DrawSideEffect.PostCreated(localPath))
             }.onError { _ ->
                 // HANDLE

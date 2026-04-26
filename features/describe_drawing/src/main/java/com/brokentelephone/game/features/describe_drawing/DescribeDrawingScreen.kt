@@ -1,7 +1,6 @@
 package com.brokentelephone.game.features.describe_drawing
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -49,19 +48,6 @@ fun DescribeDrawingScreen(
         onPostClick = viewModel::onPostClick,
         modifier = modifier
     )
-
-    if (state.showPostConfirmDialog || state.isPosting) {
-        ConfirmDialog(
-            title = stringResource(R.string.describe_drawing_dialog_post_title),
-            body = stringResource(R.string.describe_drawing_dialog_post_body),
-            cancelText = stringResource(R.string.common_cancel),
-            confirmText = stringResource(R.string.common_post),
-            onDismiss = viewModel::onPostDismiss,
-            onConfirm = viewModel::onPostConfirm,
-            confirmButtonColor = MaterialTheme.colorScheme.primary,
-            isLoading = state.isPosting,
-        )
-    }
 
     if (state.showDiscardDialog) {
         ConfirmDialog(

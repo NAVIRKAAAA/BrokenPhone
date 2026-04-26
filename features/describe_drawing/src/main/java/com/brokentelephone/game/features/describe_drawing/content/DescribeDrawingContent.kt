@@ -50,7 +50,7 @@ import com.brokentelephone.game.core.post.DrawPostImage
 import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
-import com.brokentelephone.game.core.top_bar.PostTopBar
+import com.brokentelephone.game.core.top_bar.SaveTopBar
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
 import com.brokentelephone.game.features.describe_drawing.model.DescribeDrawingState
@@ -76,11 +76,13 @@ fun DescribeDrawingContent(
             .systemBarsPadding()
             .imePadding(),
     ) {
-        PostTopBar(
+        SaveTopBar(
             title = stringResource(R.string.describe_drawing_title),
             onBackClick = onBackClick,
-            isPostButtonEnabled = state.text.isNotBlank() && !state.isTextOverLimit && !state.isTimerExpired,
-            onPostClick = onPostClick
+            isSaveEnabled = state.text.isNotBlank() && !state.isTextOverLimit && !state.isTimerExpired && !state.isPosting,
+            onSaveClick = onPostClick,
+            isLoading = state.isPosting,
+            saveButtonText = stringResource(R.string.common_post),
         )
 
         Column(

@@ -81,7 +81,6 @@ class DescribeDrawingViewModel(
                             isTimerExpired = true,
                             showTimesUpDialog = true,
                             showDiscardDialog = false,
-                            showPostConfirmDialog = false
                         )
                     }
                     break
@@ -137,34 +136,20 @@ class DescribeDrawingViewModel(
         if (state.value.isTimerExpired) return
         val text = state.value.text.trim()
         if (text.isBlank()) return
-        _state.update { it.copy(showPostConfirmDialog = true) }
-    }
-
-    fun onPostConfirm() {
-        val text = state.value.text.trim()
 
         timerJob?.cancel()
-        _state.update { it.copy(showPostConfirmDialog = false, isPosting = true) }
+        _state.update { it.copy(isPosting = true) }
 
         viewModelScope.launch {
-            Log.d("LOG_TAG", "onPostConfirm()")
             submitDescriptionUseCase.execute(sessionId, text)
                 .onSuccess {
-                    _state.update { it.copy(isPosting = false) }
-
-                    delay(150)
-
                     _sideEffects.send(DescribeDrawingSideEffect.PostCreated)
                 }
                 .onError { e ->
-                    Log.d("LOG_TAG", "onPostConfirm: $e")
+                    Log.d("LOG_TAG", "onPostClick: $e")
                     // HANDLE
                 }
         }
-    }
-
-    fun onPostDismiss() {
-        _state.update { it.copy(showPostConfirmDialog = false) }
     }
 
     fun onGlobalErrorDismiss() {

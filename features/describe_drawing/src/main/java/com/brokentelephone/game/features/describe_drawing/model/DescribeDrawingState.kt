@@ -9,7 +9,6 @@ data class DescribeDrawingState(
     val text: String = "",
     val showDiscardDialog: Boolean = false,
     val isCancelling: Boolean = false,
-    val showPostConfirmDialog: Boolean = false,
     val isPosting: Boolean = false,
     val remainingSeconds: Int = 0,
     val isTimerExpired: Boolean = false,

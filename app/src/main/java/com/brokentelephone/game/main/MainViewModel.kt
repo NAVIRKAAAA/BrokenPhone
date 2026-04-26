@@ -39,6 +39,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlin.system.measureTimeMillis
 
 class MainViewModel(
     private val getThemeUseCase: GetThemeUseCase,
@@ -85,58 +86,65 @@ class MainViewModel(
             .launchIn(viewModelScope)
     }
 
+    // 500 ms to start
     fun initializeSession() {
         _state.update { it.copy(isSessionLoading = true) }
+
         viewModelScope.launch {
-            initializeSessionUseCase.execute().onSuccess { authState ->
-                val user = authState.getUserOrNull()
+            val time = measureTimeMillis {
 
-                val (destination, pendingRoutes) = when (user?.onboardingStep) {
-                    OnboardingStep.CHOOSE_AVATAR -> AuthGraph to listOf(
-                        ChooseAvatarRoute
-                    )
+                initializeSessionUseCase.execute().onSuccess { authState ->
+                    val user = authState.getUserOrNull()
 
-                    OnboardingStep.CHOOSE_USERNAME -> AuthGraph to listOf(
-                        ChooseAvatarRoute,
-                        ChooseUsernameRoute
-                    )
+                    val (destination, pendingRoutes) = when (user?.onboardingStep) {
+                        OnboardingStep.CHOOSE_AVATAR -> AuthGraph to listOf(
+                            ChooseAvatarRoute
+                        )
 
-                    OnboardingStep.COMPLETED -> MainGraph to emptyList()
-                    null -> AuthGraph to emptyList()
-                }
+                        OnboardingStep.CHOOSE_USERNAME -> AuthGraph to listOf(
+                            ChooseAvatarRoute,
+                            ChooseUsernameRoute
+                        )
 
-                _state.update {
-                    it.copy(
-                        sessionDataError = null,
-                        isSessionLoading = false,
-                        startDestination = destination,
-                        pendingRoutes = pendingRoutes
-                    )
-                }
+                        OnboardingStep.COMPLETED -> MainGraph to emptyList()
+                        null -> AuthGraph to emptyList()
+                    }
 
-                val sessionId = user?.sessionId
+                    _state.update {
+                        it.copy(
+                            sessionDataError = null,
+                            isSessionLoading = false,
+                            startDestination = destination,
+                            pendingRoutes = pendingRoutes
+                        )
+                    }
 
-                if (user != null && user.onboardingStep == OnboardingStep.COMPLETED && sessionId != null) {
-                    setActiveSession(sessionId)
-                }
-            }.onError { error ->
-                _state.update {
-                    it.copy(
-                        isSessionLoading = false,
-                        startDestination = AuthGraph
-                    )
-                }
+                    val sessionId = user?.sessionId
 
-                if (error is SessionDataException) {
-                    delay(150)
+                    if (user != null && user.onboardingStep == OnboardingStep.COMPLETED && sessionId != null) {
+                        setActiveSession(sessionId)
+                    }
+                }.onError { error ->
                     _state.update {
                         it.copy(
                             isSessionLoading = false,
-                            sessionDataError = exceptionToMessageMapper.map(error)
+                            startDestination = AuthGraph
                         )
+                    }
+
+                    if (error is SessionDataException) {
+                        delay(150)
+                        _state.update {
+                            it.copy(
+                                isSessionLoading = false,
+                                sessionDataError = exceptionToMessageMapper.map(error)
+                            )
+                        }
                     }
                 }
             }
+            Log.d("LOG_TAG", "initializeSession: $time")
+
         }
     }
 
