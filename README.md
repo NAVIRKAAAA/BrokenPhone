@@ -27,55 +27,62 @@ and honestly, the result is always either funny or completely unexpected.
 - **DI**: Koin
 - **Navigation**: Navigation Compose
 - **Image loading**: Coil
-- **Backend**: Firebase (Firestore, Auth, Storage, Cloud Functions)
+- **Backend**: Firebase (Firestore, Auth, FCM) + Supabase (image storage)
 - **Min SDK**: 27 (Android 8.1)
 - **Target SDK**: 37
 
 ## Project Structure
 
 ```
-app/src/main/java/com/brokentelephone/game/
-├── di/                 # Koin dependency injection modules
-├── main/               # Application entry point, MainViewModel
-└── navigation/         # Nav graph and routes
+app/                        # Entry point, AppNavGraph, DI, deep-link handling
+core/                       # Shared UI components, theme, utilities
+├── theme/                  # Light/dark theme, color tokens, typography
+├── button/                 # BTButton, AuthButton, GoogleSignInButton, FAB, etc.
+├── badge/                  # BadgeElement, StrongBadgeElement
+├── chip/                   # PostChip, UsernameChip
+├── avatar/                 # AvatarComponent
+├── shimmer/                # Shimmer loading effect
+├── dialog/                 # ConfirmDialog, ErrorDialog, LoadingDialog, TimesUpDialog
+├── bottom_sheet/           # PostBottomSheet, ReportPostBottomSheet
+├── top_bar/                # AuthTopBar, EditProfileTopBar, PostTopBar, ProfileTopBar, SaveTopBar
+├── post/                   # DrawPostImage, EmptyDrawPost
+├── profile/                # Profile UI (FriendshipActionButton, UserBioDisplay, friend items, shimmer lists)
+├── text_field/             # SignUpTextField, PasswordTextField, SearchTextField
+├── text/                   # TermsAndPrivacyText
+├── pull_to_refresh/        # AppPullToRefreshIndicator
+├── divider/                # OrDivider
+├── banner/                 # ActiveSessionBanner
+├── timer/                  # CountdownTimer
+├── pagination/             # LoadMoreIndicator
+├── swipe/                  # SwipeToDismissContainer
+├── radio_button/           # LanguageRadioItem
+├── locale/                 # LocalizedContextWrapper
+├── browser/                # CustomTab
+└── modifier/               # Custom Modifier extensions (shimmer, hidden, coloredShadow, fadingEdge)
 
-core/                   # Shared UI components, theme, utilities
-├── theme/              # Light/dark theme, color tokens, typography
-├── badge/              # Badge components
-├── avatar/             # Avatar component
-├── shimmer/            # Shimmer loading effect + ShimmerContent
-├── dialog/             # Reusable dialogs
-├── bottom_sheet/       # Bottom sheets (post actions, report)
-├── top_bar/            # Shared top bars
-├── post/               # Post image rendering
-├── profile/            # Profile UI components (FriendshipActionButton, UserBioDisplay, etc.)
-└── modifier/           # Custom Modifier extensions
+domain/                     # Repository interfaces, use cases, domain models
+data/                       # Repository implementations, DTOs, mappers, Firebase/Supabase clients
+essentials/                 # AppException hierarchy, SignUpValidator
+network/                    # NetworkConnectionManager, NetworkState
+nav_api/                    # Navigation route contracts
+firebase/                   # Cloud Functions (Node.js/TypeScript)
 
-features/               # Feature modules (each has an _api counterpart)
+features/                   # Feature modules (each has a paired <feature>_api module)
 ├── welcome/
-├── sign_in/ / sign_up/
-├── forgot_password/
-├── choose_avatar/ / choose_username/
+├── sign_in/ + sign_up/
+├── confirm_sign_up/
+├── forgot_password/ + new_password/
+├── choose_avatar/ + choose_username/
 ├── dashboard/
-├── post_details/
-├── chain_details/
-├── create_post/
-├── draw/
-├── describe_drawing/
-├── profile/
-├── edit_profile/ / edit_avatar/ / edit_username/ / edit_bio/ / edit_email/
-├── settings/
-├── account_settings/
-├── blocked_users/
-├── language/
-├── theme/
-├── notifications/ / notifications_settings/
-├── friends/ / add_friend/ / user_friends/
+├── post_details/ + chain_details/
+├── create_post/ + draw/ + describe_drawing/
+├── profile/ + edit_profile/ + edit_avatar/ + edit_username/ + edit_bio/ + edit_email/
+├── settings/ + account_settings/ + blocked_users/
+├── language/ + theme/
+├── notifications/ + notification_details/ + notifications_settings/
+├── friends/ + add_friend/ + user_friends/
 ├── user_details/
 └── bottom_nav_bar/
-
-domain/                 # Domain models, repository interfaces, use cases
-firebase/               # Cloud Functions (Node.js/TypeScript)
 ```
 
 ## Getting Started
