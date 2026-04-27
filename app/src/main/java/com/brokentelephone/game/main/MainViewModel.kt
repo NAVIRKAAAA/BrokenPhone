@@ -246,7 +246,8 @@ class MainViewModel(
                     _state.update { it.copy(isLoading = false) }
                     _sideEffects.send(MainSideEffect.NavigateToNewPassword)
                 }
-                .onError {
+                .onError { e ->
+                    Log.d("LOG_TAG", "handlePasswordReset: $e")
                     _state.update { it.copy(isLoading = false) }
                 }
         }

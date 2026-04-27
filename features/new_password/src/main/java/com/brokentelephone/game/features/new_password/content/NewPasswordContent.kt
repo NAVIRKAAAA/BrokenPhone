@@ -87,7 +87,7 @@ fun NewPasswordContent(
                 modifier = Modifier.focusRequester(passwordFocus),
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             SignUpTextField(
                 text = state.confirmPassword,
@@ -119,7 +119,7 @@ fun NewPasswordContent(
 @Preview(showBackground = true)
 @Composable
 private fun NewPasswordContentPreview() {
-    BrokenTelephoneTheme(darkTheme = true) {
+    BrokenTelephoneTheme(darkTheme = false) {
         NewPasswordContent(
             state = NewPasswordState(
                 confirmPasswordError = "Error"

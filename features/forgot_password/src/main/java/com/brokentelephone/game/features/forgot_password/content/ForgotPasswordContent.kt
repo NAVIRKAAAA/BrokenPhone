@@ -66,7 +66,7 @@ fun ForgotPasswordContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 20.dp)
                 .verticalScroll(rememberScrollState())
                 .imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -93,32 +93,6 @@ fun ForgotPasswordContent(
                 isLoading = state.isLoading,
             )
 
-//            Spacer(modifier = Modifier.height(16.dp))
-
-//            val primaryColor = MaterialTheme.colorScheme.primary
-//            val signInText = buildAnnotatedString {
-//                append("${stringResource(R.string.forgot_password_remember_password)} ")
-//                withLink(
-//                    LinkAnnotation.Clickable(
-//                        tag = "SIGN_IN",
-//                        linkInteractionListener = { onBackClick() },
-//                    )
-//                ) {
-//                    withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.None)) {
-//                        append(stringResource(R.string.forgot_password_sign_in_link))
-//                    }
-//                }
-//            }
-//
-//            Text(
-//                text = signInText,
-//                textAlign = TextAlign.Center,
-//                fontFamily = FontFamily(Font(CoreR.font.nunito_semi_bold)),
-//                fontSize = 14.sp,
-//                lineHeight = 21.sp,
-//                color = MaterialTheme.colorScheme.onBackground,
-//                modifier = Modifier.padding(horizontal = 16.dp),
-//            )
         }
     }
 }

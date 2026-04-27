@@ -137,7 +137,8 @@ class AuthRepositoryImpl(
             supabase.auth.exchangeCodeForSession(code)
         } catch (_: java.io.IOException) {
             throw NetworkException()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "importSession: $e")
             throw UnknownAuthException()
         }
     }

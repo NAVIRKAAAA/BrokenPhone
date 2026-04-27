@@ -33,13 +33,13 @@ fun AuthButton(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp),
+            .height(52.dp),
         colors = ButtonDefaults.buttonColors(
             contentColor = MaterialTheme.colorScheme.onPrimary,
             containerColor = MaterialTheme.colorScheme.primary,
         ),
         enabled = enabled,
-        shape = RoundedCornerShape(14.dp),
+        shape = RoundedCornerShape(16.dp),
         contentPadding = PaddingValues(),
     ) {
         if (isLoading) {

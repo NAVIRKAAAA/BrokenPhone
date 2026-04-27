@@ -1,25 +1,32 @@
 package com.brokentelephone.game.core.text_field
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
@@ -43,10 +50,16 @@ fun SignUpTextFieldValue(
     maxLines: Int = 1,
     minLines: Int = 1,
     singleLine: Boolean = true,
+    keyboardType: KeyboardType = KeyboardType.Unspecified,
     onImeAction: () -> Unit = {},
 ) {
+    val text = value.text
+    val interactionSource = remember { MutableInteractionSource() }
+    val supportingTextSize = 12.sp
+    val labelColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+
     val supportingText: @Composable (() -> Unit)? = when {
-        (error != null && error.isNotBlank()) || hint != null || maxLength != null -> {
+        !error.isNullOrBlank() || hint != null || maxLength != null -> {
             {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     when {
@@ -54,31 +67,31 @@ fun SignUpTextFieldValue(
                             text = error,
                             modifier = Modifier.weight(1f),
                             fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                            fontSize = 12.sp,
-                            lineHeight = 18.sp,
+                            fontSize = supportingTextSize,
                         )
+
                         hint != null -> Text(
                             text = hint,
                             modifier = Modifier.weight(1f),
                             fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                            fontSize = 12.sp,
-                            lineHeight = 18.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = supportingTextSize,
+                            color = labelColor,
                         )
+
                         else -> Spacer(modifier = Modifier.weight(1f))
                     }
                     if (maxLength != null) {
                         Text(
-                            text = "${value.text.length}/$maxLength",
+                            text = "${text.length}/$maxLength",
                             fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                            fontSize = 12.sp,
-                            lineHeight = 18.sp,
-                            color = if (value.text.length > maxLength) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = supportingTextSize,
+                            color = if (text.length > maxLength) MaterialTheme.colorScheme.error else labelColor,
                         )
                     }
                 }
             }
         }
+
         else -> null
     }
 
@@ -88,68 +101,97 @@ fun SignUpTextFieldValue(
         else -> PasswordVisualTransformation()
     }
 
-    OutlinedTextField(
+    val colors = OutlinedTextFieldDefaults.colors(
+        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+        unfocusedContainerColor = Color.Transparent,
+        focusedContainerColor = Color.Transparent,
+        errorContainerColor = Color.Transparent,
+        errorBorderColor = MaterialTheme.colorScheme.error,
+        errorSupportingTextColor = MaterialTheme.colorScheme.error,
+    )
+
+    BasicTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp),
         textStyle = TextStyle(
             fontFamily = FontFamily(Font(R.font.nunito_regular)),
-            fontSize = 15.sp,
-            lineHeight = 22.sp
+            fontSize = 16.sp,
+            lineHeight = 24.sp,
+            color = MaterialTheme.colorScheme.onSurface,
         ),
-        minLines = minLines,
+        singleLine = true,
         maxLines = maxLines,
-        singleLine = singleLine,
-        label = {
-            Text(
-                text = label,
-                fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                fontSize = 15.sp,
-                lineHeight = 22.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+        minLines = minLines,
+        visualTransformation = visualTransformation,
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
+        keyboardActions = KeyboardActions(onAny = { onImeAction() }),
+        interactionSource = interactionSource,
+        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+        decorationBox = { innerTextField ->
+            OutlinedTextFieldDefaults.DecorationBox(
+                value = value.text,
+                innerTextField = innerTextField,
+                enabled = true,
+                singleLine = singleLine,
+                visualTransformation = visualTransformation,
+                interactionSource = interactionSource,
+                isError = error != null,
+                label = {
+                    Text(
+                        text = label,
+                        fontFamily = FontFamily(Font(R.font.nunito_regular)),
+                        fontSize = supportingTextSize,
+                        color = labelColor,
+                    )
+                },
+                trailingIcon = when {
+                    onPasswordVisibilityToggle != null -> {
+                        {
+                            IconButton(onClick = onPasswordVisibilityToggle) {
+                                Icon(
+                                    painter = painterResource(
+                                        if (isPasswordVisible) R.drawable.password_visibility_on
+                                        else R.drawable.password_visibility_off
+                                    ),
+                                    contentDescription = if (isPasswordVisible) stringResource(R.string.sign_up_password_hide) else stringResource(
+                                        R.string.sign_up_password_show
+                                    ),
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+                    }
+
+                    onClearClick != null -> {
+                        {
+                            IconButton(onClick = onClearClick) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_close),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+                    }
+
+                    else -> null
+                },
+                supportingText = supportingText,
+                colors = colors,
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+                container = {
+                    OutlinedTextFieldDefaults.Container(
+                        enabled = true,
+                        isError = error != null,
+                        interactionSource = interactionSource,
+                        colors = colors,
+                        shape = RoundedCornerShape(16.dp),
+                    )
+                },
             )
         },
-        supportingText = supportingText,
-        isError = error != null,
-        visualTransformation = visualTransformation,
-        keyboardOptions = KeyboardOptions(imeAction = imeAction),
-        keyboardActions = KeyboardActions(onAny = { onImeAction() }),
-        trailingIcon = when {
-            onPasswordVisibilityToggle != null -> {
-                {
-                    IconButton(onClick = onPasswordVisibilityToggle) {
-                        Icon(
-                            painter = painterResource(
-                                if (isPasswordVisible) R.drawable.password_visibility_off
-                                else R.drawable.password_visibility_on
-                            ),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                }
-            }
-            onClearClick != null -> {
-                {
-                    IconButton(onClick = onClearClick) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_close),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                }
-            }
-            else -> null
-        },
-        colors = TextFieldDefaults.colors(
-            unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,
-            unfocusedContainerColor = Color.Transparent,
-            focusedContainerColor = Color.Transparent,
-            errorContainerColor = Color.Transparent,
-            errorIndicatorColor = MaterialTheme.colorScheme.error,
-            errorSupportingTextColor = MaterialTheme.colorScheme.error
-        ),
-        shape = RoundedCornerShape(14.dp),
     )
 }

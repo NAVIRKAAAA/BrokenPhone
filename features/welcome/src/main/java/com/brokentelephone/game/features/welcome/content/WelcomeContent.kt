@@ -41,7 +41,8 @@ fun WelcomeContent(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .navigationBarsPadding(),
+            .navigationBarsPadding()
+            .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
@@ -50,7 +51,7 @@ fun WelcomeContent(
             onClick = onGetStarted,
             contentColor = MaterialTheme.colorScheme.onPrimary,
             containerColor = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.height(52.dp),
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -60,7 +61,7 @@ fun WelcomeContent(
             onClick = onSignIn,
             contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.height(52.dp),
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -93,7 +94,7 @@ fun WelcomeContent(
 @Preview
 @Composable
 private fun WelcomeContentPreview() {
-    BrokenTelephoneTheme(darkTheme = true) {
+    BrokenTelephoneTheme(darkTheme = false) {
         WelcomeContent(
             state = WelcomeState(isLoading = false),
             onPlayAsGuestClick = {}

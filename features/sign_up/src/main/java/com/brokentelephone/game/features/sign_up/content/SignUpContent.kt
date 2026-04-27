@@ -91,7 +91,7 @@ fun SignUpContent(
                 modifier = Modifier.focusRequester(emailFocus),
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             SignUpTextField(
                 text = state.password,
@@ -106,7 +106,7 @@ fun SignUpContent(
                 modifier = Modifier.focusRequester(passwordFocus),
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             SignUpTextField(
                 text = state.confirmPassword,
@@ -165,13 +165,13 @@ fun SignUpContent(
 @Preview
 @Composable
 fun SignUpContentPreview() {
-    BrokenTelephoneTheme(darkTheme = true) {
+    BrokenTelephoneTheme(darkTheme = false) {
         SignUpContent(
             state = SignUpState(
                 isLoading = false,
-                email = "sa",
-                password = "sa",
-                confirmPassword = "sa"
+                email = "test@gmail.com",
+                password = "12345678",
+                confirmPassword = "123"
             ),
             onBackClick = {},
         )

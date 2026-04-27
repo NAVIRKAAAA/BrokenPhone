@@ -1,5 +1,6 @@
 package com.brokentelephone.game.core.top_bar
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -58,10 +59,12 @@ fun AuthTopBar(
 @Composable
 fun AuthTopBarPreview() {
     BrokenTelephoneTheme() {
-        AuthTopBar(
-            title = "Sign In",
-            onBackClick = {}
-        )
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            AuthTopBar(
+                title = "Sign In",
+                onBackClick = {}
+            )
+        }
     }
 
 }

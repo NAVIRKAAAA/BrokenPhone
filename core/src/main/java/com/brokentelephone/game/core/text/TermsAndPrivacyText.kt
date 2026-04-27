@@ -32,26 +32,33 @@ fun TermsAndPrivacyText(
 ) {
     val primaryColor = MaterialTheme.colorScheme.primary
 
+    val nunitoMedium = FontFamily(Font(R.font.nunito_medium))
+    val nunitoBold = FontFamily(Font(R.font.nunito_bold))
+
     val text = buildAnnotatedString {
-        append("$prefix ")
+        withStyle(SpanStyle(fontFamily = nunitoMedium)) {
+            append("$prefix ")
+        }
         withLink(
             LinkAnnotation.Clickable(
                 tag = "TERMS",
                 linkInteractionListener = { onTermsClick() },
             )
         ) {
-            withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.None)) {
+            withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.None, fontFamily = nunitoBold)) {
                 append(termsText)
             }
         }
-        append(" $andText ")
+        withStyle(SpanStyle(fontFamily = nunitoMedium)) {
+            append(" $andText ")
+        }
         withLink(
             LinkAnnotation.Clickable(
                 tag = "PRIVACY",
                 linkInteractionListener = { onPrivacyPolicyClick() },
             )
         ) {
-            withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.None)) {
+            withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.None, fontFamily = nunitoBold)) {
                 append(privacyPolicyText)
             }
         }
@@ -60,7 +67,6 @@ fun TermsAndPrivacyText(
     Text(
         text = text,
         textAlign = TextAlign.Center,
-        fontFamily = FontFamily(Font(R.font.nunito_regular)),
         fontSize = 12.sp,
         lineHeight = 16.sp,
         modifier = modifier.padding(horizontal = 16.dp),

@@ -78,6 +78,7 @@ fun ChooseUsernameContent(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp)
                 .imePadding(),
         ) {
             Spacer(modifier = Modifier.height(16.dp))
@@ -89,7 +90,6 @@ fun ChooseUsernameContent(
                     onUsernameChange(newValue.text)
                 },
                 modifier = Modifier
-                    .padding(horizontal = 16.dp)
                     .focusRequester(usernameFocus),
                 label = stringResource(R.string.edit_username_label),
                 hint = stringResource(R.string.edit_username_hint),
@@ -106,7 +106,7 @@ fun ChooseUsernameContent(
                 maxLength = ChooseUsernameViewModel.MAX_USERNAME_LENGTH,
             )
 
-            FlowRow(modifier = Modifier.padding(horizontal = 16.dp)) {
+            FlowRow(modifier = Modifier) {
                 state.suggestions.forEach { name ->
                     UsernameChip(
                         name = name,
@@ -129,7 +129,7 @@ fun ChooseUsernameContent(
                 onClick = onContinueClick,
                 enabled = state.isContinueEnabled,
                 isLoading = state.isLoading,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+                modifier = Modifier.padding(vertical = 16.dp),
             )
 
             Spacer(modifier = Modifier.navigationBarsPadding())
@@ -140,7 +140,7 @@ fun ChooseUsernameContent(
 @Preview
 @Composable
 fun ChooseUsernameContentPreview() {
-    BrokenTelephoneTheme(darkTheme = true) {
+    BrokenTelephoneTheme(darkTheme = false) {
         val suggestions = SuggestedUsernames.random10()
         ChooseUsernameContent(
             state = ChooseUsernameState(

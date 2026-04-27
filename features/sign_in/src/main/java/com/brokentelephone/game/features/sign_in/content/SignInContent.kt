@@ -92,7 +92,7 @@ fun SignInContent(
                 modifier = Modifier.focusRequester(emailFocus),
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             PasswordTextField(
                 text = state.password,
@@ -131,31 +131,6 @@ fun SignInContent(
                 enabled = !state.isLoading,
             )
 
-//            val primaryColor = MaterialTheme.colorScheme.primary
-//            val signUpText = buildAnnotatedString {
-//                append(stringResource(R.string.sign_in_dont_have_account))
-//                withLink(
-//                    LinkAnnotation.Clickable(
-//                        tag = "SIGN_UP",
-//                        linkInteractionListener = { onSignUpClick() },
-//                    )
-//                ) {
-//                    withStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.None)) {
-//                        append(" ${stringResource(R.string.sign_in_sign_up_link)}")
-//                    }
-//                }
-//            }
-//
-//            Text(
-//                text = signUpText,
-//                textAlign = TextAlign.Center,
-//                fontFamily = FontFamily(Font(R.font.nunito_semi_bold)),
-//                fontSize = 14.sp,
-//                lineHeight = 21.sp,
-//                color = MaterialTheme.colorScheme.onBackground,
-//                modifier = Modifier.padding(horizontal = 16.dp),
-//            )
-
             Spacer(modifier = Modifier.weight(1f))
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -177,10 +152,10 @@ fun SignInContent(
 @Preview
 @Composable
 fun SignInContentPreview() {
-    BrokenTelephoneTheme(darkTheme = true) {
+    BrokenTelephoneTheme(darkTheme = false) {
         SignInContent(
             state = SignInState(
-                credentialsError = "Error"
+                email = TextFieldValue(text = "email@example.com"),
             ),
             onBackClick = {},
         )
