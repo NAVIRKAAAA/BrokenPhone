@@ -266,7 +266,9 @@ fun BrokenTelephoneTheme(
             badgeYou = primaryDark,
             divider = dividerDark,
             canvasBg = Color.White,
-            profileTabRowBg = surfaceContainerHighestDark
+            profileTabRowBg = surfaceContainerHighestDark,
+            newsBannerContainer = newsBannerContainerDark,
+            onNewsBannerContainer = onNewsBannerContainerDark,
         )
     } else {
         AppColors(
@@ -275,7 +277,9 @@ fun BrokenTelephoneTheme(
             badgeYou = primaryLight,
             divider = dividerLight,
             canvasBg = surfaceContainerLight.copy(alpha = 0.3f),
-            profileTabRowBg = Color(0xFFF2F2F2)
+            profileTabRowBg = Color(0xFFF2F2F2),
+            newsBannerContainer = newsBannerContainerLight,
+            onNewsBannerContainer = onNewsBannerContainerLight,
         )
     }
 

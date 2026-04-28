@@ -12,6 +12,9 @@ class UpdateUserPermissionsUseCase(
     private val userSession: UserSession,
     private val handler: ApiHandler,
 ) {
+
+    // TODO: Need review
+
     suspend fun execute(permissions: UserPermissions): AppResult<Unit> {
         return handler.handle(Dispatchers.IO) {
             val user = userSession.user.firstOrNull() ?: throw UnauthorizedException()

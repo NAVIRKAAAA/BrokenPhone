@@ -13,7 +13,9 @@ data class AppColors(
     val badgeYou: Color,
     val divider: Color,
     val canvasBg: Color,
-    val profileTabRowBg: Color
+    val profileTabRowBg: Color,
+    val newsBannerContainer: Color,
+    val onNewsBannerContainer: Color,
 )
 
 val LocalAppColors = staticCompositionLocalOf {
@@ -23,7 +25,9 @@ val LocalAppColors = staticCompositionLocalOf {
         badgeYou = Color.Unspecified,
         divider = Color.Unspecified,
         canvasBg = Color.Unspecified,
-        profileTabRowBg = Color.Unspecified
+        profileTabRowBg = Color.Unspecified,
+        newsBannerContainer = Color.Unspecified,
+        onNewsBannerContainer = Color.Unspecified,
     )
 }
 

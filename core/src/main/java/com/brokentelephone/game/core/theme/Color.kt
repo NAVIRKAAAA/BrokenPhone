@@ -4,6 +4,11 @@ import androidx.compose.ui.graphics.Color
 val dividerLight = Color(0xFFE5E5E5)
 val dividerDark = Color(0xFF3C383E)
 
+val newsBannerContainerLight = Color(0xFFE8EAF6)
+val onNewsBannerContainerLight = Color(0xFF283593)
+val newsBannerContainerDark = Color(0xFF1A237E)
+val onNewsBannerContainerDark = Color(0xFF9FA8DA)
+
 val badgeCompleteLight = Color(0xFF22C55E)
 val badgeCompleteDark = Color(0xFF4ADE80)
 
