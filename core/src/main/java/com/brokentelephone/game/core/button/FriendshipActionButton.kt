@@ -122,10 +122,10 @@ private fun FriendshipActionButtonNotFriendsPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun FriendshipActionButtonInviteSentPreview() {
-    BrokenTelephoneTheme(darkTheme = true) {
+    BrokenTelephoneTheme(darkTheme = false) {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
             FriendshipActionButton(
-                state = FriendshipActionState.FRIENDS,
+                state = FriendshipActionState.INVITE_SENT,
                 onAddFriendClick = {},
                 onCancelRequestClick = {},
                 onRemoveFriendClick = {},

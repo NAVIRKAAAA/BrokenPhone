@@ -43,7 +43,7 @@ import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.profile.AccountInfoSection
 import com.brokentelephone.game.core.profile.AccountInfoSectionShimmer
 import com.brokentelephone.game.core.profile.ProfilePostsPage
-import com.brokentelephone.game.core.profile.ProfileTabRow
+import com.brokentelephone.game.core.profile.ProfileTabRowNewVTwo
 import com.brokentelephone.game.core.profile.UserProfileContributionElement
 import com.brokentelephone.game.core.profile.UserProfilePostElement
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
@@ -205,7 +205,8 @@ fun UserDetailsContent(
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(horizontal = 16.dp, vertical = 12.dp)
+                                            .padding(horizontal = 16.dp)
+                                            .padding(top = 32.dp, bottom = 16.dp)
                                     ) {
                                         FriendshipActionButton(
                                             state = state.friendshipActionState,
@@ -236,10 +237,13 @@ fun UserDetailsContent(
 
 
                 stickyHeader {
-                    ProfileTabRow(
+                    ProfileTabRowNewVTwo(
                         tabs = ProfileTab.entries,
                         selectedIndex = state.selectedTab.ordinal,
                         onTabSelect = onTabSelect,
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.background)
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
                     )
                 }
 
@@ -280,7 +284,7 @@ fun UserDetailsContent(
                                         EmptyUserDetailsListElement(
                                             title = stringResource(R.string.user_details_empty_posts_title),
                                             body = stringResource(R.string.user_details_empty_posts_body),
-                                            modifier = Modifier.padding(8.dp),
+                                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 12.dp),
                                         )
                                     }
                                 )
@@ -315,7 +319,7 @@ fun UserDetailsContent(
                                         EmptyUserDetailsListElement(
                                             title = stringResource(R.string.user_details_empty_contributions_title),
                                             body = stringResource(R.string.user_details_empty_contributions_body),
-                                            modifier = Modifier.padding(8.dp),
+                                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 12.dp),
                                         )
                                     }
                                 )
@@ -343,7 +347,7 @@ private fun UserDetailsContentPreview() {
             onMoreClick = {},
             onMoreVertClick = {},
             state = UserDetailsState(
-                friendshipActionState = FriendshipActionState.INVITE_RECEIVED,
+                friendshipActionState = FriendshipActionState.INVITE_SENT,
                 user = UserUi(
                     id = "user-1",
                     username = "Alex",

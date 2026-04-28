@@ -41,7 +41,7 @@ fun ProfilePostsPage(
                 modifier = modifier
                     .fillMaxSize()
                     .nestedScroll(nestedScrollConnection),
-                contentPadding = PaddingValues(16.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 22.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(

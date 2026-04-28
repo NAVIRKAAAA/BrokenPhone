@@ -52,7 +52,7 @@ import com.brokentelephone.game.core.profile.AccountInfoSection
 import com.brokentelephone.game.core.profile.ProfileContributionElement
 import com.brokentelephone.game.core.profile.ProfilePostElement
 import com.brokentelephone.game.core.profile.ProfilePostsPage
-import com.brokentelephone.game.core.profile.ProfileTabRow
+import com.brokentelephone.game.core.profile.ProfileTabRowNewVTwo
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.top_bar.ProfileTopBar
@@ -192,7 +192,7 @@ fun ProfileContent(
                             avatarUrl = state.user?.avatarUrl,
                             modifier = Modifier
                                 .padding(horizontal = 16.dp)
-                                .padding(top = 16.dp),
+                                .padding(top = 16.dp, bottom = 32.dp),
                             postsCount = state.myPosts.size,
                             contributions = state.myContributions.size,
                             friends = state.friendsCount,
@@ -216,10 +216,13 @@ fun ProfileContent(
 
                     if (state.isAuth) {
                         stickyHeader {
-                            ProfileTabRow(
+                            ProfileTabRowNewVTwo(
                                 tabs = ProfileTab.entries,
                                 selectedIndex = state.selectedTab.ordinal,
                                 onTabSelect = onTabSelect,
+                                modifier = Modifier
+                                    .background(MaterialTheme.colorScheme.background)
+                                    .padding(horizontal = 16.dp, vertical = 8.dp)
                             )
                         }
 
@@ -258,7 +261,10 @@ fun ProfileContent(
                                             },
                                             emptyContent = {
                                                 EmptyPostsElement(
-                                                    modifier = Modifier.padding(8.dp),
+                                                    modifier = Modifier.padding(
+                                                        horizontal = 8.dp,
+                                                        vertical = 12.dp
+                                                    ),
                                                 )
                                             }
                                         )
@@ -291,7 +297,10 @@ fun ProfileContent(
                                             },
                                             emptyContent = {
                                                 EmptyContributionsElement(
-                                                    modifier = Modifier.padding(8.dp),
+                                                    modifier = Modifier.padding(
+                                                        horizontal = 8.dp,
+                                                        vertical = 12.dp
+                                                    ),
                                                 )
                                             }
                                         )

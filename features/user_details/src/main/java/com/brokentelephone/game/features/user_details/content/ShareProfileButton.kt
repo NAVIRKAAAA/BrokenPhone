@@ -28,7 +28,7 @@ fun ShareProfileButton(
 ) {
 
     IconButton(
-        onClick = {},
+        onClick = onClick,
         modifier = modifier
             .height(48.dp)
             .aspectRatio(1f),

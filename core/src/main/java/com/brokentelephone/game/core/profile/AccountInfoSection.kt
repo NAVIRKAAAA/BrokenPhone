@@ -96,7 +96,7 @@ fun AccountInfoSection(
             UserBioDisplay(
                 bio = bio,
                 createdAt = createdAt,
-                modifier = Modifier.padding(vertical = 12.dp)
+                modifier = Modifier.padding(top = 12.dp)
             )
         }
     }

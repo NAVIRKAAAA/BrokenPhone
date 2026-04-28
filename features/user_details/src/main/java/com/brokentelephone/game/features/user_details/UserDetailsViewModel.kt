@@ -164,7 +164,9 @@ class UserDetailsViewModel(
                 _state.update {
                     it.copy(
                         isPostsLoading = false,
-                        myPosts = posts.map { p -> p.toUi() })
+                        myPosts = posts.map { p -> p.toUi() }
+//                        myPosts = listOf()
+                    )
                 }
             }
             .onError {

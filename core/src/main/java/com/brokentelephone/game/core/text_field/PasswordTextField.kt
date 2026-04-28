@@ -56,7 +56,11 @@ fun PasswordTextField(
     onImeAction: () -> Unit = {},
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    val supportingTextSize = 12.sp
+    val primaryTextSize = 18.sp
+    val primaryTextLineHeight = 24.sp
+
+    val labelTextSize = 14.sp
+    val supportingTextSize = 14.sp
     val labelColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
 
     val visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation()
@@ -78,8 +82,8 @@ fun PasswordTextField(
             .padding(top = 8.dp),
         textStyle = TextStyle(
             fontFamily = FontFamily(Font(R.font.nunito_regular)),
-            fontSize = 16.sp,
-            lineHeight = 24.sp,
+            fontSize = primaryTextSize,
+            lineHeight = primaryTextLineHeight,
             color = MaterialTheme.colorScheme.onSurface,
         ),
         singleLine = true,
@@ -103,7 +107,7 @@ fun PasswordTextField(
                     Text(
                         text = label,
                         fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                        fontSize = supportingTextSize,
+                        fontSize = labelTextSize,
                         color = labelColor,
                     )
                 },
@@ -149,7 +153,7 @@ fun PasswordTextField(
                     }
                 },
                 colors = colors,
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+                contentPadding = PaddingValues(16.dp),
                 container = {
                     OutlinedTextFieldDefaults.Container(
                         enabled = true,

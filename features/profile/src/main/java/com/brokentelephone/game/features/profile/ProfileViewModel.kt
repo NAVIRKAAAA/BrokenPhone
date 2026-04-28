@@ -110,6 +110,7 @@ class ProfileViewModel(
                 _state.update {
                     it.copy(
                         isPostsLoading = false,
+//                        myPosts = listOf(),
                         myPosts = posts.map { p -> p.toUi() }
                     )
                 }

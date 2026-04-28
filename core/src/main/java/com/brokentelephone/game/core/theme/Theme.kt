@@ -265,7 +265,8 @@ fun BrokenTelephoneTheme(
             badgeCompleteContainer = badgeCompleteContainerDark,
             badgeYou = primaryDark,
             divider = dividerDark,
-            canvasBg = Color.White
+            canvasBg = Color.White,
+            profileTabRowBg = surfaceContainerHighestDark
         )
     } else {
         AppColors(
@@ -273,7 +274,8 @@ fun BrokenTelephoneTheme(
             badgeCompleteContainer = badgeCompleteContainerLight,
             badgeYou = primaryLight,
             divider = dividerLight,
-            canvasBg = surfaceContainerLight.copy(alpha = 0.3f)
+            canvasBg = surfaceContainerLight.copy(alpha = 0.3f),
+            profileTabRowBg = Color(0xFFF2F2F2)
         )
     }
 
