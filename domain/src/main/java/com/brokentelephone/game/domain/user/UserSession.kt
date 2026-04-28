@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserSession {
     val authState: Flow<AuthState>
+    val user: Flow<User?>
+
     suspend fun initialize()
     suspend fun reloadUser()
     suspend fun updateUsername(username: String)
@@ -20,7 +22,7 @@ interface UserSession {
     suspend fun updateNotifications(notifications: List<NotificationType>)
     suspend fun updatePermissions(permissions: UserPermissions)
     suspend fun updateFcmToken(token: String)
-    suspend fun refreshFcmToken()
+    fun refreshFcmToken()
     suspend fun deleteFcmToken()
     suspend fun updatePassword(newPassword: String)
     suspend fun signOut()

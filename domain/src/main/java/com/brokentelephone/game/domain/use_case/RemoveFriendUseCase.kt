@@ -6,7 +6,7 @@ import com.brokentelephone.game.domain.repository.FriendsRepository
 import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.essentials.exceptions.auth.UnauthorizedException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 
 class RemoveFriendUseCase(
     private val friendsRepository: FriendsRepository,
@@ -14,8 +14,8 @@ class RemoveFriendUseCase(
     private val handler: ApiHandler,
 ) {
     suspend fun execute(friendId: String): AppResult<Unit> {
-        return handler.handle(Dispatchers.IO, maxRetries = 0) {
-            val user = userSession.authState.first().getUserOrNull() ?: throw UnauthorizedException()
+        return handler.handle(Dispatchers.IO) {
+            val user = userSession.user.firstOrNull() ?: throw UnauthorizedException()
             friendsRepository.removeFriend(user.id, friendId)
         }
     }

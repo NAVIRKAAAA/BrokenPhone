@@ -20,7 +20,7 @@ class SubmitDrawingUseCase(
 
     suspend fun execute(sessionId: String, localPath: String): AppResult<Unit> {
         return apiHandler.handle(dispatcher = Dispatchers.IO, maxRetries = 0) {
-            val user = userSession.authState.firstOrNull()?.getUserOrNull() ?: throw UnauthorizedException()
+            val user = userSession.user.firstOrNull() ?: throw UnauthorizedException()
 
             val imageUrl = try {
                 imageStorage.uploadImage(localPath)

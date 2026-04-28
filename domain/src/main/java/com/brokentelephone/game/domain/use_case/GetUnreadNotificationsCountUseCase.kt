@@ -6,7 +6,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 
 class GetUnreadNotificationsCountUseCase(
     private val repository: NotificationsRepository,
@@ -14,8 +13,7 @@ class GetUnreadNotificationsCountUseCase(
 ) {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun execute(): Flow<Int> {
-        return userSession.authState
-            .map { it.getUserOrNull() }
+        return userSession.user
             .flatMapLatest { user ->
                 if (user == null) flowOf(0)
                 else repository.getUnreadNotificationsCount(user.id, user.readNotificationIds)

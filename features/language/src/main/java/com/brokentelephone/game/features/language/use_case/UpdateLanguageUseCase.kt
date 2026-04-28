@@ -4,6 +4,7 @@ import com.brokentelephone.game.domain.api_handler.ApiHandler
 import com.brokentelephone.game.domain.model.settings.Language
 import com.brokentelephone.game.domain.repository.UserSettingsRepository
 import com.brokentelephone.game.domain.user.UserSession
+import com.brokentelephone.game.essentials.exceptions.auth.UnauthorizedException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 
@@ -16,7 +17,7 @@ class UpdateLanguageUseCase(
         repository.updateLanguage(language)
 
         handler.handle(Dispatchers.IO) {
-            userSession.authState.firstOrNull()?.getUserOrNull() ?: return@handle
+            userSession.user.firstOrNull() ?: throw UnauthorizedException()
 
 //            userSession.updateLanguage(language)
         }

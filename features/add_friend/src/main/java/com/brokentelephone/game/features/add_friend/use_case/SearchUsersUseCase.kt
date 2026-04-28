@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 
 class SearchUsersUseCase(
     private val usersRepository: UsersRepository,
@@ -22,11 +22,11 @@ class SearchUsersUseCase(
     private val handler: ApiHandler,
 ) {
 
+    // TODO: Remove .filter { it.id != currentUser.id } and add excluded ids to searchByUsername
     // TODO: Improve getFriendshipActionState for each user
     suspend fun execute(query: String): AppResult<List<AddFriendUserUi>> {
         return handler.handle(Dispatchers.IO) {
-            val currentUser = userSession.authState.first().getUserOrNull()
-                ?: throw UnauthorizedException()
+            val currentUser = userSession.user.firstOrNull() ?: throw UnauthorizedException()
 
             val users = usersRepository.searchByUsername(query)
                 .filter { it.id != currentUser.id }

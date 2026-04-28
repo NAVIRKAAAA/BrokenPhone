@@ -6,7 +6,7 @@ import com.brokentelephone.game.domain.repository.PostRepository
 import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.essentials.exceptions.auth.UnauthorizedException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 
 class CreatePostUseCase(
     private val repository: PostRepository,
@@ -19,11 +19,9 @@ class CreatePostUseCase(
         maxGenerations: Int,
         textTimeLimit: Int,
         drawingTimeLimit: Int,
-    ) : AppResult<Unit> {
+    ): AppResult<Unit> {
         return handler.handle(dispatcher = Dispatchers.IO, maxRetries = 0) {
-            val authState = userSession.authState.first()
-
-            val user = authState.getUserOrNull() ?: throw UnauthorizedException()
+            val user = userSession.user.firstOrNull() ?: throw UnauthorizedException()
 
             repository.createPost(
                 authorId = user.id,

@@ -16,8 +16,8 @@ class ReportPostUseCase(
 ) {
     suspend fun execute(postId: String, type: ReportPostType): AppResult<Unit> {
         return handler.handle(Dispatchers.IO) {
-            val user = userSession.authState.firstOrNull()?.getUserOrNull()
-                ?: throw UnauthorizedException()
+            val user = userSession.user.firstOrNull() ?: throw UnauthorizedException()
+
             repository.reportPost(user.id, postId, type)
         }
     }

@@ -16,8 +16,7 @@ class JoinSessionUseCase(
 ) {
     suspend fun execute(postId: String): AppResult<GameSession> {
         return handler.handle(Dispatchers.IO) {
-            val user = userSession.authState.firstOrNull()?.getUserOrNull()
-                ?: throw UnauthorizedException()
+            val user = userSession.user.firstOrNull() ?: throw UnauthorizedException()
 
             repository.joinSession(postId, user.id)
         }

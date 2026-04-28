@@ -14,6 +14,7 @@ import com.brokentelephone.game.domain.model.settings.NotificationType
 import com.brokentelephone.game.domain.user.AuthState
 import com.brokentelephone.game.domain.user.BlockedUser
 import com.brokentelephone.game.domain.user.OnboardingStep
+import com.brokentelephone.game.domain.user.User
 import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.essentials.exceptions.auth.NetworkException
 import com.brokentelephone.game.essentials.exceptions.auth.SamePasswordException
@@ -22,6 +23,7 @@ import com.brokentelephone.game.essentials.exceptions.auth.TooManyRequestsExcept
 import com.brokentelephone.game.essentials.exceptions.auth.UnauthorizedException
 import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
 import com.brokentelephone.game.essentials.exceptions.auth.WeakPasswordException
+import com.google.firebase.messaging.FirebaseMessaging
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.status.SessionStatus
@@ -44,7 +46,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
@@ -57,6 +62,9 @@ class UserSessionImpl(
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.Loading)
     override val authState: Flow<AuthState> = _authState.asStateFlow()
+
+    private val _user = MutableStateFlow<User?>(null)
+    override val user: Flow<User?> = _user.asStateFlow()
 
     private var realtimeChannel: RealtimeChannel? = null
     private var realtimeCollectJob: kotlinx.coroutines.Job? = null
@@ -79,6 +87,9 @@ class UserSessionImpl(
                 val currentUserId =
                     supabase.auth.currentUserOrNull() ?: run {
                         _authState.value = AuthState.NotAuth
+
+                        _user.update { null }
+
                         return@collect
                     }
                 Log.d("LOG_TAG", "currentUserId: $currentUserId")
@@ -128,8 +139,10 @@ class UserSessionImpl(
                     isEmailVerified = userInfo.emailConfirmedAt != null
                 )
                 _authState.value = AuthState.Auth(updatedUser)
+                _user.update { updatedUser }
             } catch (_: Exception) {
                 _authState.value = AuthState.NotAuth
+                _user.update { null }
             }
 
             updateFlow.collect { change ->
@@ -141,6 +154,7 @@ class UserSessionImpl(
                         isEmailVerified = userInfo.emailConfirmedAt != null
                     )
                     _authState.value = AuthState.Auth(updatedNewUser)
+                    _user.update { updatedNewUser }
                 } catch (e: Exception) {
                     Log.d("LOG_TAG", "updateFlow.collect { change -> $e")
                 }
@@ -348,42 +362,47 @@ class UserSessionImpl(
     }
 
     override suspend fun deleteFcmToken() {
-        return
-//        val uid = firebaseAuth.currentUser?.uid ?: return
-//        try {
-//            firestore.collection(COLLECTION_USERS)
-//                .document(uid)
-//                .update(User.FIELD_FCM_TOKEN, null)
-//                .await()
-//            FirebaseMessaging.getInstance().deleteToken().await()
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
+        val userId = supabase.auth.currentUserOrNull()?.id ?: throw UnauthorizedException()
+        Log.d("LOG_TAG", "deleteFcmToken")
+        try {
+            supabase.from(COLLECTION_USERS).update(
+                buildJsonObject { put("fcm_token", JsonNull) }
+            ) {
+                filter { eq("id", userId) }
+            }
+            FirebaseMessaging.getInstance().deleteToken().await()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "deleteFcmToken: $e")
+            e.printStackTrace()
+        }
     }
 
-    override suspend fun refreshFcmToken() {
-        return
-//        try {
-//            val token = FirebaseMessaging.getInstance().token.await()
-//            Log.d("LOG_TAG", "refreshFcmToken: $token")
-//            updateFcmToken(token)
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
+    override fun refreshFcmToken() {
+        scope.launch {
+            try {
+                val token = FirebaseMessaging.getInstance().token.await()
+                Log.d("LOG_TAG", "refreshFcmToken: $token")
+                updateFcmToken(token)
+            } catch (e: Exception) {
+                Log.d("LOG_TAG", "refreshFcmToken: $e")
+                e.printStackTrace()
+            }
+        }
     }
 
     override suspend fun updateFcmToken(token: String) {
-        return
-//        val uid = firebaseAuth.currentUser?.uid ?: throw UnauthorizedException()
-//        try {
-//            firestore.collection(COLLECTION_USERS)
-//                .document(uid)
-//                .update(User.FIELD_FCM_TOKEN, token)
-//                .await()
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            // best-effort, ignore failures
-//        }
+        val userId = supabase.auth.currentUserOrNull()?.id ?: throw UnauthorizedException()
+        Log.d("LOG_TAG", "updateFcmToken: $token")
+        try {
+            supabase.from(COLLECTION_USERS).update(
+                buildJsonObject { put("fcm_token", token) }
+            ) {
+                filter { eq("id", userId) }
+            }
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "updateFcmToken: $e")
+            e.printStackTrace()
+        }
     }
 
     override suspend fun updatePassword(newPassword: String) {
@@ -421,6 +440,7 @@ class UserSessionImpl(
         realtimeChannel = null
         supabase.auth.signOut()
         _authState.value = AuthState.NotAuth
+        _user.update { null }
     }
 
     override suspend fun deleteAccount() = Unit

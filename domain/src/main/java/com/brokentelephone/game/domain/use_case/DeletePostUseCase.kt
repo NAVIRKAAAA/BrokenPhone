@@ -15,9 +15,9 @@ class DeletePostUseCase(
 ) {
     suspend fun execute(postId: String): AppResult<Unit> {
         return handler.handle(Dispatchers.IO) {
-            val userId = userSession.authState.firstOrNull()?.getUserOrNull()?.id
-                ?: throw UnauthorizedException()
-            repository.deletePost(userId = userId, postId = postId)
+            val user = userSession.user.firstOrNull() ?: throw UnauthorizedException()
+            
+            repository.deletePost(userId = user.id, postId = postId)
         }
     }
 }

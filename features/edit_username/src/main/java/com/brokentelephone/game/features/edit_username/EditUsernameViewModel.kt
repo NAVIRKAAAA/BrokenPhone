@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -31,7 +31,7 @@ class EditUsernameViewModel(
 
     init {
         viewModelScope.launch {
-            val user = userSession.authState.first().getUserOrNull() ?: return@launch
+            val user = userSession.user.firstOrNull() ?: return@launch
             _state.update { it.copy(username = user.username, initialUsername = user.username) }
         }
     }
@@ -48,7 +48,12 @@ class EditUsernameViewModel(
                 _state.update { it.copy(isLoading = false) }
                 _event.emit(EditUsernameEvent.NavigateBack)
             }.onError { error ->
-                _state.update { it.copy(isLoading = false, globalError = exceptionToMessageMapper.map(error)) }
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        globalError = exceptionToMessageMapper.map(error)
+                    )
+                }
             }
         }
     }

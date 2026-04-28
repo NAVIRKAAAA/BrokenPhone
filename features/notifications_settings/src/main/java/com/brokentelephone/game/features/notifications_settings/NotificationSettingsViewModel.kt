@@ -1,5 +1,6 @@
 package com.brokentelephone.game.features.notifications_settings
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.domain.model.settings.NotificationType
@@ -29,7 +30,13 @@ class NotificationSettingsViewModel(
 
     init {
         getNotificationsAllowedTypesUseCase.execute()
-            .onEach { notifications -> _state.update { it.copy(notifications = notifications) } }
+            .onEach { notifications ->
+                _state.update {
+                    Log.d("LOG_TAG", "getNotificationsAllowedTypesUseCase(): $notifications")
+
+                    it.copy(notifications = notifications)
+                }
+            }
             .launchIn(viewModelScope)
     }
 

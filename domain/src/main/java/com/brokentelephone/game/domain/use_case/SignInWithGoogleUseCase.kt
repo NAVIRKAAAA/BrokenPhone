@@ -5,12 +5,14 @@ import com.brokentelephone.game.domain.api_handler.AppResult
 import com.brokentelephone.game.domain.google.GoogleSignInManager
 import com.brokentelephone.game.domain.repository.AuthRepository
 import com.brokentelephone.game.domain.repository.UsersRepository
+import com.brokentelephone.game.domain.user.UserSession
 import kotlinx.coroutines.Dispatchers
 
 class SignInWithGoogleUseCase(
     private val authRepository: AuthRepository,
     private val usersRepository: UsersRepository,
     private val googleSignInManager: GoogleSignInManager,
+    private val userSession: UserSession,
     private val handler: ApiHandler,
 ) {
     suspend fun execute(): AppResult<Boolean> {
@@ -29,6 +31,9 @@ class SignInWithGoogleUseCase(
                     email = result.email,
                 )
             }
+
+            userSession.refreshFcmToken()
+
             result.isNewUser
         }
     }

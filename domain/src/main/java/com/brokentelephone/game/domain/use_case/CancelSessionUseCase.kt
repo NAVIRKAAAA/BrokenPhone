@@ -16,8 +16,7 @@ class CancelSessionUseCase(
 
     suspend fun execute(sessionId: String): AppResult<Unit> {
         return apiHandler.handle(dispatcher = Dispatchers.IO, maxRetries = 0) {
-            val user = userSession.authState.firstOrNull()?.getUserOrNull()
-                ?: throw UnauthorizedException()
+            val user = userSession.user.firstOrNull() ?: throw UnauthorizedException()
 
             repository.cancelSession(
                 sessionId = sessionId,

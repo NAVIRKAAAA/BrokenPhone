@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -31,7 +31,7 @@ class EditBioViewModel(
 
     init {
         viewModelScope.launch {
-            val user = userSession.authState.first().getUserOrNull() ?: return@launch
+            val user = userSession.user.firstOrNull() ?: return@launch
             _state.update { it.copy(bio = user.bio, initialBio = user.bio) }
         }
     }

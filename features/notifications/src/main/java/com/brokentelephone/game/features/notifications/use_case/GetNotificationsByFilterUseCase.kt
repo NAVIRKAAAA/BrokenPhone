@@ -8,7 +8,7 @@ import com.brokentelephone.game.domain.repository.NotificationsRepository
 import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.essentials.exceptions.auth.UnauthorizedException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 
 class GetNotificationsByFilterUseCase(
     private val repository: NotificationsRepository,
@@ -18,8 +18,7 @@ class GetNotificationsByFilterUseCase(
 
     suspend fun execute(filter: NotificationFilter): AppResult<List<Notification>> {
         return handler.handle(Dispatchers.IO) {
-            val currentUser = userSession.authState.first().getUserOrNull()
-                ?: throw UnauthorizedException()
+            val currentUser = userSession.user.firstOrNull() ?: throw UnauthorizedException()
 
             when (filter) {
                 NotificationFilter.ALL -> repository.getNotifications(currentUser.id)

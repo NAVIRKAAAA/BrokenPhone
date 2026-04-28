@@ -6,7 +6,7 @@ import com.brokentelephone.game.domain.repository.FriendsRepository
 import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.essentials.exceptions.auth.UnauthorizedException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 
 class SendFriendRequestUseCase(
     private val friendsRepository: FriendsRepository,
@@ -15,7 +15,7 @@ class SendFriendRequestUseCase(
 ) {
     suspend fun execute(targetUserId: String): AppResult<Unit> {
         return handler.handle(Dispatchers.IO, maxRetries = 0) {
-            val user = userSession.authState.first().getUserOrNull() ?: throw UnauthorizedException()
+            val user = userSession.user.firstOrNull() ?: throw UnauthorizedException()
             friendsRepository.sendFriendRequest(user.id, targetUserId)
         }
     }

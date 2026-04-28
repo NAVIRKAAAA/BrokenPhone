@@ -23,6 +23,7 @@ class SignInAnonymouslyUseCase(
 
             usersRepository.createUser(userId, username, avatarUrl)
             userSession.reloadUser()
+            userSession.refreshFcmToken()
         }
     }
 }

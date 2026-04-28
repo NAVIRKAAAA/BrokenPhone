@@ -20,8 +20,8 @@ class GetFriendsUseCase(
 ) {
     suspend fun execute(): AppResult<List<User>> {
         return handler.handle(Dispatchers.IO) {
-            val user = userSession.authState.firstOrNull()?.getUserOrNull()
-                ?: throw UnauthorizedException()
+            val user = userSession.user.firstOrNull() ?: throw UnauthorizedException()
+            
             friendsRepository.getFriends(user.id)
         }
     }
@@ -29,8 +29,8 @@ class GetFriendsUseCase(
     // TODO: Improve getFriendshipActionState for each user
     suspend fun execute(userId: String): AppResult<List<Pair<User, FriendshipActionState>>> {
         return handler.handle(Dispatchers.IO) {
-            val currentUser = userSession.authState.firstOrNull()?.getUserOrNull()
-                ?: throw UnauthorizedException()
+            val currentUser = userSession.user.firstOrNull() ?: throw UnauthorizedException()
+            
             val friends = friendsRepository.getFriends(userId)
             coroutineScope {
                 friends.map { friend ->

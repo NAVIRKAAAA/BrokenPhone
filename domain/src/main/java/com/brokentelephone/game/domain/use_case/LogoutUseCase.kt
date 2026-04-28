@@ -11,6 +11,9 @@ class LogoutUseCase(
     private val googleSignInManager: GoogleSignInManager,
     private val handler: ApiHandler
 ) {
+
+    // TODO: clearCredentialState if isGoogleUser
+
     suspend fun execute(): AppResult<Unit> {
         return handler.handle(Dispatchers.IO) {
 //            val isGoogleUser = userSession.authState.first()
