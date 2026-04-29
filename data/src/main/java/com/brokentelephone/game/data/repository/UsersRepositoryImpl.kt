@@ -161,7 +161,6 @@ class UsersRepositoryImpl(
             username = username,
             email = "",
             avatarUrl = avatarUrl,
-//            authProvider = AuthProvider.GUEST,
             createdAt = now,
             updatedAt = now,
             notifications = NotificationType.entries,

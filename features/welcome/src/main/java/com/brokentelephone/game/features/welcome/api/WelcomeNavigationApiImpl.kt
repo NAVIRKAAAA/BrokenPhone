@@ -55,6 +55,7 @@ class WelcomeNavigationApiImpl : WelcomeNavigationApi {
                     navController.navigateSingle(SignInRoute())
                 },
                 onNavigateToDashboard = {
+                    // TODO: .navigate(
                     navController.navigateSingle(DashboardRoute) {
                         popUpTo(WelcomeRoute) { inclusive = true }
                     }
