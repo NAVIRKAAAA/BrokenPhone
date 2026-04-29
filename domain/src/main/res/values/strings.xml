@@ -17,6 +17,16 @@
     <string name="notification_filter_news">News</string>
     <string name="notification_filter_friends">Friends</string>
     <string name="notification_filter_chain">Chain</string>
+    <string name="notifications_empty_title_all">No notifications yet</string>
+    <string name="notifications_empty_body_all">You\'ll see activity here when something happens</string>
+    <string name="notifications_empty_title_unread">All caught up</string>
+    <string name="notifications_empty_body_unread">No unread notifications at the moment</string>
+    <string name="notifications_empty_title_news">No news yet</string>
+    <string name="notifications_empty_body_news">News and announcements will appear here</string>
+    <string name="notifications_empty_title_friends">No friend activity</string>
+    <string name="notifications_empty_body_friends">Friend requests and updates will appear here</string>
+    <string name="notifications_empty_title_chain">No chain notifications</string>
+    <string name="notifications_empty_body_chain">You\'ll be notified when a chain you\'re part of has updates</string>
 
     <!-- Dashboard Sort -->
     <string name="dashboard_sort_latest">Latest</string>

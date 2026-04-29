@@ -20,6 +20,7 @@ data class NotificationDto(
     // ChainInfo
     @SerialName("chain_id") val chainId: String? = null,
     @SerialName("post_id") val postId: String? = null,
+
     @SerialName("title") val title: String? = null,
     @SerialName("body") val body: String? = null,
 )

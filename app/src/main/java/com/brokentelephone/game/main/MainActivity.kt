@@ -39,6 +39,7 @@ import com.brokentelephone.game.features.welcome_api.WelcomeRoute
 import com.brokentelephone.game.nav_api.navigateSingle
 import com.brokentelephone.game.navigation.nav_graph.AppNavGraph
 import com.brokentelephone.game.new_password_api.NewPasswordRoute
+import com.brokentelephone.game.notification_details_api.NotificationDetailsRoute
 import com.brokentelephone.game.sign_in_api.SignInRoute
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -66,11 +67,18 @@ class MainActivity : AppCompatActivity() {
 
         intent.data?.let { mainViewModel.handleNewIntent(it) }
 
+        intent.extras?.getString("notificationId")?.let {
+            mainViewModel.handleFcmTap(it)
+            intent.removeExtra("notificationId")
+        }
+
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
             val state by mainViewModel.state.collectAsStateWithLifecycle()
             val navController = rememberNavController()
+
+            // TODO: to HandleMainSideEffects
 
             LaunchedEffect(Unit) {
                 mainViewModel.sideEffects.collectLatest { effect ->
@@ -105,6 +113,10 @@ class MainActivity : AppCompatActivity() {
                             }
 
                             navController.navigate(ChooseAvatarRoute)
+                        }
+
+                        is MainSideEffect.NavigateToNotificationDetails -> {
+                            navController.navigate(NotificationDetailsRoute(effect.notificationId))
                         }
                     }
                 }
@@ -199,5 +211,9 @@ class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         intent.data?.let { mainViewModel.handleNewIntent(it) }
+        intent.extras?.getString("notificationId")?.let {
+            mainViewModel.handleFcmTapWhileRunning(it)
+            intent.removeExtra("notificationId")
+        }
     }
 }

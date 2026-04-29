@@ -1,11 +1,9 @@
 package com.brokentelephone.game.features.blocked_users.content
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,8 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -27,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.R
+import com.brokentelephone.game.core.layout.ScrollableCenteredContent
 import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
@@ -112,14 +109,7 @@ fun BlockedUsersContent(
                     }
                 },
                 emptyContent = {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.5f)
-                            .verticalScroll(rememberScrollState())
-                        ,
-                        contentAlignment = Alignment.Center
-                    ) {
+                    ScrollableCenteredContent {
                         BlockedUsersEmptyContent(modifier = Modifier)
                     }
                 }

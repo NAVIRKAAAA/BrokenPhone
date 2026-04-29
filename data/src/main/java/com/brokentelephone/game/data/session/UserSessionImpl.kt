@@ -104,6 +104,7 @@ class UserSessionImpl(
         observeSupabaseUser(userInfo)
     }
 
+    // TODO: Need review
     private suspend fun observeSupabaseUser(userInfo: UserInfo) {
         Log.d("LOG_TAG", "observeSupabaseUser(): $userInfo")
         realtimeCollectJob?.cancel()
@@ -330,11 +331,13 @@ class UserSessionImpl(
             ) {
                 filter { eq("id", userId) }
             }
-        } catch (_: RestException) {
+        } catch (e: RestException) {
+            Log.d("LOG_TAG", "updateNotifications: $e")
             throw UnknownAuthException()
         } catch (_: java.io.IOException) {
             throw NetworkException()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "updateNotifications: $e")
             throw UnknownAuthException()
         }
     }

@@ -28,6 +28,8 @@ import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
 import com.brokentelephone.game.main.use_case.ApplyPasswordResetUseCase
 import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
 import com.brokentelephone.game.navigation.nav_graph.AuthGraph
+import com.brokentelephone.game.notification_details_api.NotificationDetailsRoute
+import com.brokentelephone.game.notifications_api.NotificationsRoute
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -106,7 +108,14 @@ class MainViewModel(
                             ChooseUsernameRoute
                         )
 
-                        OnboardingStep.COMPLETED -> MainGraph to emptyList()
+                        OnboardingStep.COMPLETED -> {
+                            val notificationRoutes = _state.value.pendingNotificationId
+                                ?.let { listOf(NotificationsRoute, NotificationDetailsRoute(it)) }
+                                ?: emptyList()
+                            _state.update { it.copy(pendingNotificationId = null) }
+                            MainGraph to notificationRoutes
+                        }
+
                         null -> AuthGraph to emptyList()
                     }
 
@@ -213,6 +222,20 @@ class MainViewModel(
 
     fun onPendingRoutesConsumed() {
         _state.update { it.copy(pendingRoutes = emptyList()) }
+    }
+
+    // TODO: to handleNewIntent
+    fun handleFcmTapWhileRunning(notificationId: String) {
+        viewModelScope.launch {
+            Log.d("LOG_TAG", "handleFcmTapWhileRunning()")
+            _sideEffects.send(MainSideEffect.NavigateToNotificationDetails(notificationId))
+        }
+    }
+
+    // TODO: to handleNewIntent
+    fun handleFcmTap(notificationId: String) {
+        Log.d("LOG_TAG", "handleFcmTap(): $notificationId")
+        _state.update { it.copy(pendingNotificationId = notificationId) }
     }
 
     fun handleNewIntent(uri: Uri) {

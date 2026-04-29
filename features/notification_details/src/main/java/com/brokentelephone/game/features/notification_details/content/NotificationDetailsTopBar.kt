@@ -72,7 +72,8 @@ fun NotificationDetailsTopBar(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(horizontal = 56.dp),
+                    modifier = Modifier
+                        .padding(horizontal = 56.dp),
                 )
             },
             modifier = Modifier.align(Alignment.Center),

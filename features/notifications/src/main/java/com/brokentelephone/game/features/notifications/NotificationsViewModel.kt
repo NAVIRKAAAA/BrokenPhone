@@ -45,13 +45,15 @@ class NotificationsViewModel(
 
     fun onFilterSelected(filter: NotificationFilter) {
         viewModelScope.launch {
-            _state.update { it.copy(selectedFilter = filter, isLoading = true) }
+            _state.update { it.copy(selectedFilter = filter, isLoadingByFilter = true) }
+
+            delay(150)
 
             fetchNotifications()
 
             _sideEffects.send(NotificationsSideEffect.ScrollToTop)
 
-            _state.update { it.copy(isLoading = false) }
+            _state.update { it.copy(isLoadingByFilter = false) }
         }
     }
 

@@ -9,4 +9,5 @@ sealed interface MainSideEffect {
     data class NavigateToSignIn(val email: String) : MainSideEffect
     data object NavigateToNewPassword : MainSideEffect
     data object NavigateToChooseAvatar : MainSideEffect
+    data class NavigateToNotificationDetails(val notificationId: String) : MainSideEffect
 }

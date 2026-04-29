@@ -50,7 +50,9 @@ fun NotificationsTopBar(
             fontSize = 18.sp,
             lineHeight = 24.sp,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.align(Alignment.Center),
+            maxLines = 1,
+            modifier = Modifier
+                .align(Alignment.Center),
         )
     }
 }

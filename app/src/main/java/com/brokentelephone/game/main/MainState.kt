@@ -11,6 +11,7 @@ data class MainState(
     val language: Language = Language.ENGLISH,
     val startDestination: NavigationRoute? = null,
     val pendingRoutes: List<NavigationRoute> = emptyList(),
+    val pendingNotificationId: String? = null,
     val sessionDataError: String? = null,
     val isSessionLoading: Boolean = false,
     val isLoading: Boolean = false,
