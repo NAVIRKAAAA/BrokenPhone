@@ -37,7 +37,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.koin.android)
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth)
     implementation(libs.firebase.messaging)
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services)

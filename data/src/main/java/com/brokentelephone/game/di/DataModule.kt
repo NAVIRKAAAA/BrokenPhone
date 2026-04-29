@@ -34,7 +34,6 @@ import com.brokentelephone.game.domain.repository.UsersRepository
 import com.brokentelephone.game.domain.storage.ImageStorage
 import com.brokentelephone.game.domain.use_case.UpdateFcmTokenUseCase
 import com.brokentelephone.game.domain.user.UserSession
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.factoryOf
@@ -44,7 +43,6 @@ private val Context.userSessionDataStore: DataStore<Preferences> by preferencesD
 
 val dataModule = module {
     single { provideSupabaseClient(androidContext()) }
-    single { FirebaseAuth.getInstance() }
     single { FirebaseMessaging.getInstance() }
 
     single<ApiHandler> { ApiHandlerImpl() }

@@ -46,6 +46,9 @@ fun DashboardTopBar(
     modifier: Modifier = Modifier,
     unreadNotificationsCount: Int = 0,
 ) {
+    val greeting = if (name.isBlank()) stringResource(R.string.dashboard_title_no_name)
+                   else stringResource(R.string.dashboard_title, name)
+
     val blurRadius by animateFloatAsState(
         targetValue = if (isScrolled) 16f else 0f,
         animationSpec = tween(durationMillis = 150),
@@ -75,7 +78,7 @@ fun DashboardTopBar(
     ) {
 
         Text(
-            text = stringResource(R.string.dashboard_title, name),
+            text = greeting,
             textAlign = TextAlign.Start,
             fontFamily = FontFamily(Font(R.font.nunito_extra_bold)),
             fontSize = 20.sp,
@@ -138,7 +141,7 @@ private fun DashboardTopBarScrolledPreview() {
     BrokenTelephoneTheme(darkTheme = true) {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
             DashboardTopBar(
-                name = "Alex",
+                name = "",
                 isScrolled = true,
                 onTitleClick = {},
                 onNotificationsClick = {},

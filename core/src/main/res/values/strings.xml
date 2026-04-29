@@ -178,6 +178,7 @@
 
     <!-- Dashboard -->
     <string name="dashboard_title">Hey, %1$s!</string>
+    <string name="dashboard_title_no_name">Hey!</string>
     <string name="dashboard_badge_complete">Finished</string>
     <string name="dashboard_badge_you">You!</string>
 
