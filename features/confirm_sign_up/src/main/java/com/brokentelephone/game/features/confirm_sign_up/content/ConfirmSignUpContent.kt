@@ -32,10 +32,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.button.AuthButton
-import com.brokentelephone.game.core.text_field.SignUpTextField
+import com.brokentelephone.game.core.composable.button.AuthButton
+import com.brokentelephone.game.core.composable.text_field.SignUpTextField
+import com.brokentelephone.game.core.composable.top_bar.AuthTopBar
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.core.top_bar.AuthTopBar
 import com.brokentelephone.game.features.confirm_sign_up.model.ConfirmSignUpState
 import com.brokentelephone.game.features.confirm_sign_up.model.OTP_CODE_LENGTH
 import com.brokentelephone.game.features.confirm_sign_up.R as CoreR

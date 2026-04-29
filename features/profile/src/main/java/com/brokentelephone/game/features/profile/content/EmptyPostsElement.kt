@@ -24,8 +24,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.chip.PostChip
-import com.brokentelephone.game.core.modifier.coloredShadow
+import com.brokentelephone.game.core.composable.chip.PostChip
+import com.brokentelephone.game.core.ext.modifier.coloredShadow
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 
 @Composable

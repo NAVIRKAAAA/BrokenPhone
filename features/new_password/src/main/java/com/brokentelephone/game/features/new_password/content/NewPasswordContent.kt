@@ -24,10 +24,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.brokentelephone.game.core.button.AuthButton
-import com.brokentelephone.game.core.text_field.SignUpTextField
+import com.brokentelephone.game.core.composable.button.AuthButton
+import com.brokentelephone.game.core.composable.text_field.SignUpTextField
+import com.brokentelephone.game.core.composable.top_bar.AuthTopBar
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.core.top_bar.AuthTopBar
 import com.brokentelephone.game.features.new_password.R
 import com.brokentelephone.game.features.new_password.model.NewPasswordState
 import kotlinx.coroutines.delay

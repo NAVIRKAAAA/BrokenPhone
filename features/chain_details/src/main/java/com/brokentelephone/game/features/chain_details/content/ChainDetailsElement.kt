@@ -28,10 +28,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.avatar.AvatarComponent
+import com.brokentelephone.game.core.composable.avatar.AvatarComponent
+import com.brokentelephone.game.core.composable.post.DrawPostImage
+import com.brokentelephone.game.core.ext.modifier.coloredShadow
 import com.brokentelephone.game.core.model.post.PostUi
-import com.brokentelephone.game.core.modifier.coloredShadow
-import com.brokentelephone.game.core.post.DrawPostImage
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.utils.rememberRelativeTime
 import com.brokentelephone.game.domain.model.post.PostContent

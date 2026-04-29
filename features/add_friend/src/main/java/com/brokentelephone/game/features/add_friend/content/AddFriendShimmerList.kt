@@ -24,10 +24,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.profile.FriendItemShimmer
-import com.brokentelephone.game.core.profile.FriendRequestItemShimmer
-import com.brokentelephone.game.core.shimmer.shimmer
-import com.brokentelephone.game.core.text_field.SearchTextFieldHeight
+import com.brokentelephone.game.core.composable.profile.FriendItemShimmer
+import com.brokentelephone.game.core.composable.profile.FriendRequestItemShimmer
+import com.brokentelephone.game.core.composable.shimmer.shimmer
+import com.brokentelephone.game.core.composable.text_field.SearchTextFieldHeight
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 

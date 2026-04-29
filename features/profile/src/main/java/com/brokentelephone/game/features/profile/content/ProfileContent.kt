@@ -45,17 +45,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.button.BTButton
+import com.brokentelephone.game.core.composable.button.BTButton
+import com.brokentelephone.game.core.composable.profile.AccountInfoSection
+import com.brokentelephone.game.core.composable.profile.ProfileContributionElement
+import com.brokentelephone.game.core.composable.profile.ProfilePostElement
+import com.brokentelephone.game.core.composable.profile.ProfilePostsPage
+import com.brokentelephone.game.core.composable.profile.ProfileTabRowNewVTwo
+import com.brokentelephone.game.core.composable.pull_to_refresh.AppPullToRefreshIndicator
+import com.brokentelephone.game.core.composable.top_bar.ProfileTopBar
 import com.brokentelephone.game.core.model.profile.ProfileTab
 import com.brokentelephone.game.core.model.user.UserUi
-import com.brokentelephone.game.core.profile.AccountInfoSection
-import com.brokentelephone.game.core.profile.ProfileContributionElement
-import com.brokentelephone.game.core.profile.ProfilePostElement
-import com.brokentelephone.game.core.profile.ProfilePostsPage
-import com.brokentelephone.game.core.profile.ProfileTabRowNewVTwo
-import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.core.top_bar.ProfileTopBar
 import com.brokentelephone.game.features.profile.model.ProfileState
 import kotlinx.coroutines.launch
 

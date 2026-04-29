@@ -5,7 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.brokentelephone.game.core.dialog.ErrorDialog
+import com.brokentelephone.game.core.composable.dialog.ErrorDialog
 import com.brokentelephone.game.features.choose_username.content.ChooseUsernameContent
 import com.brokentelephone.game.features.choose_username.model.ChooseUsernameEvent
 import org.koin.compose.viewmodel.koinViewModel

@@ -26,12 +26,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.brokentelephone.game.choose_avatar_api.ChooseAvatarRoute
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.banner.ActiveSessionBanner
-import com.brokentelephone.game.core.dialog.ConfirmDialog
-import com.brokentelephone.game.core.dialog.LoadingDialog
+import com.brokentelephone.game.core.composable.banner.ActiveSessionBanner
+import com.brokentelephone.game.core.composable.dialog.ConfirmDialog
+import com.brokentelephone.game.core.composable.dialog.LoadingDialog
+import com.brokentelephone.game.core.ext.context.isNotificationsGranted
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.LocalAppLanguage
-import com.brokentelephone.game.core.utils.isNotificationsGranted
 import com.brokentelephone.game.domain.model.settings.AppTheme
 import com.brokentelephone.game.domain.model.settings.Language
 import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBar
@@ -122,6 +122,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            // TODO: Remove?
             val isDarkTheme = when (state.theme) {
                 AppTheme.DARK -> true
                 AppTheme.LIGHT -> false

@@ -7,7 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.brokentelephone.game.core.dialog.ErrorDialog
+import com.brokentelephone.game.core.composable.dialog.ErrorDialog
 import com.brokentelephone.game.features.edit_avatar.content.EditAvatarContent
 import com.brokentelephone.game.features.edit_avatar.model.EditAvatarEvent
 import kotlinx.coroutines.launch

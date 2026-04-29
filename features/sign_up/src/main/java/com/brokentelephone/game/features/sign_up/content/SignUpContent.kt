@@ -25,13 +25,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.button.AuthButton
-import com.brokentelephone.game.core.button.GoogleSignInButton
-import com.brokentelephone.game.core.divider.OrDivider
-import com.brokentelephone.game.core.text.TermsAndPrivacyText
-import com.brokentelephone.game.core.text_field.SignUpTextField
+import com.brokentelephone.game.core.composable.button.AuthButton
+import com.brokentelephone.game.core.composable.button.GoogleSignInButton
+import com.brokentelephone.game.core.composable.divider.OrDivider
+import com.brokentelephone.game.core.composable.text.TermsAndPrivacyText
+import com.brokentelephone.game.core.composable.text_field.SignUpTextField
+import com.brokentelephone.game.core.composable.top_bar.AuthTopBar
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.core.top_bar.AuthTopBar
 import com.brokentelephone.game.features.sign_up.model.SignUpState
 import kotlinx.coroutines.delay
 

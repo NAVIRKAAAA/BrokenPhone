@@ -47,8 +47,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.avatar.AvatarComponent
-import com.brokentelephone.game.core.modifier.coloredShadow
+import com.brokentelephone.game.core.composable.avatar.AvatarComponent
+import com.brokentelephone.game.core.ext.modifier.coloredShadow
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.create_post_api.CreatePostRoute
 import com.brokentelephone.game.dashboard_api.DashboardRoute

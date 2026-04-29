@@ -10,10 +10,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.browser.openCustomTab
-import com.brokentelephone.game.core.dialog.ConfirmDialog
-import com.brokentelephone.game.core.dialog.ErrorDialog
-import com.brokentelephone.game.core.utils.isNotificationsGranted
+import com.brokentelephone.game.core.composable.dialog.ConfirmDialog
+import com.brokentelephone.game.core.composable.dialog.ErrorDialog
+import com.brokentelephone.game.core.ext.context.isNotificationsGranted
+import com.brokentelephone.game.core.in_app_browser.openCustomTab
 import com.brokentelephone.game.describe_drawing_api.DescribeDrawingRoute
 import com.brokentelephone.game.draw_api.DrawRoute
 import com.brokentelephone.game.features.settings.content.SettingsContent

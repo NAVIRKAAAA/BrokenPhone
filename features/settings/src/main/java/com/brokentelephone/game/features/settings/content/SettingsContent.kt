@@ -25,11 +25,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.button.SettingsLogoutButton
-import com.brokentelephone.game.core.profile.AccountTextInfoItem
+import com.brokentelephone.game.core.composable.button.SettingsLogoutButton
+import com.brokentelephone.game.core.composable.profile.AccountTextInfoItem
+import com.brokentelephone.game.core.composable.top_bar.EditProfileTopBar
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
-import com.brokentelephone.game.core.top_bar.EditProfileTopBar
 import com.brokentelephone.game.features.settings.model.SettingsState
 
 
@@ -94,7 +94,7 @@ fun SettingsContent(
 
             AccountTextInfoItem(
                 name = stringResource(R.string.account_settings_blocked_users),
-                value = "${state.blockedUsersCount ?: 0}",
+                value = "${state.blockedUsersCount}",
                 modifier = Modifier
                     .clickable(onClick = onBlockedUsersClick)
                     .padding(horizontal = 16.dp),

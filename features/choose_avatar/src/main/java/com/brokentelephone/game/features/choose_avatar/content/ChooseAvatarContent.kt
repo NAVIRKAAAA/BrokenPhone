@@ -31,9 +31,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.avatar.AvatarComponent
-import com.brokentelephone.game.core.avatar.AvatarUi
-import com.brokentelephone.game.core.avatar.Avatars
+import com.brokentelephone.game.core.composable.avatar.AvatarComponent
+import com.brokentelephone.game.core.model.avatar.AvatarUi
+import com.brokentelephone.game.core.model.avatar.Avatars
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 
 @Composable

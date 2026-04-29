@@ -7,8 +7,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.brokentelephone.game.core.dialog.ConfirmDialog
-import com.brokentelephone.game.core.dialog.ErrorDialog
+import com.brokentelephone.game.core.composable.dialog.ConfirmDialog
+import com.brokentelephone.game.core.composable.dialog.ErrorDialog
 import com.brokentelephone.game.features.edit_email.content.EditEmailContent
 import com.brokentelephone.game.features.edit_email.model.EditEmailEvent
 import org.koin.compose.viewmodel.koinViewModel

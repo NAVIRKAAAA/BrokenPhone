@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.brokentelephone.game.core.dialog.ErrorDialog
+import com.brokentelephone.game.core.composable.dialog.ErrorDialog
 import com.brokentelephone.game.features.chain_details.content.ChainDetailsContent
 import com.brokentelephone.game.features.chain_details.model.ChainDetailsSideEffect
 import org.koin.compose.viewmodel.koinViewModel

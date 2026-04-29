@@ -16,10 +16,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.profile.AccountTextInfoItem
+import com.brokentelephone.game.core.composable.profile.AccountTextInfoItem
+import com.brokentelephone.game.core.composable.top_bar.EditProfileTopBar
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
-import com.brokentelephone.game.core.top_bar.EditProfileTopBar
 import com.brokentelephone.game.domain.model.settings.NotificationType
 import com.brokentelephone.game.features.notifications_settings.model.NotificationSettingsState
 

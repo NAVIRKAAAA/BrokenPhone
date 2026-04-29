@@ -9,8 +9,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.dialog.ConfirmDialog
-import com.brokentelephone.game.core.dialog.ErrorDialog
+import com.brokentelephone.game.core.composable.dialog.ConfirmDialog
+import com.brokentelephone.game.core.composable.dialog.ErrorDialog
 import com.brokentelephone.game.features.create_post.content.CreatePostContent
 import com.brokentelephone.game.features.create_post.dialog.chain_settings.StepperDialog
 import com.brokentelephone.game.features.create_post.dialog.start_new_chain.StartNewChainDialog

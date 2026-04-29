@@ -28,11 +28,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.brokentelephone.game.core.composable.pagination.LoadMoreIndicator
+import com.brokentelephone.game.core.composable.pull_to_refresh.AppPullToRefreshIndicator
+import com.brokentelephone.game.core.composable.shimmer.ShimmerContent
 import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.model.user.UserUi
-import com.brokentelephone.game.core.pagination.LoadMoreIndicator
-import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
-import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus

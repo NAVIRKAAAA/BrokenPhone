@@ -6,7 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.brokentelephone.game.core.dialog.ErrorDialog
+import com.brokentelephone.game.core.composable.dialog.ErrorDialog
 import com.brokentelephone.game.features.forgot_password.content.ForgotPasswordContent
 import com.brokentelephone.game.features.forgot_password.content.PasswordResetSentDialog
 import com.brokentelephone.game.features.forgot_password.model.ForgotPasswordSideEffect

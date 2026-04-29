@@ -23,12 +23,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.layout.ScrollableCenteredContent
-import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
-import com.brokentelephone.game.core.shimmer.ShimmerContent
+import com.brokentelephone.game.core.composable.layout.ScrollableCenteredContent
+import com.brokentelephone.game.core.composable.pull_to_refresh.AppPullToRefreshIndicator
+import com.brokentelephone.game.core.composable.shimmer.ShimmerContent
+import com.brokentelephone.game.core.composable.top_bar.EditProfileTopBar
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
-import com.brokentelephone.game.core.top_bar.EditProfileTopBar
 import com.brokentelephone.game.features.blocked_users.model.BlockedUserUi
 import com.brokentelephone.game.features.blocked_users.model.BlockedUsersState
 

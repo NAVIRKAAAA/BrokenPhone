@@ -16,10 +16,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.dialog.ConfirmDialog
-import com.brokentelephone.game.core.utils.findActivity
-import com.brokentelephone.game.core.utils.isNotificationsGranted
-import com.brokentelephone.game.core.utils.openNotificationSettings
+import com.brokentelephone.game.core.composable.dialog.ConfirmDialog
+import com.brokentelephone.game.core.ext.context.findActivity
+import com.brokentelephone.game.core.ext.context.isNotificationsGranted
+import com.brokentelephone.game.core.ext.context.openNotificationSettings
 import com.brokentelephone.game.features.notifications_settings.content.NotificationSettingsContent
 import com.brokentelephone.game.features.notifications_settings.model.NotificationSettingsSideEffect
 import org.koin.compose.viewmodel.koinViewModel

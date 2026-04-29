@@ -2,8 +2,8 @@ package com.brokentelephone.game.features.choose_avatar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.brokentelephone.game.core.avatar.AvatarUi
-import com.brokentelephone.game.core.avatar.Avatars
+import com.brokentelephone.game.core.model.avatar.AvatarUi
+import com.brokentelephone.game.core.model.avatar.Avatars
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper

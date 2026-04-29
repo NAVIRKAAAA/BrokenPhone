@@ -9,9 +9,9 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.dialog.ConfirmDialog
-import com.brokentelephone.game.core.dialog.ErrorDialog
-import com.brokentelephone.game.core.dialog.TimesUpDialog
+import com.brokentelephone.game.core.composable.dialog.ConfirmDialog
+import com.brokentelephone.game.core.composable.dialog.ErrorDialog
+import com.brokentelephone.game.core.composable.dialog.TimesUpDialog
 import com.brokentelephone.game.domain.model.session.SessionConstants
 import com.brokentelephone.game.features.describe_drawing.content.DescribeDrawingContent
 import com.brokentelephone.game.features.describe_drawing.model.DescribeDrawingSideEffect

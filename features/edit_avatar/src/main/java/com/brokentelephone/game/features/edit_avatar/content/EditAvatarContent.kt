@@ -42,9 +42,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.avatar.AvatarComponent
+import com.brokentelephone.game.core.composable.avatar.AvatarComponent
+import com.brokentelephone.game.core.composable.top_bar.AuthTopBar
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.core.top_bar.AuthTopBar
 import com.brokentelephone.game.features.edit_avatar.model.AvatarUi
 import com.brokentelephone.game.features.edit_avatar.model.Avatars
 import com.brokentelephone.game.features.edit_avatar.model.EditAvatarState

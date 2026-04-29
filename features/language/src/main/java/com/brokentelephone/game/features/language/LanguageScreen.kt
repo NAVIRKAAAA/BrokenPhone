@@ -5,7 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.brokentelephone.game.core.utils.LocaleUtils
+import com.brokentelephone.game.core.localization.LocaleUtils
 import com.brokentelephone.game.domain.model.settings.toLocale
 import com.brokentelephone.game.features.language.content.LanguageContent
 import org.koin.compose.viewmodel.koinViewModel

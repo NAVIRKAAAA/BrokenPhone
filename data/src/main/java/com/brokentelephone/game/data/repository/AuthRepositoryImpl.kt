@@ -217,6 +217,7 @@ class AuthRepositoryImpl(
         }
     }
 
+    // TODO: combine applyEmailVerification applyEmailChange
     override suspend fun applyEmailVerification(oobCode: String) {
         try {
             supabase.auth.exchangeCodeForSession(oobCode)

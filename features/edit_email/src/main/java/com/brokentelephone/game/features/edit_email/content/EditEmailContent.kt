@@ -23,9 +23,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.brokentelephone.game.core.text_field.SignUpTextFieldValue
+import com.brokentelephone.game.core.composable.text_field.SignUpTextFieldValue
+import com.brokentelephone.game.core.composable.top_bar.SaveTopBar
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.core.top_bar.SaveTopBar
 import com.brokentelephone.game.features.edit_email.R
 import com.brokentelephone.game.features.edit_email.model.EditEmailState
 import kotlinx.coroutines.delay

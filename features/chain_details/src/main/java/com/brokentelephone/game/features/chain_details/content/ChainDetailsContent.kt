@@ -40,10 +40,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.button.FloatingActionButton
+import com.brokentelephone.game.core.composable.button.FloatingActionButton
+import com.brokentelephone.game.core.composable.pull_to_refresh.AppPullToRefreshIndicator
+import com.brokentelephone.game.core.composable.shimmer.ShimmerContent
 import com.brokentelephone.game.core.model.post.PostUi
-import com.brokentelephone.game.core.pull_to_refresh.AppPullToRefreshIndicator
-import com.brokentelephone.game.core.shimmer.ShimmerContent
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.domain.model.post.PostContent
