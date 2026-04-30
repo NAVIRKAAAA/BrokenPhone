@@ -27,6 +27,10 @@ import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMap
 import com.brokentelephone.game.features.language.use_case.InitializeFirstAppLaunchUseCase
 import com.brokentelephone.game.features.notifications_settings.use_case.UpdateUserPermissionsUseCase
 import com.brokentelephone.game.main.activity.model.MainSideEffect
+import com.brokentelephone.game.main.activity.model.MainSideEffect.NavigateToDescribeDrawing
+import com.brokentelephone.game.main.activity.model.MainSideEffect.NavigateToDraw
+import com.brokentelephone.game.main.activity.model.MainSideEffect.NavigateToNewPassword
+import com.brokentelephone.game.main.activity.model.MainSideEffect.NavigateToNotificationDetails
 import com.brokentelephone.game.main.activity.model.MainState
 import com.brokentelephone.game.main.use_case.ApplyEmailChangeUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
@@ -200,8 +204,8 @@ class MainViewModel(
                 is BannerType.ActiveSession -> {
                     getPostByIdUseCase.executeWithResult(banner.postId).onSuccess { post ->
                         val effect = when (post.content) {
-                            is PostContent.Text -> MainSideEffect.NavigateToDraw(DrawRoute(banner.id))
-                            is PostContent.Drawing -> MainSideEffect.NavigateToDescribeDrawing(
+                            is PostContent.Text -> NavigateToDraw(DrawRoute(banner.id))
+                            is PostContent.Drawing -> NavigateToDescribeDrawing(
                                 DescribeDrawingRoute(banner.id)
                             )
                         }
@@ -213,6 +217,11 @@ class MainViewModel(
                     }.onError {
                         _state.update { it.copy(isBannerLoading = false) }
                     }
+                }
+
+                is BannerType.NewsNotification -> {
+                    _sideEffects.send(NavigateToNotificationDetails(banner.id))
+                    onBannerDismissed()
                 }
             }
         }
@@ -230,7 +239,7 @@ class MainViewModel(
     fun handleFcmTapWhileRunning(notificationId: String) {
         viewModelScope.launch {
             Log.d("LOG_TAG", "handleFcmTapWhileRunning()")
-            _sideEffects.send(MainSideEffect.NavigateToNotificationDetails(notificationId))
+            _sideEffects.send(NavigateToNotificationDetails(notificationId))
         }
     }
 
@@ -269,7 +278,7 @@ class MainViewModel(
             applyPasswordResetUseCase.execute(code)
                 .onSuccess {
                     _state.update { it.copy(isLoading = false) }
-                    _sideEffects.send(MainSideEffect.NavigateToNewPassword)
+                    _sideEffects.send(NavigateToNewPassword)
                 }
                 .onError { e ->
                     Log.d("LOG_TAG", "handlePasswordReset: $e")

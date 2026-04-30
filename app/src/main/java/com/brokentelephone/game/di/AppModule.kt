@@ -3,6 +3,7 @@ package com.brokentelephone.game.di
 import com.brokentelephone.game.core.timer.CountdownTimer
 import com.brokentelephone.game.data.banner.BannerControllerImpl
 import com.brokentelephone.game.data.banner.handler.ActiveSessionBannerHandler
+import com.brokentelephone.game.data.banner.handler.NewsNotificationBannerHandler
 import com.brokentelephone.game.domain.banner.BannerController
 import com.brokentelephone.game.domain.use_case.BlockUserUseCase
 import com.brokentelephone.game.domain.use_case.DeletePostUseCase
@@ -43,7 +44,8 @@ import org.koin.dsl.module
 val appModule = module {
     single { CoroutineScope(SupervisorJob() + Dispatchers.Main) }
     factoryOf(::ActiveSessionBannerHandler)
-    single<BannerController> { BannerControllerImpl(get(), get()) }
+    factoryOf(::NewsNotificationBannerHandler)
+    single<BannerController> { BannerControllerImpl(get(), get(), get()) }
     factoryOf(::ObserveBannerUseCase)
     factoryOf(::ShowBannerUseCase)
     factoryOf(::HideBannerUseCase)

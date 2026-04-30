@@ -124,7 +124,7 @@ fun ActiveSessionBanner(
 @Preview(showBackground = true)
 @Composable
 private fun ActiveSessionBannerPreview() {
-    BrokenTelephoneTheme(darkTheme = true) {
+    BrokenTelephoneTheme(darkTheme = false) {
         Box(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)

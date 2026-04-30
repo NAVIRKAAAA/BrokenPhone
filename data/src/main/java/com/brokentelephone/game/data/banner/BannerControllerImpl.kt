@@ -1,7 +1,9 @@
 package com.brokentelephone.game.data.banner
 
 import com.brokentelephone.game.data.banner.handler.ActiveSessionBannerHandler
+import com.brokentelephone.game.data.banner.handler.NewsNotificationBannerHandler
 import com.brokentelephone.game.domain.banner.BannerController
+import com.brokentelephone.game.domain.banner.BannerHandler
 import com.brokentelephone.game.domain.model.banner.BannerType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -14,6 +16,7 @@ import kotlinx.coroutines.launch
 class BannerControllerImpl(
     scope: CoroutineScope,
     private val activeSessionBannerHandler: ActiveSessionBannerHandler,
+    private val newsNotificationBannerHandler: NewsNotificationBannerHandler,
 ) : BannerController {
 
     private val queue = Channel<BannerType>(Channel.UNLIMITED)
@@ -24,10 +27,14 @@ class BannerControllerImpl(
         scope.launch {
             for (banner in queue) {
                 bannerJob = launch {
-                    when (banner) {
-                        is BannerType.ActiveSession -> activeSessionBannerHandler.handle(banner)
-                            .collect { _banners.value = it }
-                    }
+
+                    @Suppress("UNCHECKED_CAST")
+                    val handler = when (banner) {
+                        is BannerType.ActiveSession -> activeSessionBannerHandler
+                        is BannerType.NewsNotification -> newsNotificationBannerHandler
+                    } as? BannerHandler<BannerType> ?: return@launch
+
+                    handler.handle(banner).collect { _banners.value = it }
                 }
                 bannerJob?.join()
                 _banners.value = null
