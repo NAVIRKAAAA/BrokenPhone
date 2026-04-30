@@ -2,7 +2,7 @@ package com.brokentelephone.game.essentials.exceptions.auth
 
 import com.brokentelephone.game.essentials.R
 import com.brokentelephone.game.essentials.exceptions.main.AppException
-import com.brokentelephone.game.essentials.exceptions.main.StringProvider
+import com.brokentelephone.game.essentials.exceptions.main.string_provider.StringProvider
 
 class EmailAlreadyInUseException : AppException("Email already in use") {
     override fun getLocalizedMessage(stringProvider: StringProvider): String =

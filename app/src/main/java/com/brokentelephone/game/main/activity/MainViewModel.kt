@@ -21,7 +21,6 @@ import com.brokentelephone.game.domain.use_case.ShowBannerUseCase
 import com.brokentelephone.game.domain.user.AuthState
 import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.draw_api.DrawRoute
-import com.brokentelephone.game.features.language.use_case.InitializeFirstAppLaunchUseCase
 import com.brokentelephone.game.features.notifications_settings.use_case.UpdateUserPermissionsUseCase
 import com.brokentelephone.game.main.activity.model.MainSideEffect
 import com.brokentelephone.game.main.activity.model.MainSideEffect.NavigateToDescribeDrawing
@@ -49,7 +48,6 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val getThemeUseCase: GetThemeUseCase,
-    private val initializeFirstAppLaunchUseCase: InitializeFirstAppLaunchUseCase,
     private val initializeSessionUseCase: InitializeSessionUseCase,
     private val getActiveSessionUseCase: GetActiveSessionUseCase,
     private val getPostByIdUseCase: GetPostByIdUseCase,
@@ -74,7 +72,6 @@ class MainViewModel(
         initializeSession()
         observeTheme()
         observeBanner()
-        initializeFirstLaunch()
     }
 
     private fun observeBanner() {
@@ -86,12 +83,6 @@ class MainViewModel(
     fun onResume(isNotificationsGranted: Boolean) {
         viewModelScope.launch {
             updateUserPermissionsUseCase.execute(UserPermissions(isNotificationsGranted = isNotificationsGranted))
-        }
-    }
-
-    private fun initializeFirstLaunch() {
-        viewModelScope.launch {
-            initializeFirstAppLaunchUseCase.execute()
         }
     }
 

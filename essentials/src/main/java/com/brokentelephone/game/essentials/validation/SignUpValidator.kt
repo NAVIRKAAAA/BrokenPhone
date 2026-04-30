@@ -6,6 +6,7 @@ import com.brokentelephone.game.essentials.exceptions.auth.PasswordsDoNotMatchEx
 import com.brokentelephone.game.essentials.exceptions.auth.WeakPasswordException
 import com.brokentelephone.game.essentials.exceptions.main.AppException
 
+// TODO: move to ?
 class SignUpValidator {
 
     fun validate(email: String, password: String, confirmPassword: String): List<AppException> {
