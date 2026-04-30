@@ -1,4 +1,4 @@
-package com.brokentelephone.game.main
+package com.brokentelephone.game.main.initializers
 
 import android.content.Context
 import androidx.startup.Initializer

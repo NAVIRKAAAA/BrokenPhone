@@ -41,7 +41,7 @@ class DescribeDrawingViewModel(
     private var timerJob: Job? = null
 
     init {
-        viewModelScope.launch { loadinInitialData() }
+        loadinInitialData()
     }
 
     private fun loadinInitialData() {

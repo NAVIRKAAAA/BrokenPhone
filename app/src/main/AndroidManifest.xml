@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
-        android:name=".main.App"
+        android:name=".main.application.App"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -28,12 +28,12 @@
             android:exported="false"
             tools:node="merge">
             <meta-data
-                android:name="com.brokentelephone.game.main.FirebaseInitializer"
+                android:name="com.brokentelephone.game.main.initializers.FirebaseInitializer"
                 android:value="androidx.startup" />
         </provider>
 
         <activity
-            android:name=".main.MainActivity"
+            android:name=".main.activity.MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

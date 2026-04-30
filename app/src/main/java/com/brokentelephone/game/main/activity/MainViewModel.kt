@@ -1,4 +1,4 @@
-package com.brokentelephone.game.main
+package com.brokentelephone.game.main.activity
 
 import android.net.Uri
 import android.util.Log
@@ -10,19 +10,24 @@ import com.brokentelephone.game.dashboard_api.MainGraph
 import com.brokentelephone.game.describe_drawing_api.DescribeDrawingRoute
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
+import com.brokentelephone.game.domain.model.banner.BannerType
 import com.brokentelephone.game.domain.model.permissions.UserPermissions
 import com.brokentelephone.game.domain.model.post.PostContent
-import com.brokentelephone.game.domain.model.session.GameSession
 import com.brokentelephone.game.domain.model.session.GameSessionStatus
 import com.brokentelephone.game.domain.use_case.GetActiveSessionUseCase
 import com.brokentelephone.game.domain.use_case.GetPostByIdUseCase
 import com.brokentelephone.game.domain.use_case.GetThemeUseCase
+import com.brokentelephone.game.domain.use_case.HideBannerUseCase
+import com.brokentelephone.game.domain.use_case.ObserveBannerUseCase
+import com.brokentelephone.game.domain.use_case.ShowBannerUseCase
 import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.draw_api.DrawRoute
 import com.brokentelephone.game.essentials.exceptions.auth.SessionDataException
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.language.use_case.InitializeFirstAppLaunchUseCase
 import com.brokentelephone.game.features.notifications_settings.use_case.UpdateUserPermissionsUseCase
+import com.brokentelephone.game.main.activity.model.MainSideEffect
+import com.brokentelephone.game.main.activity.model.MainState
 import com.brokentelephone.game.main.use_case.ApplyEmailChangeUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
 import com.brokentelephone.game.main.use_case.ApplyPasswordResetUseCase
@@ -30,7 +35,6 @@ import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
 import com.brokentelephone.game.navigation.nav_graph.AuthGraph
 import com.brokentelephone.game.notification_details_api.NotificationDetailsRoute
 import com.brokentelephone.game.notifications_api.NotificationsRoute
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,7 +43,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.system.measureTimeMillis
 
@@ -54,6 +57,9 @@ class MainViewModel(
     private val applyPasswordResetUseCase: ApplyPasswordResetUseCase,
     private val updateUserPermissionsUseCase: UpdateUserPermissionsUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
+    private val observeBannerUseCase: ObserveBannerUseCase,
+    private val showBannerUseCase: ShowBannerUseCase,
+    private val hideBannerUseCase: HideBannerUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MainState())
@@ -62,12 +68,17 @@ class MainViewModel(
     private val _sideEffects = Channel<MainSideEffect>(Channel.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
 
-    private var bannerTimerJob: Job? = null
-
     init {
         observeTheme()
+        observeBanner()
         initializeSession()
         initializeFirstLaunch()
+    }
+
+    private fun observeBanner() {
+        observeBannerUseCase.execute()
+            .onEach { banner -> _state.update { it.copy(currentBanner = banner) } }
+            .launchIn(viewModelScope)
     }
 
     fun onResume(isNotificationsGranted: Boolean) {
@@ -159,59 +170,50 @@ class MainViewModel(
 
     private suspend fun setActiveSession(sessionId: String) {
         getActiveSessionUseCase.execute(sessionId).onSuccess { session ->
-
-            delay(300)
-
-            _state.update { it.copy(activeSession = session) }
             if (session.status == GameSessionStatus.ACTIVE) {
-                startBannerTimer(session)
-            } else {
-                bannerTimerJob?.cancel()
-                _state.update { it.copy(bannerRemainingSeconds = 0) }
-            }
-        }
-    }
 
-    private fun startBannerTimer(session: GameSession) {
-        bannerTimerJob?.cancel()
-        bannerTimerJob = viewModelScope.launch {
-            while (isActive) {
-                val remaining = ((session.expiresAt - System.currentTimeMillis()) / 1000).toInt()
-                _state.update { it.copy(bannerRemainingSeconds = remaining.coerceAtLeast(0)) }
-                if (remaining <= 0) break
-                delay(1000)
+                delay(300)
+
+                showBannerUseCase.execute(
+                    BannerType.ActiveSession(
+                        id = session.id,
+                        postId = session.postId,
+                        expiresAt = session.expiresAt,
+                        remainingSeconds = ((session.expiresAt - System.currentTimeMillis()) / 1000).toInt()
+                            .coerceAtLeast(0),
+                        totalSeconds = ((session.expiresAt - session.lockedAt) / 1000).toInt(),
+                    )
+                )
             }
         }
     }
 
     fun onBannerDismissed() {
-        bannerTimerJob?.cancel()
-        _state.update {
-            it.copy(
-                activeSession = null,
-                bannerRemainingSeconds = 0
-            )
-        }
+        hideBannerUseCase.execute()
+        _state.update { it.copy(isBannerLoading = false) }
     }
 
     fun onBannerContinueClick() {
-        val session = _state.value.activeSession ?: return
-        _state.update { it.copy(isBannerLoading = true) }
         viewModelScope.launch {
-            getPostByIdUseCase.executeWithResult(session.postId).onSuccess { post ->
-                val effect = when (post.content) {
-                    is PostContent.Text -> MainSideEffect.NavigateToDraw(DrawRoute(session.id))
-                    is PostContent.Drawing -> MainSideEffect.NavigateToDescribeDrawing(
-                        DescribeDrawingRoute(session.id)
-                    )
+            _state.update { it.copy(isBannerLoading = true) }
+            when (val banner = _state.value.currentBanner ?: return@launch) {
+                is BannerType.ActiveSession -> {
+                    getPostByIdUseCase.executeWithResult(banner.postId).onSuccess { post ->
+                        val effect = when (post.content) {
+                            is PostContent.Text -> MainSideEffect.NavigateToDraw(DrawRoute(banner.id))
+                            is PostContent.Drawing -> MainSideEffect.NavigateToDescribeDrawing(
+                                DescribeDrawingRoute(banner.id)
+                            )
+                        }
+                        _sideEffects.send(effect)
+
+                        delay(150)
+
+                        onBannerDismissed()
+                    }.onError {
+                        _state.update { it.copy(isBannerLoading = false) }
+                    }
                 }
-                _sideEffects.send(effect)
-
-                delay(150)
-
-                onBannerDismissed()
-            }.onError {
-                _state.update { it.copy(isBannerLoading = false) }
             }
         }
     }

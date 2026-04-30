@@ -1,4 +1,4 @@
-package com.brokentelephone.game.main
+package com.brokentelephone.game.main.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -24,9 +24,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
-import com.brokentelephone.game.choose_avatar_api.ChooseAvatarRoute
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.composable.banner.ActiveSessionBanner
 import com.brokentelephone.game.core.composable.dialog.ConfirmDialog
 import com.brokentelephone.game.core.composable.dialog.LoadingDialog
 import com.brokentelephone.game.core.ext.context.isNotificationsGranted
@@ -36,13 +34,8 @@ import com.brokentelephone.game.domain.model.settings.AppTheme
 import com.brokentelephone.game.domain.model.settings.Language
 import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBar
 import com.brokentelephone.game.features.welcome_api.WelcomeRoute
-import com.brokentelephone.game.nav_api.navigateSingle
 import com.brokentelephone.game.navigation.nav_graph.AppNavGraph
-import com.brokentelephone.game.new_password_api.NewPasswordRoute
-import com.brokentelephone.game.notification_details_api.NotificationDetailsRoute
-import com.brokentelephone.game.sign_in_api.SignInRoute
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
@@ -78,49 +71,10 @@ class MainActivity : AppCompatActivity() {
             val state by mainViewModel.state.collectAsStateWithLifecycle()
             val navController = rememberNavController()
 
-            // TODO: to HandleMainSideEffects
-
-            LaunchedEffect(Unit) {
-                mainViewModel.sideEffects.collectLatest { effect ->
-                    when (effect) {
-                        is MainSideEffect.NavigateToDraw -> {
-                            navController.navigateSingle(effect.route)
-                        }
-
-                        is MainSideEffect.NavigateToDescribeDrawing -> {
-                            navController.navigateSingle(effect.route)
-                        }
-
-                        is MainSideEffect.NavigateToSignIn -> {
-                            navController.navigate(WelcomeRoute) {
-                                popUpTo(0) { inclusive = true }
-                            }
-
-                            navController.navigate(SignInRoute(email = effect.email))
-                        }
-
-                        MainSideEffect.NavigateToNewPassword -> {
-                            navController.navigate(WelcomeRoute) {
-                                popUpTo(0) { inclusive = true }
-                            }
-
-                            navController.navigate(NewPasswordRoute)
-                        }
-
-                        MainSideEffect.NavigateToChooseAvatar -> {
-                            navController.navigate(WelcomeRoute) {
-                                popUpTo(0) { inclusive = true }
-                            }
-
-                            navController.navigate(ChooseAvatarRoute)
-                        }
-
-                        is MainSideEffect.NavigateToNotificationDetails -> {
-                            navController.navigate(NotificationDetailsRoute(effect.notificationId))
-                        }
-                    }
-                }
-            }
+            HandleMainSideEffects(
+                sideEffects = mainViewModel.sideEffects,
+                navController = navController,
+            )
 
             // TODO: Remove?
             val isDarkTheme = when (state.theme) {
@@ -176,10 +130,8 @@ class MainActivity : AppCompatActivity() {
                                     .fillMaxWidth(0.85f)
                             )
 
-                            ActiveSessionBanner(
-                                visible = state.isBannerVisible,
-                                formattedTime = state.bannerFormattedTime,
-                                progress = state.bannerProgress,
+                            BannerHost(
+                                currentBanner = state.currentBanner,
                                 isLoading = state.isBannerLoading,
                                 onContinueClick = mainViewModel::onBannerContinueClick,
                                 onDismiss = mainViewModel::onBannerDismissed,
@@ -192,6 +144,7 @@ class MainActivity : AppCompatActivity() {
                         LoadingDialog()
                     }
 
+                    // TODO: Remove
                     state.sessionDataError?.let { message ->
                         ConfirmDialog(
                             title = stringResource(R.string.error_session_data_title),

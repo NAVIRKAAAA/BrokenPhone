@@ -1,4 +1,4 @@
-package com.brokentelephone.game.main
+package com.brokentelephone.game.main.application
 
 import android.app.Application
 import com.brokentelephone.game.di.appModule

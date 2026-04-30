@@ -1,8 +1,9 @@
 package com.brokentelephone.game.di
 
 import com.brokentelephone.game.core.timer.CountdownTimer
-import com.brokentelephone.game.data.banner.BannerManagerImpl
-import com.brokentelephone.game.domain.banner.BannerManager
+import com.brokentelephone.game.data.banner.BannerControllerImpl
+import com.brokentelephone.game.data.banner.handler.ActiveSessionBannerHandler
+import com.brokentelephone.game.domain.banner.BannerController
 import com.brokentelephone.game.domain.use_case.BlockUserUseCase
 import com.brokentelephone.game.domain.use_case.DeletePostUseCase
 import com.brokentelephone.game.domain.use_case.GetActiveSessionUseCase
@@ -19,12 +20,15 @@ import com.brokentelephone.game.domain.use_case.GetUserCompletedPostsUseCase
 import com.brokentelephone.game.domain.use_case.GetUserContributionsUseCase
 import com.brokentelephone.game.domain.use_case.GetUserPostsUseCase
 import com.brokentelephone.game.domain.use_case.GetUsersByIdsUseCase
+import com.brokentelephone.game.domain.use_case.HideBannerUseCase
 import com.brokentelephone.game.domain.use_case.LogoutUseCase
 import com.brokentelephone.game.domain.use_case.MarkPostAsNotInterestedUseCase
+import com.brokentelephone.game.domain.use_case.ObserveBannerUseCase
 import com.brokentelephone.game.domain.use_case.ReportPostUseCase
 import com.brokentelephone.game.domain.use_case.ReportUserUseCase
+import com.brokentelephone.game.domain.use_case.ShowBannerUseCase
 import com.brokentelephone.game.domain.use_case.SignInWithGoogleUseCase
-import com.brokentelephone.game.main.MainViewModel
+import com.brokentelephone.game.main.activity.MainViewModel
 import com.brokentelephone.game.main.use_case.ApplyEmailChangeUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
 import com.brokentelephone.game.main.use_case.ApplyPasswordResetUseCase
@@ -38,7 +42,11 @@ import org.koin.dsl.module
 
 val appModule = module {
     single { CoroutineScope(SupervisorJob() + Dispatchers.Main) }
-    single<BannerManager> { BannerManagerImpl(get()) }
+    factoryOf(::ActiveSessionBannerHandler)
+    single<BannerController> { BannerControllerImpl(get(), get()) }
+    factoryOf(::ObserveBannerUseCase)
+    factoryOf(::ShowBannerUseCase)
+    factoryOf(::HideBannerUseCase)
     factoryOf(::CountdownTimer)
 
     factoryOf(::GetPostLinkByIdUseCase)

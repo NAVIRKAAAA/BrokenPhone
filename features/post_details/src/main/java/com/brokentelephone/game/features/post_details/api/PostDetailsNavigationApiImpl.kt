@@ -81,12 +81,12 @@ class PostDetailsNavigationApiImpl : PostDetailsNavigationApi {
                     navController.safePopBackStack()
                 },
                 onDrawContinue = { sessionId ->
+                    // TODO: navigate(
                     navController.navigateSingle(DrawRoute(sessionId = sessionId))
-                    // TODO: onBannerDismissed
                 },
                 onDescribeDrawingContinue = { sessionId ->
+                    // TODO: navigate(
                     navController.navigateSingle(DescribeDrawingRoute(sessionId = sessionId))
-                    // TODO: onBannerDismissed
                 },
                 onViewHistoryClick = { postId ->
                     navController.navigateSingle(ChainDetailsRoute(postId = postId))

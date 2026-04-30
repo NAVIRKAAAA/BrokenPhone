@@ -1,4 +1,4 @@
-package com.brokentelephone.game.main
+package com.brokentelephone.game.main.activity.model
 
 import com.brokentelephone.game.describe_drawing_api.DescribeDrawingRoute
 import com.brokentelephone.game.draw_api.DrawRoute
