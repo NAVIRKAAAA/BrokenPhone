@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavController
 import com.brokentelephone.game.choose_avatar_api.ChooseAvatarRoute
+import com.brokentelephone.game.choose_username_api.ChooseUsernameRoute
 import com.brokentelephone.game.features.welcome_api.WelcomeRoute
 import com.brokentelephone.game.main.activity.model.MainSideEffect
 import com.brokentelephone.game.new_password_api.NewPasswordRoute
@@ -45,11 +46,17 @@ fun HandleMainSideEffects(
                 }
 
                 MainSideEffect.NavigateToChooseAvatar -> {
-                    navController.navigate(WelcomeRoute) {
+                    navController.navigate(ChooseAvatarRoute) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+
+                MainSideEffect.NavigateToChooseUsername -> {
+                    navController.navigate(ChooseAvatarRoute) {
                         popUpTo(0) { inclusive = true }
                     }
 
-                    navController.navigate(ChooseAvatarRoute)
+                    navController.navigate(ChooseUsernameRoute)
                 }
 
                 is MainSideEffect.NavigateToNotificationDetails -> {

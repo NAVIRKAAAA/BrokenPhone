@@ -4,8 +4,6 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.brokentelephone.game.choose_avatar_api.ChooseAvatarRoute
-import com.brokentelephone.game.choose_username_api.ChooseUsernameRoute
 import com.brokentelephone.game.dashboard_api.MainGraph
 import com.brokentelephone.game.describe_drawing_api.DescribeDrawingRoute
 import com.brokentelephone.game.domain.api_handler.onError
@@ -20,10 +18,9 @@ import com.brokentelephone.game.domain.use_case.GetThemeUseCase
 import com.brokentelephone.game.domain.use_case.HideBannerUseCase
 import com.brokentelephone.game.domain.use_case.ObserveBannerUseCase
 import com.brokentelephone.game.domain.use_case.ShowBannerUseCase
+import com.brokentelephone.game.domain.user.AuthState
 import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.draw_api.DrawRoute
-import com.brokentelephone.game.essentials.exceptions.auth.SessionDataException
-import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.language.use_case.InitializeFirstAppLaunchUseCase
 import com.brokentelephone.game.features.notifications_settings.use_case.UpdateUserPermissionsUseCase
 import com.brokentelephone.game.main.activity.model.MainSideEffect
@@ -39,6 +36,7 @@ import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
 import com.brokentelephone.game.navigation.nav_graph.AuthGraph
 import com.brokentelephone.game.notification_details_api.NotificationDetailsRoute
 import com.brokentelephone.game.notifications_api.NotificationsRoute
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,7 +46,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.system.measureTimeMillis
 
 class MainViewModel(
     private val getThemeUseCase: GetThemeUseCase,
@@ -60,7 +57,6 @@ class MainViewModel(
     private val applyEmailVerificationUseCase: ApplyEmailVerificationUseCase,
     private val applyPasswordResetUseCase: ApplyPasswordResetUseCase,
     private val updateUserPermissionsUseCase: UpdateUserPermissionsUseCase,
-    private val exceptionToMessageMapper: ExceptionToMessageMapper,
     private val observeBannerUseCase: ObserveBannerUseCase,
     private val showBannerUseCase: ShowBannerUseCase,
     private val hideBannerUseCase: HideBannerUseCase,
@@ -72,10 +68,12 @@ class MainViewModel(
     private val _sideEffects = Channel<MainSideEffect>(Channel.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
 
+    private val sessionStartTime = System.currentTimeMillis()
+
     init {
+        initializeSession()
         observeTheme()
         observeBanner()
-        initializeSession()
         initializeFirstLaunch()
     }
 
@@ -103,72 +101,77 @@ class MainViewModel(
             .launchIn(viewModelScope)
     }
 
-    // 500 ms to start
     fun initializeSession() {
-        _state.update { it.copy(isSessionLoading = true) }
-
         viewModelScope.launch {
-            val time = measureTimeMillis {
+            initializeSessionUseCase.execute().onSuccess { authStateAsFlow ->
+                authStateAsFlow.collect { authState ->
+                    Log.d("LOG_TAG", "initializeSession: $authState")
 
-                initializeSessionUseCase.execute().onSuccess { authState ->
-                    val user = authState.getUserOrNull()
+                    when (authState) {
+                        is AuthState.Auth -> {
+                            val user = authState.user
 
-                    val (destination, pendingRoutes) = when (user?.onboardingStep) {
-                        OnboardingStep.CHOOSE_AVATAR -> AuthGraph to listOf(
-                            ChooseAvatarRoute
-                        )
+                            when (user.onboardingStep) {
+                                OnboardingStep.CHOOSE_AVATAR -> {
+                                    _sideEffects.send(MainSideEffect.NavigateToChooseAvatar)
+                                }
 
-                        OnboardingStep.CHOOSE_USERNAME -> AuthGraph to listOf(
-                            ChooseAvatarRoute,
-                            ChooseUsernameRoute
-                        )
+                                OnboardingStep.CHOOSE_USERNAME -> {
+                                    _sideEffects.send(MainSideEffect.NavigateToChooseUsername)
+                                }
 
-                        OnboardingStep.COMPLETED -> {
-                            val notificationRoutes = _state.value.pendingNotificationId
+                                OnboardingStep.COMPLETED -> {
+                                    val sessionId = user.sessionId
+                                    if (sessionId != null) {
+                                        setActiveSession(sessionId)
+                                    }
+                                }
+                            }
+
+                            cancel()
+                        }
+
+                        AuthState.NotAuth -> {
+                            _state.update {
+                                it.copy(
+                                    startDestination = AuthGraph,
+                                    pendingRoutes = emptyList()
+                                )
+                            }
+
+                            cancel()
+                        }
+
+                        is AuthState.PreAuth -> {
+                            val pendingRoutes = _state.value.pendingNotificationId
                                 ?.let { listOf(NotificationsRoute, NotificationDetailsRoute(it)) }
                                 ?: emptyList()
                             _state.update { it.copy(pendingNotificationId = null) }
-                            MainGraph to notificationRoutes
+
+                            Log.d("LOG_TAG", "initializeSession ${System.currentTimeMillis() - sessionStartTime}ms")
+
+                            _state.update {
+                                it.copy(
+                                    startDestination = MainGraph,
+                                    pendingRoutes = pendingRoutes
+                                )
+                            }
                         }
 
-                        null -> AuthGraph to emptyList()
-                    }
-
-                    _state.update {
-                        it.copy(
-                            sessionDataError = null,
-                            isSessionLoading = false,
-                            startDestination = destination,
-                            pendingRoutes = pendingRoutes
-                        )
-                    }
-
-                    val sessionId = user?.sessionId
-
-                    if (user != null && user.onboardingStep == OnboardingStep.COMPLETED && sessionId != null) {
-                        setActiveSession(sessionId)
-                    }
-                }.onError { error ->
-                    _state.update {
-                        it.copy(
-                            isSessionLoading = false,
-                            startDestination = AuthGraph
-                        )
-                    }
-
-                    if (error is SessionDataException) {
-                        delay(150)
-                        _state.update {
-                            it.copy(
-                                isSessionLoading = false,
-                                sessionDataError = exceptionToMessageMapper.map(error)
-                            )
+                        is AuthState.Loading -> {
+                            // Just waiting for new auth event
+                            return@collect
                         }
                     }
                 }
+            }.onError {
+                _state.update {
+                    it.copy(
+                        startDestination = AuthGraph,
+                        pendingRoutes = emptyList()
+                    )
+                }
             }
-            Log.d("LOG_TAG", "initializeSession: $time")
-
         }
     }
 
@@ -225,10 +228,6 @@ class MainViewModel(
                 }
             }
         }
-    }
-
-    fun onSessionErrorDismissed() {
-        _state.update { it.copy(sessionDataError = null, startDestination = AuthGraph) }
     }
 
     fun onPendingRoutesConsumed() {

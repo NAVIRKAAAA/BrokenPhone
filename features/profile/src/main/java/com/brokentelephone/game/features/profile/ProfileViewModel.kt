@@ -49,9 +49,6 @@ class ProfileViewModel(
     private var lastLoadedAt: Long = 0L
 
     init {
-//        getAuthStateUseCase()
-//            .onEach { authState -> _state.update { it.copy(isAuth = authState.isAuth()) } }
-//            .launchIn(viewModelScope)
 
         getCurrentUserUseCase()
             .onEach { user -> _state.update { it.copy(user = user?.toUi()) } }
@@ -63,6 +60,8 @@ class ProfileViewModel(
 
         viewModelScope.launch {
             _state.update { it.copy(isPostsLoading = true, isContributionsLoading = true) }
+
+            // TODO: wait user id
 
             val posts = async { fetchMyPosts() }
             val contributions = async { fetchContributions() }
@@ -81,6 +80,8 @@ class ProfileViewModel(
             _state.update { it.copy(isRefreshing = true) }
 
             delay(150)
+
+            // TODO: wait user id
 
             val posts = async { fetchMyPosts() }
             val contributions = async { fetchContributions() }

@@ -11,8 +11,6 @@ data class MainState(
     val startDestination: NavigationRoute? = null,
     val pendingRoutes: List<NavigationRoute> = emptyList(),
     val pendingNotificationId: String? = null,
-    val sessionDataError: String? = null,
-    val isSessionLoading: Boolean = false,
     val isLoading: Boolean = false,
     val currentBanner: BannerType? = null,
     val isBannerLoading: Boolean = false,

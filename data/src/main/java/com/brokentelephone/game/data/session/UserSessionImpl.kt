@@ -99,11 +99,6 @@ class UserSessionImpl(
         }
     }
 
-    override suspend fun reloadUser() {
-        val userInfo = supabase.auth.currentUserOrNull() ?: return
-        observeSupabaseUser(userInfo)
-    }
-
     // TODO: Need review
     private suspend fun observeSupabaseUser(userInfo: UserInfo) {
         Log.d("LOG_TAG", "observeSupabaseUser(): $userInfo")
@@ -112,7 +107,7 @@ class UserSessionImpl(
             supabase.realtime.removeChannel(channel)
         }
 
-        val channel = supabase.realtime.channel("user-${userInfo.id}")
+        val channel = supabase.realtime.channel("user-${userInfo.id}-${System.currentTimeMillis()}")
         realtimeChannel = channel
 
         val updateFlow = channel.postgresChangeFlow<PostgresAction.Update>(schema = "public") {
@@ -125,6 +120,9 @@ class UserSessionImpl(
                 )
             )
         }
+
+        _user.update { userInfo.toUser() }
+        _authState.update { AuthState.PreAuth(userInfo.id) }
 
         realtimeCollectJob = scope.launch {
 
@@ -163,6 +161,11 @@ class UserSessionImpl(
         }
 
         channel.subscribe()
+    }
+
+    override suspend fun reloadUser() {
+        val userInfo = supabase.auth.currentUserOrNull() ?: return
+        observeSupabaseUser(userInfo)
     }
 
     override suspend fun updateUsername(username: String) {

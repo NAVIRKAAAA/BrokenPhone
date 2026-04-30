@@ -2,6 +2,7 @@ package com.brokentelephone.game.main.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -18,14 +19,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
-import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.composable.dialog.ConfirmDialog
 import com.brokentelephone.game.core.composable.dialog.LoadingDialog
 import com.brokentelephone.game.core.ext.context.isNotificationsGranted
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
@@ -96,6 +94,8 @@ class MainActivity : AppCompatActivity() {
 
                     state.startDestination?.let { startDestination ->
                         LaunchedEffect(state.pendingRoutes) {
+                            Log.d("LOG_TAG", "state.startDestination: $startDestination")
+
                             if (state.pendingRoutes.isNotEmpty()) {
                                 state.pendingRoutes.forEachIndexed { index, route ->
                                     if (index == 0) {
@@ -142,20 +142,6 @@ class MainActivity : AppCompatActivity() {
 
                     if (state.isLoading) {
                         LoadingDialog()
-                    }
-
-                    // TODO: Remove
-                    state.sessionDataError?.let { message ->
-                        ConfirmDialog(
-                            title = stringResource(R.string.error_session_data_title),
-                            body = message,
-                            confirmText = stringResource(R.string.error_session_data_retry),
-                            cancelText = stringResource(R.string.common_cancel),
-                            onDismiss = mainViewModel::onSessionErrorDismissed,
-                            onConfirm = mainViewModel::initializeSession,
-                            confirmButtonColor = MaterialTheme.colorScheme.primary,
-                            isLoading = state.isSessionLoading,
-                        )
                     }
                 }
             }

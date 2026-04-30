@@ -18,7 +18,6 @@ import com.brokentelephone.game.domain.use_case.GetPrivacyPolicyLinkUseCase
 import com.brokentelephone.game.domain.use_case.GetTermsOfServiceLinkUseCase
 import com.brokentelephone.game.domain.use_case.GetThemeUseCase
 import com.brokentelephone.game.domain.use_case.LogoutUseCase
-import com.brokentelephone.game.domain.user.AuthState
 import com.brokentelephone.game.draw_api.DrawRoute
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.settings.model.SettingsSideEffect
@@ -64,7 +63,7 @@ class SettingsViewModel(
         observeCurrentUser()
         _state.update { it.copy(versionInfo = getVersionInfoUseCase()) }
         getAuthStateUseCase()
-            .onEach { authState -> _state.update { it.copy(isAuth = authState.isAuth() || authState is AuthState.Guest) } }
+            .onEach { authState -> _state.update { it.copy(isAuth = authState.isAuth()) } }
             .launchIn(viewModelScope)
         getLanguageUseCase()
             .onEach { language -> _state.update { it.copy(language = language) } }

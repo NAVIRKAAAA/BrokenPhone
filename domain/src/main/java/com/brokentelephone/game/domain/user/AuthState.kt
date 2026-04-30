@@ -4,16 +4,20 @@ sealed class AuthState {
     data object Loading : AuthState()
     data object NotAuth : AuthState()
 
-    // TODO: Implement
     data class PreAuth(val userId: String) : AuthState()
-
     data class Auth(val user: User) : AuthState()
-    data class Guest(val user: User) : AuthState()
+
+    fun getUserIdOrNull(): String? {
+        return when (this) {
+            is PreAuth -> userId
+            is Auth -> user.id
+            else -> null
+        }
+    }
 
     fun getUserOrNull(): User? {
         return when (this) {
             is Auth -> user
-            is Guest -> user
             else -> null
         }
     }
