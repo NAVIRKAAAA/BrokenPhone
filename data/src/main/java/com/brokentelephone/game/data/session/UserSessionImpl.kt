@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.brokentelephone.game.data.dto.UserBlockDto
+import com.brokentelephone.game.data.dto.UserBlockWithUserDto
 import com.brokentelephone.game.data.dto.UserDto
 import com.brokentelephone.game.data.dto.toBlockedUser
 import com.brokentelephone.game.data.mapper.toUser
@@ -30,6 +31,8 @@ import io.github.jan.supabase.auth.status.SessionStatus
 import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.exceptions.RestException
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.postgrest.query.Count
 import io.github.jan.supabase.postgrest.query.filter.FilterOperation
 import io.github.jan.supabase.postgrest.query.filter.FilterOperator
 import io.github.jan.supabase.realtime.PostgresAction
@@ -70,6 +73,9 @@ class UserSessionImpl(
     private val _authState = MutableStateFlow<AuthState>(AuthState.Loading)
     override val authState: Flow<AuthState> = _authState.asStateFlow()
 
+    private val _user = MutableStateFlow<User?>(null)
+    override val user: Flow<User?> = _user.asStateFlow()
+
     private var realtimeChannel: RealtimeChannel? = null
     private var realtimeCollectJob: kotlinx.coroutines.Job? = null
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -96,7 +102,9 @@ class UserSessionImpl(
 
                     val currentUserId =
                         supabase.auth.currentUserOrNull() ?: run {
-                            _authState.value = AuthState.NotAuth
+                            _authState.update { AuthState.NotAuth }
+                            _user.update { null }
+
                             return@collect
                         }
 
@@ -110,6 +118,7 @@ class UserSessionImpl(
         Log.d("LOG_TAG", "observeSupabaseUser(): $userInfo")
 
         _authState.update { AuthState.PreAuth(userInfo.id) }
+        _user.update { userInfo.toUser() }
 
         realtimeCollectJob?.cancel()
         realtimeChannel?.let { channel ->
@@ -144,9 +153,11 @@ class UserSessionImpl(
                     email = userInfo.email ?: "",
                     isEmailVerified = userInfo.emailConfirmedAt != null
                 )
-                _authState.value = AuthState.Auth(updatedUser)
+                _authState.update { AuthState.Auth(updatedUser) }
+                _user.update { updatedUser }
             } catch (_: Exception) {
-                _authState.value = AuthState.NotAuth
+                _authState.update { AuthState.NotAuth }
+                _user.update { null }
             }
 
             updateFlow.collect { change ->
@@ -157,7 +168,8 @@ class UserSessionImpl(
                         email = userInfo.email ?: "",
                         isEmailVerified = userInfo.emailConfirmedAt != null
                     )
-                    _authState.value = AuthState.Auth(updatedNewUser)
+                    _authState.update { AuthState.Auth(updatedNewUser) }
+                    _user.update { updatedNewUser }
                 } catch (e: Exception) {
                     Log.d("LOG_TAG", "updateFlow.collect { change -> $e")
                 }
@@ -167,7 +179,7 @@ class UserSessionImpl(
         channel.subscribe()
     }
 
-    override fun getUser(): Flow<User?> {
+    override fun getUserOnAuthStateChange(): Flow<User?> {
         return _authState
             .filter { it is AuthState.Auth || it is AuthState.NotAuth }
             .map { it.getUserOrNull() }
@@ -291,6 +303,7 @@ class UserSessionImpl(
         }
     }
 
+    // TODO: Migration to Supabase
     override suspend fun getNotInterestedPostIds(): List<String> {
         return dataStore.data.firstOrNull()?.get(KEY_NOT_INTERESTED_POSTS)?.toList() ?: emptyList()
     }
@@ -459,7 +472,8 @@ class UserSessionImpl(
         realtimeChannel?.let { supabase.realtime.removeChannel(it) }
         realtimeChannel = null
         supabase.auth.signOut()
-        _authState.value = AuthState.NotAuth
+        _authState.update { AuthState.NotAuth }
+        _user.update { null }
     }
 
     override suspend fun deleteAccount() = Unit
@@ -480,6 +494,26 @@ class UserSessionImpl(
                 .map { block ->
                     if (block.blockerId == currentUserId) block.blockedId else block.blockerId
                 }
+        } catch (e: RestException) {
+            Log.d("LOG_TAG", "getExcludedUserIds(): $e")
+            throw UnknownAuthException()
+        } catch (_: java.io.IOException) {
+            throw NetworkException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "getExcludedUserIds(): $e")
+            throw UnknownAuthException()
+        }
+    }
+
+    override suspend fun getBlockedUsers(): List<BlockedUser> {
+        val currentUserId = supabase.auth.currentUserOrNull()?.id ?: throw UnauthorizedException()
+        return try {
+            supabase.from(COLLECTION_USER_BLOCKS)
+                .select(Columns.raw("*, users!blocked_id(username, avatar_url)")) {
+                    filter { eq("blocker_id", currentUserId) }
+                }
+                .decodeList<UserBlockWithUserDto>()
+                .map { it.toBlockedUser() }
         } catch (_: RestException) {
             throw UnknownAuthException()
         } catch (_: java.io.IOException) {
@@ -489,18 +523,22 @@ class UserSessionImpl(
         }
     }
 
-    override suspend fun getBlockedUsers(): List<BlockedUser> {
+    override suspend fun getBlockedUsersCount(): Int {
         val currentUserId = supabase.auth.currentUserOrNull()?.id ?: throw UnauthorizedException()
         return try {
             supabase.from(COLLECTION_USER_BLOCKS)
-                .select { filter { eq("blocker_id", currentUserId) } }
-                .decodeList<UserBlockDto>()
-                .map { it.toBlockedUser() }
-        } catch (_: RestException) {
+                .select {
+                    filter { eq("blocker_id", currentUserId) }
+                    count(Count.EXACT)
+                }
+                .countOrNull()?.toInt() ?: 0
+        } catch (e: RestException) {
+            Log.d("LOG_TAG", "getBlockedUsersCount(): $e")
             throw UnknownAuthException()
         } catch (_: java.io.IOException) {
             throw NetworkException()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "getBlockedUsersCount(): $e")
             throw UnknownAuthException()
         }
     }

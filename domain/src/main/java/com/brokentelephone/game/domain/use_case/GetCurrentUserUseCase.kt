@@ -8,6 +8,6 @@ class GetCurrentUserUseCase(
     private val userSession: UserSession,
 ) {
     fun execute(): Flow<User?> {
-        return userSession.getUser()
+        return userSession.user
     }
 }

@@ -6,8 +6,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserSession {
     val authState: Flow<AuthState>
+    val user: Flow<User?>
 
-    fun getUser(): Flow<User?>
+    fun getUserOnAuthStateChange(): Flow<User?>
     suspend fun getUserId(): String?
     suspend fun initialize()
     suspend fun reloadUser()
@@ -29,5 +30,6 @@ interface UserSession {
     suspend fun signOut()
     suspend fun deleteAccount()
     suspend fun getBlockedUsers(): List<BlockedUser>
+    suspend fun getBlockedUsersCount(): Int
     suspend fun getExcludedUserIds(): List<String>
 }

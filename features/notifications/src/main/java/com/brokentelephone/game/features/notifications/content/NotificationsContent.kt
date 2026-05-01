@@ -43,6 +43,8 @@ fun NotificationsContent(
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
 ) {
+    val readNotificationIds = state.user?.readNotificationIds ?: emptyList()
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -106,23 +108,28 @@ fun NotificationsContent(
                                         items = notifications,
                                         key = { it.id },
                                     ) { notification ->
+                                        val isRead = readNotificationIds.contains(notification.id)
+
                                         when (notification) {
                                             is NotificationUi.Friends -> FriendNotificationItem(
                                                 item = notification,
                                                 onClick = { onNotificationClick(notification) },
                                                 onAcceptClick = { onAcceptFriendClick(notification) },
                                                 onDeclineClick = { onDeclineFriendClick(notification) },
+                                                isRead = isRead,
                                                 modifier = Modifier.animateItem(),
                                             )
 
                                             is NotificationUi.ChainInfo -> ChainNotificationItem(
                                                 item = notification,
+                                                isRead = isRead,
                                                 onClick = { onNotificationClick(notification) },
                                                 modifier = Modifier.animateItem(),
                                             )
 
                                             is NotificationUi.News -> NewsNotificationItem(
                                                 item = notification,
+                                                isRead = isRead,
                                                 onClick = { onNotificationClick(notification) },
                                                 modifier = Modifier.animateItem(),
                                             )

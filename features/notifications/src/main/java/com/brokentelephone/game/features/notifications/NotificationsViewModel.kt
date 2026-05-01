@@ -89,6 +89,7 @@ class NotificationsViewModel(
 
                 is NotificationUi.ChainInfo -> {
                     val userId = state.value.user?.id.orEmpty()
+
                     _sideEffects.send(
                         NotificationsSideEffect.NavigateToChainDetails(
                             notification.postId,

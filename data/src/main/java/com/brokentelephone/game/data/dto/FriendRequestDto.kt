@@ -9,5 +9,4 @@ data class FriendRequestDto(
     @SerialName("sender_id") val senderId: String,
     @SerialName("receiver_id") val receiverId: String,
     @SerialName("created_at") val createdAt: Long,
-    @SerialName("status") val status: String,
 )

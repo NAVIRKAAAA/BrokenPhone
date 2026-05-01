@@ -4,8 +4,9 @@ import com.brokentelephone.game.domain.repository.NotificationsRepository
 import com.brokentelephone.game.domain.user.UserSession
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 
 class GetUnreadNotificationsCountUseCase(
     private val repository: NotificationsRepository,
@@ -13,10 +14,9 @@ class GetUnreadNotificationsCountUseCase(
 ) {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun execute(): Flow<Int> {
-        return userSession.getUser()
+        return userSession.user.filterNotNull().distinctUntilChangedBy { it.readNotificationIds }
             .flatMapLatest { user ->
-                if (user == null) flowOf(0)
-                else repository.getUnreadNotificationsCount(user.id, user.readNotificationIds)
+                repository.getUnreadNotificationsCount(user.id, user.readNotificationIds)
             }
     }
 }

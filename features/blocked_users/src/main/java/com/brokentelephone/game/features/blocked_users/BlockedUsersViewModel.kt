@@ -41,7 +41,6 @@ class BlockedUsersViewModel(
         viewModelScope.launch {
 
             _state.update { it.copy(isLoading = true) }
-
             getBlockedUsersUseCase.execute().onSuccess { users ->
                 Log.d("LOG_TAG", "loadBlockedUsers: onSuccess (${users.size})")
                 _state.update {

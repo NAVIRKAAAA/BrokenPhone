@@ -15,7 +15,7 @@ class UpdateUserPermissionsUseCase(
 
     suspend fun execute(permissions: UserPermissions): AppResult<Unit> {
         return handler.handle(Dispatchers.IO) {
-            val user = userSession.getUser().firstOrNull() ?: throw UnauthorizedException()
+            val user = userSession.getUserOnAuthStateChange().firstOrNull() ?: throw UnauthorizedException()
             val current = user.permissions
             if (current == permissions) return@handle
             userSession.updatePermissions(permissions)

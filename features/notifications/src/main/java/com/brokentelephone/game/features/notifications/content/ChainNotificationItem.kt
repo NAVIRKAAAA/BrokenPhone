@@ -36,6 +36,7 @@ import com.brokentelephone.game.core.utils.rememberRelativeTime
 @Composable
 fun ChainNotificationItem(
     item: NotificationUi.ChainInfo,
+    isRead: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -55,7 +56,7 @@ fun ChainNotificationItem(
             contentAlignment = Alignment.Center,
             modifier = Modifier.size(8.dp),
         ) {
-            if (!item.isRead) {
+            if (!isRead) {
                 Box(
                     modifier = Modifier
                         .size(8.dp)
@@ -120,7 +121,6 @@ fun ChainNotificationItem(
 private val previewUnread = NotificationUi.ChainInfo(
     id = "1",
     createdAt = System.currentTimeMillis() - 10 * 60 * 1000L,
-    isRead = false,
     chainId = "c1",
     postId = "p1",
     title = "Your chain is complete!",
@@ -130,7 +130,6 @@ private val previewUnread = NotificationUi.ChainInfo(
 private val previewRead = NotificationUi.ChainInfo(
     id = "2",
     createdAt = System.currentTimeMillis() - 3 * 60 * 60 * 1000L,
-    isRead = true,
     chainId = "c2",
     postId = "p2",
     title = "New step in your chain",
@@ -141,8 +140,10 @@ private val previewRead = NotificationUi.ChainInfo(
 @Composable
 private fun ChainNotificationItemUnreadPreview() {
     BrokenTelephoneTheme(darkTheme = true) {
-        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background).fillMaxWidth()) {
-            ChainNotificationItem(item = previewUnread, onClick = {})
+        Box(modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxWidth()) {
+            ChainNotificationItem(item = previewUnread, isRead = true, onClick = {})
         }
     }
 }
@@ -151,8 +152,10 @@ private fun ChainNotificationItemUnreadPreview() {
 @Composable
 private fun ChainNotificationItemReadPreview() {
     BrokenTelephoneTheme(darkTheme = true) {
-        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background).fillMaxWidth()) {
-            ChainNotificationItem(item = previewRead, onClick = {})
+        Box(modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxWidth()) {
+            ChainNotificationItem(item = previewRead, isRead = false, onClick = {})
         }
     }
 }
@@ -161,8 +164,10 @@ private fun ChainNotificationItemReadPreview() {
 @Composable
 private fun ChainNotificationItemLightPreview() {
     BrokenTelephoneTheme(darkTheme = false) {
-        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background).fillMaxWidth()) {
-            ChainNotificationItem(item = previewUnread, onClick = {})
+        Box(modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxWidth()) {
+            ChainNotificationItem(item = previewUnread, isRead = false, onClick = {})
         }
     }
 }

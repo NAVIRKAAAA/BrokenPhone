@@ -17,9 +17,9 @@ fun User.toBlockedUserUi() = BlockedUserUi(
     createdAt = createdAt,
 )
 
-fun BlockedUser.toUi(name: String, avatarUrl: String?) = BlockedUserUi(
+fun BlockedUser.toUi() = BlockedUserUi(
     id = id,
-    name = name,
+    name = username,
     avatarUrl = avatarUrl,
     createdAt = createdAt,
 )

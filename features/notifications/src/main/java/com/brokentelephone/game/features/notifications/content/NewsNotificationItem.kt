@@ -35,6 +35,7 @@ import com.brokentelephone.game.core.utils.rememberRelativeTime
 @Composable
 fun NewsNotificationItem(
     item: NotificationUi.News,
+    isRead: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -50,11 +51,12 @@ fun NewsNotificationItem(
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.size(8.dp),
-        ) {
-            if (!item.isRead) {
+        if (!isRead) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.size(8.dp),
+            ) {
+
                 Box(
                     modifier = Modifier
                         .size(8.dp)
@@ -62,10 +64,10 @@ fun NewsNotificationItem(
                         .background(MaterialTheme.colorScheme.primary),
                 )
             }
+
+
+            Spacer(modifier = Modifier.width(10.dp))
         }
-
-        Spacer(modifier = Modifier.width(10.dp))
-
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -120,24 +122,21 @@ private val previewUnread = NotificationUi.News(
     id = "1",
     title = "New feature dropped",
     body = "You can now use 3 new brush types in the drawing screen.",
-    createdAt =System.currentTimeMillis() - 2 * 60 * 60 * 1000L,
-    isRead = false,
+    createdAt = System.currentTimeMillis() - 2 * 60 * 60 * 1000L,
 )
 
 private val previewRead = NotificationUi.News(
     id = "2",
     title = "App update available",
     body = "Version 2.1 brings performance improvements and bug fixes.",
-    createdAt =System.currentTimeMillis() - 24 * 60 * 60 * 1000L,
-    isRead = true,
+    createdAt = System.currentTimeMillis() - 24 * 60 * 60 * 1000L,
 )
 
 private val previewLongBody = NotificationUi.News(
     id = "3",
     title = "Big announcement",
     body = "We have some exciting news to share with the community. Stay tuned for more details coming very soon!",
-    createdAt =System.currentTimeMillis() - 3 * 24 * 60 * 60 * 1000L,
-    isRead = false,
+    createdAt = System.currentTimeMillis() - 3 * 24 * 60 * 60 * 1000L,
 )
 
 @Preview(showBackground = true)
@@ -145,7 +144,7 @@ private val previewLongBody = NotificationUi.News(
 private fun NewsNotificationItemUnreadPreview() {
     BrokenTelephoneTheme(darkTheme = true) {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
-            NewsNotificationItem(item = previewUnread, onClick = {})
+            NewsNotificationItem(item = previewUnread, isRead = true, onClick = {})
         }
     }
 }
@@ -156,7 +155,7 @@ private fun NewsNotificationItemReadPreview() {
     BrokenTelephoneTheme(darkTheme = true) {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
 
-            NewsNotificationItem(item = previewRead, onClick = {})
+            NewsNotificationItem(item = previewRead, isRead = false, onClick = {})
         }
     }
 }
@@ -167,7 +166,7 @@ private fun NewsNotificationItemLongBodyPreview() {
     BrokenTelephoneTheme(darkTheme = true) {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
 
-            NewsNotificationItem(item = previewLongBody, onClick = {})
+            NewsNotificationItem(item = previewLongBody, isRead = false, onClick = {})
         }
     }
 }
@@ -177,7 +176,7 @@ private fun NewsNotificationItemLongBodyPreview() {
 private fun NewsNotificationItemLightPreview() {
     BrokenTelephoneTheme(darkTheme = false) {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
-            NewsNotificationItem(item = previewUnread, onClick = {})
+            NewsNotificationItem(item = previewUnread, isRead = false, onClick = {})
         }
     }
 }

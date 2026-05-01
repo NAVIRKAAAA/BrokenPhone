@@ -11,12 +11,21 @@ import com.brokentelephone.game.essentials.exceptions.auth.UnknownAuthException
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.exceptions.RestException
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
+import io.github.jan.supabase.realtime.PostgresAction
+import io.github.jan.supabase.realtime.channel
+import io.github.jan.supabase.realtime.postgresChangeFlow
+import io.github.jan.supabase.realtime.realtime
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import java.io.IOException
 
 class NotificationsRepositoryImpl(
@@ -96,19 +105,65 @@ class NotificationsRepositoryImpl(
     override fun getUnreadNotificationsCount(
         userId: String,
         readNotificationIds: List<String>,
-    ): Flow<Int> = flow {
+    ): Flow<Int> = callbackFlow {
+        Log.d(
+            "LOG_TAG",
+            "getUnreadNotificationsCount: readNotificationIds - ${readNotificationIds.size}"
+        )
+
+        val channel = supabase.realtime.channel("unread-count-$userId-${System.currentTimeMillis()}")
+
+        suspend fun fetchAndSend() {
+            try {
+                val allIds = supabase.from(TABLE_NOTIFICATIONS)
+                    .select(columns = Columns.list("id")) {
+                        filter { contains("receiver_ids", listOf(userId)) }
+                    }
+                    .decodeList<NotificationIdDto>()
+                    .map { it.id }
+                send(allIds.count { it !in readNotificationIds })
+            } catch (_: Exception) {
+                send(0)
+            }
+        }
+
+        val insertFlow = channel.postgresChangeFlow<PostgresAction.Insert>(schema = "public") {
+            table = TABLE_NOTIFICATIONS
+        }
+
+        val job = launch {
+            fetchAndSend()
+            insertFlow.collect {
+                Log.d("LOG_TAG", "New notification for me")
+                fetchAndSend()
+            }
+        }
+
+        channel.subscribe()
+
+        awaitClose {
+            job.cancel()
+            launch { supabase.realtime.removeChannel(channel) }
+        }
+    }
+
+    override suspend fun markNotificationAsRead(userId: String, notificationId: String) {
         try {
-            val allIds = supabase.from(TABLE_NOTIFICATIONS)
-                .select(columns = Columns.list("id")) {
-                    filter { contains("receiver_ids", listOf(userId)) }
+            supabase.postgrest.rpc(
+                "mark_notification_as_read",
+                buildJsonObject {
+                    put("p_user_id", userId)
+                    put("p_notification_id", notificationId)
                 }
-                .decodeList<NotificationIdDto>()
-                .map { it.id }
-            emit(allIds.count { it !in readNotificationIds })
+            )
         } catch (_: IOException) {
-            emit(0)
-        } catch (_: Exception) {
-            emit(0)
+            throw NetworkException()
+        } catch (e: RestException) {
+            Log.d("LOG_TAG", "markNotificationAsRead: $e")
+            throw UnknownAuthException()
+        } catch (e: Exception) {
+            Log.d("LOG_TAG", "markNotificationAsRead: $e")
+            throw UnknownAuthException()
         }
     }
 

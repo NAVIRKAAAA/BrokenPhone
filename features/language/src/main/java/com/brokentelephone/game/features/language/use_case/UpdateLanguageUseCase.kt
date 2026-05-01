@@ -17,7 +17,7 @@ class UpdateLanguageUseCase(
         repository.updateLanguage(language)
 
         handler.handle(Dispatchers.IO) {
-            userSession.getUser().firstOrNull() ?: throw UnauthorizedException()
+            userSession.getUserOnAuthStateChange().firstOrNull() ?: throw UnauthorizedException()
 
 //            userSession.updateLanguage(language)
         }

@@ -21,7 +21,7 @@ class CreatePostUseCase(
         drawingTimeLimit: Int,
     ): AppResult<Unit> {
         return handler.handle(dispatcher = Dispatchers.IO, maxRetries = 0) {
-            val user = userSession.getUser().firstOrNull() ?: throw UnauthorizedException()
+            val user = userSession.getUserOnAuthStateChange().firstOrNull() ?: throw UnauthorizedException()
 
             repository.createPost(
                 authorId = user.id,

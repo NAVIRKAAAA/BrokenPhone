@@ -6,7 +6,6 @@ import com.brokentelephone.game.data.dto.FriendshipDto
 import com.brokentelephone.game.data.mapper.toDomain
 import com.brokentelephone.game.data.mapper.toUser
 import com.brokentelephone.game.domain.model.friend.FriendRequest
-import com.brokentelephone.game.domain.model.friend.FriendRequestStatus
 import com.brokentelephone.game.domain.model.friend.FriendshipActionState
 import com.brokentelephone.game.domain.repository.FriendsRepository
 import com.brokentelephone.game.domain.user.User
@@ -63,7 +62,6 @@ class FriendsRepositoryImpl(
                     senderId = senderId,
                     receiverId = receiverId,
                     createdAt = System.currentTimeMillis(),
-                    status = FriendRequestStatus.PENDING.name,
                 )
             )
         } catch (e: AppException) {
@@ -194,9 +192,8 @@ class FriendsRepositoryImpl(
             return supabase.from(TABLE_FRIEND_REQUESTS).select {
                 filter {
                     eq("sender_id", senderId)
-                    eq("status", FriendRequestStatus.PENDING.name)
                 }
-            }.decodeList<FriendRequestDto>().mapNotNull { it.toDomain() }
+            }.decodeList<FriendRequestDto>().map { it.toDomain() }
         } catch (e: AppException) {
             throw e
         } catch (_: IOException) {
@@ -215,9 +212,8 @@ class FriendsRepositoryImpl(
             return supabase.from(TABLE_FRIEND_REQUESTS).select {
                 filter {
                     eq("receiver_id", receiverId)
-                    eq("status", FriendRequestStatus.PENDING.name)
                 }
-            }.decodeList<FriendRequestDto>().mapNotNull { it.toDomain() }
+            }.decodeList<FriendRequestDto>().map { it.toDomain() }
         } catch (e: AppException) {
             throw e
         } catch (_: IOException) {

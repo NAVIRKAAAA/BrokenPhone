@@ -10,5 +10,5 @@ class GetBlockedUsersCountUseCase(
     private val handler: ApiHandler,
 ) {
     suspend fun execute(): AppResult<Int> =
-        handler.handle(Dispatchers.IO) { userSession.getBlockedUsers().size }
+        handler.handle(Dispatchers.IO) { userSession.getBlockedUsersCount() }
 }

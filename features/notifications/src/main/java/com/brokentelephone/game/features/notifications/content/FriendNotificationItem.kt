@@ -41,6 +41,7 @@ import com.brokentelephone.game.domain.model.notification.NotificationData
 @Composable
 fun FriendNotificationItem(
     item: NotificationUi.Friends,
+    isRead: Boolean,
     onClick: () -> Unit,
     onAcceptClick: () -> Unit,
     onDeclineClick: () -> Unit,
@@ -64,7 +65,7 @@ fun FriendNotificationItem(
                 .padding(top = 20.dp)
                 .size(8.dp),
         ) {
-            if (!item.isRead) {
+            if (!isRead) {
                 Box(
                     modifier = Modifier
                         .size(8.dp)
@@ -162,7 +163,6 @@ private fun NotificationData.FriendsType.isActionFirst(): Boolean = when (this) 
 private val previewUnread = NotificationUi.Friends(
     id = "1",
     createdAt = System.currentTimeMillis() - 5 * 60 * 1000L,
-    isRead = false,
     requestId = "req_1",
     userId = "u1",
     username = "alex_doe",
@@ -173,7 +173,6 @@ private val previewUnread = NotificationUi.Friends(
 private val previewRead = NotificationUi.Friends(
     id = "2",
     createdAt = System.currentTimeMillis() - 2 * 60 * 60 * 1000L,
-    isRead = true,
     requestId = "req_2",
     userId = "u2",
     username = "alexander_the_great",
@@ -184,7 +183,6 @@ private val previewRead = NotificationUi.Friends(
 private val previewAcceptedByMe = NotificationUi.Friends(
     id = "3",
     createdAt = System.currentTimeMillis() - 30 * 60 * 1000L,
-    isRead = true,
     requestId = "req_3",
     userId = "u3",
     username = "maria_k",
@@ -195,7 +193,6 @@ private val previewAcceptedByMe = NotificationUi.Friends(
 private val previewDeclinedByMe = NotificationUi.Friends(
     id = "4",
     createdAt = System.currentTimeMillis() - 3 * 60 * 60 * 1000L,
-    isRead = true,
     requestId = "req_4",
     userId = "u4",
     username = "john_doe",
@@ -212,6 +209,7 @@ private fun FriendNotificationItemUnreadPreview() {
             .fillMaxWidth()) {
             FriendNotificationItem(
                 item = previewUnread,
+                isRead = false,
                 onClick = {},
                 onAcceptClick = {},
                 onDeclineClick = {},
@@ -229,6 +227,7 @@ private fun FriendNotificationItemReadPreview() {
             .fillMaxWidth()) {
             FriendNotificationItem(
                 item = previewRead,
+                isRead = false,
                 onClick = {},
                 onAcceptClick = {},
                 onDeclineClick = {},
@@ -246,6 +245,7 @@ private fun FriendNotificationItemLightPreview() {
             .fillMaxWidth()) {
             FriendNotificationItem(
                 item = previewUnread,
+                isRead = false,
                 onClick = {},
                 onAcceptClick = {},
                 onDeclineClick = {},
@@ -263,6 +263,7 @@ private fun FriendNotificationItemAcceptedByMePreview() {
             .fillMaxWidth()) {
             FriendNotificationItem(
                 item = previewAcceptedByMe,
+                isRead = false,
                 onClick = {},
                 onAcceptClick = {},
                 onDeclineClick = {},
@@ -280,6 +281,7 @@ private fun FriendNotificationItemDeclinedByMePreview() {
             .fillMaxWidth()) {
             FriendNotificationItem(
                 item = previewDeclinedByMe,
+                isRead = false,
                 onClick = {},
                 onAcceptClick = {},
                 onDeclineClick = {},

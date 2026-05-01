@@ -7,6 +7,7 @@ import com.brokentelephone.game.core.model.notification.toUi
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.use_case.GetNotificationByIdUseCase
+import com.brokentelephone.game.domain.use_case.MarkNotificationAsReadUseCase
 import com.brokentelephone.game.features.notification_details.model.NotificationDetailsSideEffect
 import com.brokentelephone.game.features.notification_details.model.NotificationDetailsState
 import kotlinx.coroutines.channels.Channel
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 class NotificationDetailsViewModel(
     private val notificationId: String,
     private val getNotificationByIdUseCase: GetNotificationByIdUseCase,
+    private val markNotificationAsReadUseCase: MarkNotificationAsReadUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(NotificationDetailsState())
@@ -42,6 +44,9 @@ class NotificationDetailsViewModel(
 
                 if (notificationUi != null && notificationUi is NotificationUi.News) {
                     _state.update { it.copy(isLoading = false, notificationUi = notificationUi) }
+
+                    markNotificationAsReadUseCase.execute(notificationId)
+
                 } else {
                     // TODO: HANDLE
                 }
