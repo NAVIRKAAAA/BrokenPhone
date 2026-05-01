@@ -6,7 +6,7 @@ import org.koin.dsl.module
 val bottomNavBarModule = module {
     single {
         AppNavBottomBarViewModel(
-            get(), get(),
+            get(),
         )
     }
 }

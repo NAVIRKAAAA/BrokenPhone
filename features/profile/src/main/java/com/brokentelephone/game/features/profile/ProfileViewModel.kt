@@ -1,5 +1,6 @@
 package com.brokentelephone.game.features.profile
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.core.model.post.PostUi
@@ -49,7 +50,7 @@ class ProfileViewModel(
     private var lastLoadedAt: Long = 0L
 
     init {
-
+        Log.d("LOG_TAG", "ProfileViewModel Init")
         getCurrentUserUseCase()
             .onEach { user -> _state.update { it.copy(user = user?.toUi()) } }
             .launchIn(viewModelScope)
@@ -60,8 +61,6 @@ class ProfileViewModel(
 
         viewModelScope.launch {
             _state.update { it.copy(isPostsLoading = true, isContributionsLoading = true) }
-
-            // TODO: wait user id
 
             val posts = async { fetchMyPosts() }
             val contributions = async { fetchContributions() }
@@ -81,8 +80,6 @@ class ProfileViewModel(
 
             delay(150)
 
-            // TODO: wait user id
-
             val posts = async { fetchMyPosts() }
             val contributions = async { fetchContributions() }
             val friendsCount = async { fetchFriendsCount() }
@@ -97,16 +94,8 @@ class ProfileViewModel(
     }
 
     private suspend fun fetchMyPosts() {
-        val user = state.value.user ?: run {
-            _state.update {
-                it.copy(
-                    isPostsLoading = false
-                )
-            }
-            return
-        }
 
-        getUserPostsUseCase.execute(user.id)
+        getUserPostsUseCase.execute()
             .onSuccess { posts ->
                 _state.update {
                     it.copy(
@@ -122,22 +111,12 @@ class ProfileViewModel(
     }
 
     private suspend fun fetchFriendsCount() {
-        val userId = state.value.user?.id ?: return
-        getFriendsCountUseCase.execute(userId)
+        getFriendsCountUseCase.execute()
             .onSuccess { count -> _state.update { it.copy(friendsCount = count) } }
     }
 
     private suspend fun fetchContributions() {
-        val user = state.value.user ?: run {
-            _state.update {
-                it.copy(
-                    isContributionsLoading = false
-                )
-            }
-            return
-        }
-
-        getUserContributionsUseCase.execute(user.id)
+        getUserContributionsUseCase.execute()
             .onSuccess { posts ->
                 _state.update {
                     it.copy(

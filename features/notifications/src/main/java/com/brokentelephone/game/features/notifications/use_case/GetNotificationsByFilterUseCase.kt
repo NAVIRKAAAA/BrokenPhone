@@ -18,20 +18,22 @@ class GetNotificationsByFilterUseCase(
 
     suspend fun execute(filter: NotificationFilter): AppResult<List<Notification>> {
         return handler.handle(Dispatchers.IO) {
-            val currentUser = userSession.user.firstOrNull() ?: throw UnauthorizedException()
+            val userId = userSession.getUserId() ?: throw UnauthorizedException()
 
             when (filter) {
-                NotificationFilter.ALL -> repository.getNotifications(currentUser.id)
+                NotificationFilter.ALL -> repository.getNotifications(userId)
                 NotificationFilter.UNREAD -> {
 
-                    val notifications = repository.getNotifications(currentUser.id)
+                    val notifications = repository.getNotifications(userId)
+                    val readNotificationIds =
+                        userSession.user.firstOrNull()?.readNotificationIds ?: emptyList()
 
                     notifications.filterNot { notification ->
-                        currentUser.readNotificationIds.contains(notification.id)
+                        readNotificationIds.contains(notification.id)
                     }
                 }
 
-                else -> repository.getNotifications(currentUser.id, filter)
+                else -> repository.getNotifications(userId, filter)
             }
         }
     }

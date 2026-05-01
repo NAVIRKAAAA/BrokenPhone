@@ -9,7 +9,6 @@ import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.essentials.exceptions.auth.ImageUploadException
 import com.brokentelephone.game.essentials.exceptions.auth.UnauthorizedException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.firstOrNull
 
 class SubmitDrawingUseCase(
     private val repository: GameSessionRepository,
@@ -20,7 +19,7 @@ class SubmitDrawingUseCase(
 
     suspend fun execute(sessionId: String, localPath: String): AppResult<Unit> {
         return apiHandler.handle(dispatcher = Dispatchers.IO, maxRetries = 0) {
-            val user = userSession.user.firstOrNull() ?: throw UnauthorizedException()
+            val userId = userSession.getUserId() ?: throw UnauthorizedException()
 
             val imageUrl = try {
                 imageStorage.uploadImage(localPath)
@@ -30,7 +29,7 @@ class SubmitDrawingUseCase(
 
             repository.completeSession(
                 sessionId = sessionId,
-                authorId = user.id,
+                authorId = userId,
                 content = PostContent.Drawing(imageUrl = imageUrl),
             )
         }

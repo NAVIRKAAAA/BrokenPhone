@@ -7,7 +7,6 @@ import com.brokentelephone.game.domain.repository.GameSessionRepository
 import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.essentials.exceptions.auth.UnauthorizedException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.firstOrNull
 
 class SubmitDescriptionUseCase(
     private val repository: GameSessionRepository,
@@ -17,11 +16,11 @@ class SubmitDescriptionUseCase(
 
     suspend fun execute(sessionId: String, text: String): AppResult<Unit> {
         return apiHandler.handle(dispatcher = Dispatchers.IO) {
-            val user = userSession.user.firstOrNull() ?: throw UnauthorizedException()
+            val userId = userSession.getUserId() ?: throw UnauthorizedException()
 
             repository.completeSession(
                 sessionId = sessionId,
-                authorId = user.id,
+                authorId = userId,
                 content = PostContent.Text(text = text),
             )
         }

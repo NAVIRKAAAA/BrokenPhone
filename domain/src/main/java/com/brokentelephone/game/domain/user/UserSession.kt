@@ -8,6 +8,7 @@ interface UserSession {
     val authState: Flow<AuthState>
     val user: Flow<User?>
 
+    suspend fun getUserId(): String?
     suspend fun initialize()
     suspend fun reloadUser()
     suspend fun updateUsername(username: String)

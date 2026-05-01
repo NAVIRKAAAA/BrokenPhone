@@ -13,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.firstOrNull
 
 class SearchUsersUseCase(
     private val usersRepository: UsersRepository,
@@ -26,16 +25,16 @@ class SearchUsersUseCase(
     // TODO: Improve getFriendshipActionState for each user
     suspend fun execute(query: String): AppResult<List<AddFriendUserUi>> {
         return handler.handle(Dispatchers.IO) {
-            val currentUser = userSession.user.firstOrNull() ?: throw UnauthorizedException()
+            val currentUserId = userSession.getUserId() ?: throw UnauthorizedException()
 
             val users = usersRepository.searchByUsername(query)
-                .filter { it.id != currentUser.id }
+                .filter { it.id != currentUserId }
 
             coroutineScope {
                 users.map { user ->
                     async {
                         val friendshipState = try {
-                            friendsRepository.getFriendshipActionState(currentUser.id, user.id)
+                            friendsRepository.getFriendshipActionState(currentUserId, user.id)
                         } catch (e: Exception) {
                             FriendshipActionState.NOT_FRIENDS
                         }

@@ -7,7 +7,6 @@ import com.brokentelephone.game.domain.repository.ReportsRepository
 import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.essentials.exceptions.auth.UnauthorizedException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.firstOrNull
 
 class ReportUserUseCase(
     private val repository: ReportsRepository,
@@ -16,8 +15,8 @@ class ReportUserUseCase(
 ) {
     suspend fun execute(targetUserId: String, type: ReportUserType): AppResult<Unit> {
         return handler.handle(Dispatchers.IO) {
-            val user = userSession.user.firstOrNull() ?: throw UnauthorizedException()
-            repository.reportUser(user.id, targetUserId, type)
+            val userId = userSession.getUserId() ?: throw UnauthorizedException()
+            repository.reportUser(userId, targetUserId, type)
         }
     }
 }

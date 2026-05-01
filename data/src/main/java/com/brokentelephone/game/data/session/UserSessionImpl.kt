@@ -40,12 +40,17 @@ import io.github.jan.supabase.realtime.postgresChangeFlow
 import io.github.jan.supabase.realtime.realtime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -70,6 +75,7 @@ class UserSessionImpl(
     private var realtimeCollectJob: kotlinx.coroutines.Job? = null
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun initialize() {
         Log.d("LOG_TAG", "initialize()")
 
@@ -80,28 +86,36 @@ class UserSessionImpl(
 
         scope.launch {
             Log.d("LOG_TAG", "Start observe sessionStatus")
-            supabase.auth.sessionStatus.collect { newSessionStatus ->
-                Log.d("LOG_TAG", "newSessionStatus: $newSessionStatus")
-                if (newSessionStatus is SessionStatus.Initializing) return@collect
+            supabase.auth.sessionStatus
+                .filterNot { it is SessionStatus.Initializing }
+                .flatMapLatest {
+                    flowOf(supabase.auth.currentUserOrNull())
+                }
+                .distinctUntilChangedBy { it?.id }
+                .collect { newSessionStatus ->
+                    Log.d("LOG_TAG", "newSessionStatus: $newSessionStatus")
 
-                val currentUserId =
-                    supabase.auth.currentUserOrNull() ?: run {
-                        _authState.value = AuthState.NotAuth
+                    val currentUserId =
+                        supabase.auth.currentUserOrNull() ?: run {
+                            _authState.value = AuthState.NotAuth
 
-                        _user.update { null }
+                            _user.update { null }
 
-                        return@collect
-                    }
-                Log.d("LOG_TAG", "currentUserId: $currentUserId")
+                            return@collect
+                        }
 
-                observeSupabaseUser(currentUserId)
-            }
+                    observeSupabaseUser(currentUserId)
+                }
         }
     }
 
     // TODO: Need review
     private suspend fun observeSupabaseUser(userInfo: UserInfo) {
         Log.d("LOG_TAG", "observeSupabaseUser(): $userInfo")
+
+        _user.update { userInfo.toUser() }
+        _authState.update { AuthState.PreAuth(userInfo.id) }
+
         realtimeCollectJob?.cancel()
         realtimeChannel?.let { channel ->
             supabase.realtime.removeChannel(channel)
@@ -121,12 +135,10 @@ class UserSessionImpl(
             )
         }
 
-        _user.update { userInfo.toUser() }
-        _authState.update { AuthState.PreAuth(userInfo.id) }
-
         realtimeCollectJob = scope.launch {
 
             try {
+                // First load
                 val user = supabase.from(COLLECTION_USERS)
                     .select { filter { eq("id", userInfo.id) } }
                     .decodeSingleOrNull<UserDto>()
@@ -161,6 +173,10 @@ class UserSessionImpl(
         }
 
         channel.subscribe()
+    }
+
+    override suspend fun getUserId(): String? {
+        return _authState.first { it !is AuthState.Loading }.getUserIdOrNull()
     }
 
     override suspend fun reloadUser() {

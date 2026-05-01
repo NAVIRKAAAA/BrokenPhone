@@ -7,7 +7,6 @@ import com.brokentelephone.game.domain.repository.FriendsRepository
 import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.essentials.exceptions.auth.UnauthorizedException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.firstOrNull
 
 class GetFriendshipActionStateUseCase(
     private val friendsRepository: FriendsRepository,
@@ -18,12 +17,12 @@ class GetFriendshipActionStateUseCase(
         targetUserId: String
     ): AppResult<FriendshipActionState> {
         return handler.handle(Dispatchers.IO) {
-            val user = userSession.user.firstOrNull() ?: throw UnauthorizedException()
+            val userId = userSession.getUserId() ?: throw UnauthorizedException()
 
-            if (user.id == targetUserId) {
+            if (userId == targetUserId) {
                 FriendshipActionState.IS_ME
             } else {
-                friendsRepository.getFriendshipActionState(user.id, targetUserId)
+                friendsRepository.getFriendshipActionState(userId, targetUserId)
             }
         }
     }

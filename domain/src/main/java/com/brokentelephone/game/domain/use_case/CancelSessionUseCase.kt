@@ -6,7 +6,6 @@ import com.brokentelephone.game.domain.repository.GameSessionRepository
 import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.essentials.exceptions.auth.UnauthorizedException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.firstOrNull
 
 class CancelSessionUseCase(
     private val repository: GameSessionRepository,
@@ -16,11 +15,11 @@ class CancelSessionUseCase(
 
     suspend fun execute(sessionId: String): AppResult<Unit> {
         return apiHandler.handle(dispatcher = Dispatchers.IO, maxRetries = 0) {
-            val user = userSession.user.firstOrNull() ?: throw UnauthorizedException()
+            val userId = userSession.getUserId() ?: throw UnauthorizedException()
 
             repository.cancelSession(
                 sessionId = sessionId,
-                userId = user.id,
+                userId = userId,
             )
         }
     }

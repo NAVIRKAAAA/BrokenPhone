@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.firstOrNull
 
 class GetSuggestedUsersUseCase(
     private val userSession: UserSession,
@@ -23,7 +22,7 @@ class GetSuggestedUsersUseCase(
     // TODO: Improve getFriendshipActionState for each user
     suspend fun execute(): AppResult<List<Pair<User, FriendshipActionState>>> {
         return handler.handle(Dispatchers.IO) {
-            val currentUser = userSession.user.firstOrNull() ?: throw UnauthorizedException()
+            val currentUserId = userSession.getUserId() ?: throw UnauthorizedException()
 
             val users = usersRepository.getSuggestedUsers()
 
@@ -31,7 +30,7 @@ class GetSuggestedUsersUseCase(
                 users.map { user ->
                     async {
                         val friendshipState = try {
-                            friendsRepository.getFriendshipActionState(currentUser.id, user.id)
+                            friendsRepository.getFriendshipActionState(currentUserId, user.id)
                         } catch (e: Exception) {
                             FriendshipActionState.NOT_FRIENDS
                         }

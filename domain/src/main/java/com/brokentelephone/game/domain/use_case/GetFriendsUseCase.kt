@@ -11,7 +11,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.firstOrNull
 
 class GetFriendsUseCase(
     private val userSession: UserSession,
@@ -20,23 +19,23 @@ class GetFriendsUseCase(
 ) {
     suspend fun execute(): AppResult<List<User>> {
         return handler.handle(Dispatchers.IO) {
-            val user = userSession.user.firstOrNull() ?: throw UnauthorizedException()
+            val userId = userSession.getUserId() ?: throw UnauthorizedException()
             
-            friendsRepository.getFriends(user.id)
+            friendsRepository.getFriends(userId)
         }
     }
 
     // TODO: Improve getFriendshipActionState for each user
     suspend fun execute(userId: String): AppResult<List<Pair<User, FriendshipActionState>>> {
         return handler.handle(Dispatchers.IO) {
-            val currentUser = userSession.user.firstOrNull() ?: throw UnauthorizedException()
+            val currentUserId = userSession.getUserId() ?: throw UnauthorizedException()
             
             val friends = friendsRepository.getFriends(userId)
             coroutineScope {
                 friends.map { friend ->
                     async {
                         val state = try {
-                            friendsRepository.getFriendshipActionState(currentUser.id, friend.id)
+                            friendsRepository.getFriendshipActionState(currentUserId, friend.id)
                         } catch (e: Exception) {
                             FriendshipActionState.NOT_FRIENDS
                         }

@@ -10,7 +10,6 @@ import com.brokentelephone.game.domain.repository.UsersRepository
 import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.essentials.exceptions.auth.UnauthorizedException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.firstOrNull
 
 class GetPendingInvitesUseCase(
     private val friendsRepository: FriendsRepository,
@@ -20,9 +19,9 @@ class GetPendingInvitesUseCase(
 ) {
     suspend fun execute(): AppResult<List<AddFriendUserUi>> {
         return handler.handle(Dispatchers.IO) {
-            val currentUser = userSession.user.firstOrNull() ?: throw UnauthorizedException()
+            val currentUserId = userSession.getUserId() ?: throw UnauthorizedException()
 
-            val pendingRequests = friendsRepository.getSentPendingRequests(currentUser.id)
+            val pendingRequests = friendsRepository.getSentPendingRequests(currentUserId)
             val receiverIds = pendingRequests.map { it.receiverId }
 
             if (receiverIds.isEmpty()) return@handle emptyList()

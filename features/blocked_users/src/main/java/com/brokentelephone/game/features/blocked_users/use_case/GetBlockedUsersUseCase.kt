@@ -17,6 +17,8 @@ class GetBlockedUsersUseCase(
     private val usersRepository: UsersRepository,
     private val handler: ApiHandler,
 ) {
+
+    // TODO: Join blocked_users - users
     suspend fun execute(): AppResult<List<BlockedUserUi>> {
         return handler.handle(Dispatchers.IO) {
             val blockedUsers = userSession.getBlockedUsers()

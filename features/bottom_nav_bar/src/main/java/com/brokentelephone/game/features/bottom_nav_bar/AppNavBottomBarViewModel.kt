@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hasRoute
 import com.brokentelephone.game.dashboard_api.DashboardRoute
-import com.brokentelephone.game.domain.use_case.GetAuthStateUseCase
 import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.features.bottom_nav_bar.model.BottomNavBar
 import com.brokentelephone.game.features.bottom_nav_bar.model.BottomNavBarEvent
@@ -22,7 +21,6 @@ import kotlinx.coroutines.launch
 
 class AppNavBottomBarViewModel(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val getAuthStateUseCase: GetAuthStateUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(BottomNavBarState())
@@ -34,10 +32,6 @@ class AppNavBottomBarViewModel(
     init {
         getCurrentUserUseCase()
             .onEach { user -> _state.update { it.copy(userAvatarUrl = user?.avatarUrl) } }
-            .launchIn(viewModelScope)
-
-        getAuthStateUseCase()
-            .onEach { authState -> _state.update { it.copy(isAuth = authState.isAuth()) } }
             .launchIn(viewModelScope)
     }
 
