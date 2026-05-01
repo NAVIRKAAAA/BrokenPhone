@@ -5,12 +5,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.composable.dialog.ConfirmDialog
 import com.brokentelephone.game.core.composable.dialog.ErrorDialog
+import com.brokentelephone.game.core.utils.toShortFormattedTime
 import com.brokentelephone.game.features.create_post.content.CreatePostContent
 import com.brokentelephone.game.features.create_post.dialog.chain_settings.StepperDialog
 import com.brokentelephone.game.features.create_post.dialog.start_new_chain.StartNewChainDialog
@@ -26,7 +26,6 @@ fun CreatePostScreen(
 ) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val context = LocalContext.current
 
     BackHandler {
         viewModel.onBackClick()
@@ -99,7 +98,7 @@ fun CreatePostScreen(
             minValue = 30,
             maxValue = 120,
             step = 10,
-            valueFormatter = { stringResource(R.string.badge_seconds, it) },
+            valueFormatter = { it.toShortFormattedTime() },
             onDismiss = viewModel::onDismissChainSetting,
             onConfirm = viewModel::onTextTimeLimitConfirmed,
         )
@@ -110,7 +109,7 @@ fun CreatePostScreen(
             minValue = 60,
             maxValue = 180,
             step = 10,
-            valueFormatter = { stringResource(R.string.badge_seconds, it) },
+            valueFormatter = { it.toShortFormattedTime() },
             onDismiss = viewModel::onDismissChainSetting,
             onConfirm = viewModel::onDrawingTimeLimitConfirmed,
         )

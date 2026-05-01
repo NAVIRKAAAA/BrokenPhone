@@ -39,6 +39,7 @@ import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.core.utils.rememberRelativeTime
+import com.brokentelephone.game.core.utils.toShortFormattedTime
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
 
@@ -142,7 +143,7 @@ fun ProfilePostElement(
             }
 
             PostChip(
-                text = stringResource(R.string.badge_seconds, post.textTimeLimit),
+                text = post.textTimeLimit.toShortFormattedTime(),
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 iconResId = R.drawable.ic_edit_v2,
@@ -151,7 +152,7 @@ fun ProfilePostElement(
             )
 
             PostChip(
-                text = stringResource(R.string.badge_seconds, post.drawingTimeLimit),
+                text = post.drawingTimeLimit.toShortFormattedTime(),
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 iconResId = R.drawable.ic_brush_v2,
@@ -210,7 +211,7 @@ private fun ProfilePostElementTextPreview() {
                     generation = 10,
                     maxGenerations = 10,
                     status = PostStatus.AVAILABLE,
-                    drawingTimeLimit = 60,
+                    drawingTimeLimit = 90,
                     textTimeLimit = 60
                 )
             )

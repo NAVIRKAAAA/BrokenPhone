@@ -25,7 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +37,7 @@ import com.brokentelephone.game.core.ext.modifier.coloredShadow
 import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.utils.rememberRelativeTime
+import com.brokentelephone.game.core.utils.toShortFormattedTime
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
 
@@ -132,13 +132,13 @@ fun UserProfileContributionElement(
                 iconResId = R.drawable.ic_mutations,
             )
 
-            val (timeIconResId, timeLimit) = when(post.content) {
-                is PostContent.Drawing -> R.drawable.ic_brush_v2 to post.drawingTimeLimit
-                is PostContent.Text -> R.drawable.ic_edit_v2 to post.textTimeLimit
+            val timeIconResId = when(post.content) {
+                is PostContent.Drawing -> R.drawable.ic_brush_v2
+                is PostContent.Text -> R.drawable.ic_edit_v2
             }
 
             PostChip(
-                text = stringResource(R.string.badge_seconds, timeLimit),
+                text = post.timeLimit.toShortFormattedTime(),
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 iconResId = timeIconResId,

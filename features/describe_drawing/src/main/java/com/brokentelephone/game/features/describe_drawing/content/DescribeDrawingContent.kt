@@ -51,6 +51,7 @@ import com.brokentelephone.game.core.composable.top_bar.SaveTopBar
 import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
+import com.brokentelephone.game.core.utils.toFormattedTime
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
 import com.brokentelephone.game.features.describe_drawing.model.DescribeDrawingState
@@ -152,7 +153,7 @@ fun DescribeDrawingContent(
                                         color = MaterialTheme.colorScheme.onBackground
                                     ),
                                     minLines = 2,
-                                    maxLines = 3,
+                                    maxLines = 2,
                                     keyboardActions = KeyboardActions(
                                         onDone = {
                                             focusManager.clearFocus()
@@ -195,7 +196,7 @@ fun DescribeDrawingContent(
                                 )
 
                                 PostChip(
-                                    text = state.formattedTime,
+                                    text = state.remainingSeconds.toFormattedTime(),
                                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                                     iconResId = R.drawable.ic_clock,
@@ -252,7 +253,7 @@ fun DescribeDrawingContentPreview() {
                         avatarUrl = null,
                         content = PostContent.Drawing("Once upon a time there was a broken telephone that nobody could fix..."),
                         createdAt = System.currentTimeMillis() - 7200000,
-                        generation = 10,
+                        generation = 9,
                         maxGenerations = 10,
                         status = PostStatus.AVAILABLE,
                         drawingTimeLimit = 60,

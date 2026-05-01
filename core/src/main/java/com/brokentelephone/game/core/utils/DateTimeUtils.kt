@@ -89,6 +89,22 @@ fun rememberMemberSince(timestamp: Long): String {
     }
 }
 
+fun Int.toFormattedTime(): String {
+    val minutes = this / 60
+    val seconds = this % 60
+    return "%02d:%02d".format(minutes, seconds)
+}
+
+fun Int.toShortFormattedTime(): String {
+    val minutes = this / 60
+    val seconds = this % 60
+    return when {
+        minutes > 0 && seconds > 0 -> "${minutes}m ${seconds}s"
+        minutes > 0 -> "${minutes}m"
+        else -> "${seconds}s"
+    }
+}
+
 @Composable
 fun rememberFormattedDate(timestamp: Long): String {
     val language = LocalAppLanguage.current

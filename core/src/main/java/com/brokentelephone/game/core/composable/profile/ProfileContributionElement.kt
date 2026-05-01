@@ -39,6 +39,7 @@ import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.core.utils.rememberRelativeTime
+import com.brokentelephone.game.core.utils.toShortFormattedTime
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
 
@@ -152,7 +153,7 @@ fun ProfileContributionElement(
             }
 
             PostChip(
-                text = stringResource(R.string.badge_seconds, post.nextTimeLimit),
+                text = post.timeLimit.toShortFormattedTime(),
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 iconResId = R.drawable.ic_clock,

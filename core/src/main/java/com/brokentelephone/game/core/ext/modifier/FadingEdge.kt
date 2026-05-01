@@ -16,13 +16,19 @@ fun Modifier.horizontalFadingEdge(
 ): Modifier = graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
     .drawWithContent {
         drawContent()
+        val startEdge = (startWidth.toPx() / size.width).coerceIn(0f, 1f)
+        val endEdge = (1f - endWidth.toPx() / size.width).coerceIn(0f, 1f)
         drawRect(
             brush = Brush.horizontalGradient(
                 colorStops = arrayOf(
-                    0f to Color.Transparent,
-                    (startWidth.toPx() / size.width).coerceIn(0f, 1f) to Color.Black,
-                    (1f - endWidth.toPx() / size.width).coerceIn(0f, 1f) to Color.Black,
-                    1f to Color.Transparent,
+                    0f to Color.Black.copy(alpha = 0.25f),
+                    (startEdge * 0.4f) to Color.Black.copy(alpha = 0.5f),
+                    (startEdge * 0.7f) to Color.Black.copy(alpha = 0.8f),
+                    startEdge to Color.Black,
+                    endEdge to Color.Black,
+                    (endEdge + (1f - endEdge) * 0.3f) to Color.Black.copy(alpha = 0.8f),
+                    (endEdge + (1f - endEdge) * 0.6f) to Color.Black.copy(alpha = 0.5f),
+                    1f to Color.Black.copy(alpha = 0.25f),
                 ),
             ),
             blendMode = BlendMode.DstIn,

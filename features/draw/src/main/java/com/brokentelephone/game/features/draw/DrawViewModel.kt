@@ -116,6 +116,7 @@ class DrawViewModel(
             DrawingAction.OnUndoClick -> onUndo()
             DrawingAction.OnRedoClick -> onRedo()
             is DrawingAction.OnBrushSizeChange -> _state.update { it.copy(selectedBrushSize = action.brushSize) }
+            is DrawingAction.OnColorChange -> _state.update { it.copy(selectedColor = action.color) }
             is DrawingAction.OnCanvasSizeChanged -> _state.update { it.copy(canvasSize = action.size) }
             DrawingAction.OnPostClick -> onPostClick()
             DrawingAction.OnBackClick -> onBackClick()

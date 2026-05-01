@@ -1,9 +1,11 @@
 package com.brokentelephone.game.features.draw.model
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntSize
 
 sealed interface DrawingAction {
+    data class OnColorChange(val color: Color) : DrawingAction
     data object OnNewPathStart: DrawingAction
     data class OnDraw(val offset: Offset): DrawingAction
     data object OnPathEnd: DrawingAction

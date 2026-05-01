@@ -25,7 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +37,7 @@ import com.brokentelephone.game.core.ext.modifier.coloredShadow
 import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.utils.rememberRelativeTime
+import com.brokentelephone.game.core.utils.toShortFormattedTime
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
 
@@ -143,7 +143,7 @@ fun UserProfilePostElement(
             )
 
             PostChip(
-                text = stringResource(R.string.badge_seconds, post.textTimeLimit),
+                text = post.textTimeLimit.toShortFormattedTime(),
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 iconResId = R.drawable.ic_edit_v2,
@@ -152,7 +152,7 @@ fun UserProfilePostElement(
             )
 
             PostChip(
-                text = stringResource(R.string.badge_seconds, post.drawingTimeLimit),
+                text = post.drawingTimeLimit.toShortFormattedTime(),
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 iconResId = R.drawable.ic_brush_v2,

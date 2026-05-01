@@ -40,6 +40,7 @@ import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.composable.avatar.AvatarComponent
 import com.brokentelephone.game.core.composable.chip.PostChip
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
+import com.brokentelephone.game.core.utils.toShortFormattedTime
 import com.brokentelephone.game.features.create_post.model.ChainSetting
 import com.brokentelephone.game.features.create_post.model.CreatePostState
 
@@ -159,7 +160,7 @@ fun PrePostElement(
                     )
 
                     PostChip(
-                        text = stringResource(R.string.badge_seconds, textTimeLimit),
+                        text = textTimeLimit.toShortFormattedTime(),
                         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         iconResId = R.drawable.ic_edit_v2,
@@ -169,7 +170,7 @@ fun PrePostElement(
                     )
 
                     PostChip(
-                        text = stringResource(R.string.badge_seconds, drawingTimeLimit),
+                        text = drawingTimeLimit.toShortFormattedTime(),
                         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         iconResId = R.drawable.ic_brush_v2,

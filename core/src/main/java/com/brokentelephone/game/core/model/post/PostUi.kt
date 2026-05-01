@@ -23,10 +23,17 @@ data class PostUi(
 ) {
 
     val isCompleted: Boolean get() = generation == maxGenerations
+
     val nextTimeLimit: Int
         get() = when (content) {
             is PostContent.Text -> drawingTimeLimit
             is PostContent.Drawing -> textTimeLimit
+        }
+
+    val timeLimit: Int
+        get() = when (content) {
+            is PostContent.Text -> textTimeLimit
+            is PostContent.Drawing -> drawingTimeLimit
         }
 }
 
