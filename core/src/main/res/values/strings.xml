@@ -1,0 +1,342 @@
+<resources>
+    <string name="app_name">Broken Telephone: Draw &amp; Guess</string>
+
+    <!-- Common -->
+    <string name="common_or">or</string>
+    <string name="common_cancel">Cancel</string>
+    <string name="common_post">Submit</string>
+    <string name="common_discard">Discard</string>
+    <string name="common_leave">Leave</string>
+    <string name="common_keep_writing">Keep going!</string>
+    <string name="common_block">Block</string>
+    <string name="common_delete">Delete</string>
+    <string name="common_toast_report_success">Thank you for your report!</string>
+    <string name="common_toast_link_copied">Link copied!</string>
+    <string name="common_toast_not_interested">Got it! We\'ll show you fewer posts like this.</string>
+    <string name="common_dialog_block_title">Block user?</string>
+    <string name="common_dialog_block_body">You won\'t see posts from this user anymore.</string>
+    <string name="common_dialog_delete_post_title">Delete post?</string>
+    <string name="common_dialog_delete_post_body">This action cannot be undone.</string>
+    <string name="common_dialog_remove_friend_title">Remove friend?</string>
+    <string name="common_dialog_remove_friend_body">This person will be removed from your friends list.</string>
+    <string name="common_dialog_remove_friend_confirm">Confirm</string>
+    <string name="common_dialog_cancel_request_title">Cancel request?</string>
+    <string name="common_dialog_cancel_request_body">Your friend request will be withdrawn.</string>
+    <string name="common_dialog_cancel_request_confirm">Confirm</string>
+
+    <!-- Chain Details -->
+    <string name="chain_details_title">The Chain</string>
+    <string name="chain_details_complete">Chain Complete!</string>
+    <string name="chain_details_generations">%1$d of %2$d steps</string>
+
+    <!-- Describe Drawing -->
+    <string name="describe_drawing_title">Describe</string>
+    <string name="describe_drawing_placeholder">What do you see here?</string>
+    <string name="describe_drawing_dialog_post_title">Ready to submit?</string>
+    <string name="describe_drawing_dialog_post_body">Once submitted, the next player will draw based on your words.</string>
+    <string name="describe_drawing_dialog_discard_title">Leave the round?</string>
+    <string name="describe_drawing_times_up_message">Time\'s up!</string>
+
+    <!-- Draw -->
+    <string name="draw_title">Draw</string>
+    <string name="draw_dialog_post_title">Ready to submit?</string>
+    <string name="draw_dialog_post_body">Once submitted, everyone in the chain will see your masterpiece.</string>
+    <string name="draw_dialog_discard_title">Leave the round?</string>
+    <string name="draw_dialog_discard_cancel">Keep playing</string>
+    <string name="draw_times_up_message">Time\'s up!</string>
+
+    <!-- Post Details -->
+    <string name="post_details_title">Chain</string>
+    <string name="post_details_button_continue">My Turn!</string>
+    <string name="post_details_button_view">See the Chain</string>
+    <string name="post_details_description_draw">You have %1$d seconds to draw!</string>
+    <string name="post_details_description_describe">You have %1$d seconds to describe!</string>
+    <string name="post_details_description_unavailable">Someone is working on this right now</string>
+    <string name="post_details_description_completed">This chain is complete!</string>
+    <string name="post_details_description_own_post">You started this one — wait for others!</string>
+    <string name="post_details_button_cooldown">Not Yet</string>
+    <string name="post_details_description_cooldown">You left this one recently — try again in %1$s</string>
+    <string name="post_details_button_my_session">Resume!</string>
+    <string name="post_details_description_my_session">You started this one — %1$s left to finish!</string>
+
+    <!-- Times Up Dialog -->
+    <string name="times_up_dialog_title">Time\'s up!</string>
+    <string name="times_up_dialog_got_it">Got it!</string>
+
+    <!-- Error Dialog -->
+    <string name="error_dialog_title">Something went wrong</string>
+    <string name="error_dialog_ok">OK</string>
+
+    <!-- Information & Legal -->
+    <string name="information_legal_title">Information &amp; Legal</string>
+    <string name="information_legal_terms_of_service">Terms of Service</string>
+    <string name="information_legal_privacy_policy">Privacy Policy</string>
+
+    <!-- App Preferences -->
+    <string name="app_preferences_title">App Preferences</string>
+    <string name="app_preferences_notifications">Notifications</string>
+    <string name="app_preferences_language">Language</string>
+    <string name="app_preferences_theme">Theme</string>
+
+    <!-- Language -->
+    <string name="language_title">Language</string>
+
+    <!-- Theme -->
+    <string name="theme_title">Theme</string>
+    <string name="theme_system_description">Match device settings</string>
+
+    <!-- Notifications -->
+    <string name="notifications_title">Notifications</string>
+    <string name="notifications_permission">Notification Permission</string>
+    <string name="notifications_permission_on">On</string>
+    <string name="notifications_permission_off">Off</string>
+    <string name="notifications_all">All Notifications</string>
+    <string name="notifications_type_new_posts">New Posts</string>
+    <string name="notifications_dialog_rationale_title">Allow Notifications</string>
+    <string name="notifications_dialog_rationale_body">Know when it\'s your turn or a chain wraps up — don\'t miss out!</string>
+    <string name="notifications_dialog_rationale_confirm">Allow</string>
+
+    <!-- Blocked Users -->
+    <string name="blocked_users_title">Blocked Users</string>
+    <string name="blocked_users_empty_title">All clear!</string>
+    <string name="blocked_users_empty_body">Anyone you block will show up here.</string>
+    <string name="blocked_users_item_blocked_on">Blocked on %1$s</string>
+    <string name="blocked_users_item_unblock">Unblock</string>
+    <string name="blocked_users_dialog_title">Unblock user?</string>
+    <string name="blocked_users_dialog_body">%1$s will be able to see your posts and interact with you again.</string>
+    <string name="blocked_users_dialog_confirm">Unblock</string>
+    <string name="blocked_users_unknown_name">This user</string>
+
+    <!-- Account Settings -->
+    <string name="account_settings_title">Account Settings</string>
+    <string name="account_settings_email">Email</string>
+    <string name="account_settings_email_not_verified">Not verified · Tap to verify</string>
+    <string name="account_settings_email_verified">Verified</string>
+    <string name="account_settings_verify_email_dialog_title">Verify email</string>
+    <string name="account_settings_verify_email_dialog_body">A verification link will be sent to your email address. Tap it to confirm it\'s yours.\n\nIt might end up in spam — check there if you don\'t see it.\n\nIf you\'ve already verified but it still shows as unverified, restart the app.</string>
+    <string name="account_settings_verify_email_dialog_confirm">Send</string>
+    <string name="account_settings_provider">Sign-in method</string>
+    <string name="account_settings_member_since">Member since</string>
+    <string name="account_settings_blocked_users">Blocked Users</string>
+    <string name="account_settings_delete_account">Delete Account</string>
+    <string name="account_settings_dialog_delete_title">Delete Account?</string>
+    <string name="account_settings_dialog_delete_body">This action cannot be undone. Your account and personal data will be permanently deleted.</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_item_account">Account Settings</string>
+    <string name="settings_item_active_session">Game Session</string>
+    <string name="settings_item_app_preferences">App Preferences</string>
+    <string name="settings_item_information_legal">Information &amp; Legal</string>
+    <string name="settings_logout_button">Log Out</string>
+    <string name="settings_dialog_logout_title">Logout?</string>
+    <string name="settings_dialog_logout_body">Leaving already? We\'ll assume you\'re just switching accounts.</string>
+    <string name="settings_dialog_logout_confirm">Logout</string>
+
+    <string name="bio_more">more</string>
+
+    <!-- Edit Bio -->
+    <string name="edit_bio_title">Edit Bio</string>
+    <string name="edit_bio_button_save">Save</string>
+    <string name="edit_bio_label">Bio</string>
+    <string name="edit_bio_hint">Tell something about yourself</string>
+
+    <!-- Edit Username -->
+    <string name="edit_username_title">Edit Username</string>
+    <string name="edit_username_button_save">Save</string>
+    <string name="edit_username_label">Username</string>
+    <string name="edit_username_hint">This is how others will see you</string>
+
+    <!-- Choose Username -->
+    <string name="choose_username_title">What\'s your name?</string>
+    <string name="choose_username_button_continue">Let\'s Play!</string>
+
+    <!-- Choose Avatar -->
+    <string name="choose_avatar_title">Who are you today?</string>
+
+    <!-- Active Session Banner -->
+    <string name="active_session_banner_title">Active session</string>
+    <string name="active_session_banner_continue">Continue</string>
+
+    <!-- Session error dialog -->
+    <string name="error_session_data_title">Connection error</string>
+    <string name="error_session_data_retry">Retry</string>
+    <string name="error_session_data_cancel">Continue as guest</string>
+
+    <!-- Edit Avatar -->
+    <string name="edit_avatar_title">Edit Avatar</string>
+    <string name="edit_avatar_button_save">Save</string>
+    <string name="edit_avatar_current">Your Avatar</string>
+    <string name="edit_avatar_choose">Pick a New Avatar</string>
+
+    <!-- Edit Profile -->
+    <string name="edit_profile_title">Edit Profile</string>
+    <string name="edit_profile_field_avatar">Avatar</string>
+    <string name="edit_profile_field_username">Username</string>
+    <string name="edit_profile_field_bio">Bio</string>
+    <string name="edit_profile_field_email">Email</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_title">Hey, %1$s!</string>
+    <string name="dashboard_title_no_name">Hey!</string>
+    <string name="dashboard_badge_complete">Finished</string>
+    <string name="dashboard_badge_you">You!</string>
+
+    <!-- Google Sign In -->
+    <string name="google_sign_in_button">Continue with Google</string>
+
+    <!-- Sign In -->
+    <string name="sign_in_terms_prefix">By signing in, you agree to our</string>
+    <string name="sign_in_title">Welcome Back</string>
+    <string name="sign_in_email">Email</string>
+    <string name="sign_in_password">Password</string>
+    <string name="sign_in_button">Sign In</string>
+    <string name="sign_in_dont_have_account">New here?</string>
+    <string name="sign_in_sign_up_link">Sign Up</string>
+    <string name="sign_in_forgot_password">Forgot password?</string>
+
+    <!-- Sign Up -->
+    <string name="sign_up_title">Join the Game</string>
+    <string name="sign_up_email">Email</string>
+    <string name="sign_up_password">Password</string>
+    <string name="sign_up_password_hint">At least 8 characters</string>
+    <string name="sign_up_confirm_password">Confirm Password</string>
+    <string name="sign_up_button">Create Account</string>
+    <string name="sign_up_terms_prefix">By signing up, you agree to our</string>
+    <string name="sign_up_terms">Terms</string>
+    <string name="sign_up_terms_and"> &amp; </string>
+    <string name="sign_up_privacy_policy">Privacy Policy</string>
+    <string name="sign_up_already_have_account">Been here before?</string>
+    <string name="sign_up_sign_in_link">Sign In</string>
+    <string name="sign_up_password_show">Show password</string>
+    <string name="friends_title">Friends</string>
+    <string name="friends_search_placeholder">Search friends</string>
+    <string name="friends_empty_title">No friends yet</string>
+    <string name="friends_empty_body">Add friends to see them here</string>
+    <string name="friends_suggested">Recommendations</string>
+    <string name="search_text_field_clear">Clear search</string>
+    <string name="sign_up_password_hide">Hide password</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Profile</string>
+    <string name="profile_empty_tap">Tap to create your first post</string>
+    <string name="profile_empty_contributions_tap">Tap to make your first contribution</string>
+    <string name="profile_empty_contributions_join">Join</string>
+    <string name="profile_empty_hint">A door that only exists when no one is watching.</string>
+    <string name="profile_posts">Posts</string>
+    <string name="profile_contributions">Contributions</string>
+    <string name="profile_friends">Friends</string>
+    <string name="profile_top_bar_edit">Edit</string>
+    <string name="profile_top_bar_settings">Settings</string>
+    <string name="profile_sign_in">Sign In</string>
+    <string name="profile_guest_note">You\'re playing as a guest. Sign up to save your progress!</string>
+    <string name="profile_member_since">Member since %1$s</string>
+
+    <!-- User Details -->
+    <string name="user_details_empty_posts_title">No posts</string>
+    <string name="user_details_empty_posts_body">Looks like this user hasn\'t posted anything yet.</string>
+    <string name="user_details_empty_contributions_title">No contributions</string>
+    <string name="user_details_empty_contributions_body">Looks like this user hasn\'t joined any chains yet.</string>
+
+    <!-- Notifications -->
+    <string name="notification_friend_request_body">sent you a friend request</string>
+    <string name="notification_friend_accepted_body">accepted your friend request</string>
+    <string name="notification_friend_accepted_by_me_body">You accepted a friend request from</string>
+    <string name="notification_friend_declined_by_me_body">You declined a friend request from</string>
+    <string name="notification_group_today">Today</string>
+    <string name="notification_group_yesterday">Yesterday</string>
+    <string name="notification_group_last_7_days">Last 7 days</string>
+    <string name="notification_group_last_30_days">Last 30 days</string>
+    <string name="notification_group_earlier">Earlier</string>
+    <string name="notification_type_news">News</string>
+
+    <!-- Friendship Action -->
+    <string name="friendship_action_add">Add Friend</string>
+    <string name="friendship_action_accept">Accept</string>
+    <string name="friendship_action_decline">Decline</string>
+    <string name="friendship_action_invite_sent">Invite Sent</string>
+    <string name="friendship_action_friends">Friends</string>
+    <string name="friendship_action_is_me">This is you</string>
+
+    <!-- Add Friend -->
+    <string name="add_friend_title">Add Friend</string>
+    <string name="add_friend_search_placeholder">Search by username</string>
+    <string name="add_friend_initial_hint">Find people by their username</string>
+    <string name="add_friend_no_results">No users found</string>
+    <string name="add_friend_pending_invites">Pending invites</string>
+    <string name="add_friend_received_invites">Received invites</string>
+
+    <!-- Bottom Nav Bar -->
+    <string name="bottom_nav_bar_dashboard">Feed</string>
+    <string name="bottom_nav_bar_create">Create</string>
+    <string name="bottom_nav_bar_profile">Profile</string>
+    <string name="bottom_nav_bar_guest">Guest</string>
+
+    <!-- Create Post -->
+    <string name="create_post_title">Start a Chain</string>
+    <string name="create_post_placeholder">Write something to kick things off…</string>
+    <string name="create_post_badge_generations">0/%1$d</string>
+    <string name="create_post_badge_time_limits">%1$ds / %2$ds</string>
+    <string name="badge_seconds">%1$ds</string>
+    <string name="create_post_text_counter">%1$d/%2$d</string>
+    <string name="create_post_dialog_discard_title">Give up?</string>
+    <string name="create_post_dialog_discard_body">Your text will be gone forever. No take-backs!</string>
+
+    <!-- Create Post — Chain Settings Dialog -->
+    <string name="create_post_chain_settings_title">Chain settings</string>
+    <string name="create_post_chain_settings_chain_length">Chain length</string>
+    <string name="create_post_chain_settings_text_response">Describe time</string>
+    <string name="create_post_chain_settings_drawing_response">Draw time</string>
+    <string name="create_post_chain_settings_button_done">Done</string>
+    <string name="create_post_chain_settings_chain_length_subtitle">Select the number of players in the chain</string>
+    <string name="create_post_chain_settings_chain_length_range">%1$d-%2$d players</string>
+    <string name="create_post_chain_settings_chain_length_value">%1$d players</string>
+    <string name="create_post_chain_settings_text_response_subtitle">Select the writing time per turn</string>
+    <string name="create_post_chain_settings_drawing_response_subtitle">Select the drawing time per turn</string>
+
+    <!-- Create Post — Start New Chain Dialog -->
+    <string name="create_post_start_chain_title">Ready to start?</string>
+    <string name="create_post_start_chain_body">You\'re kicking off a chain — others will draw and describe after you!</string>
+    <string name="create_post_start_chain_chain_length">%1$d players</string>
+    <string name="create_post_start_chain_text_time">Describe: %1$ds</string>
+    <string name="create_post_start_chain_draw_time">Draw: %1$ds</string>
+    <string name="create_post_start_chain_settings_note">Settings apply to the entire chain</string>
+    <string name="create_post_start_chain_confirm">Let\'s Go!</string>
+
+    <!-- Post Bottom Sheet -->
+    <string name="post_bottom_sheet_copy_link">Copy Link</string>
+    <string name="post_bottom_sheet_not_interested">Not for me</string>
+    <string name="post_bottom_sheet_report">Report</string>
+
+    <!-- Report Post Bottom Sheet -->
+    <string name="report_post_bottom_sheet_title">Why are you reporting this?</string>
+
+    <!-- Welcome -->
+    <string name="welcome_get_started">Get Started</string>
+    <string name="welcome_sign_in">I have an account</string>
+    <string name="welcome_continue_as_guest">Play as Guest</string>
+    <string name="welcome_terms_prefix">By continuing, you agree to our</string>
+    <string name="welcome_terms">Terms</string>
+    <string name="welcome_terms_and">&amp;</string>
+    <string name="welcome_privacy_policy">Privacy Policy</string>
+
+    <plurals name="draw_dialog_discard_body">
+        <item quantity="one">The post heads back to the queue — no worries, you can give it another shot in %d minute.</item>
+        <item quantity="other">The post heads back to the queue — no worries, you can give it another shot in %d minutes.</item>
+    </plurals>
+
+    <plurals name="describe_drawing_dialog_discard_body">
+        <item quantity="one">The post heads back to the queue — no worries, you can give it another shot in %d minute.</item>
+        <item quantity="other">The post heads back to the queue — no worries, you can give it another shot in %d minutes.</item>
+    </plurals>
+
+    <plurals name="draw_times_up_message">
+        <item quantity="one">Time\'s up! You can give it another shot in %d minute.</item>
+        <item quantity="other">Time\'s up! You can give it another shot in %d minutes.</item>
+    </plurals>
+
+    <plurals name="describe_drawing_times_up_message">
+        <item quantity="one">Time\'s up! You can give it another shot in %d minute.</item>
+        <item quantity="other">Time\'s up! You can give it another shot in %d minutes.</item>
+    </plurals>
+</resources>

@@ -1,0 +1,154 @@
+package com.brokentelephone.game.features.profile
+
+import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.widget.Toast
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.brokentelephone.game.core.R
+import com.brokentelephone.game.core.composable.bottom_sheet.post_bottom_sheet.PostBottomSheet
+import com.brokentelephone.game.core.composable.dialog.ConfirmDialog
+import com.brokentelephone.game.core.composable.dialog.ErrorDialog
+import com.brokentelephone.game.core.model.bottom_shet.PostBottomSheetAction
+import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBarViewModel
+import com.brokentelephone.game.features.bottom_nav_bar.model.BottomNavBarEvent
+import com.brokentelephone.game.features.profile.content.ProfileContent
+import com.brokentelephone.game.features.profile.model.ProfileSideEffect
+import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
+
+/*
+
+    Posts -> navigate to chain history
+    Contributions
+
+ */
+
+@SuppressLint("LocalContextGetResourceValueCall")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProfileScreen(
+    onPostClick: (postId: String, userId: String) -> Unit,
+    onSignInClick: () -> Unit,
+    onGetStartedClick: () -> Unit,
+    onFriendsClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    onEditClick: () -> Unit = {},
+    onSettingsClick: () -> Unit = {},
+    viewModel: ProfileViewModel = koinViewModel(),
+    navBarViewModel: AppNavBottomBarViewModel = koinInject(),
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val listState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        viewModel.onResume()
+    }
+
+    LaunchedEffect(Unit) {
+        navBarViewModel.event.collect { event ->
+            if (event is BottomNavBarEvent.ScrollToTopProfile) {
+                scope.launch { listState.animateScrollToItem(0) }
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.sideEffects.collect { effect ->
+            when (effect) {
+                ProfileSideEffect.ShowReportSuccessToast ->
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.common_toast_report_success),
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                ProfileSideEffect.ShowNotInterestedToast ->
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.common_toast_not_interested),
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                is ProfileSideEffect.ShowCopyLinkSuccessToast -> {
+                    val clipboard =
+                        context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    clipboard.setPrimaryClip(ClipData.newPlainText("post_link", effect.link))
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.common_toast_link_copied),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
+
+    ProfileContent(
+        state = state,
+        onEditClick = onEditClick,
+        onSettingsClick = onSettingsClick,
+        onSignInClick = onSignInClick,
+        onGetStartedClick = onGetStartedClick,
+        onTabSelect = viewModel::onTabSelect,
+        onScrollDirectionChange = navBarViewModel::onScrollDirectionChange,
+        onFriendsClick = onFriendsClick,
+        onPostClick = { postId -> onPostClick(postId, state.user?.id.orEmpty()) },
+        onMoreClick = { postId ->
+            val post = (state.myPosts + state.myContributions).find { it.id == postId }
+                ?: return@ProfileContent
+            viewModel.onMoreClick(post)
+        },
+        modifier = modifier,
+        onRefresh = viewModel::onRefresh,
+        listState = listState,
+    )
+
+    if (state.isPostBottomSheetVisible) {
+        PostBottomSheet(
+            onDismissRequest = viewModel::onPostBottomSheetDismiss,
+            actions = listOf(PostBottomSheetAction.COPY_LINK, PostBottomSheetAction.DELETE),
+            onActionClick = { action ->
+                when (action) {
+                    PostBottomSheetAction.COPY_LINK -> viewModel.onCopyLinkClick()
+                    PostBottomSheetAction.DELETE -> viewModel.onDeleteClick()
+                    else -> return@PostBottomSheet
+                }
+            },
+        )
+    }
+
+    if (state.isDeleteDialogVisible) {
+        ConfirmDialog(
+            title = stringResource(R.string.common_dialog_delete_post_title),
+            body = stringResource(R.string.common_dialog_delete_post_body),
+            cancelText = stringResource(R.string.common_cancel),
+            confirmText = stringResource(R.string.common_delete),
+            onDismiss = viewModel::onDeleteDialogDismiss,
+            onConfirm = viewModel::onDeleteConfirm,
+            isLoading = state.isDeleteLoading,
+        )
+    }
+
+    state.globalError?.let { message ->
+        ErrorDialog(
+            body = message,
+            onOkClick = viewModel::onGlobalErrorDismissed,
+        )
+    }
+}
