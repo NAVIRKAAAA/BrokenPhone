@@ -269,6 +269,8 @@ fun BrokenTelephoneTheme(
             profileTabRowBg = surfaceContainerHighestDark,
             newsBannerContainer = newsBannerContainerDark,
             onNewsBannerContainer = onNewsBannerContainerDark,
+            successBannerContainer = successBannerContainerDark,
+            onSuccessBannerContainer = onSuccessBannerContainerDark,
         )
     } else {
         AppColors(
@@ -280,6 +282,8 @@ fun BrokenTelephoneTheme(
             profileTabRowBg = Color(0xFFF2F2F2),
             newsBannerContainer = newsBannerContainerLight,
             onNewsBannerContainer = onNewsBannerContainerLight,
+            successBannerContainer = successBannerContainerLight,
+            onSuccessBannerContainer = onSuccessBannerContainerLight,
         )
     }
 

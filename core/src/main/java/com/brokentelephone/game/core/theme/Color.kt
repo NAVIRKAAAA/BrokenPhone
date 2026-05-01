@@ -9,6 +9,11 @@ val onNewsBannerContainerLight = Color(0xFF283593)
 val newsBannerContainerDark = Color(0xFF1A237E)
 val onNewsBannerContainerDark = Color(0xFF9FA8DA)
 
+val successBannerContainerLight = Color(0xFFDCFCE7)
+val onSuccessBannerContainerLight = Color(0xFF166534)
+val successBannerContainerDark = Color(0xFF14532D)
+val onSuccessBannerContainerDark = Color(0xFF86EFAC)
+
 val badgeCompleteLight = Color(0xFF22C55E)
 val badgeCompleteDark = Color(0xFF4ADE80)
 

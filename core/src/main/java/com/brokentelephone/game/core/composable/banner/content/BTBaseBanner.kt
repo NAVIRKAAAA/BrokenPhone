@@ -1,4 +1,4 @@
-package com.brokentelephone.game.core.composable.banner
+package com.brokentelephone.game.core.composable.banner.content
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

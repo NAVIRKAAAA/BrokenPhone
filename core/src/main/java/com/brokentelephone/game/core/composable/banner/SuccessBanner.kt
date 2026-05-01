@@ -35,14 +35,13 @@ import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 
 @Composable
-fun NewsBanner(
+fun SuccessBanner(
     visible: Boolean,
     title: String,
-    body: String,
+    body: String?,
     remainingSeconds: Int,
     totalSeconds: Int,
     onDismiss: () -> Unit,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     AnimatedVisibility(
@@ -54,12 +53,12 @@ fun NewsBanner(
         BTBaseBanner(
             visible = visible,
             isLoading = false,
-            onContinueClick = onClick,
+            onContinueClick = onDismiss,
             onDismiss = onDismiss,
-            backgroundColor = MaterialTheme.appColors.newsBannerContainer,
-            shadowColor = MaterialTheme.appColors.newsBannerContainer.copy(alpha = 0.4f),
+            backgroundColor = MaterialTheme.appColors.successBannerContainer,
+            shadowColor = MaterialTheme.appColors.successBannerContainer.copy(alpha = 0.4f),
         ) {
-            val contentColor = MaterialTheme.appColors.onNewsBannerContainer
+            val contentColor = MaterialTheme.appColors.onSuccessBannerContainer
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
@@ -67,10 +66,10 @@ fun NewsBanner(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .background(contentColor.copy(alpha = 0.1f)),
+                        .background(contentColor.copy(alpha = 0.12f)),
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_megaphone),
+                        painter = painterResource(R.drawable.ic_check),
                         contentDescription = null,
                         tint = contentColor,
                         modifier = Modifier.size(20.dp),
@@ -89,25 +88,18 @@ fun NewsBanner(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
-                    Text(
-                        text = body,
-                        fontFamily = FontFamily(Font(R.font.nunito_semi_bold)),
-                        fontSize = 12.sp,
-                        lineHeight = 16.sp,
-                        color = contentColor.copy(alpha = 0.6f),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
+                    if (body != null) {
+                        Text(
+                            text = body,
+                            fontFamily = FontFamily(Font(R.font.nunito_semi_bold)),
+                            fontSize = 12.sp,
+                            lineHeight = 16.sp,
+                            color = contentColor.copy(alpha = 0.6f),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
                 }
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Icon(
-                    painter = painterResource(R.drawable.ic_arrow_right),
-                    contentDescription = null,
-                    tint = contentColor.copy(alpha = 0.6f),
-                    modifier = Modifier.size(24.dp),
-                )
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -123,17 +115,16 @@ fun NewsBanner(
 
 @Preview(showBackground = true)
 @Composable
-private fun NewsBannerPreview() {
+private fun SuccessBannerPreview() {
     BrokenTelephoneTheme(darkTheme = false) {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
-            NewsBanner(
+            SuccessBanner(
                 visible = true,
-                title = "New update available",
-                body = "Check out the latest features we added to the app this week!",
-                remainingSeconds = 6,
+                title = "Drawing submitted!",
+                body = "Waiting for the next player",
+                remainingSeconds = 7,
                 totalSeconds = 10,
                 onDismiss = {},
-                onClick = {},
             )
         }
     }
@@ -141,17 +132,33 @@ private fun NewsBannerPreview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun NewsBannerDarkPreview() {
+private fun SuccessBannerDarkPreview() {
     BrokenTelephoneTheme(darkTheme = true) {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
-            NewsBanner(
+            SuccessBanner(
                 visible = true,
-                title = "New update available",
-                body = "Check out the latest features we added to the app this week!",
-                remainingSeconds = 6,
+                title = "Drawing submitted!",
+                body = "Waiting for the next player",
+                remainingSeconds = 7,
                 totalSeconds = 10,
                 onDismiss = {},
-                onClick = {},
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SuccessBannerNoBodyPreview() {
+    BrokenTelephoneTheme(darkTheme = false) {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            SuccessBanner(
+                visible = true,
+                title = "Friend request accepted!",
+                body = null,
+                remainingSeconds = 4,
+                totalSeconds = 10,
+                onDismiss = {},
             )
         }
     }
