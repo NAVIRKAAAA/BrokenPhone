@@ -46,11 +46,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -67,9 +69,6 @@ class UserSessionImpl(
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.Loading)
     override val authState: Flow<AuthState> = _authState.asStateFlow()
-
-    private val _user = MutableStateFlow<User?>(null)
-    override val user: Flow<User?> = _user.asStateFlow()
 
     private var realtimeChannel: RealtimeChannel? = null
     private var realtimeCollectJob: kotlinx.coroutines.Job? = null
@@ -98,9 +97,6 @@ class UserSessionImpl(
                     val currentUserId =
                         supabase.auth.currentUserOrNull() ?: run {
                             _authState.value = AuthState.NotAuth
-
-                            _user.update { null }
-
                             return@collect
                         }
 
@@ -113,7 +109,6 @@ class UserSessionImpl(
     private suspend fun observeSupabaseUser(userInfo: UserInfo) {
         Log.d("LOG_TAG", "observeSupabaseUser(): $userInfo")
 
-        _user.update { userInfo.toUser() }
         _authState.update { AuthState.PreAuth(userInfo.id) }
 
         realtimeCollectJob?.cancel()
@@ -150,10 +145,8 @@ class UserSessionImpl(
                     isEmailVerified = userInfo.emailConfirmedAt != null
                 )
                 _authState.value = AuthState.Auth(updatedUser)
-                _user.update { updatedUser }
             } catch (_: Exception) {
                 _authState.value = AuthState.NotAuth
-                _user.update { null }
             }
 
             updateFlow.collect { change ->
@@ -165,7 +158,6 @@ class UserSessionImpl(
                         isEmailVerified = userInfo.emailConfirmedAt != null
                     )
                     _authState.value = AuthState.Auth(updatedNewUser)
-                    _user.update { updatedNewUser }
                 } catch (e: Exception) {
                     Log.d("LOG_TAG", "updateFlow.collect { change -> $e")
                 }
@@ -173,6 +165,12 @@ class UserSessionImpl(
         }
 
         channel.subscribe()
+    }
+
+    override fun getUser(): Flow<User?> {
+        return _authState
+            .filter { it is AuthState.Auth || it is AuthState.NotAuth }
+            .map { it.getUserOrNull() }
     }
 
     override suspend fun getUserId(): String? {
@@ -462,7 +460,6 @@ class UserSessionImpl(
         realtimeChannel = null
         supabase.auth.signOut()
         _authState.value = AuthState.NotAuth
-        _user.update { null }
     }
 
     override suspend fun deleteAccount() = Unit

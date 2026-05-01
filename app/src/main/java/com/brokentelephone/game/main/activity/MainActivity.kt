@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         val isNotificationGranted = this.isNotificationsGranted()
-
+        Log.d("LOG_TAG", "isNotificationGranted(): $isNotificationGranted")
         mainViewModel.onResume(isNotificationGranted)
     }
 

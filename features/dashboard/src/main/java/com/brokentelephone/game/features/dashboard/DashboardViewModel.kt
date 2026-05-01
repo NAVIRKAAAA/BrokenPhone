@@ -56,7 +56,7 @@ class DashboardViewModel(
     val sideEffects = _sideEffects.receiveAsFlow()
 
     init {
-        getCurrentUserUseCase()
+        getCurrentUserUseCase.execute()
             .onEach { user -> _state.update { it.copy(user = user?.toUi()) } }
             .launchIn(viewModelScope)
 

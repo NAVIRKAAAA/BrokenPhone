@@ -13,7 +13,7 @@ class GetUnreadNotificationsCountUseCase(
 ) {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun execute(): Flow<Int> {
-        return userSession.user
+        return userSession.getUser()
             .flatMapLatest { user ->
                 if (user == null) flowOf(0)
                 else repository.getUnreadNotificationsCount(user.id, user.readNotificationIds)

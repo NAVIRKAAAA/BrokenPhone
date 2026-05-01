@@ -37,7 +37,7 @@ class CreatePostViewModel(
     val sideEffect = _sideEffect.receiveAsFlow()
 
     init {
-        getCurrentUserUseCase()
+        getCurrentUserUseCase.execute()
             .onEach { user -> _state.update { it.copy(user = user?.toUi()) } }
             .launchIn(viewModelScope)
     }

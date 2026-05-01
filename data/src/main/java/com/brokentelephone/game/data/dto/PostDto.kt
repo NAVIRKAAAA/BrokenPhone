@@ -9,6 +9,7 @@ data class PostAuthorDto(
     @SerialName("avatar_url") val avatarUrl: String? = null,
 )
 
+// TODO: Remove: authorName, avatarUrl
 @Serializable
 data class PostDto(
     @SerialName("id") val id: String,

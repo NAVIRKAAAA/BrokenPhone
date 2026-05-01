@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 class GetCurrentUserUseCase(
     private val userSession: UserSession,
 ) {
-    operator fun invoke(): Flow<User?> {
-        return userSession.user
+    fun execute(): Flow<User?> {
+        return userSession.getUser()
     }
 }

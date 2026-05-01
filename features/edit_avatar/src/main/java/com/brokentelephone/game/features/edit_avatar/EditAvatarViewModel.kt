@@ -32,7 +32,7 @@ class EditAvatarViewModel(
 
     init {
         viewModelScope.launch {
-            getCurrentUserUseCase.invoke().collect { user ->
+            getCurrentUserUseCase.execute().collect { user ->
                 val avatarUi = Avatars.all.find { it.url == user?.avatarUrl }
                 _state.update { it.copy(avatarUi = avatarUi) }
             }

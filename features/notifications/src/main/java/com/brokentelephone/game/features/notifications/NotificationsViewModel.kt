@@ -38,7 +38,7 @@ class NotificationsViewModel(
     private var lastLoadedAt: Long = 0L
 
     init {
-        getCurrentUserUseCase()
+        getCurrentUserUseCase.execute()
             .onEach { user -> _state.update { it.copy(user = user?.toUi()) } }
             .launchIn(viewModelScope)
     }

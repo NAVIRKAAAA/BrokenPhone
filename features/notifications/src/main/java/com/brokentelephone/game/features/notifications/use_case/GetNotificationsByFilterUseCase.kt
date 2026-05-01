@@ -26,7 +26,7 @@ class GetNotificationsByFilterUseCase(
 
                     val notifications = repository.getNotifications(userId)
                     val readNotificationIds =
-                        userSession.user.firstOrNull()?.readNotificationIds ?: emptyList()
+                        userSession.getUser().firstOrNull()?.readNotificationIds ?: emptyList()
 
                     notifications.filterNot { notification ->
                         readNotificationIds.contains(notification.id)

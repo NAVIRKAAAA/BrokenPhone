@@ -51,7 +51,7 @@ class ProfileViewModel(
 
     init {
         Log.d("LOG_TAG", "ProfileViewModel Init")
-        getCurrentUserUseCase()
+        getCurrentUserUseCase.execute()
             .onEach { user -> _state.update { it.copy(user = user?.toUi()) } }
             .launchIn(viewModelScope)
     }

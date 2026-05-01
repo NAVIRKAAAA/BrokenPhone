@@ -38,7 +38,7 @@ class EditEmailViewModel(
 
     init {
         viewModelScope.launch {
-            val user = getCurrentUserUseCase().first() ?: return@launch
+            val user = getCurrentUserUseCase.execute().first() ?: return@launch
             _state.update {
                 it.copy(
                     email = TextFieldValue(user.email, TextRange(user.email.length)),

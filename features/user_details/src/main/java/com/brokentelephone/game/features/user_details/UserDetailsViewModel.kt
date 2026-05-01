@@ -73,7 +73,7 @@ class UserDetailsViewModel(
     private var lastLoadedAt: Long = 0L
 
     init {
-        getCurrentUserUseCase()
+        getCurrentUserUseCase.execute()
             .onEach { user -> _state.update { it.copy(currentUser = user?.toUi()) } }
             .launchIn(viewModelScope)
     }

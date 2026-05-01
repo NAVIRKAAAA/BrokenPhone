@@ -19,7 +19,7 @@ class EditProfileViewModel(
 
     init {
         viewModelScope.launch {
-            getCurrentUserUseCase().collect { user ->
+            getCurrentUserUseCase.execute().collect { user ->
                 _state.update { it.copy(user = user?.toUi()) }
             }
         }

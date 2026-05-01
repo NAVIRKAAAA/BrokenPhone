@@ -6,19 +6,16 @@ import com.brokentelephone.game.domain.model.permissions.UserPermissions
 import com.brokentelephone.game.domain.user.UserSession
 import com.brokentelephone.game.essentials.exceptions.auth.UnauthorizedException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 
 class UpdateUserPermissionsUseCase(
     private val userSession: UserSession,
     private val handler: ApiHandler,
 ) {
 
-    // TODO: Need review
-
     suspend fun execute(permissions: UserPermissions): AppResult<Unit> {
         return handler.handle(Dispatchers.IO) {
-            // TODO: wait user id
-            val user = userSession.user.first() ?: throw UnauthorizedException()
+            val user = userSession.getUser().firstOrNull() ?: throw UnauthorizedException()
             val current = user.permissions
             if (current == permissions) return@handle
             userSession.updatePermissions(permissions)

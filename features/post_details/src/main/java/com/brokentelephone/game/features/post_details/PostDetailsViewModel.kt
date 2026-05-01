@@ -64,7 +64,7 @@ class PostDetailsViewModel(
     val sideEffects = _sideEffects.receiveAsFlow()
 
     init {
-        getCurrentUserUseCase()
+        getCurrentUserUseCase.execute()
             .onEach { user ->
                 _state.update { it.copy(userUi = user?.toUi()) }
                 val sessionId = user?.sessionId

@@ -6,8 +6,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserSession {
     val authState: Flow<AuthState>
-    val user: Flow<User?>
 
+    fun getUser(): Flow<User?>
     suspend fun getUserId(): String?
     suspend fun initialize()
     suspend fun reloadUser()

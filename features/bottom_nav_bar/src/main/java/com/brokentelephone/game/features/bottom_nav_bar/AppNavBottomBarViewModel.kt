@@ -30,7 +30,7 @@ class AppNavBottomBarViewModel(
     val event = _event.asSharedFlow()
 
     init {
-        getCurrentUserUseCase()
+        getCurrentUserUseCase.execute()
             .onEach { user -> _state.update { it.copy(userAvatarUrl = user?.avatarUrl) } }
             .launchIn(viewModelScope)
     }

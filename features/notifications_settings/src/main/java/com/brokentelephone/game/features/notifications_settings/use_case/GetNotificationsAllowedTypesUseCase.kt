@@ -9,7 +9,7 @@ class GetNotificationsAllowedTypesUseCase(
     private val userSession: UserSession,
 ) {
     fun execute(): Flow<List<NotificationType>> {
-        return userSession.user.map { user ->
+        return userSession.getUser().map { user ->
             user?.notifications ?: NotificationType.entries
         }
     }

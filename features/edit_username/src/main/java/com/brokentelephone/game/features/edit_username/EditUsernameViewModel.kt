@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
-import com.brokentelephone.game.domain.user.UserSession
+import com.brokentelephone.game.domain.use_case.GetCurrentUserUseCase
 import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMapper
 import com.brokentelephone.game.features.edit_username.model.EditUsernameEvent
 import com.brokentelephone.game.features.edit_username.model.EditUsernameState
@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 
 class EditUsernameViewModel(
     private val updateUsernameUseCase: UpdateUsernameUseCase,
-    private val userSession: UserSession,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val exceptionToMessageMapper: ExceptionToMessageMapper,
 ) : ViewModel() {
 
@@ -31,7 +31,7 @@ class EditUsernameViewModel(
 
     init {
         viewModelScope.launch {
-            val user = userSession.user.firstOrNull() ?: return@launch
+            val user = getCurrentUserUseCase.execute().firstOrNull() ?: return@launch
             _state.update { it.copy(username = user.username, initialUsername = user.username) }
         }
     }

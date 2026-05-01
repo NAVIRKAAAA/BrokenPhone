@@ -74,7 +74,7 @@ class SettingsViewModel(
     }
 
     private fun observeCurrentUser() {
-        getCurrentUserUseCase()
+        getCurrentUserUseCase.execute()
             .onEach { user ->
                 _state.update { it.copy(user = user?.toUi()) }
                 val sessionId = user?.sessionId
