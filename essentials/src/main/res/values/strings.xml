@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Auth errors -->
+    <string name="error_auth_email_already_in_use">An account with this email already exists.</string>
+    <string name="error_auth_invalid_email">Please enter a valid email address.</string>
+    <string name="error_auth_weak_password">Password must be at least 8 characters long.</string>
+    <string name="error_auth_passwords_do_not_match">Passwords don\'t match. Please try again.</string>
+    <string name="error_auth_network">No internet connection. Check your network and try again.</string>
+    <string name="error_auth_too_many_requests">Too many attempts. Please wait a moment and try again.</string>
+    <string name="error_auth_invalid_credentials">Incorrect email or password.</string>
+    <string name="error_auth_unknown">Something went wrong. Please try again.</string>
+    <string name="error_cancelled">Request timed out. Please try again.</string>
+    <string name="error_google_sign_in_cancelled">Google sign-in was cancelled.</string>
+    <string name="error_session_data">Couldn\'t load your account data. Please check your connection and try again.</string>
+    <string name="error_unauthorized">You need to be signed in to perform this action.</string>
+    <string name="error_image_upload">Failed to upload image. Please try again.</string>
+    <string name="error_post_not_found">Couldn\'t load the post. It may have been deleted or you might have a poor internet connection.</string>
+    <string name="error_notification_not_found">Couldn\'t find the notification. It may have been deleted.</string>
+    <string name="error_user_not_found">This user no longer exists. They may have deleted their account.</string>
+    <string name="error_friend_request_not_found">Friend request not found. It may have already been cancelled or accepted.</string>
+    <string name="error_already_reported_post">You\'ve already reported this post.</string>
+    <string name="error_already_reported_user">You\'ve already reported this user.</string>
+    <string name="error_post_in_progress">This post is currently being worked on and can\'t be deleted right now.</string>
+    <string name="error_cannot_delete_post">You can\'t delete this post because others have already built on it.</string>
+    <string name="error_post_unavailable_to_join">Someone else just started working on this post. Check back in a bit — it\'ll be available again soon.</string>
+    <string name="error_session_not_found">You don\'t have an active session for this post. Try starting over.</string>
+    <string name="error_session_expired">Time\'s up! Your session expired before you could submit.</string>
+    <string name="error_session_validation">Something went wrong — this session doesn\'t match your request.</string>
+    <string name="error_session_cooldown">You recently left this post. Try again in a few minutes.</string>
+    <string name="error_session_already_active">You already have an active session. To continue or cancel it, go to Profile → Settings → Game Session.</string>
+    <string name="error_recent_login_required">For security reasons, please sign out and sign back in before changing your email.</string>
+    <string name="error_invalid_action_code">The link has expired or has already been used. Please request a new one.</string>
+    <string name="error_invalid_otp">The code is invalid or has expired. Please request a new one.</string>
+    <string name="error_same_password">New password must be different from your current password.</string>
+
+    <!-- Firestore errors -->
+    <string name="error_firestore_cancelled">The request was cancelled. Try again.</string>
+    <string name="error_firestore_invalid_argument">Something got scrambled before it was sent. Check your input and try again.</string>
+    <string name="error_firestore_deadline_exceeded">The server took too long to respond. Check your connection and try again.</string>
+    <string name="error_firestore_not_found">Couldn\'t find what you were looking for. It may have been deleted.</string>
+    <string name="error_firestore_already_exists">This already exists. No need to do it twice.</string>
+    <string name="error_firestore_permission_denied">You don\'t have permission to do that.</string>
+    <string name="error_firestore_resource_exhausted">Our servers are a bit overwhelmed right now. Wait a moment and try again.</string>
+    <string name="error_firestore_failed_precondition">Something isn\'t quite right on our end. Try again later.</string>
+    <string name="error_firestore_aborted">The request was interrupted. Try again.</string>
+    <string name="error_firestore_unauthenticated">You need to be signed in to do that.</string>
+    <string name="error_firestore_unavailable">Couldn\'t reach our servers. Check your internet connection and try again.</string>
+    <string name="error_firestore_internal">Something went wrong on our end. We\'re on it — try again later.</string>
+</resources>

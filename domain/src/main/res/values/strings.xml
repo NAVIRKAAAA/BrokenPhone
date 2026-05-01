@@ -1,0 +1,46 @@
+<resources>
+    <!-- Language -->
+    <string name="language_english">English</string>
+    <string name="language_ukrainian">Українська</string>
+
+    <!-- Theme -->
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+
+    <!-- Notifications -->
+    <string name="notifications_type_news">News</string>
+    <string name="notifications_type_chain">Chain</string>
+    <string name="notifications_type_friends">Friends</string>
+    <string name="notification_filter_all">All</string>
+    <string name="notification_filter_unread">Unread</string>
+    <string name="notification_filter_news">News</string>
+    <string name="notification_filter_friends">Friends</string>
+    <string name="notification_filter_chain">Chain</string>
+    <string name="notifications_empty_title_all">No notifications yet</string>
+    <string name="notifications_empty_body_all">You\'ll see activity here when something happens</string>
+    <string name="notifications_empty_title_unread">All caught up</string>
+    <string name="notifications_empty_body_unread">No unread notifications at the moment</string>
+    <string name="notifications_empty_title_news">No news yet</string>
+    <string name="notifications_empty_body_news">News and announcements will appear here</string>
+    <string name="notifications_empty_title_friends">No friend activity</string>
+    <string name="notifications_empty_body_friends">Friend requests and updates will appear here</string>
+    <string name="notifications_empty_title_chain">No chain notifications</string>
+    <string name="notifications_empty_body_chain">You\'ll be notified when a chain you\'re part of has updates</string>
+
+    <!-- Dashboard Sort -->
+    <string name="dashboard_sort_latest">Latest</string>
+    <string name="dashboard_sort_almost_done">Almost Done</string>
+    <string name="dashboard_sort_longest_chain">Longest Chain</string>
+
+    <!-- Auth Provider -->
+    <string name="account_settings_provider_email">Email</string>
+    <string name="account_settings_provider_google">Google</string>
+    <string name="account_settings_provider_guest">Guest</string>
+
+    <!-- Report Post Type -->
+    <string name="report_post_bottom_sheet_spam">Spam</string>
+    <string name="report_post_bottom_sheet_offensive_content">Offensive content</string>
+    <string name="report_post_bottom_sheet_other">Other</string>
+
+</resources>

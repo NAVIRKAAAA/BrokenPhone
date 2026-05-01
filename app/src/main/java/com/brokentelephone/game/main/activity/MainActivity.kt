@@ -1,0 +1,159 @@
+package com.brokentelephone.game.main.activity
+
+import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.rememberNavController
+import com.brokentelephone.game.core.composable.dialog.LoadingDialog
+import com.brokentelephone.game.core.ext.context.isNotificationsGranted
+import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
+import com.brokentelephone.game.core.theme.LocalAppLanguage
+import com.brokentelephone.game.domain.model.settings.AppTheme
+import com.brokentelephone.game.domain.model.settings.Language
+import com.brokentelephone.game.features.bottom_nav_bar.AppNavBottomBar
+import com.brokentelephone.game.features.welcome_api.WelcomeRoute
+import com.brokentelephone.game.navigation.nav_graph.AppNavGraph
+import kotlinx.coroutines.delay
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
+class MainActivity : AppCompatActivity() {
+
+    private val mainViewModel: MainViewModel by viewModel()
+
+    override fun onResume() {
+        super.onResume()
+
+        val isNotificationGranted = this.isNotificationsGranted()
+
+        mainViewModel.onResume(isNotificationGranted)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        val splashscreen = installSplashScreen()
+        super.onCreate(savedInstanceState)
+
+        splashscreen.setKeepOnScreenCondition { !mainViewModel.state.value.isReady }
+
+        enableEdgeToEdge()
+
+        intent.data?.let { mainViewModel.handleNewIntent(it) }
+
+        intent.extras?.getString("notificationId")?.let {
+            mainViewModel.handleFcmTap(it)
+            intent.removeExtra("notificationId")
+        }
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        setContent {
+            val state by mainViewModel.state.collectAsStateWithLifecycle()
+            val navController = rememberNavController()
+
+            HandleMainSideEffects(
+                sideEffects = mainViewModel.sideEffects,
+                navController = navController,
+            )
+
+            // TODO: Remove?
+            val isDarkTheme = when (state.theme) {
+                AppTheme.DARK -> true
+                AppTheme.LIGHT -> false
+                AppTheme.SYSTEM -> isSystemInDarkTheme()
+            }
+
+            LaunchedEffect(isDarkTheme) {
+                val controller = WindowCompat.getInsetsController(window, window.decorView)
+                controller.isAppearanceLightStatusBars = !isDarkTheme
+                controller.isAppearanceLightNavigationBars = false
+            }
+
+            CompositionLocalProvider(
+                LocalAppLanguage provides Language.ENGLISH
+            ) {
+                BrokenTelephoneTheme(darkTheme = isDarkTheme) {
+
+                    state.startDestination?.let { startDestination ->
+                        LaunchedEffect(state.pendingRoutes) {
+                            Log.d("LOG_TAG", "state.startDestination: $startDestination")
+
+                            if (state.pendingRoutes.isNotEmpty()) {
+                                state.pendingRoutes.forEachIndexed { index, route ->
+                                    if (index == 0) {
+                                        navController.navigate(route) {
+                                            popUpTo<WelcomeRoute> { inclusive = true }
+                                        }
+                                    } else {
+                                        navController.navigate(route)
+                                    }
+                                }
+                                delay(350)
+                                mainViewModel.onPendingRoutesConsumed()
+                            }
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(MaterialTheme.colorScheme.background)
+                        ) {
+                            AppNavGraph(
+                                startDestination = startDestination,
+                                navController = navController,
+                            )
+
+                            AppNavBottomBar(
+                                navController = navController,
+                                modifier = Modifier
+                                    .align(Alignment.BottomCenter)
+                                    .navigationBarsPadding()
+                                    .padding(bottom = 8.dp)
+                                    .fillMaxWidth(0.85f)
+                            )
+
+                            BannerHost(
+                                currentBanner = state.currentBanner,
+                                isLoading = state.isBannerLoading,
+                                onContinueClick = mainViewModel::onBannerContinueClick,
+                                onDismiss = mainViewModel::onBannerDismissed,
+                                modifier = Modifier.align(Alignment.TopCenter),
+                            )
+                        }
+                    }
+
+                    if (state.isLoading) {
+                        LoadingDialog()
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        intent.data?.let { mainViewModel.handleNewIntent(it) }
+        intent.extras?.getString("notificationId")?.let {
+            mainViewModel.handleFcmTapWhileRunning(it)
+            intent.removeExtra("notificationId")
+        }
+    }
+}

@@ -1,0 +1,94 @@
+package com.brokentelephone.game.features.notifications_settings
+
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.brokentelephone.game.core.R
+import com.brokentelephone.game.core.composable.dialog.ConfirmDialog
+import com.brokentelephone.game.core.ext.context.findActivity
+import com.brokentelephone.game.core.ext.context.isNotificationsGranted
+import com.brokentelephone.game.core.ext.context.openNotificationSettings
+import com.brokentelephone.game.features.notifications_settings.content.NotificationSettingsContent
+import com.brokentelephone.game.features.notifications_settings.model.NotificationSettingsSideEffect
+import org.koin.compose.viewmodel.koinViewModel
+
+@Composable
+fun NotificationSettingsScreen(
+    onBackClick: () -> Unit = {},
+    modifier: Modifier = Modifier,
+    viewModel: NotificationSettingsViewModel = koinViewModel(),
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        viewModel.checkPermission(isGranted)
+    }
+
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        viewModel.checkPermission(context.isNotificationsGranted())
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.sideEffects.collect { effect ->
+            when (effect) {
+                NotificationSettingsSideEffect.RequestPermission -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    } else {
+                        context.openNotificationSettings()
+                    }
+                }
+                NotificationSettingsSideEffect.OpenNotificationSettings -> {
+                    context.openNotificationSettings()
+                }
+            }
+        }
+    }
+
+    NotificationSettingsContent(
+        state = state,
+        onBackClick = onBackClick,
+        onNotificationPermissionClick = {
+            val isGranted = context.isNotificationsGranted()
+            val shouldShowRationale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                context.findActivity()?.let {
+                    ActivityCompat.shouldShowRequestPermissionRationale(
+                        it,
+                        Manifest.permission.POST_NOTIFICATIONS
+                    )
+                } == true
+            } else false
+            viewModel.onNotificationPermissionClick(isGranted, shouldShowRationale)
+        },
+        onAllNotificationsToggle = viewModel::onAllNotificationsToggle,
+        onNotificationToggle = viewModel::onNotificationToggle,
+        modifier = modifier,
+    )
+
+    if (state.showRationaleDialog) {
+        ConfirmDialog(
+            title = stringResource(R.string.notifications_dialog_rationale_title),
+            body = stringResource(R.string.notifications_dialog_rationale_body),
+            cancelText = stringResource(R.string.common_cancel),
+            confirmText = stringResource(R.string.notifications_dialog_rationale_confirm),
+            onDismiss = viewModel::onRationaleDismiss,
+            onConfirm = viewModel::onRationaleConfirm,
+            confirmButtonColor = MaterialTheme.colorScheme.primary,
+        )
+    }
+}

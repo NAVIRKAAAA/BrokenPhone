@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="forgot_password_title">Forgot Password</string>
+    <string name="forgot_password_subtitle">We\'ll send a reset link to this email</string>
+    <string name="forgot_password_email">Email</string>
+    <string name="forgot_password_send_button">Send Reset Link</string>
+    <string name="forgot_password_remember_password">Remember your password?</string>
+    <string name="forgot_password_sign_in_link">Sign In</string>
+    <string name="forgot_password_reset_sent_title">Link Sent!</string>
+    <string name="forgot_password_reset_sent_body">Check your inbox and follow the link to reset your password — you\'ll be taken back to the app automatically to set a new one</string>
+    <string name="forgot_password_reset_sent_got_it">Got it!</string>
+
+</resources>

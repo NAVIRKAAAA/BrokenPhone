@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="edit_email_title">Edit Email</string>
+    <string name="edit_email_button_save">Save</string>
+    <string name="edit_email_label">Email</string>
+    <string name="edit_email_hint">Enter your new email address</string>
+    <string name="edit_email_confirm_title">Confirm email change</string>
+    <string name="edit_email_confirm_body">A confirmation link will be sent to your new email address.\n\nOnce you tap the link, your email will be updated automatically and you\'ll be redirected back to the app.</string>
+    <string name="edit_email_confirm_cancel">Cancel</string>
+    <string name="edit_email_confirm_ok">Send</string>
+</resources>
