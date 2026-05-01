@@ -32,7 +32,7 @@ export const sendNewsNotification = onRequest(
 
     const {data: users, error: usersError} = await supabase
       .from("users")
-      .select("id, fcm_token")
+      .select("id, fcm_token, permissions")
       .not("fcm_token", "is", null)
       .contains("notifications", ["NEWS"]);
 
@@ -46,10 +46,13 @@ export const sendNewsNotification = onRequest(
       return;
     }
 
-    const tokens = users.map((u) => u.fcm_token as string);
+    const pushUsers = users.filter(
+      (u) => u.permissions?.isNotificationsGranted === true
+    );
     const receiverIds = users.map((u) => u.id as string);
     const notificationId = crypto.randomUUID();
 
+    const tokens = pushUsers.map((u) => u.fcm_token as string);
     for (let i = 0; i < tokens.length; i += FCM_BATCH_SIZE) {
       await getMessaging().sendEachForMulticast({
         tokens: tokens.slice(i, i + FCM_BATCH_SIZE),
@@ -72,6 +75,6 @@ export const sendNewsNotification = onRequest(
       return;
     }
 
-    res.json({sent: tokens.length});
+    res.json({sent: tokens.length, total: receiverIds.length});
   }
 );
