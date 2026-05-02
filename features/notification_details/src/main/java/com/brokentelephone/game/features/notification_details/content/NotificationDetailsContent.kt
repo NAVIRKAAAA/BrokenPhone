@@ -27,7 +27,6 @@ import com.brokentelephone.game.features.notification_details.model.Notification
 fun NotificationDetailsContent(
     state: NotificationDetailsState,
     onBackClick: () -> Unit,
-    onMoreClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val notification = state.notificationUi
@@ -41,7 +40,6 @@ fun NotificationDetailsContent(
         NotificationDetailsTopBar(
             title = notification?.title,
             onBackClick = onBackClick,
-            onMoreClick = onMoreClick,
         )
 
         ShimmerContent(
@@ -94,7 +92,6 @@ private fun NotificationDetailsContentPreview() {
 //                    body = "We just released a bunch of cool updates — new brush types, improved chain sharing, and a redesigned profile page. Make sure to update the app to get access to all the new features. We've also fixed a number of bugs reported by the community. Thank you for your feedback and support!",
 //                ),
             ),
-            onMoreClick = {},
             onBackClick = {},
         )
     }

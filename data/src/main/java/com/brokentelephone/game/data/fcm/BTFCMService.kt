@@ -25,6 +25,7 @@ class BTFCMService : FirebaseMessagingService() {
         }
     }
 
+    // TODO: Migration to Realtime on /notifications table
     override fun onMessageReceived(message: RemoteMessage) {
         val data = message.data
         Log.d("LOG_TAG", "onMessageReceived() $data")

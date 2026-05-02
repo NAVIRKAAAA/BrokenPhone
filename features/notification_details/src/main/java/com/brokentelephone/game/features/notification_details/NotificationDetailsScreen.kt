@@ -30,7 +30,6 @@ fun NotificationDetailsScreen(
     NotificationDetailsContent(
         state = state,
         onBackClick = onBackClick,
-        onMoreClick = {},
         modifier = modifier,
     )
 }

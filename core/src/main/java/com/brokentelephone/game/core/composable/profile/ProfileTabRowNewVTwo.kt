@@ -70,11 +70,11 @@ fun ProfileTabRowNewVTwo(
 
     val indicatorOffset = with(density) { indicatorAnim.value.toDp() }
 
-    val shape = RoundedCornerShape(12.dp)
-
+    val outerShape = RoundedCornerShape(12.dp)
+    val innerShape = RoundedCornerShape(8.dp)
     Box(
         modifier = modifier
-            .clip(shape)
+            .clip(outerShape)
             .background(MaterialTheme.appColors.profileTabRowBg)
             .padding(4.dp)
             .height(IntrinsicSize.Min)
@@ -85,7 +85,7 @@ fun ProfileTabRowNewVTwo(
                 .offset(x = indicatorOffset)
                 .width(pillWidth)
                 .fillMaxHeight()
-                .clip(shape)
+                .clip(innerShape)
                 .background(MaterialTheme.colorScheme.background),
         )
 
@@ -97,7 +97,6 @@ fun ProfileTabRowNewVTwo(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight()
-                        .clip(shape)
                         .clickable(
                             indication = null,
                             interactionSource = remember { MutableInteractionSource() },

@@ -253,8 +253,12 @@ class DrawViewModel(
                 isAntiAlias = true
             }
 
-            val path = android.graphics.Path()
-            if (pathData.path.isNotEmpty()) {
+            if (pathData.path.size == 1) {
+                val center = pathData.path.first()
+                paint.style = Paint.Style.FILL
+                canvas.drawCircle(center.x, center.y, pathData.strokeWidth / 2f, paint)
+            } else if (pathData.path.isNotEmpty()) {
+                val path = android.graphics.Path()
                 path.moveTo(pathData.path.first().x, pathData.path.first().y)
                 val smoothness = 5
                 for (i in 1..pathData.path.lastIndex) {
@@ -269,11 +273,12 @@ class DrawViewModel(
                             to.x,
                             to.y
                         )
+                    } else {
+                        path.lineTo(to.x, to.y)
                     }
                 }
+                canvas.drawPath(path, paint)
             }
-
-            canvas.drawPath(path, paint)
         }
 
         return bitmap

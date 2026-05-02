@@ -2,7 +2,7 @@ package com.brokentelephone.game.features.draw.content
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,6 +22,8 @@ import com.brokentelephone.game.features.draw.model.DrawingAction
 import com.brokentelephone.game.features.draw.model.PathData
 import kotlin.math.abs
 
+// TODO: Think about zoom feature
+
 @Composable
 fun DrawingCanvas(
     paths: List<PathData>,
@@ -37,12 +39,23 @@ fun DrawingCanvas(
             .onSizeChanged { onAction(DrawingAction.OnCanvasSizeChanged(it)) }
             .then(
                 if (enabled) Modifier.pointerInput(Unit) {
-                    detectDragGestures(
-                        onDragStart = { onAction(DrawingAction.OnNewPathStart) },
-                        onDragEnd = { onAction(DrawingAction.OnPathEnd) },
-                        onDrag = { change, _ -> onAction(DrawingAction.OnDraw(change.position)) },
-                        onDragCancel = { onAction(DrawingAction.OnPathEnd) },
-                    )
+                    awaitEachGesture {
+                        val down = awaitPointerEvent().changes.first()
+                        onAction(DrawingAction.OnNewPathStart)
+                        onAction(DrawingAction.OnDraw(down.position))
+                        down.consume()
+                        try {
+                            while (true) {
+                                val event = awaitPointerEvent()
+                                val change = event.changes.firstOrNull() ?: break
+                                if (!change.pressed) break
+                                change.consume()
+                                onAction(DrawingAction.OnDraw(change.position))
+                            }
+                        } finally {
+                            onAction(DrawingAction.OnPathEnd)
+                        }
+                    }
                 } else Modifier
             )
     ) {
@@ -69,33 +82,39 @@ private fun DrawScope.drawPath(
     thickness: Float = 10f
 ) {
     val smoothedPath = Path().apply {
-        if(path.isNotEmpty()) {
+        if (path.isNotEmpty()) {
             moveTo(path.first().x, path.first().y)
 
             val smoothness = 5
-            for(i in 1..path.lastIndex) {
+            for (i in 1..path.lastIndex) {
                 val from = path[i - 1]
                 val to = path[i]
                 val dx = abs(from.x - to.x)
                 val dy = abs(from.y - to.y)
-                if(dx >= smoothness || dy >= smoothness) {
+                if (dx >= smoothness || dy >= smoothness) {
                     quadraticTo(
                         x1 = (from.x + to.x) / 2f,
                         y1 = (from.y + to.y) / 2f,
                         x2 = to.x,
                         y2 = to.y
                     )
+                } else {
+                    lineTo(to.x, to.y)
                 }
             }
         }
     }
-    drawPath(
-        path = smoothedPath,
-        color = color,
-        style = Stroke(
-            width = thickness,
-            cap = StrokeCap.Round,
-            join = StrokeJoin.Round
+    if (path.size == 1) {
+        drawCircle(color = color, radius = thickness / 2f, center = path.first())
+    } else {
+        drawPath(
+            path = smoothedPath,
+            color = color,
+            style = Stroke(
+                width = thickness,
+                cap = StrokeCap.Round,
+                join = StrokeJoin.Round
+            )
         )
-    )
+    }
 }

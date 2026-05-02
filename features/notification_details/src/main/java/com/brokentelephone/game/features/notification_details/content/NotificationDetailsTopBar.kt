@@ -1,7 +1,9 @@
 package com.brokentelephone.game.features.notification_details.content
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -28,17 +30,16 @@ import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 fun NotificationDetailsTopBar(
     title: String?,
     onBackClick: () -> Unit,
-    onMoreClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Box(
+    Row(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
             onClick = onBackClick,
-            modifier = Modifier.align(Alignment.CenterStart),
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_back),
@@ -58,7 +59,7 @@ fun NotificationDetailsTopBar(
                     maxLines = 1,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
-                        .padding(horizontal = 56.dp)
+                        .padding(start = 8.dp)
                         .shimmer(cornerRadius = 4.dp),
                 )
             },
@@ -73,22 +74,23 @@ fun NotificationDetailsTopBar(
                     overflow = TextOverflow.Ellipsis,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
-                        .padding(horizontal = 56.dp),
+                        .padding(start = 8.dp)
+                        .basicMarquee(),
                 )
             },
-            modifier = Modifier.align(Alignment.Center),
+            modifier = Modifier,
         )
 
-        IconButton(
-            onClick = onMoreClick,
-            modifier = Modifier.align(Alignment.CenterEnd),
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_more_vert),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onBackground,
-            )
-        }
+//        IconButton(
+//            onClick = onMoreClick,
+//            modifier = Modifier.align(Alignment.CenterEnd),
+//        ) {
+//            Icon(
+//                painter = painterResource(R.drawable.ic_more_vert),
+//                contentDescription = null,
+//                tint = MaterialTheme.colorScheme.onBackground,
+//            )
+//        }
     }
 }
 
@@ -100,7 +102,6 @@ private fun NotificationDetailsTopBarPreview() {
             NotificationDetailsTopBar(
                 title = null,
                 onBackClick = {},
-                onMoreClick = {},
             )
         }
     }
@@ -114,7 +115,6 @@ private fun NotificationDetailsTopBarLongTitlePreview() {
             NotificationDetailsTopBar(
                 title = "This is a very long notification title that should be truncated",
                 onBackClick = {},
-                onMoreClick = {},
             )
         }
     }
