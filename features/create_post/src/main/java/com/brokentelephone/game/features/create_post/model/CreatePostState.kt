@@ -1,5 +1,6 @@
 package com.brokentelephone.game.features.create_post.model
 
+import com.brokentelephone.game.core.model.tab_row.create_post.CreatePostTab
 import com.brokentelephone.game.core.model.user.UserUi
 
 data class CreatePostState(
@@ -14,6 +15,7 @@ data class CreatePostState(
     val showDiscardDialog: Boolean = false,
     val isLoading: Boolean = false,
     val globalError: String? = null,
+    val selectedTab: CreatePostTab = CreatePostTab.TEXT,
 ) {
     val isTextOverLimit: Boolean get() = text.length > MAX_TEXT_LENGTH
 

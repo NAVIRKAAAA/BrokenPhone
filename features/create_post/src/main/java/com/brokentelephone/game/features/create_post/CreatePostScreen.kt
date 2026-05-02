@@ -11,7 +11,7 @@ import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.composable.dialog.ConfirmDialog
 import com.brokentelephone.game.core.composable.dialog.ErrorDialog
 import com.brokentelephone.game.core.utils.toShortFormattedTime
-import com.brokentelephone.game.features.create_post.content.CreatePostContent
+import com.brokentelephone.game.features.create_post.content.CreatePostContentNew
 import com.brokentelephone.game.features.create_post.dialog.chain_settings.StepperDialog
 import com.brokentelephone.game.features.create_post.dialog.start_new_chain.StartNewChainDialog
 import com.brokentelephone.game.features.create_post.model.ChainSetting
@@ -40,12 +40,13 @@ fun CreatePostScreen(
         }
     }
 
-    CreatePostContent(
+    CreatePostContentNew(
         state = state,
         onTextChanged = viewModel::onTextChanged,
         onChainSettingClick = viewModel::onShowChainSetting,
         onPostClick = viewModel::onShowStartNewChain,
-        onBackClick = viewModel::onBackClick,
+        onCloseClick = viewModel::onBackClick,
+        onTabSelect = viewModel::onTabSelect,
         modifier = modifier
     )
 

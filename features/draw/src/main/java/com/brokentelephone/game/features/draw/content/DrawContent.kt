@@ -33,10 +33,10 @@ import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.composable.chip.PostChip
 import com.brokentelephone.game.core.composable.draw.DrawBottomBar
+import com.brokentelephone.game.core.composable.draw.DrawingCanvas
 import com.brokentelephone.game.core.composable.shimmer.ShimmerContent
 import com.brokentelephone.game.core.composable.top_bar.SaveTopBar
 import com.brokentelephone.game.core.ext.modifier.horizontalFadingEdge
-import com.brokentelephone.game.core.model.draw.DrawingCanvas
 import com.brokentelephone.game.core.model.draw.DrawingCanvasAction
 import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme

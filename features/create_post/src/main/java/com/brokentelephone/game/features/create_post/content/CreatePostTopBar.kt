@@ -27,6 +27,8 @@ import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 fun CreatePostTopBar(
     isPostButtonEnabled: Boolean = true,
     onCloseClick: () -> Unit = {},
+    showBackButton: Boolean = false,
+    onBackClick: () -> Unit = {},
     onPostClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -38,11 +40,18 @@ fun CreatePostTopBar(
     ) {
 
         IconButton(
-            onClick = onCloseClick,
+            onClick = {
+                if (showBackButton) {
+                    onBackClick()
+                } else {
+                    onCloseClick()
+                }
+            },
             modifier = Modifier.align(Alignment.CenterStart),
         ) {
+            val iconResId = if (showBackButton) R.drawable.ic_back else R.drawable.ic_close
             Icon(
-                painter = painterResource(R.drawable.ic_close),
+                painter = painterResource(iconResId),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onBackground,
             )

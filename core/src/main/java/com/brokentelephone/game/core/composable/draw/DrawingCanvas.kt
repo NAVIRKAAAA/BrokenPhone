@@ -1,4 +1,4 @@
-package com.brokentelephone.game.core.model.draw
+package com.brokentelephone.game.core.composable.draw
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -17,6 +17,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.util.fastForEach
+import com.brokentelephone.game.core.model.draw.DrawingCanvasAction
+import com.brokentelephone.game.core.model.draw.PathData
 import com.brokentelephone.game.core.theme.appColors
 import kotlin.math.abs
 

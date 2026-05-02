@@ -2,6 +2,7 @@ package com.brokentelephone.game.features.create_post
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.brokentelephone.game.core.model.tab_row.create_post.CreatePostTab
 import com.brokentelephone.game.core.model.user.toUi
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
@@ -40,6 +41,10 @@ class CreatePostViewModel(
         getCurrentUserUseCase.execute()
             .onEach { user -> _state.update { it.copy(user = user?.toUi()) } }
             .launchIn(viewModelScope)
+    }
+
+    fun onTabSelect(tab: CreatePostTab) {
+        _state.update { it.copy(selectedTab = tab) }
     }
 
     fun onGlobalErrorDismissed() {
