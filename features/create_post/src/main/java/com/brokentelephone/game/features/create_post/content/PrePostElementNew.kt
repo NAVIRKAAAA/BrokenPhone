@@ -55,7 +55,9 @@ import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.composable.avatar.AvatarComponent
 import com.brokentelephone.game.core.composable.chip.PostChip
 import com.brokentelephone.game.core.composable.draw.DrawingCanvas
+import com.brokentelephone.game.core.model.draw.DrawingCanvasAction
 import com.brokentelephone.game.core.model.tab_row.create_post.CreatePostTab
+import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.utils.toShortFormattedTime
 import com.brokentelephone.game.features.create_post.model.ChainSetting
@@ -63,20 +65,14 @@ import com.brokentelephone.game.features.create_post.model.CreatePostState
 
 @Composable
 fun PrePostElementNew(
-    name: String,
-    text: String,
-    onTextChanged: (String) -> Unit,
-    onChainSettingClick: (ChainSetting) -> Unit,
+    state: CreatePostState,
     onDone: () -> Unit,
-    isTextOverLimit: Boolean,
-    selectedTab: CreatePostTab,
     pagerState: PagerState,
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester? = null,
-    avatarUrl: String? = null,
-    maxGenerations: Int = 0,
-    textTimeLimit: Int = 0,
-    drawingTimeLimit: Int = 0,
+    onTextChanged: (String) -> Unit,
+    onChainSettingClick: (ChainSetting) -> Unit,
+    onDrawAction: (DrawingCanvasAction) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
@@ -100,14 +96,14 @@ fun PrePostElementNew(
                     .padding(top = contentPadding)
             ) {
                 AvatarComponent(
-                    avatarUrl = avatarUrl,
+                    avatarUrl = state.user?.avatarUrl,
                     size = avatarSize,
                 )
 
                 Spacer(modifier = Modifier.width(12.dp))
 
                 Text(
-                    text = name,
+                    text = state.user?.username.orEmpty(),
                     fontFamily = FontFamily(Font(R.font.nunito_bold)),
                     fontSize = 16.sp,
                     lineHeight = 24.sp,
@@ -130,9 +126,9 @@ fun PrePostElementNew(
                     modifier = Modifier.fillMaxWidth(),
                     beyondViewportPageCount = CreatePostTab.entries.size,
                     userScrollEnabled = false
-                ) {
+                ) { index ->
 
-                    when (CreatePostTab.entries[it]) {
+                    when (CreatePostTab.entries[index]) {
                         CreatePostTab.TEXT -> {
 
                             Column(modifier = Modifier) {
@@ -147,13 +143,15 @@ fun PrePostElementNew(
                                     )
                                 ) {
                                     BasicTextField(
-                                        value = text,
+                                        value = state.text,
                                         onValueChange = onTextChanged,
                                         modifier = Modifier
                                             .graphicsLayer {
-                                                val f = pagerState.currentPage + pagerState.currentPageOffsetFraction
+                                                val f =
+                                                    pagerState.currentPage + pagerState.currentPageOffsetFraction
                                                 alpha = 1f - f
-                                                translationY = f * (avatarSize - 24.sp.toDp()).toPx() / 2f
+                                                translationY =
+                                                    f * (avatarSize - 24.sp.toDp()).toPx() / 2f
                                             }
                                             .onSizeChanged { size ->
                                                 textFieldHeight =
@@ -182,7 +180,7 @@ fun PrePostElementNew(
                                         cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                                     ) { innerTextField ->
                                         Box(modifier = Modifier.fillMaxWidth()) {
-                                            if (text.isEmpty()) {
+                                            if (state.text.isEmpty()) {
                                                 Text(
                                                     text = stringResource(R.string.create_post_placeholder),
                                                     fontFamily = FontFamily(Font(R.font.nunito_regular)),
@@ -205,7 +203,8 @@ fun PrePostElementNew(
                             Column {
                                 Spacer(
                                     modifier = Modifier.layout { measurable, constraints ->
-                                        val f = pagerState.currentPage + pagerState.currentPageOffsetFraction
+                                        val f =
+                                            pagerState.currentPage + pagerState.currentPageOffsetFraction
                                         val heightPx = (68.dp.toPx() * f).toInt().coerceAtLeast(0)
                                         val placeable = measurable.measure(constraints)
                                         layout(placeable.width, heightPx) {
@@ -227,11 +226,10 @@ fun PrePostElementNew(
                                         },
                                 ) {
                                     DrawingCanvas(
-                                        paths = emptyList(),
-                                        currentPath = null,
-                                        onAction = {},
-                                        enabled = false,
-                                        modifier = Modifier.fillMaxSize(),
+                                        paths = state.paths,
+                                        currentPath = state.currentPath,
+                                        onAction = { onDrawAction(it) },
+                                        modifier = Modifier.fillMaxSize()
                                     )
                                 }
                             }
@@ -250,7 +248,10 @@ fun PrePostElementNew(
                             val f = pagerState.currentPage + pagerState.currentPageOffsetFraction
                             val offsetPx = ((1f - f) * 52.dp.toPx()).toInt().coerceAtLeast(0)
                             val placeable = measurable.measure(
-                                constraints.copy(maxWidth = (constraints.maxWidth - offsetPx).coerceAtLeast(constraints.minWidth))
+                                constraints.copy(
+                                    minWidth = 0,
+                                    maxWidth = (constraints.maxWidth - offsetPx).coerceAtLeast(0)
+                                )
                             )
                             layout(constraints.maxWidth, placeable.height) {
                                 placeable.placeRelative(offsetPx, 0)
@@ -270,7 +271,7 @@ fun PrePostElementNew(
                     PostChip(
                         text = stringResource(
                             R.string.create_post_badge_generations,
-                            maxGenerations
+                            state.maxGenerations
                         ),
                         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -281,7 +282,7 @@ fun PrePostElementNew(
                     )
 
                     PostChip(
-                        text = textTimeLimit.toShortFormattedTime(),
+                        text = state.textTimeLimit.toShortFormattedTime(),
                         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         iconResId = R.drawable.ic_edit_v2,
@@ -291,7 +292,7 @@ fun PrePostElementNew(
                     )
 
                     PostChip(
-                        text = drawingTimeLimit.toShortFormattedTime(),
+                        text = state.drawingTimeLimit.toShortFormattedTime(),
                         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         iconResId = R.drawable.ic_brush_v2,
@@ -301,18 +302,18 @@ fun PrePostElementNew(
                     )
 
 
-                    if (text.isNotBlank() && selectedTab == CreatePostTab.TEXT) {
+                    if (state.text.isNotBlank() && state.selectedTab == CreatePostTab.TEXT) {
                         val counterContentColor =
-                            if (isTextOverLimit) MaterialTheme.colorScheme.onErrorContainer
+                            if (state.isTextOverLimit) MaterialTheme.colorScheme.onErrorContainer
                             else MaterialTheme.colorScheme.onSurfaceVariant
                         val counterContainerColor =
-                            if (isTextOverLimit) MaterialTheme.colorScheme.errorContainer
+                            if (state.isTextOverLimit) MaterialTheme.colorScheme.errorContainer
                             else MaterialTheme.colorScheme.surfaceVariant
 
                         PostChip(
                             text = stringResource(
                                 R.string.create_post_text_counter,
-                                text.length,
+                                state.text.length,
                                 CreatePostState.MAX_TEXT_LENGTH
                             ),
                             contentColor = counterContentColor,
@@ -333,17 +334,27 @@ fun PrePostElementNew(
 private fun PrePostElementNewTextTabPreview() {
     BrokenTelephoneTheme(darkTheme = false) {
         PrePostElementNew(
-            name = "Alex",
-            text = "Test",
+            state = CreatePostState(
+                text = "Test",
+                user = UserUi(
+                    id = "1",
+                    username = "Alex",
+                    email = "",
+                    avatarUrl = "",
+                    bio = "",
+                    createdAt = 0L,
+                    sessionId = null,
+                ),
+                maxGenerations = 10,
+                textTimeLimit = 60,
+                drawingTimeLimit = 120,
+                selectedTab = CreatePostTab.TEXT,
+            ),
             onTextChanged = {},
             onChainSettingClick = {},
             onDone = {},
-            isTextOverLimit = false,
             pagerState = rememberPagerState(0) { 2 },
-            maxGenerations = 10,
-            textTimeLimit = 60,
-            drawingTimeLimit = 120,
-            selectedTab = CreatePostTab.TEXT
+            onDrawAction = {}
         )
     }
 }
@@ -353,17 +364,27 @@ private fun PrePostElementNewTextTabPreview() {
 private fun PrePostElementNewDrawTabPreview() {
     BrokenTelephoneTheme(darkTheme = false) {
         PrePostElementNew(
-            name = "Alex",
-            text = "",
+            state = CreatePostState(
+                text = "Test",
+                user = UserUi(
+                    id = "1",
+                    username = "Alex",
+                    email = "",
+                    avatarUrl = "",
+                    bio = "",
+                    createdAt = 0L,
+                    sessionId = null,
+                ),
+                maxGenerations = 10,
+                textTimeLimit = 60,
+                drawingTimeLimit = 120,
+                selectedTab = CreatePostTab.DRAW,
+            ),
             onTextChanged = {},
             onChainSettingClick = {},
             onDone = {},
-            isTextOverLimit = false,
             pagerState = rememberPagerState(1) { 2 },
-            maxGenerations = 10,
-            textTimeLimit = 60,
-            drawingTimeLimit = 120,
-            selectedTab = CreatePostTab.DRAW
+            onDrawAction = {}
         )
     }
 }

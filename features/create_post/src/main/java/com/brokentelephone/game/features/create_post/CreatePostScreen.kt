@@ -47,7 +47,8 @@ fun CreatePostScreen(
         onPostClick = viewModel::onShowStartNewChain,
         onCloseClick = viewModel::onBackClick,
         onTabSelect = viewModel::onTabSelect,
-        modifier = modifier
+        modifier = modifier,
+        onDrawAction = viewModel::onDrawAction
     )
 
     state.globalError?.let { message ->

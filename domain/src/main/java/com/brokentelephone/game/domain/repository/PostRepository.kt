@@ -2,6 +2,7 @@ package com.brokentelephone.game.domain.repository
 
 import com.brokentelephone.game.domain.model.pagination.PostsPage
 import com.brokentelephone.game.domain.model.post.Post
+import com.brokentelephone.game.domain.model.post.PostContent
 import kotlinx.coroutines.flow.Flow
 
 
@@ -40,7 +41,7 @@ interface PostRepository {
         authorId: String,
         authorName: String,
         avatarUrl: String?,
-        text: String,
+        content: PostContent,
         maxGenerations: Int,
         textTimeLimit: Int,
         drawingTimeLimit: Int,

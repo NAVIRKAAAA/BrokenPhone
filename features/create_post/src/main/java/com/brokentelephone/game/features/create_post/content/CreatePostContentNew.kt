@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalFocusManager
@@ -27,7 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.composable.draw.DrawBottomBar
 import com.brokentelephone.game.core.composable.profile.tab_row.ProfileTabRowNewVTwo
-import com.brokentelephone.game.core.model.draw.BrushSize
+import com.brokentelephone.game.core.model.draw.DrawingCanvasAction
 import com.brokentelephone.game.core.model.tab_row.create_post.CreatePostTab
 import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
@@ -44,6 +43,7 @@ fun CreatePostContentNew(
     onPostClick: () -> Unit,
     modifier: Modifier = Modifier,
     onTabSelect: (CreatePostTab) -> Unit,
+    onDrawAction: (DrawingCanvasAction) -> Unit,
     onCloseClick: () -> Unit
 ) {
 
@@ -57,13 +57,13 @@ fun CreatePostContentNew(
         focusRequester.requestFocus()
     }
 
-    LaunchedEffect(state.selectedTab) {
-        pagerState.animateScrollToPage(state.selectedTab.ordinal)
-    }
-
     LaunchedEffect(Unit) {
         delay(150)
         focusRequester.requestFocus()
+    }
+
+    LaunchedEffect(state.selectedTab) {
+        pagerState.animateScrollToPage(state.selectedTab.ordinal)
     }
 
     Column(
@@ -74,7 +74,7 @@ fun CreatePostContentNew(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CreatePostTopBar(
-            isPostButtonEnabled = state.text.isNotBlank() && !state.isTextOverLimit,
+            isPostButtonEnabled = state.isSubmitButtonEnabled,
             onCloseClick = onCloseClick,
             showBackButton = state.selectedTab == CreatePostTab.DRAW,
             onBackClick = {
@@ -93,7 +93,7 @@ fun CreatePostContentNew(
             onTabSelect = {
                 onTabSelect(it)
 
-                if(it == CreatePostTab.DRAW) {
+                if (it == CreatePostTab.DRAW) {
                     focusManager.clearFocus()
                 }
             },
@@ -113,19 +113,13 @@ fun CreatePostContentNew(
 
 
         PrePostElementNew(
-            name = state.user?.username.orEmpty(),
-            text = state.text,
+            state = state,
             pagerState = pagerState,
-            avatarUrl = state.user?.avatarUrl,
             onTextChanged = onTextChanged,
             onChainSettingClick = onChainSettingClick,
-            isTextOverLimit = state.isTextOverLimit,
-            maxGenerations = state.maxGenerations,
-            textTimeLimit = state.textTimeLimit,
-            drawingTimeLimit = state.drawingTimeLimit,
             focusRequester = focusRequester,
             onDone = onPostClick,
-            selectedTab = state.selectedTab
+            onDrawAction = onDrawAction,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -141,17 +135,17 @@ fun CreatePostContentNew(
             HorizontalDivider(color = MaterialTheme.appColors.divider)
 
             DrawBottomBar(
-                selectedBrushSize = BrushSize.MEDIUM,
-                selectedColor = Color.Black,
-                canUndo = false,
-                canRedo = false,
-                canClear = false,
-                onUndo = {},
-                onRedo = {},
-                onClear = {},
-                onBrushSizeChange = {},
-                onColorChange = {},
-                modifier = Modifier.navigationBarsPadding()
+                selectedBrushSize = state.selectedBrushSize,
+                selectedColor = state.selectedColor,
+                canUndo = state.canUndo,
+                canRedo = state.canRedo,
+                canClear = state.canUndo,
+                onUndo = { onDrawAction(DrawingCanvasAction.OnUndoClick) },
+                onRedo = { onDrawAction(DrawingCanvasAction.OnRedoClick) },
+                onClear = { onDrawAction(DrawingCanvasAction.OnClearCanvasClick) },
+                onBrushSizeChange = { onDrawAction(DrawingCanvasAction.OnBrushSizeChange(it)) },
+                onColorChange = { onDrawAction(DrawingCanvasAction.OnColorChange(it)) },
+                modifier = Modifier.navigationBarsPadding(),
             )
         }
     }
@@ -180,7 +174,8 @@ fun CreatePostContentNewPreview() {
             onChainSettingClick = {},
             onCloseClick = {},
             onPostClick = {},
-            onTabSelect = {}
+            onTabSelect = {},
+            onDrawAction = {}
         )
     }
 }

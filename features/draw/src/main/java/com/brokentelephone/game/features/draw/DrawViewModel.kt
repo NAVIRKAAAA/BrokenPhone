@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.core.model.draw.DrawingCanvasAction
 import com.brokentelephone.game.core.model.draw.PathData
 import com.brokentelephone.game.core.model.post.toUi
+import com.brokentelephone.game.core.utils.DrawingBitmapSaver
 import com.brokentelephone.game.core.utils.renderToBitmap
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
@@ -18,7 +19,6 @@ import com.brokentelephone.game.features.draw.model.DrawSideEffect
 import com.brokentelephone.game.features.draw.model.DrawState
 import com.brokentelephone.game.features.draw.model.DrawingAction
 import com.brokentelephone.game.features.draw.use_case.SubmitDrawingUseCase
-import com.brokentelephone.game.features.draw.utils.DrawingBitmapSaver
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay

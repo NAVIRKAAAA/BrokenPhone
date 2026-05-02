@@ -1,0 +1,95 @@
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+
+    <aapt:attr name="android:drawable">
+        <vector
+            android:name="x_to_back"
+            android:width="24dp"
+            android:height="24dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+            <group android:name="morph_rotate" android:pivotX="12" android:pivotY="12">
+                <path
+                    android:name="slash_01"
+                    android:pathData="M 4.999 17.586 L 17.586 4.999 L 19 6.414 L 6.414 19 Z"
+                    android:fillColor="#ffffff"
+                    android:strokeWidth="1" />
+                <path
+                    android:name="slash_02"
+                    android:pathData="M 4.999 6.414 L 6.414 5 L 19 17.586 L 17.586 19 Z"
+                    android:fillColor="#ffffff"
+                    android:strokeWidth="1" />
+                <group android:name="arrow_middle_translate_x">
+                    <path
+                        android:name="arrow_middle_morph"
+                        android:pathData=""
+                        android:fillColor="#ffffff"
+                        android:strokeWidth="1" />
+                </group>
+            </group>
+        </vector>
+    </aapt:attr>
+
+    <target android:name="slash_01">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="pathData"
+                android:valueFrom="M 4.999 17.586 L 17.586 4.999 L 19 6.414 L 6.414 19 Z"
+                android:valueTo="M 5 11 L 12 4 L 13.42 5.41 L 7.83 11 Z"
+                android:duration="300"
+                android:valueType="pathType"
+                android:interpolator="@android:interpolator/fast_out_slow_in" />
+        </aapt:attr>
+    </target>
+
+    <target android:name="slash_02">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="pathData"
+                android:valueFrom="M 5 6.414 L 6.414 5 L 19 17.586 L 17.586 19 Z"
+                android:valueTo="M 5 13 L 7.83 13 L 13.42 18.59 L 12 20 Z"
+                android:duration="300"
+                android:valueType="pathType"
+                android:interpolator="@android:interpolator/fast_out_slow_in" />
+        </aapt:attr>
+    </target>
+
+    <target android:name="morph_rotate">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="rotation"
+                android:valueFrom="-180"
+                android:valueTo="0"
+                android:duration="300"
+                android:valueType="floatType"
+                android:interpolator="@android:interpolator/fast_out_slow_in" />
+        </aapt:attr>
+    </target>
+
+    <target android:name="arrow_middle_morph">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="pathData"
+                android:valueFrom="M 5 13 L 5.5 13 L 5.5 11 L 5 11 L 4 12 Z"
+                android:valueTo="M 5 13 L 20 13 L 20 11 L 5 11 L 4 12 Z"
+                android:duration="240"
+                android:startOffset="60"
+                android:valueType="pathType"
+                android:interpolator="@android:interpolator/fast_out_slow_in" />
+        </aapt:attr>
+    </target>
+
+    <target android:name="arrow_middle_translate_x">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="translateX"
+                android:valueFrom="8"
+                android:valueTo="0"
+                android:duration="290"
+                android:valueType="floatType"
+                android:interpolator="@android:interpolator/fast_out_slow_in" />
+        </aapt:attr>
+    </target>
+
+</animated-vector>

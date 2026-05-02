@@ -1,5 +1,8 @@
 package com.brokentelephone.game.features.create_post.content
 
+import androidx.compose.animation.graphics.res.animatedVectorResource
+import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
+import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,9 +13,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -32,6 +39,18 @@ fun CreatePostTopBar(
     onPostClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    val animatedVector = AnimatedImageVector.animatedVectorResource(R.drawable.ic_x_to_back)
+    var isFirstRender by remember { mutableStateOf(true) }
+    var atEnd by remember { mutableStateOf(false) }
+
+    LaunchedEffect(showBackButton) {
+        if (isFirstRender) {
+            isFirstRender = false
+            atEnd = showBackButton
+        } else {
+            atEnd = showBackButton
+        }
+    }
 
     Box(
         modifier = modifier
@@ -49,9 +68,8 @@ fun CreatePostTopBar(
             },
             modifier = Modifier.align(Alignment.CenterStart),
         ) {
-            val iconResId = if (showBackButton) R.drawable.ic_back else R.drawable.ic_close
             Icon(
-                painter = painterResource(iconResId),
+                painter = rememberAnimatedVectorPainter(animatedVector, atEnd),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onBackground,
             )

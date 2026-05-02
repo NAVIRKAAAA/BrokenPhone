@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.draw.utils
+package com.brokentelephone.game.core.utils
 
 import android.content.Context
 import android.graphics.Bitmap
