@@ -1,4 +1,4 @@
-package com.brokentelephone.game.core.composable.profile
+package com.brokentelephone.game.core.composable.profile.tab_row
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.ext.modifier.coloredShadow
-import com.brokentelephone.game.core.model.profile.ProfileTab
+import com.brokentelephone.game.core.model.tab_row.profile.ProfileTab
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 
 @Composable

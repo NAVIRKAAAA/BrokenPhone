@@ -1,7 +1,7 @@
 package com.brokentelephone.game.features.profile.model
 
 import com.brokentelephone.game.core.model.post.PostUi
-import com.brokentelephone.game.core.model.profile.ProfileTab
+import com.brokentelephone.game.core.model.tab_row.profile.ProfileTab
 import com.brokentelephone.game.core.model.user.UserUi
 
 data class ProfileState(

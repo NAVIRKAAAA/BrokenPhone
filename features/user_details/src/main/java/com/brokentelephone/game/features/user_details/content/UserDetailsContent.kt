@@ -41,14 +41,14 @@ import com.brokentelephone.game.core.composable.button.FriendshipActionButton
 import com.brokentelephone.game.core.composable.profile.AccountInfoSection
 import com.brokentelephone.game.core.composable.profile.AccountInfoSectionShimmer
 import com.brokentelephone.game.core.composable.profile.ProfilePostsPage
-import com.brokentelephone.game.core.composable.profile.ProfileTabRowNewVTwo
 import com.brokentelephone.game.core.composable.profile.UserProfileContributionElement
 import com.brokentelephone.game.core.composable.profile.UserProfilePostElement
+import com.brokentelephone.game.core.composable.profile.tab_row.ProfileTabRowNewVTwo
 import com.brokentelephone.game.core.composable.pull_to_refresh.AppPullToRefreshIndicator
 import com.brokentelephone.game.core.composable.shimmer.ShimmerContent
 import com.brokentelephone.game.core.composable.shimmer.shimmer
 import com.brokentelephone.game.core.composable.top_bar.ProfileTopBar
-import com.brokentelephone.game.core.model.profile.ProfileTab
+import com.brokentelephone.game.core.model.tab_row.profile.ProfileTab
 import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.domain.model.friend.FriendshipActionState

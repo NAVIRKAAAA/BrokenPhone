@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.draw.content
+package com.brokentelephone.game.core.model.draw
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -18,8 +18,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.util.fastForEach
 import com.brokentelephone.game.core.theme.appColors
-import com.brokentelephone.game.features.draw.model.DrawingAction
-import com.brokentelephone.game.features.draw.model.PathData
 import kotlin.math.abs
 
 // TODO: Think about zoom feature
@@ -28,7 +26,7 @@ import kotlin.math.abs
 fun DrawingCanvas(
     paths: List<PathData>,
     currentPath: PathData?,
-    onAction: (DrawingAction) -> Unit,
+    onAction: (DrawingCanvasAction) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
@@ -36,13 +34,13 @@ fun DrawingCanvas(
         modifier = modifier
             .clipToBounds()
             .background(MaterialTheme.appColors.canvasBg)
-            .onSizeChanged { onAction(DrawingAction.OnCanvasSizeChanged(it)) }
+            .onSizeChanged { onAction(DrawingCanvasAction.OnCanvasSizeChanged(it)) }
             .then(
                 if (enabled) Modifier.pointerInput(Unit) {
                     awaitEachGesture {
                         val down = awaitPointerEvent().changes.first()
-                        onAction(DrawingAction.OnNewPathStart)
-                        onAction(DrawingAction.OnDraw(down.position))
+                        onAction(DrawingCanvasAction.OnNewPathStart)
+                        onAction(DrawingCanvasAction.OnDraw(down.position))
                         down.consume()
                         try {
                             while (true) {
@@ -50,10 +48,10 @@ fun DrawingCanvas(
                                 val change = event.changes.firstOrNull() ?: break
                                 if (!change.pressed) break
                                 change.consume()
-                                onAction(DrawingAction.OnDraw(change.position))
+                                onAction(DrawingCanvasAction.OnDraw(change.position))
                             }
                         } finally {
-                            onAction(DrawingAction.OnPathEnd)
+                            onAction(DrawingCanvasAction.OnPathEnd)
                         }
                     }
                 } else Modifier

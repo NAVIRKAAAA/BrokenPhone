@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.draw.content
+package com.brokentelephone.game.core.composable.draw
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,8 +23,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.composable.color_picker.BrushColorPicker
+import com.brokentelephone.game.core.model.draw.BrushSize
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.features.draw.model.BrushSize
 
 @Composable
 fun DrawBottomBar(
@@ -116,7 +116,7 @@ fun DrawBottomBar(
 
 @Preview
 @Composable
-fun DrawBottomBarPreview() {
+private fun DrawBottomBarPreview() {
     BrokenTelephoneTheme(
         darkTheme = false
     ) {

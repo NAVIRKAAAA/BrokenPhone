@@ -2,6 +2,8 @@ package com.brokentelephone.game.features.draw.model
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntSize
+import com.brokentelephone.game.core.model.draw.BrushSize
+import com.brokentelephone.game.core.model.draw.PathData
 import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.domain.model.session.GameSession
 

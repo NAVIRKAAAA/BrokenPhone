@@ -1,7 +1,7 @@
 package com.brokentelephone.game.features.user_details.model
 
 import com.brokentelephone.game.core.model.post.PostUi
-import com.brokentelephone.game.core.model.profile.ProfileTab
+import com.brokentelephone.game.core.model.tab_row.profile.ProfileTab
 import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.domain.model.friend.FriendshipActionState
 

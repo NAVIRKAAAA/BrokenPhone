@@ -1,14 +1,13 @@
 package com.brokentelephone.game.features.draw
 
-import android.graphics.Bitmap
-import android.graphics.Paint
 import android.util.Log
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.toArgb
-import androidx.core.graphics.createBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.brokentelephone.game.core.model.draw.DrawingCanvasAction
+import com.brokentelephone.game.core.model.draw.PathData
 import com.brokentelephone.game.core.model.post.toUi
+import com.brokentelephone.game.core.utils.renderToBitmap
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess
 import com.brokentelephone.game.domain.use_case.CancelSessionUseCase
@@ -18,7 +17,6 @@ import com.brokentelephone.game.essentials.exceptions.main.ExceptionToMessageMap
 import com.brokentelephone.game.features.draw.model.DrawSideEffect
 import com.brokentelephone.game.features.draw.model.DrawState
 import com.brokentelephone.game.features.draw.model.DrawingAction
-import com.brokentelephone.game.features.draw.model.PathData
 import com.brokentelephone.game.features.draw.use_case.SubmitDrawingUseCase
 import com.brokentelephone.game.features.draw.utils.DrawingBitmapSaver
 import kotlinx.coroutines.Job
@@ -30,7 +28,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlin.math.abs
 
 class DrawViewModel(
     private val sessionId: String,
@@ -109,21 +106,27 @@ class DrawViewModel(
 
     fun onDrawAction(action: DrawingAction) {
         when (action) {
-            DrawingAction.OnClearCanvasClick -> if (!state.value.isTimerExpired) onClearCanvasClick()
-            is DrawingAction.OnDraw -> if (!state.value.isTimerExpired) onDraw(action.offset)
-            DrawingAction.OnNewPathStart -> if (!state.value.isTimerExpired) onNewPathStart()
-            DrawingAction.OnPathEnd -> if (!state.value.isTimerExpired) onPathEnd()
-            DrawingAction.OnUndoClick -> onUndo()
-            DrawingAction.OnRedoClick -> onRedo()
-            is DrawingAction.OnBrushSizeChange -> _state.update { it.copy(selectedBrushSize = action.brushSize) }
-            is DrawingAction.OnColorChange -> _state.update { it.copy(selectedColor = action.color) }
-            is DrawingAction.OnCanvasSizeChanged -> _state.update { it.copy(canvasSize = action.size) }
+            is DrawingAction.OnCanvasAction -> onCanvasAction(action.action)
             DrawingAction.OnPostClick -> onPostClick()
             DrawingAction.OnBackClick -> onBackClick()
             DrawingAction.OnDiscardConfirm -> onDiscardConfirm()
             DrawingAction.OnDiscardDismiss -> _state.update { it.copy(showDiscardDialog = false) }
             DrawingAction.OnTimesUpGotIt -> onTimesUpGotIt()
             DrawingAction.OnGlobalErrorDismiss -> _state.update { it.copy(globalError = null) }
+        }
+    }
+
+    private fun onCanvasAction(action: DrawingCanvasAction) {
+        when (action) {
+            DrawingCanvasAction.OnClearCanvasClick -> if (!state.value.isTimerExpired) onClearCanvasClick()
+            is DrawingCanvasAction.OnDraw -> if (!state.value.isTimerExpired) onDraw(action.offset)
+            DrawingCanvasAction.OnNewPathStart -> if (!state.value.isTimerExpired) onNewPathStart()
+            DrawingCanvasAction.OnPathEnd -> if (!state.value.isTimerExpired) onPathEnd()
+            DrawingCanvasAction.OnUndoClick -> onUndo()
+            DrawingCanvasAction.OnRedoClick -> onRedo()
+            is DrawingCanvasAction.OnBrushSizeChange -> _state.update { it.copy(selectedBrushSize = action.brushSize) }
+            is DrawingCanvasAction.OnColorChange -> _state.update { it.copy(selectedColor = action.color) }
+            is DrawingCanvasAction.OnCanvasSizeChanged -> _state.update { it.copy(canvasSize = action.size) }
         }
     }
 
@@ -236,52 +239,6 @@ class DrawViewModel(
                 // HANDLE
             }
         }
-    }
-
-    private fun renderToBitmap(paths: List<PathData>, width: Int, height: Int): Bitmap {
-        val bitmap = createBitmap(width, height)
-        val canvas = android.graphics.Canvas(bitmap)
-        canvas.drawColor(android.graphics.Color.TRANSPARENT)
-
-        paths.forEach { pathData ->
-            val paint = Paint().apply {
-                color = pathData.color.toArgb()
-                style = Paint.Style.STROKE
-                strokeWidth = pathData.strokeWidth
-                strokeCap = Paint.Cap.ROUND
-                strokeJoin = Paint.Join.ROUND
-                isAntiAlias = true
-            }
-
-            if (pathData.path.size == 1) {
-                val center = pathData.path.first()
-                paint.style = Paint.Style.FILL
-                canvas.drawCircle(center.x, center.y, pathData.strokeWidth / 2f, paint)
-            } else if (pathData.path.isNotEmpty()) {
-                val path = android.graphics.Path()
-                path.moveTo(pathData.path.first().x, pathData.path.first().y)
-                val smoothness = 5
-                for (i in 1..pathData.path.lastIndex) {
-                    val from = pathData.path[i - 1]
-                    val to = pathData.path[i]
-                    val dx = abs(from.x - to.x)
-                    val dy = abs(from.y - to.y)
-                    if (dx >= smoothness || dy >= smoothness) {
-                        path.quadTo(
-                            (from.x + to.x) / 2f,
-                            (from.y + to.y) / 2f,
-                            to.x,
-                            to.y
-                        )
-                    } else {
-                        path.lineTo(to.x, to.y)
-                    }
-                }
-                canvas.drawPath(path, paint)
-            }
-        }
-
-        return bitmap
     }
 
 }

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.model.post.toUi
-import com.brokentelephone.game.core.model.profile.ProfileTab
+import com.brokentelephone.game.core.model.tab_row.profile.ProfileTab
 import com.brokentelephone.game.core.model.user.toUi
 import com.brokentelephone.game.domain.api_handler.onError
 import com.brokentelephone.game.domain.api_handler.onSuccess

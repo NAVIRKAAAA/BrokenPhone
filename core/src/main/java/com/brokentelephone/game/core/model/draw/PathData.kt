@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.draw.model
+package com.brokentelephone.game.core.model.draw
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color

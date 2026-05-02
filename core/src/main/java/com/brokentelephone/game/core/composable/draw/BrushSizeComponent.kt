@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.draw.content
+package com.brokentelephone.game.core.composable.draw
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,8 +21,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.brokentelephone.game.core.R
+import com.brokentelephone.game.core.model.draw.BrushSize
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
-import com.brokentelephone.game.features.draw.model.BrushSize
 
 @Composable
 fun BrushSizeComponent(
@@ -99,7 +99,7 @@ fun BrushSizeComponentSingle(
 
 @Preview
 @Composable
-fun BrushSizeComponentPreview() {
+private fun BrushSizeComponentPreview() {
     BrokenTelephoneTheme(
         darkTheme = true
     ) {

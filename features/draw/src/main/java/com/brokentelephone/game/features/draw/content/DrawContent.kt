@@ -32,9 +32,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.composable.chip.PostChip
+import com.brokentelephone.game.core.composable.draw.DrawBottomBar
 import com.brokentelephone.game.core.composable.shimmer.ShimmerContent
 import com.brokentelephone.game.core.composable.top_bar.SaveTopBar
 import com.brokentelephone.game.core.ext.modifier.horizontalFadingEdge
+import com.brokentelephone.game.core.model.draw.DrawingCanvas
+import com.brokentelephone.game.core.model.draw.DrawingCanvasAction
 import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
@@ -109,7 +112,7 @@ fun DrawContent(
                             DrawingCanvas(
                                 paths = state.paths,
                                 currentPath = state.currentPath,
-                                onAction = onDrawAction,
+                                onAction = { onDrawAction(DrawingAction.OnCanvasAction(it)) },
                                 enabled = !state.isTimerExpired,
                                 modifier = Modifier.fillMaxSize()
                             )
@@ -150,11 +153,29 @@ fun DrawContent(
                             canUndo = state.canUndo,
                             canRedo = state.canRedo,
                             canClear = state.canUndo,
-                            onUndo = { onDrawAction(DrawingAction.OnUndoClick) },
-                            onRedo = { onDrawAction(DrawingAction.OnRedoClick) },
-                            onClear = { onDrawAction(DrawingAction.OnClearCanvasClick) },
-                            onBrushSizeChange = { onDrawAction(DrawingAction.OnBrushSizeChange(it)) },
-                            onColorChange = { onDrawAction(DrawingAction.OnColorChange(it)) },
+                            onUndo = { onDrawAction(DrawingAction.OnCanvasAction(DrawingCanvasAction.OnUndoClick)) },
+                            onRedo = { onDrawAction(DrawingAction.OnCanvasAction(DrawingCanvasAction.OnRedoClick)) },
+                            onClear = {
+                                onDrawAction(
+                                    DrawingAction.OnCanvasAction(
+                                        DrawingCanvasAction.OnClearCanvasClick
+                                    )
+                                )
+                            },
+                            onBrushSizeChange = {
+                                onDrawAction(
+                                    DrawingAction.OnCanvasAction(
+                                        DrawingCanvasAction.OnBrushSizeChange(it)
+                                    )
+                                )
+                            },
+                            onColorChange = {
+                                onDrawAction(
+                                    DrawingAction.OnCanvasAction(
+                                        DrawingCanvasAction.OnColorChange(it)
+                                    )
+                                )
+                            },
                             modifier = Modifier.navigationBarsPadding()
                         )
                     }
@@ -186,7 +207,7 @@ fun DrawContentPreview() {
                         avatarUrl = null,
                         content = PostContent.Text("Once upon a time there was a broken telephone that nobody could fix..."),
                         createdAt = System.currentTimeMillis() - 7200000,
-                        generation = 10,
+                        generation = 9,
                         maxGenerations = 10,
                         status = PostStatus.AVAILABLE,
                         drawingTimeLimit = 60,

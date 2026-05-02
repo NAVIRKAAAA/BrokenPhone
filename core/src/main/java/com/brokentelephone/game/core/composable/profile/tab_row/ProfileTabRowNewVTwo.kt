@@ -1,4 +1,4 @@
-package com.brokentelephone.game.core.composable.profile
+package com.brokentelephone.game.core.composable.profile.tab_row
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -37,15 +37,16 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
-import com.brokentelephone.game.core.model.profile.ProfileTab
+import com.brokentelephone.game.core.model.tab_row.BTTabRow
+import com.brokentelephone.game.core.model.tab_row.profile.ProfileTab
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 
 @Composable
-fun ProfileTabRowNewVTwo(
-    tabs: List<ProfileTab>,
+fun <T : BTTabRow> ProfileTabRowNewVTwo(
+    tabs: List<T>,
     selectedIndex: Int,
-    onTabSelect: (ProfileTab) -> Unit,
+    onTabSelect: (T) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val density = LocalDensity.current

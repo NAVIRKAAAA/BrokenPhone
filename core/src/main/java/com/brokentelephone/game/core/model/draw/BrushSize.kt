@@ -1,4 +1,4 @@
-package com.brokentelephone.game.features.draw.model
+package com.brokentelephone.game.core.model.draw
 
 enum class BrushSize(val strokeWidth: Float) {
     SMALL(8f),

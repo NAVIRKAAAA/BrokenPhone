@@ -3,6 +3,7 @@ package com.brokentelephone.game.features.create_post.content
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -13,6 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.brokentelephone.game.core.composable.profile.tab_row.ProfileTabRowNewVTwo
+import com.brokentelephone.game.core.model.tab_row.create_post.CreatePostTab
 import com.brokentelephone.game.core.model.user.UserUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.features.create_post.model.ChainSetting
@@ -20,7 +24,7 @@ import com.brokentelephone.game.features.create_post.model.CreatePostState
 import kotlinx.coroutines.delay
 
 @Composable
-fun CreatePostContent(
+fun CreatePostContentNew(
     state: CreatePostState,
     onTextChanged: (String) -> Unit,
     onChainSettingClick: (ChainSetting) -> Unit,
@@ -53,6 +57,15 @@ fun CreatePostContent(
             },
         )
 
+        ProfileTabRowNewVTwo(
+            tabs = CreatePostTab.entries,
+            selectedIndex = 0,
+            onTabSelect = {},
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .padding(horizontal = 16.dp)
+        )
+
         PrePostElement(
             name = state.user?.username.orEmpty(),
             text = state.text,
@@ -72,11 +85,11 @@ fun CreatePostContent(
 
 @Preview
 @Composable
-fun CreatePostContentPreview() {
+fun CreatePostContentNewPreview() {
     BrokenTelephoneTheme(
         darkTheme = false
     ) {
-        CreatePostContent(
+        CreatePostContentNew(
             state = CreatePostState(
                 user = UserUi(
                     id = "0",
