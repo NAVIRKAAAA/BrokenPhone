@@ -69,6 +69,7 @@ class MainViewModel(
     private val sessionStartTime = System.currentTimeMillis()
 
     init {
+        Log.d("LOG_TAG", "MainViewModel Init")
         initializeSession()
         observeTheme()
         observeBanner()
@@ -122,6 +123,23 @@ class MainViewModel(
                             cancel()
                         }
 
+                        is AuthState.PreAuth -> {
+                            val pendingRoutes = _state.value.pendingNotificationId
+                                ?.let { listOf(NotificationsRoute, NotificationDetailsRoute(it)) }
+                                ?: emptyList()
+                            _state.update { it.copy(pendingNotificationId = null) }
+
+                            Log.d("LOG_TAG", "initializeSession ${System.currentTimeMillis() - sessionStartTime}ms")
+
+                            Log.d("LOG_TAG", "Setup MainGraph as startDestination")
+                            _state.update {
+                                it.copy(
+                                    startDestination = MainGraph,
+                                    pendingRoutes = pendingRoutes
+                                )
+                            }
+                        }
+
                         AuthState.NotAuth -> {
                             _state.update {
                                 it.copy(
@@ -131,22 +149,6 @@ class MainViewModel(
                             }
 
                             cancel()
-                        }
-
-                        is AuthState.PreAuth -> {
-                            val pendingRoutes = _state.value.pendingNotificationId
-                                ?.let { listOf(NotificationsRoute, NotificationDetailsRoute(it)) }
-                                ?: emptyList()
-                            _state.update { it.copy(pendingNotificationId = null) }
-
-                            Log.d("LOG_TAG", "initializeSession ${System.currentTimeMillis() - sessionStartTime}ms")
-
-                            _state.update {
-                                it.copy(
-                                    startDestination = MainGraph,
-                                    pendingRoutes = pendingRoutes
-                                )
-                            }
                         }
 
                         is AuthState.Loading -> {

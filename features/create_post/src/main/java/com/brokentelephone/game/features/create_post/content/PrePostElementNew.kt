@@ -1,6 +1,5 @@
 package com.brokentelephone.game.features.create_post.content
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,7 +26,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,6 +37,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
@@ -84,14 +83,9 @@ fun PrePostElementNew(
     val contentWidth = screenWidth - 32.dp // 16dp * 2
     val density = LocalDensity.current
 
-    val fraction by remember {
-        derivedStateOf {
-            pagerState.currentPage + pagerState.currentPageOffsetFraction
-        }
-    }
-
-    var textFieldHeight by remember { mutableStateOf(64.dp) }
+    var textFieldHeight by remember { mutableStateOf(0.dp) }
     val avatarSize = 40.dp
+    val contentPadding = 16.dp
 
     Column(
         modifier = modifier
@@ -102,12 +96,12 @@ fun PrePostElementNew(
         Box() {
             Row(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 16.dp)
+                    .padding(horizontal = contentPadding)
+                    .padding(top = contentPadding)
             ) {
                 AvatarComponent(
                     avatarUrl = avatarUrl,
-                    size = 40.dp,
+                    size = avatarSize,
                 )
 
                 Spacer(modifier = Modifier.width(12.dp))
@@ -121,7 +115,8 @@ fun PrePostElementNew(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.graphicsLayer {
-                        translationY = fraction * (40.dp - 24.sp.toDp()).toPx() / 2f
+                        val f = pagerState.currentPage + pagerState.currentPageOffsetFraction
+                        translationY = f * (avatarSize - 24.sp.toDp()).toPx() / 2f
                     },
                 )
 
@@ -151,22 +146,20 @@ fun PrePostElementNew(
                                         ),
                                     )
                                 ) {
-                                    val textFieldTopPadding = with(density) {
-                                        fraction * (avatarSize - 24.sp.toDp()).toPx() / 2f
-                                    }.dp
-
                                     BasicTextField(
                                         value = text,
                                         onValueChange = onTextChanged,
                                         modifier = Modifier
                                             .graphicsLayer {
-                                                alpha = 1f - fraction
+                                                val f = pagerState.currentPage + pagerState.currentPageOffsetFraction
+                                                alpha = 1f - f
+                                                translationY = f * (avatarSize - 24.sp.toDp()).toPx() / 2f
                                             }
                                             .onSizeChanged { size ->
                                                 textFieldHeight =
                                                     with(density) { size.height.toDp() }
                                             }
-                                            .padding(start = 68.dp, top = textFieldTopPadding)
+                                            .padding(start = 68.dp)
                                             .fillMaxWidth()
                                             .then(
                                                 focusRequester?.let { Modifier.focusRequester(it) }
@@ -210,16 +203,22 @@ fun PrePostElementNew(
 
                         CreatePostTab.DRAW -> {
                             Column {
-                                val spacer = 68.dp * fraction
-                                Log.d("LOG_TAG", "spacer: $spacer")
-
-                                Spacer(modifier = Modifier.height(spacer))
+                                Spacer(
+                                    modifier = Modifier.layout { measurable, constraints ->
+                                        val f = pagerState.currentPage + pagerState.currentPageOffsetFraction
+                                        val heightPx = (68.dp.toPx() * f).toInt().coerceAtLeast(0)
+                                        val placeable = measurable.measure(constraints)
+                                        layout(placeable.width, heightPx) {
+                                            placeable.placeRelative(0, 0)
+                                        }
+                                    }
+                                )
 
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .aspectRatio(1f)
-                                        .padding(horizontal = 16.dp)
+                                        .padding(horizontal = contentPadding)
                                         .clip(RoundedCornerShape(14.dp))
                                         .graphicsLayer {
                                             val fraction =
@@ -246,13 +245,22 @@ fun PrePostElementNew(
                 FlowRow(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(start = ((1f - fraction) * 52).dp)
+                        .padding(horizontal = contentPadding)
+                        .layout { measurable, constraints ->
+                            val f = pagerState.currentPage + pagerState.currentPageOffsetFraction
+                            val offsetPx = ((1f - f) * 52.dp.toPx()).toInt().coerceAtLeast(0)
+                            val placeable = measurable.measure(
+                                constraints.copy(maxWidth = (constraints.maxWidth - offsetPx).coerceAtLeast(constraints.minWidth))
+                            )
+                            layout(constraints.maxWidth, placeable.height) {
+                                placeable.placeRelative(offsetPx, 0)
+                            }
+                        }
                         .graphicsLayer {
-                            val startY = (textFieldHeight + 16.dp).toPx()
+                            val f = pagerState.currentPage + pagerState.currentPageOffsetFraction
+                            val startY = (textFieldHeight + contentPadding).toPx()
                             val endY = contentWidth.toPx()
-
-                            translationY = (1f - fraction) * (startY - endY)
+                            translationY = (1f - f) * (startY - endY)
                         },
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),

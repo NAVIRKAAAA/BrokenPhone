@@ -1,5 +1,6 @@
 package com.brokentelephone.game.features.create_post.content
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -50,6 +51,11 @@ fun CreatePostContentNew(
     val focusRequester = remember { FocusRequester() }
     val pagerState =
         rememberPagerState(initialPage = state.selectedTab.ordinal) { CreatePostTab.entries.size }
+
+    BackHandler(state.selectedTab == CreatePostTab.DRAW) {
+        onTabSelect(CreatePostTab.TEXT)
+        focusRequester.requestFocus()
+    }
 
     LaunchedEffect(state.selectedTab) {
         pagerState.animateScrollToPage(state.selectedTab.ordinal)
