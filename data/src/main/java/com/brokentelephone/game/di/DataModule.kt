@@ -1,12 +1,9 @@
 package com.brokentelephone.game.di
 
-import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import com.brokentelephone.game.data.google.GoogleSignInManagerImpl
 import com.brokentelephone.game.data.handler.ApiHandlerImpl
 import com.brokentelephone.game.data.link.LinkProviderImpl
+import com.brokentelephone.game.data.notifications.NotificationObserver
 import com.brokentelephone.game.data.repository.AuthRepositoryImpl
 import com.brokentelephone.game.data.repository.FriendsRepositoryImpl
 import com.brokentelephone.game.data.repository.GameSessionRepositoryImpl
@@ -39,14 +36,12 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
-private val Context.userSessionDataStore: DataStore<Preferences> by preferencesDataStore(name = "user_session")
-
 val dataModule = module {
     single { provideSupabaseClient(androidContext()) }
     single { FirebaseMessaging.getInstance() }
 
     single<ApiHandler> { ApiHandlerImpl() }
-    single<UserSession> { UserSessionImpl(get(), androidContext().userSessionDataStore) }
+    single<UserSession> { UserSessionImpl(get()) }
     single<LinkProvider> { LinkProviderImpl() }
     single<AppInfoRepository> { MockAppInfoRepositoryImpl() }
     single<ImageStorage> { SupabaseImageStorage(get()) }
@@ -59,6 +54,8 @@ val dataModule = module {
     single<UsersRepository> { UsersRepositoryImpl(get()) }
     single<FriendsRepository> { FriendsRepositoryImpl(get()) }
     single<NotificationsRepository> { NotificationsRepositoryImpl(get()) }
+
+    single { NotificationObserver(get(), get()) }
 
     factoryOf(::UpdateFcmTokenUseCase)
 }

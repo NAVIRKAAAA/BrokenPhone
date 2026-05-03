@@ -34,6 +34,7 @@ import com.brokentelephone.game.main.use_case.ApplyEmailChangeUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
 import com.brokentelephone.game.main.use_case.ApplyPasswordResetUseCase
 import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
+import com.brokentelephone.game.main.use_case.ObserveNewNotificationsUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -72,6 +73,7 @@ val appModule = module {
     factoryOf(::GetLanguageUseCase)
     factoryOf(::GetThemeUseCase)
     factoryOf(::InitializeSessionUseCase)
+    factoryOf(::ObserveNewNotificationsUseCase)
     factoryOf(::GetActiveSessionUseCase)
     factoryOf(::ApplyEmailChangeUseCase)
     factoryOf(::ApplyEmailVerificationUseCase)

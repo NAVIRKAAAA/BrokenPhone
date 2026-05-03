@@ -16,8 +16,12 @@ import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
 import io.github.jan.supabase.realtime.PostgresAction
 import io.github.jan.supabase.realtime.channel
+import io.github.jan.supabase.realtime.decodeRecord
 import io.github.jan.supabase.realtime.postgresChangeFlow
 import io.github.jan.supabase.realtime.realtime
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -31,6 +35,8 @@ import java.io.IOException
 class NotificationsRepositoryImpl(
     private val supabase: SupabaseClient,
 ) : NotificationsRepository {
+
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     override suspend fun getNotificationById(notificationId: String): Notification? {
         return try {
@@ -106,10 +112,7 @@ class NotificationsRepositoryImpl(
         userId: String,
         readNotificationIds: List<String>,
     ): Flow<Int> = callbackFlow {
-        Log.d(
-            "LOG_TAG",
-            "getUnreadNotificationsCount: readNotificationIds - ${readNotificationIds.size}"
-        )
+        Log.d(TAG, "Start Observer: getUnreadNotificationsCount")
 
         val channel = supabase.realtime.channel("unread-count-$userId-${System.currentTimeMillis()}")
 
@@ -134,7 +137,7 @@ class NotificationsRepositoryImpl(
         val job = launch {
             fetchAndSend()
             insertFlow.collect {
-                Log.d("LOG_TAG", "New notification for me")
+                Log.d(TAG, "New notification for me")
                 fetchAndSend()
             }
         }
@@ -143,7 +146,38 @@ class NotificationsRepositoryImpl(
 
         awaitClose {
             job.cancel()
-            launch { supabase.realtime.removeChannel(channel) }
+            scope.launch {
+                Log.d(TAG, "Remove Observer: getUnreadNotificationsCount")
+                supabase.realtime.removeChannel(channel)
+            }
+        }
+    }
+
+    override fun observeNewNotifications(): Flow<Notification> = callbackFlow {
+        Log.d(TAG, "Start Observer: observeNewNotifications")
+        val channel = supabase.realtime.channel("new-notif-${System.currentTimeMillis()}")
+
+        val insertFlow = channel.postgresChangeFlow<PostgresAction.Insert>(schema = "public") {
+            table = TABLE_NOTIFICATIONS
+        }
+
+        val job = launch {
+            insertFlow.collect { action ->
+                Log.d(TAG, "New notification: $action")
+                val notification = runCatching {
+                    action.decodeRecord<NotificationDto>().toNotification()
+                }.getOrNull() ?: return@collect
+                send(notification)
+            }
+        }
+
+        channel.subscribe()
+        awaitClose {
+            job.cancel()
+            scope.launch {
+                Log.d(TAG, "Remove Observer: observeNewNotifications")
+                supabase.realtime.removeChannel(channel)
+            }
         }
     }
 
@@ -171,6 +205,9 @@ class NotificationsRepositoryImpl(
     private data class NotificationIdDto(@SerialName("id") val id: String)
 
     private companion object {
+
+        const val TAG = "NotificationsRepositoryImpl"
+
         const val TABLE_NOTIFICATIONS = "notifications"
         const val TYPE_FRIEND_REQUEST = "FRIEND_REQUEST"
         const val TYPE_CHAIN_INFO = "CHAIN_INFO"

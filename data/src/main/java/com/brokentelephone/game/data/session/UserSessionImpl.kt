@@ -1,10 +1,7 @@
 package com.brokentelephone.game.data.session
 
 import android.util.Log
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringSetPreferencesKey
+import com.brokentelephone.game.data.dto.NotInterestedPostDto
 import com.brokentelephone.game.data.dto.UserBlockDto
 import com.brokentelephone.game.data.dto.UserBlockWithUserDto
 import com.brokentelephone.game.data.dto.UserDto
@@ -52,7 +49,6 @@ import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -67,7 +63,6 @@ import kotlinx.serialization.json.put
 
 class UserSessionImpl(
     private val supabase: SupabaseClient,
-    private val dataStore: DataStore<Preferences>,
 ) : UserSession {
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.Loading)
@@ -102,6 +97,10 @@ class UserSessionImpl(
 
                     val currentUserId =
                         supabase.auth.currentUserOrNull() ?: run {
+                            realtimeCollectJob?.cancel()
+                            realtimeCollectJob = null
+                            realtimeChannel?.let { supabase.realtime.removeChannel(it) }
+                            realtimeChannel = null
                             _authState.update { AuthState.NotAuth }
                             _user.update { null }
 
@@ -297,15 +296,38 @@ class UserSessionImpl(
     }
 
     override suspend fun markPostAsNotInterested(postId: String) {
-        dataStore.edit { prefs ->
-            val current = prefs[KEY_NOT_INTERESTED_POSTS] ?: emptySet()
-            prefs[KEY_NOT_INTERESTED_POSTS] = current + postId
+        val userId = supabase.auth.currentUserOrNull()?.id ?: throw UnauthorizedException()
+        try {
+            supabase.from(COLLECTION_NOT_INTERESTED_POSTS).insert(
+                buildJsonObject {
+                    put("user_id", userId)
+                    put("post_id", postId)
+                    put("created_at", System.currentTimeMillis())
+                }
+            )
+        } catch (_: RestException) {
+            throw UnknownAuthException()
+        } catch (_: java.io.IOException) {
+            throw NetworkException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
         }
     }
 
-    // TODO: Migration to Supabase
     override suspend fun getNotInterestedPostIds(): List<String> {
-        return dataStore.data.firstOrNull()?.get(KEY_NOT_INTERESTED_POSTS)?.toList() ?: emptyList()
+        val userId = supabase.auth.currentUserOrNull()?.id ?: throw UnauthorizedException()
+        return try {
+            supabase.from(COLLECTION_NOT_INTERESTED_POSTS)
+                .select { filter { eq("user_id", userId) } }
+                .decodeList<NotInterestedPostDto>()
+                .map { it.postId }
+        } catch (_: RestException) {
+            throw UnknownAuthException()
+        } catch (_: java.io.IOException) {
+            throw NetworkException()
+        } catch (_: Exception) {
+            throw UnknownAuthException()
+        }
     }
 
     override suspend fun blockUser(userId: String) {
@@ -468,7 +490,6 @@ class UserSessionImpl(
     }
 
     override suspend fun signOut() {
-        dataStore.edit { it.remove(KEY_NOT_INTERESTED_POSTS) }
         realtimeChannel?.let { supabase.realtime.removeChannel(it) }
         realtimeChannel = null
         supabase.auth.signOut()
@@ -546,6 +567,6 @@ class UserSessionImpl(
     companion object {
         private const val COLLECTION_USERS = "users"
         private const val COLLECTION_USER_BLOCKS = "user_blocks"
-        private val KEY_NOT_INTERESTED_POSTS = stringSetPreferencesKey("not_interested_posts")
+        private const val COLLECTION_NOT_INTERESTED_POSTS = "not_interested_posts"
     }
 }

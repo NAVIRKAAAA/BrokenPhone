@@ -32,6 +32,7 @@ import com.brokentelephone.game.main.use_case.ApplyEmailChangeUseCase
 import com.brokentelephone.game.main.use_case.ApplyEmailVerificationUseCase
 import com.brokentelephone.game.main.use_case.ApplyPasswordResetUseCase
 import com.brokentelephone.game.main.use_case.InitializeSessionUseCase
+import com.brokentelephone.game.main.use_case.ObserveNewNotificationsUseCase
 import com.brokentelephone.game.navigation.nav_graph.AuthGraph
 import com.brokentelephone.game.notification_details_api.NotificationDetailsRoute
 import com.brokentelephone.game.notifications_api.NotificationsRoute
@@ -58,6 +59,7 @@ class MainViewModel(
     private val observeBannerUseCase: ObserveBannerUseCase,
     private val showBannerUseCase: ShowBannerUseCase,
     private val hideBannerUseCase: HideBannerUseCase,
+    private val observeNewNotificationsUseCase: ObserveNewNotificationsUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MainState())
@@ -73,6 +75,13 @@ class MainViewModel(
         initializeSession()
         observeTheme()
         observeBanner()
+        startNotificationObserver()
+    }
+
+    private fun startNotificationObserver() {
+        viewModelScope.launch {
+            observeNewNotificationsUseCase.execute()
+        }
     }
 
     private fun observeBanner() {

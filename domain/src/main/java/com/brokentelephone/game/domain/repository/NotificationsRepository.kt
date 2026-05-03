@@ -12,7 +12,11 @@ interface NotificationsRepository {
 
     suspend fun getNotifications(userId: String, filter: NotificationFilter): List<Notification>
 
+    suspend fun markNotificationAsRead(userId: String, notificationId: String)
+
+    // Realtime
+
     fun getUnreadNotificationsCount(userId: String, readNotificationIds: List<String>): Flow<Int>
 
-    suspend fun markNotificationAsRead(userId: String, notificationId: String)
+    fun observeNewNotifications(): Flow<Notification>
 }
