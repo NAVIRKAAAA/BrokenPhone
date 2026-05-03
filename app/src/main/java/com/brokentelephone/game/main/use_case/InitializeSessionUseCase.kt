@@ -6,6 +6,7 @@ import com.brokentelephone.game.domain.user.AuthState
 import com.brokentelephone.game.domain.user.UserSession
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class InitializeSessionUseCase(
     private val userSession: UserSession,
@@ -14,7 +15,7 @@ class InitializeSessionUseCase(
     suspend fun execute(): AppResult<Flow<AuthState>> {
         return handler.handle(Dispatchers.IO) {
             userSession.initialize()
-            return@handle userSession.authState
+            return@handle userSession.state.map { it.authState }
         }
     }
 }

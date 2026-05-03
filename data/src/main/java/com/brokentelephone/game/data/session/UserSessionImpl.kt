@@ -7,6 +7,7 @@ import com.brokentelephone.game.data.dto.UserBlockWithUserDto
 import com.brokentelephone.game.data.dto.UserDto
 import com.brokentelephone.game.data.dto.toBlockedUser
 import com.brokentelephone.game.data.mapper.toUser
+import com.brokentelephone.game.domain.model.notification.Notification
 import com.brokentelephone.game.domain.model.permissions.UserPermissions
 import com.brokentelephone.game.domain.model.settings.NotificationType
 import com.brokentelephone.game.domain.user.AuthState
@@ -14,6 +15,7 @@ import com.brokentelephone.game.domain.user.BlockedUser
 import com.brokentelephone.game.domain.user.OnboardingStep
 import com.brokentelephone.game.domain.user.User
 import com.brokentelephone.game.domain.user.UserSession
+import com.brokentelephone.game.domain.user.UserSessionState
 import com.brokentelephone.game.essentials.exceptions.auth.NetworkException
 import com.brokentelephone.game.essentials.exceptions.auth.SamePasswordException
 import com.brokentelephone.game.essentials.exceptions.auth.SessionDataException
@@ -41,10 +43,12 @@ import io.github.jan.supabase.realtime.realtime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNot
@@ -65,27 +69,33 @@ class UserSessionImpl(
     private val supabase: SupabaseClient,
 ) : UserSession {
 
-    private val _authState = MutableStateFlow<AuthState>(AuthState.Loading)
-    override val authState: Flow<AuthState> = _authState.asStateFlow()
+    private val _state: MutableStateFlow<UserSessionState> =
+        MutableStateFlow(UserSessionState.Initial)
 
-    private val _user = MutableStateFlow<User?>(null)
-    override val user: Flow<User?> = _user.asStateFlow()
+    override val state: Flow<UserSessionState> = _state.asStateFlow()
+
+    private val _unreadNotifications = MutableStateFlow<List<Notification>>(emptyList())
+    override val unreadNotifications: Flow<List<Notification>> = _unreadNotifications.asStateFlow()
 
     private var realtimeChannel: RealtimeChannel? = null
-    private var realtimeCollectJob: kotlinx.coroutines.Job? = null
+    private var realtimeCollectJob: Job? = null
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    init {
+        Log.d(TAG, "UserSessionImpl Init")
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun initialize() {
-        Log.d("LOG_TAG", "initialize()")
+        Log.d(TAG, "initialize()")
 
         val status = supabase.auth.sessionStatus
             .first { it is SessionStatus.Authenticated || it is SessionStatus.NotAuthenticated }
 
-        Log.d("LOG_TAG", "sessionStatus: $status")
+        Log.d(TAG, "sessionStatus: $status")
 
         scope.launch {
-            Log.d("LOG_TAG", "Start observe sessionStatus")
+            Log.d(TAG, "Start observe sessionStatus")
             supabase.auth.sessionStatus
                 .filterNot { it is SessionStatus.Initializing }
                 .flatMapLatest {
@@ -93,7 +103,7 @@ class UserSessionImpl(
                 }
                 .distinctUntilChangedBy { it?.id }
                 .collect { newSessionStatus ->
-                    Log.d("LOG_TAG", "newSessionStatus: $newSessionStatus")
+                    Log.d(TAG, "newSessionStatus: $newSessionStatus")
 
                     val currentUserId =
                         supabase.auth.currentUserOrNull() ?: run {
@@ -101,8 +111,10 @@ class UserSessionImpl(
                             realtimeCollectJob = null
                             realtimeChannel?.let { supabase.realtime.removeChannel(it) }
                             realtimeChannel = null
-                            _authState.update { AuthState.NotAuth }
-                            _user.update { null }
+
+                            _state.update {
+                                UserSessionState.NotAuth
+                            }
 
                             return@collect
                         }
@@ -114,13 +126,19 @@ class UserSessionImpl(
 
     // TODO: Need review
     private suspend fun observeSupabaseUser(userInfo: UserInfo) {
-        Log.d("LOG_TAG", "observeSupabaseUser(): $userInfo")
+        Log.d(TAG, "Start Observer: observeSupabaseUser")
 
-        _authState.update { AuthState.PreAuth(userInfo.id) }
-        _user.update { userInfo.toUser() }
+        _state.update {
+            UserSessionState(
+                authState = AuthState.PreAuth(userInfo.id),
+                user = userInfo.toUser()
+            )
+        }
 
         realtimeCollectJob?.cancel()
+
         realtimeChannel?.let { channel ->
+            Log.d(TAG, "Remove Observer: observeSupabaseUser")
             supabase.realtime.removeChannel(channel)
         }
 
@@ -141,7 +159,8 @@ class UserSessionImpl(
         realtimeCollectJob = scope.launch {
 
             try {
-                // First load
+                Log.d(TAG, "First load user")
+
                 val user = supabase.from(COLLECTION_USERS)
                     .select { filter { eq("id", userInfo.id) } }
                     .decodeSingleOrNull<UserDto>()
@@ -152,40 +171,54 @@ class UserSessionImpl(
                     email = userInfo.email ?: "",
                     isEmailVerified = userInfo.emailConfirmedAt != null
                 )
-                _authState.update { AuthState.Auth(updatedUser) }
-                _user.update { updatedUser }
+
+                _state.update {
+                    UserSessionState(
+                        authState = AuthState.Auth(updatedUser),
+                        user = updatedUser
+                    )
+                }
             } catch (_: Exception) {
-                _authState.update { AuthState.NotAuth }
-                _user.update { null }
+                _state.update { UserSessionState.NotAuth }
             }
 
-            updateFlow.collect { change ->
-                Log.d("LOG_TAG", "Change: $change")
-                try {
-                    val newUser = change.decodeRecord<UserDto>().toUser()
-                    val updatedNewUser = newUser.copy(
-                        email = userInfo.email ?: "",
-                        isEmailVerified = userInfo.emailConfirmedAt != null
-                    )
-                    _authState.update { AuthState.Auth(updatedNewUser) }
-                    _user.update { updatedNewUser }
-                } catch (e: Exception) {
-                    Log.d("LOG_TAG", "updateFlow.collect { change -> $e")
+            updateFlow
+                .map { it.decodeRecord<UserDto>() }
+                .distinctUntilChanged()
+                .collect { userDto ->
+                    Log.d(TAG, "User updated: $userDto")
+                    try {
+                        val newUser = userDto.toUser()
+                        val updatedNewUser = newUser.copy(
+                            email = userInfo.email ?: "",
+                            isEmailVerified = userInfo.emailConfirmedAt != null
+                        )
+                        _state.update {
+                            UserSessionState(
+                                authState = AuthState.Auth(updatedNewUser),
+                                user = updatedNewUser
+                            )
+                        }
+                    } catch (e: Exception) {
+                        Log.d(TAG, "updateFlow.collect { change -> $e")
+                    }
                 }
-            }
         }
 
         channel.subscribe()
     }
 
-    override fun getUserOnAuthStateChange(): Flow<User?> {
-        return _authState
-            .filter { it is AuthState.Auth || it is AuthState.NotAuth }
-            .map { it.getUserOrNull() }
+    override fun getAuthUserOrNull(): Flow<User?> {
+        return state
+            .filter { it.authState is AuthState.Auth || it.authState is AuthState.NotAuth }
+            .map { it.user }
     }
 
     override suspend fun getUserId(): String? {
-        return _authState.first { it !is AuthState.Loading }.getUserIdOrNull()
+        return state
+            .first { it.authState !is AuthState.Loading }
+            .user
+            ?.id
     }
 
     override suspend fun reloadUser() {
@@ -341,13 +374,13 @@ class UserSessionImpl(
                 }
             )
         } catch (e: RestException) {
-            Log.d("LOG_TAG", "blockUser(): $e")
+            Log.d(TAG, "blockUser(): $e")
             throw UnknownAuthException()
         } catch (e: java.io.IOException) {
-            Log.d("LOG_TAG", "blockUser(): $e")
+            Log.d(TAG, "blockUser(): $e")
             throw NetworkException()
         } catch (e: Exception) {
-            Log.d("LOG_TAG", "blockUser(): $e")
+            Log.d(TAG, "blockUser(): $e")
             throw UnknownAuthException()
         }
     }
@@ -384,12 +417,12 @@ class UserSessionImpl(
                 filter { eq("id", userId) }
             }
         } catch (e: RestException) {
-            Log.d("LOG_TAG", "updateNotifications: $e")
+            Log.d(TAG, "updateNotifications: $e")
             throw UnknownAuthException()
         } catch (_: java.io.IOException) {
             throw NetworkException()
         } catch (e: Exception) {
-            Log.d("LOG_TAG", "updateNotifications: $e")
+            Log.d(TAG, "updateNotifications: $e")
             throw UnknownAuthException()
         }
     }
@@ -418,7 +451,7 @@ class UserSessionImpl(
 
     override suspend fun deleteFcmToken() {
         val userId = supabase.auth.currentUserOrNull()?.id ?: throw UnauthorizedException()
-        Log.d("LOG_TAG", "deleteFcmToken")
+        Log.d(TAG, "deleteFcmToken")
         try {
             supabase.from(COLLECTION_USERS).update(
                 buildJsonObject { put("fcm_token", JsonNull) }
@@ -427,7 +460,7 @@ class UserSessionImpl(
             }
             FirebaseMessaging.getInstance().deleteToken().await()
         } catch (e: Exception) {
-            Log.d("LOG_TAG", "deleteFcmToken: $e")
+            Log.d(TAG, "deleteFcmToken: $e")
             e.printStackTrace()
         }
     }
@@ -436,10 +469,10 @@ class UserSessionImpl(
         scope.launch {
             try {
                 val token = FirebaseMessaging.getInstance().token.await()
-                Log.d("LOG_TAG", "refreshFcmToken: $token")
+                Log.d(TAG, "refreshFcmToken: $token")
                 updateFcmToken(token)
             } catch (e: Exception) {
-                Log.d("LOG_TAG", "refreshFcmToken: $e")
+                Log.d(TAG, "refreshFcmToken: $e")
                 e.printStackTrace()
             }
         }
@@ -447,7 +480,7 @@ class UserSessionImpl(
 
     override suspend fun updateFcmToken(token: String) {
         val userId = supabase.auth.currentUserOrNull()?.id ?: throw UnauthorizedException()
-        Log.d("LOG_TAG", "updateFcmToken: $token")
+        Log.d(TAG, "updateFcmToken: $token")
         try {
             supabase.from(COLLECTION_USERS).update(
                 buildJsonObject { put("fcm_token", token) }
@@ -455,7 +488,7 @@ class UserSessionImpl(
                 filter { eq("id", userId) }
             }
         } catch (e: Exception) {
-            Log.d("LOG_TAG", "updateFcmToken: $e")
+            Log.d(TAG, "updateFcmToken: $e")
             e.printStackTrace()
         }
     }
@@ -467,7 +500,7 @@ class UserSessionImpl(
                 password = newPassword
             }
         } catch (e: RestException) {
-            Log.d("LOG_TAG", "E: $e")
+            Log.d(TAG, "E: $e")
             val msg = e.message.orEmpty()
             when {
                 msg.contains("same_password", ignoreCase = true) ||
@@ -490,11 +523,15 @@ class UserSessionImpl(
     }
 
     override suspend fun signOut() {
-        realtimeChannel?.let { supabase.realtime.removeChannel(it) }
+        realtimeChannel?.let {
+            Log.d(TAG, "Remove Observer: observeSupabaseUser")
+            supabase.realtime.removeChannel(it)
+        }
         realtimeChannel = null
+
         supabase.auth.signOut()
-        _authState.update { AuthState.NotAuth }
-        _user.update { null }
+        _state.update { UserSessionState.NotAuth }
+        _unreadNotifications.update { emptyList() }
     }
 
     override suspend fun deleteAccount() = Unit
@@ -516,12 +553,12 @@ class UserSessionImpl(
                     if (block.blockerId == currentUserId) block.blockedId else block.blockerId
                 }
         } catch (e: RestException) {
-            Log.d("LOG_TAG", "getExcludedUserIds(): $e")
+            Log.d(TAG, "getExcludedUserIds(): $e")
             throw UnknownAuthException()
         } catch (_: java.io.IOException) {
             throw NetworkException()
         } catch (e: Exception) {
-            Log.d("LOG_TAG", "getExcludedUserIds(): $e")
+            Log.d(TAG, "getExcludedUserIds(): $e")
             throw UnknownAuthException()
         }
     }
@@ -554,17 +591,31 @@ class UserSessionImpl(
                 }
                 .countOrNull()?.toInt() ?: 0
         } catch (e: RestException) {
-            Log.d("LOG_TAG", "getBlockedUsersCount(): $e")
+            Log.d(TAG, "getBlockedUsersCount(): $e")
             throw UnknownAuthException()
         } catch (_: java.io.IOException) {
             throw NetworkException()
         } catch (e: Exception) {
-            Log.d("LOG_TAG", "getBlockedUsersCount(): $e")
+            Log.d(TAG, "getBlockedUsersCount(): $e")
             throw UnknownAuthException()
         }
     }
 
+    override fun updateUnreadNotifications(notifications: List<Notification>) {
+        _unreadNotifications.update { notifications }
+    }
+
+    override fun addUnreadNotification(notification: Notification) {
+        _unreadNotifications.update { it + notification }
+    }
+
+    override fun removeUnreadNotification(notificationId: String) {
+        _unreadNotifications.update { list -> list.filter { it.id != notificationId } }
+    }
+
     companion object {
+        private const val TAG = "UserSessionImpl"
+
         private const val COLLECTION_USERS = "users"
         private const val COLLECTION_USER_BLOCKS = "user_blocks"
         private const val COLLECTION_NOT_INTERESTED_POSTS = "not_interested_posts"

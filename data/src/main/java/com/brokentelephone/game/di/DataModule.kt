@@ -3,7 +3,6 @@ package com.brokentelephone.game.di
 import com.brokentelephone.game.data.google.GoogleSignInManagerImpl
 import com.brokentelephone.game.data.handler.ApiHandlerImpl
 import com.brokentelephone.game.data.link.LinkProviderImpl
-import com.brokentelephone.game.data.notifications.NotificationObserver
 import com.brokentelephone.game.data.repository.AuthRepositoryImpl
 import com.brokentelephone.game.data.repository.FriendsRepositoryImpl
 import com.brokentelephone.game.data.repository.GameSessionRepositoryImpl
@@ -54,8 +53,5 @@ val dataModule = module {
     single<UsersRepository> { UsersRepositoryImpl(get()) }
     single<FriendsRepository> { FriendsRepositoryImpl(get()) }
     single<NotificationsRepository> { NotificationsRepositoryImpl(get()) }
-
-    single { NotificationObserver(get(), get()) }
-
     factoryOf(::UpdateFcmTokenUseCase)
 }

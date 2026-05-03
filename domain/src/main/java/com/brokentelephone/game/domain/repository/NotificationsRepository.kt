@@ -16,7 +16,5 @@ interface NotificationsRepository {
 
     // Realtime
 
-    fun getUnreadNotificationsCount(userId: String, readNotificationIds: List<String>): Flow<Int>
-
     fun observeNewNotifications(): Flow<Notification>
 }

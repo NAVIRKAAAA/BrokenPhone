@@ -1,5 +1,7 @@
 package com.brokentelephone.game.domain.user
 
+
+// TODO: Remove user
 sealed class AuthState {
     data object Loading : AuthState()
     data object NotAuth : AuthState()

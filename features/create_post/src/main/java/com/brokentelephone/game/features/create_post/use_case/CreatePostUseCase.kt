@@ -25,7 +25,7 @@ class CreatePostUseCase(
         drawingTimeLimit: Int,
     ): AppResult<Unit> {
         return handler.handle(dispatcher = Dispatchers.IO, maxRetries = 0) {
-            val user = userSession.getUserOnAuthStateChange().firstOrNull() ?: throw UnauthorizedException()
+            val user = userSession.getAuthUserOrNull().firstOrNull() ?: throw UnauthorizedException()
 
             val resolvedContent = when (content) {
                 is PostContent.Text -> content

@@ -17,6 +17,7 @@ class MarkNotificationAsReadUseCase(
             val userId = userSession.getUserId() ?: throw UnauthorizedException()
 
             repository.markNotificationAsRead(userId, notificationId)
+            userSession.removeUnreadNotification(notificationId)
         }
     }
 }

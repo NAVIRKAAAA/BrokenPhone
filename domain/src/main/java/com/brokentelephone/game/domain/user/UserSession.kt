@@ -1,14 +1,15 @@
 package com.brokentelephone.game.domain.user
 
+import com.brokentelephone.game.domain.model.notification.Notification
 import com.brokentelephone.game.domain.model.permissions.UserPermissions
 import com.brokentelephone.game.domain.model.settings.NotificationType
 import kotlinx.coroutines.flow.Flow
 
 interface UserSession {
-    val authState: Flow<AuthState>
-    val user: Flow<User?>
+    val state: Flow<UserSessionState>
+    val unreadNotifications: Flow<List<Notification>>
 
-    fun getUserOnAuthStateChange(): Flow<User?>
+    fun getAuthUserOrNull(): Flow<User?>
     suspend fun getUserId(): String?
     suspend fun initialize()
     suspend fun reloadUser()
@@ -32,4 +33,8 @@ interface UserSession {
     suspend fun getBlockedUsers(): List<BlockedUser>
     suspend fun getBlockedUsersCount(): Int
     suspend fun getExcludedUserIds(): List<String>
+
+    fun updateUnreadNotifications(notifications: List<Notification>)
+    fun addUnreadNotification(notification: Notification)
+    fun removeUnreadNotification(notificationId: String)
 }

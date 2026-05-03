@@ -61,10 +61,9 @@ class DashboardViewModel(
             .onEach { user -> _state.update { it.copy(user = user?.toUi()) } }
             .launchIn(viewModelScope)
 
-        // TODO: to main view model
-//        getUnreadNotificationsCountUseCase.execute()
-//            .onEach { count -> _state.update { it.copy(unreadNotificationsCount = count) } }
-//            .launchIn(viewModelScope)
+        getUnreadNotificationsCountUseCase.execute()
+            .onEach { count -> _state.update { it.copy(unreadNotificationsCount = count) } }
+            .launchIn(viewModelScope)
     }
 
     fun loadInitialPosts() {
