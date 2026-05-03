@@ -10,7 +10,7 @@ enum class BottomNavBar(
 
     DASHBOARD(
         titleResId = R.string.bottom_nav_bar_dashboard,
-        iconResId = R.drawable.ic_mutations
+        iconResId = R.drawable.ic_mutations_20_24
     ),
 
     CREATE(

@@ -163,7 +163,7 @@ private fun AppNavBottomBarItem(
     }
 
     val iconSize = when (item) {
-        BottomNavBar.DASHBOARD -> 20.dp
+        BottomNavBar.DASHBOARD -> 24.dp
         BottomNavBar.CREATE -> 32.dp
         else -> 24.dp
     }
