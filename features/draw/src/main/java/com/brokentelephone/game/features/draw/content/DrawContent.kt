@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.composable.chip.PostChip
+import com.brokentelephone.game.core.composable.chip.TimerChip
 import com.brokentelephone.game.core.composable.draw.DrawBottomBar
 import com.brokentelephone.game.core.composable.draw.DrawingCanvas
 import com.brokentelephone.game.core.composable.shimmer.ShimmerContent
@@ -41,7 +42,6 @@ import com.brokentelephone.game.core.model.draw.DrawingCanvasAction
 import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
-import com.brokentelephone.game.core.utils.toFormattedTime
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
 import com.brokentelephone.game.features.draw.model.DrawState
@@ -133,11 +133,8 @@ fun DrawContent(
                                 iconResId = R.drawable.ic_mutations,
                             )
 
-                            PostChip(
-                                text = state.remainingSeconds.toFormattedTime(),
-                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                iconResId = R.drawable.ic_clock,
+                            TimerChip(
+                                remainingSeconds = state.remainingSeconds,
                             )
                         }
 
@@ -211,7 +208,7 @@ fun DrawContentPreview() {
                         maxGenerations = 10,
                         status = PostStatus.AVAILABLE,
                         drawingTimeLimit = 60,
-                        textTimeLimit = 60
+                        textTimeLimit = 60,
                     )
                 ),
             )

@@ -18,6 +18,8 @@ data class AppColors(
     val onNewsBannerContainer: Color,
     val successBannerContainer: Color,
     val onSuccessBannerContainer: Color,
+    val timerWarningContainer: Color,
+    val onTimerWarningContainer: Color,
 )
 
 val LocalAppColors = staticCompositionLocalOf {
@@ -32,6 +34,8 @@ val LocalAppColors = staticCompositionLocalOf {
         onNewsBannerContainer = Color.Unspecified,
         successBannerContainer = Color.Unspecified,
         onSuccessBannerContainer = Color.Unspecified,
+        timerWarningContainer = Color.Unspecified,
+        onTimerWarningContainer = Color.Unspecified,
     )
 }
 

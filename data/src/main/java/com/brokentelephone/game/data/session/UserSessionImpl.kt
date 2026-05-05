@@ -179,6 +179,7 @@ class UserSessionImpl(
                     )
                 }
             } catch (_: Exception) {
+                // TODO: Don't set NotAuth on error!
                 _state.update { UserSessionState.NotAuth }
             }
 

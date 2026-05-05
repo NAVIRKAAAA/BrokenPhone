@@ -45,13 +45,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.brokentelephone.game.core.R
 import com.brokentelephone.game.core.composable.chip.PostChip
+import com.brokentelephone.game.core.composable.chip.TimerChip
 import com.brokentelephone.game.core.composable.post.DrawPostImage
 import com.brokentelephone.game.core.composable.shimmer.ShimmerContent
 import com.brokentelephone.game.core.composable.top_bar.SaveTopBar
 import com.brokentelephone.game.core.model.post.PostUi
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
-import com.brokentelephone.game.core.utils.toFormattedTime
 import com.brokentelephone.game.domain.model.post.PostContent
 import com.brokentelephone.game.domain.model.post.PostStatus
 import com.brokentelephone.game.features.describe_drawing.model.DescribeDrawingState
@@ -195,14 +195,9 @@ fun DescribeDrawingContent(
                                     modifier = Modifier,
                                 )
 
-                                PostChip(
-                                    text = state.remainingSeconds.toFormattedTime(),
-                                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                    iconResId = R.drawable.ic_clock,
-                                    modifier = Modifier,
+                                TimerChip(
+                                    remainingSeconds = state.remainingSeconds,
                                 )
-
 
                                 if (state.text.isNotBlank()) {
                                     val isTextOverLimit = state.isTextOverLimit

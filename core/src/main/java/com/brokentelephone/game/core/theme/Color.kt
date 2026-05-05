@@ -20,6 +20,11 @@ val badgeCompleteDark = Color(0xFF4ADE80)
 val badgeCompleteContainerLight = Color(0xFFDCFCE7)
 val badgeCompleteContainerDark = Color(0xFF15803D)
 
+val timerWarningContainerLight = Color(0xFFFDE68A)
+val onTimerWarningContainerLight = Color(0xFF78350F)
+val timerWarningContainerDark = Color(0xFF451A03)
+val onTimerWarningContainerDark = Color(0xFFFCD34D)
+
 val primaryLight = Color(0xFF9B5DE5)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFF2E7FE)

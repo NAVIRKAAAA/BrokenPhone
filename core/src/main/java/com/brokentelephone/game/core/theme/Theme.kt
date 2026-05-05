@@ -271,6 +271,8 @@ fun BrokenTelephoneTheme(
             onNewsBannerContainer = onNewsBannerContainerDark,
             successBannerContainer = successBannerContainerDark,
             onSuccessBannerContainer = onSuccessBannerContainerDark,
+            timerWarningContainer = timerWarningContainerDark,
+            onTimerWarningContainer = onTimerWarningContainerDark,
         )
     } else {
         AppColors(
@@ -284,6 +286,8 @@ fun BrokenTelephoneTheme(
             onNewsBannerContainer = onNewsBannerContainerLight,
             successBannerContainer = successBannerContainerLight,
             onSuccessBannerContainer = onSuccessBannerContainerLight,
+            timerWarningContainer = timerWarningContainerLight,
+            onTimerWarningContainer = onTimerWarningContainerLight,
         )
     }
 
