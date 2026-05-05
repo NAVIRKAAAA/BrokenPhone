@@ -123,7 +123,8 @@ fun DescribeDrawingContent(
                                     modifier = Modifier
                                         .size(imageSize)
                                         .clip(RoundedCornerShape(14.dp)),
-                                    contentScale = ContentScale.Crop
+                                    contentScale = ContentScale.Crop,
+                                    zoomEnabled = true
                                 )
                             }
 

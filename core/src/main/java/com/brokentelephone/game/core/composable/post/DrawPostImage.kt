@@ -23,6 +23,8 @@ import coil3.request.crossfade
 import com.brokentelephone.game.core.theme.BrokenTelephoneTheme
 import com.brokentelephone.game.core.theme.appColors
 import com.brokentelephone.game.domain.model.post.PostContent
+import net.engawapg.lib.zoomable.rememberZoomState
+import net.engawapg.lib.zoomable.zoomable
 import java.io.File
 
 @Composable
@@ -30,14 +32,17 @@ fun DrawPostImage(
     content: PostContent.Drawing,
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Fit,
+    zoomEnabled: Boolean = false,
 ) {
     val model = content.localPath?.let { File(it) } ?: content.imageUrl
     val context = LocalContext.current
+    val zoomableState = rememberZoomState(maxScale = 4f)
 
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.appColors.canvasBg)
+            .then(if (zoomEnabled) Modifier.zoomable(zoomableState) else Modifier)
     ) {
         SubcomposeAsyncImage(
             model = ImageRequest.Builder(context)

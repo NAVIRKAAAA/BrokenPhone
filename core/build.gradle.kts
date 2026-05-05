@@ -35,6 +35,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+    implementation(libs.zoomable)
     implementation(libs.androidx.browser)
     debugImplementation(libs.androidx.compose.ui.tooling)
     api(libs.androidx.core.splashscreen)
